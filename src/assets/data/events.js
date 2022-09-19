@@ -550,6 +550,7 @@ export const getOptEventOptions = (userId, event, curConditions) => {
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
 
+// 获取多选事件的可选项
 export const getMultiOptEventOptions = (event, curConditions) => {
   if (!event.multiOptions) return []
   // 待修改：添加逻辑
@@ -572,6 +573,7 @@ export const getMultiOptEventOptions = (event, curConditions) => {
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
 
+// 获取多选事件的反馈事件
 export const getMultiOptResult = (userId, conditions, event, selections = []) => {
   const { multiMixEvents } = event
   const cSelections = selections.sort((a, b) => a - b).toString()
