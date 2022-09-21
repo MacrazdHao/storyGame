@@ -1,5 +1,6 @@
 
-const MAXNUM = 99999
+const MAXNUM = 999999
+const MINNUM = -999999
 
 const EventCode = {
   NotExist: 'notExist',
@@ -10,7 +11,7 @@ const EventCode = {
 const defaultDefaultEvent = {
   // 默认事件，仅可通过命令行调用的默认事件，默认事件也可以是[概率事件/绑定事件/可选事件]事件，但不可以作为被动/必然事件
   text: (options) => '',
-  isDefault: (_default = true) => _default,
+  isDefault: (_default = true) => true,
   // 注：被动事件和必然事件相冲
   isCertain: (certain = false) => false,
   // 注：必然事件和被动事件相冲
@@ -23,7 +24,7 @@ const defaultNormalEvent = {
   // 普通事件，当某些条件下无可执行的结果，则会默认执行normalDefault事件
   // text每次调用事件都必须重构
   text: (options) => '',
-  times: (initTimes = 1) => initTimes,
+  times: (initTimes = MAXNUM) => initTimes,
   timesOfUnit: (times = 1) => times,
   curTimesOfUnit: (times = 1) => times,
   triggerConditions: (attr = { age: [0, MAXNUM] }) => ({ ...attr }),
@@ -68,7 +69,7 @@ const defaultMultiOptEvent = {
 }
 const defaultPassiveEvent = {
   // 被动事件，非主动事件，不可直接触发，仅通过概率/绑定/可选事件触发
-  isPassive: (passive = true) => passive,
+  isPassive: (passive = true) => true,
   // 注：被动事件和必然事件相冲
   isCertain: (certain = false) => false,
   // 注：被动事件和默认事件相冲
@@ -76,7 +77,7 @@ const defaultPassiveEvent = {
 }
 const defaultCertainEvent = {
   // 必然事件，达到条件必定触发
-  isCertain: (certain = true) => certain,
+  isCertain: (certain = true) => true,
   unitTimeBegin: (unitTimeBegin = true) => unitTimeBegin,
   // 注：必然事件和被动事件相冲
   isPassive: (passive = false) => false,
@@ -103,7 +104,7 @@ const defaultCertainEvent = {
  ** 【概率事件可重复次数】prRepeat: (events[Object({'EventName[String]': times[Number]})]) => Object
  ** 【概率事件】prEvents: (events[Object({'EventName[String]': weight[Number]})]) => Object
  ** 【概率默认事件】prDefault: (eventKey[String]) => String
- ** 【绑定事件】bindEvents: (events[Object({'EventName[String]': {duration: Number}})]) => Object
+ ** 【绑定事件】bindEvents: (events[Object({'EventName[String]': {'duration': Number, 'conditions': { attr[Object({ 'Attr[String]': [Array(Number, 2)] }}})]) => Object
  ** 【绑定默认事件】bindDefault: (eventKey[String]) => String
  ** 【被动事件标识】isPassive: (passive[Boolean]) => Boolean
  ** 【必然事件标识】isCertain: (passive[Boolean]) => Boolean
@@ -157,12 +158,184 @@ const NormalEvents = {
     text: (options) => `${options.unitTimeInfo.chronology[0]} ${options.unitTimeInfo.date[0] + options.unitTimeInfo.chronology[1]}${options.unitTimeInfo.date[1] + options.unitTimeInfo.chronology[2]}${options.unitTimeInfo.date[2] + options.unitTimeInfo.chronology[3]}，你出生了，你的父母带上美好的祝福和希望，为你取名【${options.userInfo.name}】`,
     triggerConditions: (attr = { age: [0, 1] }) => ({ ...attr })
   },
+  meiniankaishi: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    ...defaultPrEvent,
+    text: () => '新的一年开始了',
+    times: () => 1,
+    prEvents: (events = {}) => ({
+      ...events,
+      shaoyanhua1: 10,
+      shaoyanhua2: 10,
+      shaoyanhua3: 10,
+      shaoyanhua4: 20,
+      shaoyanhua5: 10,
+      shaoyanhua6: 10,
+      shaoyanhua7: 10,
+      mamadamajiang1: 10,
+      mamadamajiang2: 10,
+      mamadamajiang3: 10
+    })
+  },
   putong1: {
     ...defaultNormalEvent
   },
   beidong_putong1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent
+  },
+  shaoyanhua1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，结果因为穿得太穷酸，被嘲笑了一顿然后把你赶走了(魅力-1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [5, 12],
+      jiajing: [MINNUM, 5]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: -1
+    })
+  },
+  shaoyanhua2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，小朋友们看到你身上穿着崭新的高仿奶哥牌衣服，极为羡慕，过年这段时间你都成了这条guy最靓的崽(魅力+1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [5, 12],
+      jiajing: [5, 10]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 1
+    })
+  },
+  shaoyanhua3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你爸给你买了一大堆烟花，附近的小朋友都羡慕极了，纷纷上前讨好你，好一段时间里他们都尊你为孩子王(魅力+2)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [5, 12],
+      jiajing: [10, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 2
+    })
+  },
+  shaoyanhua4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花噼啪响，百花齐放，但你好像完全不感兴趣',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      age: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  shaoyanhua5: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [MINNUM, 3]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  shaoyanhua6: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你却出其的镇定，大家都说你有大将之风(勇气+1, 魅力+1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 1,
+      meili: 1
+    })
+  },
+  shaoyanhua7: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你被吓哭了，但没多久又能平静下来，如此反复横跳了很久，你爸妈因此被折腾得不行',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [3, 5]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  mamadamajiang1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你跟着你妈去亲戚家打麻将，你在旁边大吵大闹影响了风水，亏惨了，于是你的红包被上缴了，还被骂了一顿(家境-1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      age: [5, 18]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      jiajing: -1
+    })
+  },
+  mamadamajiang2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你妈去亲戚家打麻将，亏惨了，幸好你没跟着去，不然肯定少不了一顿迁怒',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      age: [5, 18]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  mamadamajiang3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zaijia: [1, MAXNUM],
+      age: [5, 18],
+      jiajing: [10, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 1
+    })
   }
 }
 const PrEvents = {
@@ -315,7 +488,9 @@ for (const key in AllEvents) {
 // 过滤出必然事件
 const CertainEvents = {}
 for (const key in AllEvents) {
-  if (AllEvents[key].isCertain) CertainEvents[key] = AllEvents[key]
+  if (AllEvents[key].isCertain) {
+    if (AllEvents[key].isCertain) { CertainEvents[key] = AllEvents[key] }
+  }
 }
 
 /**
@@ -357,16 +532,28 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       text: false,
       times: false
     },
-    eventOptions: {}
+    eventOptions: {
+      // text为必须传入的事件参数，包括人物信息、单位时间信息等
+      // text: { userInfo: {}, unitTimeInfo: {} }
+    }
   }
   const { key, eventOptions, updateMode, update } = { ...defaultOptions, ...options }
   const { events } = EventsRecord[userId]
   let eventObj = {}
   if (!AllEvents[key]) return EventCode.NotExist
   if (!events[key]) {
-    // 正在使用的事件列表无该事件，则从事件库中获取
+    // 正在使用的事件列表无该事件，则从事件库中获取并初始化
     for (const ekey in AllEvents[key]) {
-      eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+      if (ekey === 'text') {
+        try {
+          eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 重新生成文案错误(no params)---`
+        } catch (err) {
+          eventObj[ekey] = `---${key}: 生成文案错误(params error, ${err})---`
+        }
+      }
+      if (eventOptions[ekey]) eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+      // 无传入参数则走默认
+      else eventObj[ekey] = AllEvents[key][ekey]()
     }
     eventObj = {
       ...AllEvents[key],
@@ -375,12 +562,18 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
   } else {
     eventObj = JSON.parse(JSON.stringify(events[key]))
     // text每次调用事件都必须重构
-    eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 生成文案错误---`
+    try {
+      eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 重新生成文案错误(no params)---`
+    } catch (err) {
+      eventObj.text = `---${key}: 重新生成文案错误(params error, ${err})---`
+    }
     if (updateMode) {
       // 重置/更新事件属性
       for (const ekey in update) {
         if (update[ekey]) {
-          eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+          if (eventOptions[ekey]) eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+          // 无传入参数则走默认
+          else eventObj[ekey] = AllEvents[key][ekey]()
         }
       }
     }
@@ -398,8 +591,6 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
   eventObj.curTimesOfUnit -= 1
   return eventObj.times <= 0 || eventObj.curTimesOfUnit === 0 ? EventCode.OutOfTimes : eventObj
 }
-
-// 版本2：
 
 export const getCertainEvent = (userId, eventOptions, conditions) => {
   for (const key in CertainEvents) {
@@ -431,12 +622,14 @@ export const getOptEventOptions = (userId, event, curConditions) => {
     // disabled为置灰，hide为隐藏
     const option = { color, text, event: key, disabled: false, hide: false }
     // 判断当前状态是否符合选项展示的条件
-    for (const ckey in conditions) {
-      if (!curConditions[ckey]) option.hide = true
-      const min = conditions[ckey][0]
-      const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
-      if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
-      if (option.hide) break
+    if (conditions) {
+      for (const ckey in conditions) {
+        if (!curConditions[ckey]) option.hide = true
+        const min = conditions[ckey][0]
+        const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+        if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
+        if (option.hide) break
+      }
     }
     if (!option.hide) {
       const eventObj = getEventObj(userId, { key }, curConditions)
@@ -463,12 +656,14 @@ export const getMultiOptEventOptions = (event, curConditions) => {
     // hide为隐藏
     const option = { color, text, hide: false }
     // 判断当前状态是否符合选项展示的条件
-    for (const ckey in conditions) {
-      if (!curConditions[ckey]) option.hide = true
-      const min = conditions[ckey][0]
-      const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
-      if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
-      if (option.hide) break
+    if (conditions) {
+      for (const ckey in conditions) {
+        if (!curConditions[ckey]) option.hide = true
+        const min = conditions[ckey][0]
+        const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+        if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
+        if (option.hide) break
+      }
     }
     options.push(option)
   }
@@ -509,7 +704,7 @@ export const selectMultiOptEventOption = (userId, conditions, event, selections 
   pushEventKeyToStack(userId, [eventKey], 'priority')
 }
 
-export const execEvent = (userId, eventInfo, unitTimeNum, userInfo) => {
+export const execEvent = (userId, eventInfo, unitTimeNum, userInfo, curConditions) => {
   // 事件对象存入事件记录
   // 【单位时间可触发次数上限】timesOfUnit
   // 【当前单位时间可触发次数】curTimesOfUnit
@@ -541,7 +736,18 @@ export const execEvent = (userId, eventInfo, unitTimeNum, userInfo) => {
   // 【绑定事件】bindEvents
   if (event.bindEvents) {
     for (const ekey in event.bindEvents) {
-      pushEventKeyToStack(userId, [ekey], event.bindEvents[ekey].duration === 0 ? 'priority' : 'duration')
+      let mismatch = false
+      if (event.bindEvents[ekey].conditions) {
+        for (const ckey in event.bindEvents[ekey].conditions) {
+          if (!curConditions[ckey]) mismatch = true
+          const min = event.bindEvents[ekey].conditions[ckey][0]
+          const max = event.bindEvents[ekey].conditions[ckey][1] > min ? event.bindEvents[ekey].conditions[ckey][1] : MAXNUM
+          if (curConditions[ckey] < min || curConditions[ckey] > max) mismatch = true
+          if (mismatch) break
+        }
+      }
+      if (!mismatch)pushEventKeyToStack(userId, [ekey], event.bindEvents[ekey].duration === 0 ? 'priority' : 'duration')
+      else pushEventKeyToStack(userId, [event.defaultBindingEvent], 'priority')
     }
   }
   // 【获取概率结果数】prNumber
@@ -560,6 +766,8 @@ export const execEvent = (userId, eventInfo, unitTimeNum, userInfo) => {
       let randomNum = (Math.random() * totalWeight).toFixed(0)
       for (const ekey in prEventKeys) {
         randomNum -= prEvents[ekey]
+        // 未定义重复次数的默认为1
+        if (typeof prRepeat[ekey] === 'undefined') prRepeat[ekey] = 1
         // 当前概率结果可重复次数耗尽，则取下一个作为结果
         if (prRepeat[ekey] <= 0) continue
         if (randomNum <= 0) randomEvents.push(ekey)
@@ -684,3 +892,13 @@ export const toNewUnitTime = (userId, randomEventNum = 2, callback) => {
   pushEventKeyToStack(userId, randomEvents)
   callback()
 }
+
+// 待补充：
+// 后期角色特质、状态等都作为属性之一，用数值来表示(0/1)，方便事件条件判断
+// 如：[克苏鲁]-> kesulu: 1
+// 事件attrConditions中，kesulu属性范围则写为[1,2]
+
+// 待补充：
+// 属性：meili jiajing yongqi yunqi
+// 状态：zaijia
+// Buff：
