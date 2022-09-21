@@ -1,6 +1,14 @@
 
 const MAXNUM = 999999
 const MINNUM = -999999
+// 越稀有，运气影响效果越低
+const RareValue = {
+  NORMAL: 0,
+  RARE: 1,
+  SUPER_RARE: 2,
+  SUPERIOR_SUPER_RARE: 3,
+  ULTRA_RARE: 4
+}
 
 const EventCode = {
   NotExist: 'notExist',
@@ -41,6 +49,7 @@ const defaultPrEvent = {
   // 概率结果事件，按权重概率触发结果事件，当某些条件下无可执行的结果，则会默认执行prDefault事件
   prNumber: (num = 1) => num,
   prEvents: (events = {}) => ({ ...events }),
+  prGoodOrBad: (events = {}) => ({ ...events }),
   prRepeat: (events = {}) => ({ ...events }),
   prDefault: (eventKey = 'gailvmoren') => eventKey
 }
@@ -96,7 +105,7 @@ const defaultCertainEvent = {
  ** 【不符合条件时是否执行普通事件默认事件标识】execNormalDefaultWhenMismatchConditions: (execDefault[Boolean]) => Boolean
  ** 【事件属性影响】effectAttr: (attr[Object({ 'Attr[String]': Number })]) => Object
  ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({'times': Number, 'timesOfUnit': Number, 'timesReplace': Boolean, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
- ** 【概率事件结果额外概率调整】prEventsExtraWeight: (events[Object({ 'EventName[String]': Object({'lastUnitTime': Number, 'weight': Number, 'times': Number, 'weightReplace': Boolean}) })]) => Object
+ ** 【概率事件结果额外概率调整】prEventsExtraWeight: (events[Object({ 'EventName[String]': Object({'lastUnitTime': Number, persent: Number, 'weight': Number, 'times': Number, 'weightReplace': Boolean}) })]) => Object
  ** 【额外随机事件概率触发】extraRandomEvents: (events[Object({ 'EventName[String]': Object({'persent': Number, 'lastUnitTime': Number, 'times': Number, 'persentReplace': Boolean}) })]) => Object
  ** 【普通事件默认事件】normalDefault: (eventKey[String]) => String
  ** 【默认事件标识】isDefault: (_default[Boolean]) => Boolean
@@ -104,6 +113,7 @@ const defaultCertainEvent = {
  ** 【概率事件可重复次数】prRepeat: (events[Object({'EventName[String]': times[Number]})]) => Object
  ** 【概率事件】prEvents: (events[Object({'EventName[String]': weight[Number]})]) => Object
  ** 【概率默认事件】prDefault: (eventKey[String]) => String
+ ** 【概率事件的好/坏结果标识(负坏,0,正好)】prGoodOrBad: (events[Object({'EventName[String]': goodOrBad[Number]})]) => Object
  ** 【绑定事件】bindEvents: (events[Object({'EventName[String]': {'duration': Number, 'conditions': { attr[Object({ 'Attr[String]': [Array(Number, 2)] }}})]) => Object
  ** 【绑定默认事件】bindDefault: (eventKey[String]) => String
  ** 【被动事件标识】isPassive: (passive[Boolean]) => Boolean
@@ -156,27 +166,8 @@ const NormalEvents = {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
     text: (options) => `${options.unitTimeInfo.chronology[0]} ${options.unitTimeInfo.date[0] + options.unitTimeInfo.chronology[1]}${options.unitTimeInfo.date[1] + options.unitTimeInfo.chronology[2]}${options.unitTimeInfo.date[2] + options.unitTimeInfo.chronology[3]}，你出生了，你的父母带上美好的祝福和希望，为你取名【${options.userInfo.name}】`,
-    triggerConditions: (attr = { age: [0, 1] }) => ({ ...attr })
-  },
-  meiniankaishi: {
-    ...defaultNormalEvent,
-    ...defaultCertainEvent,
-    ...defaultPrEvent,
-    text: () => '新的一年开始了',
-    times: () => 1,
-    prEvents: (events = {}) => ({
-      ...events,
-      shaoyanhua1: 10,
-      shaoyanhua2: 10,
-      shaoyanhua3: 10,
-      shaoyanhua4: 20,
-      shaoyanhua5: 10,
-      shaoyanhua6: 10,
-      shaoyanhua7: 10,
-      mamadamajiang1: 10,
-      mamadamajiang2: 10,
-      mamadamajiang3: 10
-    })
+    times: (times = 1) => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 1] })
   },
   putong1: {
     ...defaultNormalEvent
@@ -250,7 +241,7 @@ const NormalEvents = {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎',
+    text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎，把你爸妈熏得够呛',
     triggerConditions: (attr = {}) => ({
       ...attr,
       zaijia: [1, MAXNUM],
@@ -325,7 +316,7 @@ const NormalEvents = {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包',
+    text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包(家境+1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
       zaijia: [1, MAXNUM],
@@ -369,6 +360,39 @@ const PrEvents = {
       ...events,
       passive1: 10,
       passive2: 20
+    })
+  },
+  meiniankaishi: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    ...defaultPrEvent,
+    text: () => '新的一年开始了',
+    times: () => MAXNUM,
+    prEvents: (events = {}) => ({
+      ...events,
+      shaoyanhua1: 10,
+      shaoyanhua2: 10,
+      shaoyanhua3: 10,
+      shaoyanhua4: 20,
+      shaoyanhua5: 10,
+      shaoyanhua6: 10,
+      shaoyanhua7: 10,
+      mamadamajiang1: 10,
+      mamadamajiang2: 10,
+      mamadamajiang3: 10
+    }),
+    prGoodOrBad: (events = {}) => ({
+      ...events,
+      shaoyanhua1: -RareValue.RARE,
+      shaoyanhua2: RareValue.RARE,
+      shaoyanhua3: RareValue.RARE,
+      shaoyanhua4: RareValue.NORMAL,
+      shaoyanhua5: RareValue.NORMAL,
+      shaoyanhua6: RareValue.SUPER_RARE,
+      shaoyanhua7: RareValue.NORMAL,
+      mamadamajiang1: -RareValue.RARE,
+      mamadamajiang2: RareValue.NORMAL,
+      mamadamajiang3: RareValue.RARE
     })
   }
 }
@@ -475,10 +499,22 @@ const AllEvents = {
   ...MultiOptEvents
 }
 
+const EventsTypeMap = {}
+for (const key in AllEvents) {
+  EventsTypeMap[key] = {
+    isCertain: false,
+    isPassive: false,
+    isDefault: false
+  }
+  EventsTypeMap[key].isCertain = AllEvents[key].isCertain ? AllEvents[key].isCertain() : false
+  EventsTypeMap[key].isPassive = AllEvents[key].isPassive ? AllEvents[key].isPassive() : false
+  EventsTypeMap[key].isDefault = AllEvents[key].isDefault ? AllEvents[key].isDefault() : false
+}
+
 // 过滤出非被动（又称主动/随机）事件
 const NonPassiveEvents = {}
-for (const key in AllEvents) {
-  if (!AllEvents.isDefault && !AllEvents[key].isPassive && !AllEvents[key].isCertain) {
+for (const key in EventsTypeMap) {
+  if (!EventsTypeMap[key].isDefault && !EventsTypeMap[key].isPassive && !EventsTypeMap[key].isCertain) {
     // 所有非被动(又称主动/随机）事件的execNormalDefaultWhenMismatchConditions均为true
     AllEvents[key].execNormalDefaultWhenMismatchConditions = (execNormalDefaultWhenMismatchConditions = true) => true
     NonPassiveEvents[key] = AllEvents[key]
@@ -487,10 +523,8 @@ for (const key in AllEvents) {
 
 // 过滤出必然事件
 const CertainEvents = {}
-for (const key in AllEvents) {
-  if (AllEvents[key].isCertain) {
-    if (AllEvents[key].isCertain) { CertainEvents[key] = AllEvents[key] }
-  }
+for (const key in EventsTypeMap) {
+  if (EventsTypeMap[key].isCertain) CertainEvents[key] = AllEvents[key]
 }
 
 /**
@@ -503,14 +537,15 @@ for (const key in AllEvents) {
 const EventsRecord = {
   default: {
     stack: {
-      // 常规事件栈
+      // 常规事件栈 Array(EventName(String))
       common: [],
-      // 优先栈
+      // 优先栈 Array(EventName(String))
       priority: [],
-      // 计时事件栈
+      // 计时事件栈 Array([Object({key: EventName[String], duration: Number})])
       duration: []
     },
-    // prEventsExtraWeight: { 'EventName': Array[Object{ weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
+    // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
+    // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
     // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number })] }
     // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number })] }
     prEventsExtraWeight: {},
@@ -529,7 +564,6 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
     key: '',
     updateMode: false,
     update: {
-      text: false,
       times: false
     },
     eventOptions: {
@@ -579,17 +613,17 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
     }
   }
   for (const key in eventObj.triggerConditions) {
-    if (!conditions[key]) {
+    if (typeof conditions[key] === 'undefined') {
       if (eventObj.execNormalDefaultWhenMismatchConditions || execNormalDefaultWhenMismatchConditions) return getEventObj(userId, { key: eventObj.normalDefault, options }, conditions)
       return EventCode.MismatchConditions
     }
     const min = eventObj.triggerConditions[key][0]
     const max = eventObj.triggerConditions[key][1] > min ? eventObj.triggerConditions[key][1] : MAXNUM
-    if (conditions[key] < min || conditions[key] > max) return EventCode.MismatchConditions
+    if (conditions[key] < min || conditions[key] >= max) return EventCode.MismatchConditions
   }
   eventObj.times -= 1
   eventObj.curTimesOfUnit -= 1
-  return eventObj.times <= 0 || eventObj.curTimesOfUnit === 0 ? EventCode.OutOfTimes : eventObj
+  return eventObj.times < 0 || eventObj.curTimesOfUnit < 0 ? EventCode.OutOfTimes : eventObj
 }
 
 export const getCertainEvent = (userId, eventOptions, conditions) => {
@@ -610,10 +644,11 @@ export const getCertainEvent = (userId, eventOptions, conditions) => {
 }
 
 export const pushEventKeyToStack = (userId, events = [], stackType = 'common') => {
-  EventsRecord[userId][stackType].push(...events)
+  EventsRecord[userId].stack[stackType].push(...events)
 }
 
-export const getOptEventOptions = (userId, event, curConditions) => {
+export const getOptEventOptions = (userId, _event, curConditions) => {
+  const event = JSON.parse(JSON.stringify(_event))
   if (!event.optEvents) return []
   const options = []
   // 将可选项根据当前状态和条件解析出可用内容
@@ -624,7 +659,7 @@ export const getOptEventOptions = (userId, event, curConditions) => {
     // 判断当前状态是否符合选项展示的条件
     if (conditions) {
       for (const ckey in conditions) {
-        if (!curConditions[ckey]) option.hide = true
+        if (typeof curConditions[ckey] === 'undefined') option.hide = true
         const min = conditions[ckey][0]
         const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
         if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
@@ -647,7 +682,8 @@ export const getOptEventOptions = (userId, event, curConditions) => {
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
 
-export const getMultiOptEventOptions = (event, curConditions) => {
+export const getMultiOptEventOptions = (_event, curConditions) => {
+  const event = JSON.parse(JSON.stringify(_event))
   if (!event.multiOptions) return []
   const options = []
   // 将可选项根据当前状态和条件解析出可用内容
@@ -658,7 +694,7 @@ export const getMultiOptEventOptions = (event, curConditions) => {
     // 判断当前状态是否符合选项展示的条件
     if (conditions) {
       for (const ckey in conditions) {
-        if (!curConditions[ckey]) option.hide = true
+        if (typeof curConditions[ckey] === 'undefined') option.hide = true
         const min = conditions[ckey][0]
         const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
         if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
@@ -674,7 +710,8 @@ export const selectOptEventOption = (userId, selectedOption) => {
   pushEventKeyToStack(userId, [selectedOption.event], 'priority')
 }
 
-export const selectMultiOptEventOption = (userId, conditions, event, selections = []) => {
+export const selectMultiOptEventOption = (userId, conditions, _event, selections = []) => {
+  const event = JSON.parse(JSON.stringify(_event))
   let eventKey = ''
   const { multiMixEvents } = event
   const cSelections = selections.sort((a, b) => a - b).toString()
@@ -704,7 +741,8 @@ export const selectMultiOptEventOption = (userId, conditions, event, selections 
   pushEventKeyToStack(userId, [eventKey], 'priority')
 }
 
-export const execEvent = (userId, eventInfo, unitTimeNum, userInfo, curConditions) => {
+export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditions) => {
+  const eventInfo = JSON.parse(JSON.stringify(_eventInfo))
   // 事件对象存入事件记录
   // 【单位时间可触发次数上限】timesOfUnit
   // 【当前单位时间可触发次数】curTimesOfUnit
@@ -739,14 +777,14 @@ export const execEvent = (userId, eventInfo, unitTimeNum, userInfo, curCondition
       let mismatch = false
       if (event.bindEvents[ekey].conditions) {
         for (const ckey in event.bindEvents[ekey].conditions) {
-          if (!curConditions[ckey]) mismatch = true
+          if (typeof curConditions[ckey] === 'undefined') mismatch = true
           const min = event.bindEvents[ekey].conditions[ckey][0]
           const max = event.bindEvents[ekey].conditions[ckey][1] > min ? event.bindEvents[ekey].conditions[ckey][1] : MAXNUM
           if (curConditions[ckey] < min || curConditions[ckey] > max) mismatch = true
           if (mismatch) break
         }
       }
-      if (!mismatch)pushEventKeyToStack(userId, [ekey], event.bindEvents[ekey].duration === 0 ? 'priority' : 'duration')
+      if (!mismatch)pushEventKeyToStack(userId, event.bindEvents[ekey].duration === 0 ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], event.bindEvents[ekey].duration === 0 ? 'priority' : 'duration')
       else pushEventKeyToStack(userId, [event.defaultBindingEvent], 'priority')
     }
   }
@@ -755,9 +793,30 @@ export const execEvent = (userId, eventInfo, unitTimeNum, userInfo, curCondition
   // 【概率事件】prEvents
   // 【概率默认事件】prDefault
   if (event.prEvents) {
-    const { prNumber, prEvents, prRepeat, prDefault } = event
+    const { prNumber, prEvents, prRepeat, prDefault, prGoodOrBad } = event
+    const realYunqi = curConditions.yunqi - 3
+    // realYunqi 每 1运气 加 1% 概率基数，按稀有度效果递减
+    const yunqiPersent = Math.abs(0.01 * realYunqi)
     let totalWeight = 0
-    for (const item of prEvents) totalWeight += item
+    for (const pkey in prEvents) {
+      let weight = prEvents[pkey]
+      // 【概率事件结果额外概率调整】prEventsExtraWeight
+      if (EventsRecord[userId].prEventsExtraWeight[key]) {
+        for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[key].length; i++) {
+          if (EventsRecord[userId].prEventsExtraWeight[key].lastUnitTime <= 0 || EventsRecord[userId].prEventsExtraWeight[key].lastTimes <= 0) continue
+          EventsRecord[userId].prEventsExtraWeight[key].lastTimes--
+          weight = EventsRecord[userId].prEventsExtraWeight[key].weightReplace ? EventsRecord[userId].prEventsExtraWeight[key].weight : (weight + weight * EventsRecord[userId].prEventsExtraWeight[key].weight)
+        }
+      }
+      if (prGoodOrBad[pkey]) {
+        // 运气>3，好事概率增幅，运气<3，坏事概率减幅
+        if (prGoodOrBad[pkey] > 0) weight = weight + (realYunqi > 0 ? 1 : -1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+        // 运气>3，坏事概率减幅，运气<3，坏事概率增幅
+        if (prGoodOrBad[pkey] < 0) weight = weight + (realYunqi > 0 ? -1 : 1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+      }
+      prEvents[pkey] = weight
+      totalWeight += prEvents[pkey]
+    }
     const randomEvents = []
     const prEventKeys = Object.keys(prEvents)
     // 按权重大小倒序排序（由大到小）
@@ -780,6 +839,7 @@ export const execEvent = (userId, eventInfo, unitTimeNum, userInfo, curCondition
     }
     pushEventKeyToStack(userId, randomEvents, 'priority')
   }
+  console.log(EventsRecord[userId])
   return { event, userInfo }
 }
 
@@ -824,13 +884,14 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   }
   // 常规事件栈
   if ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
-    key = EventsRecord[userId].stack.common.pop().key
+    console.log('常规栈', EventsRecord[userId].stack.common)
+    key = EventsRecord[userId].stack.common.pop()
     event = getEventObj(userId, { key, ...options }, conditions)
   }
   return (!event || typeof event === 'string') ? 'end' : { key, event }
 }
 
-export const toNewUnitTime = (userId, randomEventNum = 2, callback) => {
+export const toNewUnitTime = (userId, conditions, callback, randomEventNum = 2) => {
   if (EventsRecord[userId].stack.duration.length) {
     // 延迟事件倒计时结算
     for (let i = 0; i < EventsRecord[userId].stack.duration.length; i++) {
@@ -887,10 +948,44 @@ export const toNewUnitTime = (userId, randomEventNum = 2, callback) => {
   const randomEventKeys = Object.keys(NonPassiveEvents)
   const randomEvents = []
   for (let i = 0; i < randomEventNum; i++) {
-    randomEvents.push(randomEventKeys[(Math.random() * randomEventKeys.length).toFixed(0)])
+    const randomNum = (Math.random() * randomEventKeys.length - 1).toFixed(0)
+    // randomEvents.push()
+    const eventObj = getEventObj(userId, { key: randomEventKeys[randomNum] }, conditions)
+    switch (eventObj) {
+      case EventCode.NotExist:
+      case EventCode.OutOfTimes:
+      case EventCode.MismatchConditions:
+        i--
+        break
+      default: randomEvents.push(randomEventKeys[randomNum])
+    }
   }
   pushEventKeyToStack(userId, randomEvents)
-  callback()
+  if (callback) callback()
+}
+
+export const createUser = (userId, reset = true) => {
+  if (!EventsRecord[userId] || reset) {
+    EventsRecord[userId] = {
+      stack: {
+        // 常规事件栈
+        common: [],
+        // 优先栈
+        priority: [],
+        // 计时事件栈
+        duration: []
+      },
+      // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
+      // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
+      // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number })] }
+      // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number })] }
+      prEventsExtraWeight: {},
+      extraRandomEvents: {},
+      extraEventTimes: {},
+      events: {},
+      history: {}
+    }
+  }
 }
 
 // 待补充：
@@ -899,6 +994,13 @@ export const toNewUnitTime = (userId, randomEventNum = 2, callback) => {
 // 事件attrConditions中，kesulu属性范围则写为[1,2]
 
 // 待补充：
+// Buff可以用延迟事件去除，用必然事件做每单位时间的交互事件
+
+// 待补充：
 // 属性：meili jiajing yongqi yunqi
 // 状态：zaijia
 // Buff：
+
+// 待补充：
+// 随机事件中的好事或坏事，无需增加概率属性或运气判断
+// 只需在该事件triggerConditions加上运气条件即可（注：随机好/坏事件则不要设为必然事件）
