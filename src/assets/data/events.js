@@ -327,6 +327,46 @@ const NormalEvents = {
       ...attr,
       jiajing: 1
     })
+  },
+  passive1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【概率事件结果1】'
+  },
+  passive2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【概率事件结果2】'
+  },
+  bangdingjieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【绑定事件结果1】'
+  },
+  bangdingjieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【绑定事件结果2】'
+  },
+  xuanxiangshijian1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【选项事件结果1】'
+  },
+  xuanxiangshijian2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【选项事件结果2】'
+  },
+  duoxuanshijian1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【多选事件结果1】'
+  },
+  duoxuanshijian2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: () => '【多选事件结果2】'
   }
 }
 const PrEvents = {
@@ -334,6 +374,7 @@ const PrEvents = {
   gailv: {
     ...defaultNormalEvent,
     ...defaultPrEvent,
+    text: () => '【概率事件】',
     prNumber: (num = 1) => num,
     prRepeat: (events = {}) => ({
       passive1: 1,
@@ -350,6 +391,7 @@ const PrEvents = {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultPrEvent,
+    text: () => '【被动概率事件】',
     prNumber: (num = 1) => num,
     prRepeat: (events = {}) => ({
       passive1: 1,
@@ -370,16 +412,16 @@ const PrEvents = {
     times: () => MAXNUM,
     prEvents: (events = {}) => ({
       ...events,
-      shaoyanhua1: 10,
-      shaoyanhua2: 10,
-      shaoyanhua3: 10,
-      shaoyanhua4: 20,
-      shaoyanhua5: 10,
-      shaoyanhua6: 10,
-      shaoyanhua7: 10,
-      mamadamajiang1: 10,
-      mamadamajiang2: 10,
-      mamadamajiang3: 10
+      // shaoyanhua1: 10,
+      // shaoyanhua2: 10,
+      // shaoyanhua3: 10,
+      // shaoyanhua4: 20,
+      shaoyanhua5: 10
+      // shaoyanhua6: 10,
+      // shaoyanhua7: 10,
+      // mamadamajiang1: 10,
+      // mamadamajiang2: 10,
+      // mamadamajiang3: 10
     }),
     prGoodOrBad: (events = {}) => ({
       ...events,
@@ -401,20 +443,22 @@ const BindingEvents = {
   bangding: {
     ...defaultNormalEvent,
     ...defaultBindingEvent,
+    text: () => '【绑定事件】',
     bindEvents: (events = {}) => ({
       ...events,
-      passive1: { duration: 1 },
-      passive2: { duration: 0 }
+      bangdingjieguo1: { duration: 1 },
+      bangdingjieguo2: { duration: 0 }
     })
   },
   beidong_bangding: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultBindingEvent,
+    text: () => '【被动绑定事件】',
     bindEvents: (events = {}) => ({
       ...events,
-      passive1: { duration: 1 },
-      passive2: { duration: 0 }
+      bangdingjieguo1: { duration: 1 },
+      bangdingjieguo2: { duration: 0 }
     })
   }
 }
@@ -423,20 +467,22 @@ const OptEvents = {
   kexuan: {
     ...defaultNormalEvent,
     ...defaultOptEvent,
+    text: () => '【可选事件】',
     optEvents: (events = {}) => ({
       ...events,
-      passive1: { text: '选项1', color: '#2545C4', conditions: {} },
-      passive2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
+      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {} },
+      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
     })
   },
   beidong_kexuan: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultOptEvent,
+    text: () => '【被动可选事件】',
     optEvents: (events = {}) => ({
       ...events,
-      passive1: { text: '选项1', color: '#2545C4', conditions: {} },
-      passive2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
+      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {} },
+      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
     })
   }
 }
@@ -445,6 +491,7 @@ const MultiOptEvents = {
   duoxuan: {
     ...defaultNormalEvent,
     ...defaultMultiOptEvent,
+    text: () => '【多选事件】',
     multiOptions: (options = []) => ([{
       text: '选项1',
       color: '#2545C4',
@@ -459,8 +506,8 @@ const MultiOptEvents = {
     maxSelection: (num = 2) => num,
     isFullMaxSelection: (isFullMaxSelection = false) => isFullMaxSelection,
     multiMixEvents: (mixEvents) => ({
-      '0_1': 'passive1',
-      1: 'passive2',
+      '0_1': 'duoxuanshijian1',
+      1: 'duoxuanshijian2',
       any: 'duoxuanmoren',
       ...mixEvents
     }),
@@ -470,6 +517,7 @@ const MultiOptEvents = {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultMultiOptEvent,
+    text: () => '【被动多选事件】',
     multiOptions: (options = []) => ([{
       text: '选项1',
       color: '#2545C4',
@@ -482,8 +530,8 @@ const MultiOptEvents = {
     maxSelection: (num = 2) => num,
     isFullMaxSelection: (isFullMaxSelection = false) => isFullMaxSelection,
     multiMixEvents: (mixEvents) => ({
-      '0_1': 'passive1',
-      1: 'passive2',
+      '0_1': 'duoxuanshijian1',
+      1: 'duoxuanshijian2',
       any: 'duoxuanmoren',
       ...mixEvents
     }),
@@ -821,10 +869,14 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditio
     const prEventKeys = Object.keys(prEvents)
     // 按权重大小倒序排序（由大到小）
     prEventKeys.sort((a, b) => prEvents[b] - prEvents[a])
+    console.log(prEventKeys)
     Array(prNumber).fill(0).map(() => {
       let randomNum = (Math.random() * totalWeight).toFixed(0)
-      for (const ekey in prEventKeys) {
+      for (let i = 0; i < prEventKeys.length; i++) {
+        const ekey = prEventKeys[i]
+        console.log(randomNum, prEventKeys, prEvents)
         randomNum -= prEvents[ekey]
+        console.log(randomNum)
         // 未定义重复次数的默认为1
         if (typeof prRepeat[ekey] === 'undefined') prRepeat[ekey] = 1
         // 当前概率结果可重复次数耗尽，则取下一个作为结果
@@ -833,6 +885,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditio
         prRepeat[ekey]--
       }
     })
+    console.log(randomEvents)
     // 不足概率结果数的部分，补充为默认概率事件
     if (randomEvents.length < prNumber) {
       randomEvents.push(...((new Array(prNumber - randomEvents.length).fill(prDefault))))
@@ -884,7 +937,6 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   }
   // 常规事件栈
   if ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
-    console.log('常规栈', EventsRecord[userId].stack.common)
     key = EventsRecord[userId].stack.common.pop()
     event = getEventObj(userId, { key, ...options }, conditions)
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="Sceen">
     <div v-for="(item, index) in events" :key="index">
-      {{ item }}
+      {{ item.text }}
     </div>
     <button style="width: 120px" @click="getOneEvent">next</button>
   </div>
