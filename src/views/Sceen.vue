@@ -3,7 +3,9 @@
     <div v-for="(item, index) in events" :key="index">
       {{ item.text }}
     </div>
-    <button style="width: 120px" @click="getOneEvent">next</button>
+    <button style="width: 120px" @click="getOneEvent">
+      {{ newUnitTime ? "喜迎春节" : "下一事件" }}
+    </button>
   </div>
 </template>
 

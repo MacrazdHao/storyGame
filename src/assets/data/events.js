@@ -134,6 +134,11 @@ const DefautEvents = {
     ...defaultDefaultEvent,
     text: (options) => '【默认】什么都没发生'
   },
+  guonianmoren: {
+    ...defaultNormalEvent,
+    ...defaultDefaultEvent,
+    text: (options) => '今年的春节也是平凡的春节'
+  },
   putongmoren: {
     ...defaultNormalEvent,
     ...defaultDefaultEvent,
@@ -170,11 +175,13 @@ const NormalEvents = {
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 1] })
   },
   putong1: {
-    ...defaultNormalEvent
+    ...defaultNormalEvent,
+    text: (options) => '【普通事件】'
   },
   beidong_putong1: {
     ...defaultNormalEvent,
-    ...defaultPassiveEvent
+    ...defaultPassiveEvent,
+    text: (options) => '【被动普通事件】'
   },
   shaoyanhua1: {
     ...defaultNormalEvent,
@@ -435,7 +442,8 @@ const PrEvents = {
       mamadamajiang1: -RareValue.RARE,
       mamadamajiang2: RareValue.NORMAL,
       mamadamajiang3: RareValue.RARE
-    })
+    }),
+    prDefault: (eventKey) => 'guonianmoren'
   }
 }
 const BindingEvents = {
@@ -865,31 +873,38 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditio
       prEvents[pkey] = weight
       totalWeight += prEvents[pkey]
     }
-    const randomEvents = []
+    let randomEvents = []
     const prEventKeys = Object.keys(prEvents)
     // 按权重大小倒序排序（由大到小）
     prEventKeys.sort((a, b) => prEvents[b] - prEvents[a])
-    console.log(prEventKeys)
     Array(prNumber).fill(0).map(() => {
-      let randomNum = (Math.random() * totalWeight).toFixed(0)
+      let randomNum = (Math.random() * totalWeight).toFixed(1)
       for (let i = 0; i < prEventKeys.length; i++) {
         const ekey = prEventKeys[i]
-        console.log(randomNum, prEventKeys, prEvents)
         randomNum -= prEvents[ekey]
-        console.log(randomNum)
         // 未定义重复次数的默认为1
         if (typeof prRepeat[ekey] === 'undefined') prRepeat[ekey] = 1
         // 当前概率结果可重复次数耗尽，则取下一个作为结果
         if (prRepeat[ekey] <= 0) continue
         if (randomNum <= 0) randomEvents.push(ekey)
         prRepeat[ekey]--
+        if (randomEvents.length >= prNumber) break
       }
     })
-    console.log(randomEvents)
     // 不足概率结果数的部分，补充为默认概率事件
     if (randomEvents.length < prNumber) {
       randomEvents.push(...((new Array(prNumber - randomEvents.length).fill(prDefault))))
     }
+    randomEvents = randomEvents.map(item => {
+      const randomEventObj = getEventObj(userId, { key: item }, curConditions)
+      switch (randomEventObj) {
+        case EventCode.NotExist:
+        case EventCode.OutOfTimes:
+        case EventCode.MismatchConditions:
+          return event.prDefault
+        default: return item
+      }
+    })
     pushEventKeyToStack(userId, randomEvents, 'priority')
   }
   console.log(EventsRecord[userId])
