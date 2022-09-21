@@ -34,7 +34,7 @@ const defaultNormalEvent = {
   // 待修改： 添加prEventsExtraWeight和extraRandomEvents的逻辑
   prEventsExtraWeight: (events = {}) => ({ ...events }),
   extraRandomEvents: (events = {}) => ({ ...events }),
-  normalDefault: (eventKey = null) => eventKey
+  normalDefault: (eventKey = 'putongmoren') => eventKey
 }
 const defaultPrEvent = {
   // 概率结果事件，按权重概率触发结果事件，当某些条件下无可执行的结果，则会默认执行prDefault事件
@@ -113,7 +113,7 @@ const defaultCertainEvent = {
  ** 【多选选项】multiOptions: (events[Array({text: [String], color: String, maxRepeat: 1, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] })]) => Object
  ** 【多选上限】maxSelection: (num[Number]) => Number
  ** 【要求选满多选上限标识】isFullMaxSelection: (isFullMaxSelection[Boolean]) => Boolean
- ** 【多选匹配事件】multiMixEvents: (events[Object({ '[index0]_[index1]_...(String)': EventName[String], 'any(默认)': EventName[String], })]) => Object
+ ** 【多选匹配事件】multiMixEvents: (events[Object({ '[index0]_[index1]_...(String)': EventName[String], 'any(默认)': EventName[String] })]) => Object
  ** 【多选默认事件】multiOptDefault: (eventKey[String]) => String
  * }
  */
@@ -122,6 +122,11 @@ const DefautEvents = {
     ...defaultNormalEvent,
     ...defaultDefaultEvent,
     text: (options) => '【默认】什么都没发生'
+  },
+  putongmoren: {
+    ...defaultNormalEvent,
+    ...defaultDefaultEvent,
+    text: (options) => '【常规默认】普通的一天，什么都没发生'
   },
   gailvmoren: {
     ...defaultNormalEvent,
@@ -297,10 +302,14 @@ const AllEvents = {
   ...MultiOptEvents
 }
 
-// 过滤出非被动（主动/随机）事件
+// 过滤出非被动（又称主动/随机）事件
 const NonPassiveEvents = {}
 for (const key in AllEvents) {
-  if (!AllEvents.isDefault && !AllEvents[key].isPassive && !AllEvents[key].isCertain) NonPassiveEvents[key] = AllEvents[key]
+  if (!AllEvents.isDefault && !AllEvents[key].isPassive && !AllEvents[key].isCertain) {
+    // 所有非被动(又称主动/随机）事件的execNormalDefaultWhenMismatchConditions均为true
+    AllEvents[key].execNormalDefaultWhenMismatchConditions = (execNormalDefaultWhenMismatchConditions = true) => true
+    NonPassiveEvents[key] = AllEvents[key]
+  }
 }
 
 // 过滤出必然事件
@@ -340,7 +349,7 @@ const EventsRecord = {
 // 版本通用：
 
 // 获取事件对象EventObj
-export const getEventObj = (userId, options = {}, conditions = {}) => {
+export const getEventObj = (userId, options = {}, conditions = {}, execNormalDefaultWhenMismatchConditions = false) => {
   const defaultOptions = {
     key: '',
     updateMode: false,
@@ -378,7 +387,7 @@ export const getEventObj = (userId, options = {}, conditions = {}) => {
   }
   for (const key in eventObj.triggerConditions) {
     if (!conditions[key]) {
-      if (eventObj.execNormalDefaultWhenMismatchConditions) return getEventObj(userId, { key: eventObj.normalDefault, options }, conditions)
+      if (eventObj.execNormalDefaultWhenMismatchConditions || execNormalDefaultWhenMismatchConditions) return getEventObj(userId, { key: eventObj.normalDefault, options }, conditions)
       return EventCode.MismatchConditions
     }
     const min = eventObj.triggerConditions[key][0]
@@ -413,20 +422,91 @@ export const pushEventKeyToStack = (userId, events = [], stackType = 'common') =
   EventsRecord[userId][stackType].push(...events)
 }
 
-export const getOptEventOptions = () => {
-
+export const getOptEventOptions = (userId, event, curConditions) => {
+  if (!event.optEvents) return []
+  const options = []
+  // 将可选项根据当前状态和条件解析出可用内容
+  for (const key in event.optEvents) {
+    const { color, text, conditions } = event.optEvents[key]
+    // disabled为置灰，hide为隐藏
+    const option = { color, text, event: key, disabled: false, hide: false }
+    // 判断当前状态是否符合选项展示的条件
+    for (const ckey in conditions) {
+      if (!curConditions[ckey]) option.hide = true
+      const min = conditions[ckey][0]
+      const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+      if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
+      if (option.hide) break
+    }
+    if (!option.hide) {
+      const eventObj = getEventObj(userId, { key }, curConditions)
+      // 判断当前选项的反馈事件是否可用
+      switch (eventObj) {
+        case EventCode.NotExist:
+        case EventCode.OutOfTimes:
+        case EventCode.MismatchConditions:
+          option.disabled = true
+      }
+    }
+    options.push(option)
+  }
+  return options
+  // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
 
-export const getMultiOptEventOptions = () => {
-
+export const getMultiOptEventOptions = (event, curConditions) => {
+  if (!event.multiOptions) return []
+  const options = []
+  // 将可选项根据当前状态和条件解析出可用内容
+  for (const key in event.multiOptions) {
+    const { color, text, conditions } = event.multiOptions[key]
+    // hide为隐藏
+    const option = { color, text, hide: false }
+    // 判断当前状态是否符合选项展示的条件
+    for (const ckey in conditions) {
+      if (!curConditions[ckey]) option.hide = true
+      const min = conditions[ckey][0]
+      const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+      if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
+      if (option.hide) break
+    }
+    options.push(option)
+  }
+  return options
 }
 
-export const selectOptEventOption = () => {
-
+export const selectOptEventOption = (userId, selectedOption) => {
+  pushEventKeyToStack(userId, [selectedOption.event], 'priority')
 }
 
-export const selectMultiOptEventOption = () => {
-
+export const selectMultiOptEventOption = (userId, conditions, event, selections = []) => {
+  let eventKey = ''
+  const { multiMixEvents } = event
+  const cSelections = selections.sort((a, b) => a - b).toString()
+  let eventObj = null
+  for (const rkey in multiMixEvents) {
+    if (rkey === 'any') continue
+    const rSeletions = rkey.split('_').sort((a, b) => a - b).toString()
+    if (rSeletions === cSelections) {
+      eventKey = multiMixEvents[rkey]
+      eventObj = getEventObj(userId, { key: multiMixEvents[rkey] }, conditions)
+      // 判断当前选项的反馈事件是否可用
+      switch (eventObj) {
+        case EventCode.NotExist:
+        case EventCode.OutOfTimes:
+        case EventCode.MismatchConditions:
+          eventKey = multiMixEvents.any
+          eventObj = getEventObj(userId, { key: multiMixEvents.any }, conditions)
+          break
+      }
+    }
+  }
+  // 没有相匹配的反馈事件
+  if (!eventObj) {
+    eventKey = multiMixEvents.any
+    eventObj = getEventObj(userId, { key: multiMixEvents.any }, conditions)
+  }
+  pushEventKeyToStack(userId, [eventKey], 'priority')
 }
 
 export const execEvent = (userId, eventInfo, unitTimeNum, userInfo) => {
@@ -542,7 +622,7 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   return (!event || typeof event === 'string') ? 'end' : { key, event }
 }
 
-export const toNewUnitTime = (userId, callback) => {
+export const toNewUnitTime = (userId, randomEventNum = 2, callback) => {
   if (EventsRecord[userId].stack.duration.length) {
     // 延迟事件倒计时结算
     for (let i = 0; i < EventsRecord[userId].stack.duration.length; i++) {
@@ -595,270 +675,12 @@ export const toNewUnitTime = (userId, callback) => {
     // 移除耗尽次数的内容
     EventsRecord[userId].extraEventTimes[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
   }
+  // 获取当前单位时间的随机事件(2)
+  const randomEventKeys = Object.keys(NonPassiveEvents)
+  const randomEvents = []
+  for (let i = 0; i < randomEventNum; i++) {
+    randomEvents.push(randomEventKeys[(Math.random() * randomEventKeys.length).toFixed(0)])
+  }
+  pushEventKeyToStack(userId, randomEvents)
   callback()
 }
-
-// // 版本1：
-
-// // ---以下为数据查询函数---
-// // 执行 概率事件/绑定事件 的事件结果，概率与绑定事件并存时，概率结果优先执行
-// export const getEventResult = (userId, event, conditions) => {
-//   if (!event.prEvents && !event.bindEvents) return []
-//   const events = []
-//   const _event = JSON.parse(JSON.stringify(event))
-//   if (_event.prEvents && _event.prNumber) {
-//     const { prNumber, prEvents } = _event
-//     const prRepeat = JSON.parse(JSON.stringify(_event.prRepeat))
-//     let totalWeight = 0
-//     let totalRepeatNum = 0
-//     // 计算总权重，构建weightMap，组建完整的prRepeat
-//     for (const key in prEvents) {
-//       totalWeight += prEvents[key]
-//       // prRepeat的元素默认为1
-//       if (!prRepeat[key] && prRepeat[key] !== 0) prRepeat[key] = 1
-//       totalRepeatNum += prRepeat[key]
-//     }
-//     // 获取随机权重结果
-//     const randomResults = new Array(prNumber).fill(null).map(() => (Math.random() * totalWeight).toFixed(0))
-//     const randomEventKeys = null
-//     const prEventKeys = Object.keys(prEvents)
-//     // 按权重大小倒序排序
-//     prEventKeys.sort((a, b) => prEvents[b] - prEvents[a])
-//     for (const randomResult of randomResults) {
-//       // 当前结果事件数量已超出可抽取结果限制，或结果事件总获取次数为0时，则退出循环
-//       if (randomEventKeys.length >= prNumber || totalRepeatNum <= 0) break
-//       let _totalWeight = randomResult
-//       for (let i = 0; i < prEventKeys.length; i++) {
-//         let ekey = prEventKeys[i]
-//         _totalWeight -= prEvents[ekey]
-//         // 符合权重范围
-//         if (_totalWeight <= 0) {
-//           // 当前的结果事件剩余获取次数为0，则从第一个结果事件开始遍历，寻找次数>0的结果事件替代
-//           if (prRepeat[ekey] <= 0) {
-//             for (const _ekey of prEventKeys) {
-//               if (prRepeat[_ekey] > 0) {
-//                 ekey = _ekey
-//                 break
-//               }
-//             }
-//           }
-//           prRepeat[ekey]--
-//           totalRepeatNum--
-//           const resEventObj = getEventObj(userId, { key: ekey }, conditions)
-//           switch (resEventObj) {
-//             case EventCode.NotExist:
-//             case EventCode.OutOfTimes:
-//             case EventCode.MismatchConditions:
-//               // 概率事件的默认事件
-//               events.push({ key: _event.prDefault, event: AllEvents[_event.prDefault] })
-//               break
-//             default:
-//               events.push({ key: ekey, event: resEventObj })
-//           }
-//           // 递归获取执行结果事件的事件结果
-//           events.push(...getEventResult(userId, events.at(-1).event, conditions))
-//         }
-//       }
-//     }
-//   }
-//   if (_event.bindEvents) {
-//     for (const bkey of _event.bindEvents) {
-//       const resEventObj = getEventObj(userId, { key: bkey }, conditions)
-//       switch (resEventObj) {
-//         case EventCode.NotExist:
-//         case EventCode.OutOfTimes:
-//         case EventCode.MismatchConditions:
-//           // 绑定事件的默认事件
-//           events.push({ key: _event.prDefault, event: AllEvents[_event.bindDefault] })
-//           break
-//         default:
-//           events.push({ key: bkey, event: resEventObj })
-//       }
-//       // 递归获取执行结果事件的事件结果
-//       events.push(...getEventResult(userId, events.at(-1), conditions))
-//     }
-//   }
-//   return events
-// }
-
-// // 获取一个随机发生的事件
-// const getRandomEvent = (userId, conditions, eventOptions) => {
-//   const eventKeys = Object.keys(NonPassiveEvents)
-//   const randomIndex = (Math.random() * eventKeys.length).toFixed(0)
-//   const randomEventKey = eventKeys[randomIndex]
-//   const randomEvent = getEventObj(userId, { key: randomEventKey, ...eventOptions }, conditions)
-//   switch (randomEvent) {
-//     case EventCode.NotExist:
-//     case EventCode.OutOfTimes:
-//     case EventCode.MismatchConditions:
-//       // 递归直至随机出可执行事件
-//       return getRandomEvent(userId, conditions, eventOptions)
-//     default:
-//       return { key: randomEventKey, event: randomEvent }
-//   }
-// }
-
-// // ---以下为数据操作函数---
-
-// // 强制执行指定事件
-// export const forceRunEvent = (userId, conditions, eventOptions) => {
-
-// }
-
-// // 获取当前状态下的必然事件
-// export const getCertainEvents = (userId, conditions, eventOptions, unitTimeBegin = false) => {
-//   const certainEvents = []
-//   for (const key in CertainEvents) {
-//     const event = getEventObj(userId, { key, ...eventOptions }, conditions)
-//     if (!!event.unitTimeBegin !== !!unitTimeBegin) continue
-//     switch (event) {
-//       case EventCode.NotExist:
-//       case EventCode.OutOfTimes:
-//       case EventCode.MismatchConditions:
-//         break
-//       default:
-//         certainEvents.push({ key, event })
-//     }
-//   }
-//   return certainEvents
-// }
-
-// // 获取随机事件（包含可选事件，但选项内容、选择操作、操作结果需另外获取）
-// export const getRandomEvents = (userId, conditions, eventOptions, num) => {
-//   const rEvents = []
-//   for (let i = 0; i < num; i++) {
-//     const randomEvent = getRandomEvent(userId, conditions, eventOptions[i])
-//     rEvents.push(randomEvent)
-//     rEvents.push(...getEventResult(userId, randomEvent.event, conditions))
-//   }
-//   return rEvents
-// }
-
-// // 更新事件记录
-// export const updateEventsRecord = (userId, unitTimeNum, eventInfo) => {
-//   const { key, event } = eventInfo
-//   EventsRecord[userId].events[key] = event
-//   if (!EventsRecord[userId].history[unitTimeNum]) EventsRecord[userId].history[unitTimeNum] = []
-//   EventsRecord[userId].history[unitTimeNum].push(eventInfo)
-// }
-
-// // 更新新单位时间出现的新变化，并返回新单位时间起始的必然事件
-// export const newUnitTime = (userId, conditions, certainEventOptions = {}, callback) => {
-//   for (const key in EventsRecord[userId].events) {
-//     EventsRecord[userId].events[key].curTimesOfUnit = EventsRecord[userId].events[key].timesOfUnit
-//   }
-//   const newUnitTimeEvents = getCertainEvents(userId, conditions, certainEventOptions, true)
-//   callback()
-//   return newUnitTimeEvents
-// }
-
-// // 获取选项事件的可选项，及可选项的eventObj，eventObj为EventCode时，选项置灰
-// export const getOptEventOptions = (userId, event, curConditions) => {
-//   if (!event.optEvents) return []
-//   const options = []
-//   for (const key in event.optEvents) {
-//     const { color, text, conditions } = event.optEvents[key]
-//     // 判断当前状态是否符合选项展示的条件
-//     for (const ckey in conditions) {
-//       // disabled为置灰，hide为隐藏
-//       const option = { color, text, disabled: false, hide: false, keys: [key], events: [] }
-//       if (!curConditions[ckey]) option.hide = true
-//       const min = conditions[ckey][0]
-//       const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
-//       if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
-//       if (!option.hide) {
-//         const eventObj = getEventObj(userId, { key }, curConditions)
-//         // 判断当前选项的反馈事件是否可用
-//         switch (eventObj) {
-//           case EventCode.NotExist:
-//           case EventCode.OutOfTimes:
-//           case EventCode.MismatchConditions:
-//             option.disabled = true
-//             break
-//           default: option.events.push({ ...eventObj, notUpdate: true }, ...getEventResult(userId, eventObj, conditions))
-//         }
-//       }
-//       options.push(option)
-//     }
-//   }
-//   return options
-//   // 界面逻辑中，若返回为空数组，则跳过当前事件
-// }
-
-// // 获取多选事件的可选项
-// export const getMultiOptEventOptions = (event, curConditions) => {
-//   if (!event.multiOptions) return []
-//   // 待修改：添加逻辑
-//   // 获取多选事件的可选项
-//   const options = []
-//   for (const key in event.multiOptions) {
-//     const { color, text, conditions } = event.multiOptions[key]
-//     // 判断当前状态是否符合选项展示的条件
-//     for (const ckey in conditions) {
-//       // disabled为置灰，hide为隐藏
-//       const option = { color, text, hide: false }
-//       if (!curConditions[ckey]) option.hide = true
-//       const min = conditions[ckey][0]
-//       const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
-//       if (curConditions[ckey] < min || curConditions[ckey] > max) option.hide = true
-//       options.push(option)
-//     }
-//   }
-//   return options
-//   // 界面逻辑中，若返回为空数组，则跳过当前事件
-// }
-
-// // 获取多选事件的反馈事件
-// export const getMultiOptResult = (userId, conditions, event, selections = []) => {
-//   const { multiMixEvents } = event
-//   const cSelections = selections.sort((a, b) => a - b).toString()
-//   let eventObj = null
-//   for (const rkey in multiMixEvents) {
-//     if (rkey === 'any') continue
-//     const rSeletions = rkey.split('_').sort((a, b) => a - b).toString()
-//     if (rSeletions === cSelections) {
-//       eventObj = getEventObj(userId, { key: multiMixEvents[rkey] }, conditions)
-//       // 判断当前选项的反馈事件是否可用
-//       switch (eventObj) {
-//         case EventCode.NotExist:
-//         case EventCode.OutOfTimes:
-//         case EventCode.MismatchConditions:
-//           eventObj = getEventObj(userId, { key: multiMixEvents.any }, conditions)
-//           break
-//       }
-//     }
-//   }
-//   eventObj = eventObj || getEventObj(userId, { key: multiMixEvents.any }, conditions)
-//   return [{ ...eventObj, notUpdate: true }, ...getEventResult(userId, eventObj, conditions)]
-// }
-
-// // 更新外部事件栈
-// export const updateEventStack = () => {
-// // 待修改：每个事件执行后，事件剩余次数、当前状态都会变更
-// // 1. EventRecord中的事件次数、单位时间事件次数更新(-1)
-// // 2. 当前状态变更，事件是否仍然符合条件(triggerConditions)，不符合条件则移除事件（选项/多选事件的反馈事件除外，根据notUpdate标识判断）
-// }
-
-// 存在问题：
-// 提前获取的事件，其发生的依据条件(conditions)不是按事件执行顺序实时更新的依据条件(conditions)
-// 解决方法：
-// 方法1. 解构getEventResult，变为手动递归方式
-// 方法2. 保留当前方案，添加动态更改的补丁
-
-// 总体思路：
-// 1. 更新新单位时间出现的新变化，并获取新单位时间起始的必然事件-A[]
-// ---状态、属性更新---
-// 2. 获取当前状态下的必然事件-B[]
-// 3. 获取随机事件-C[]
-// 4. 合并ABC-S[]
-// 5. 逐条执行-S[]，单个事件需要执行步骤：
-//    * 属性变更
-//    * (无需获取执行结果，执行结果在获取该事件eventObj过程时已处理并加入到-C[])
-//    * 必然事件获取-n[]
-//    * (可选事件/多选事件)获取可选项、选择可选项
-//    * 获取可选项反馈事件-X，并合并到-S[]（放入紧跟当前选项反馈事件后的位置）
-//    * -------(已在上一步同步处理)获取可选项反馈事件的事件结果(getEventResult)，并合并到-S[]（放入紧跟该可选项反馈事件后的位置）
-//    * 更新时间记录(updateEventsRecord)
-//    * 更新外部事件栈(updateEventStack)
-//    * 执行下一条事件
-// 6. 进入下一单位时间
