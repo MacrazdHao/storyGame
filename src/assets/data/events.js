@@ -412,16 +412,16 @@ const PrEvents = {
     times: () => MAXNUM,
     prEvents: (events = {}) => ({
       ...events,
-      // shaoyanhua1: 10,
-      // shaoyanhua2: 10,
-      // shaoyanhua3: 10,
-      // shaoyanhua4: 20,
-      shaoyanhua5: 10
-      // shaoyanhua6: 10,
-      // shaoyanhua7: 10,
-      // mamadamajiang1: 10,
-      // mamadamajiang2: 10,
-      // mamadamajiang3: 10
+      shaoyanhua1: 10,
+      shaoyanhua2: 10,
+      shaoyanhua3: 10,
+      shaoyanhua4: 20,
+      shaoyanhua5: 10,
+      shaoyanhua6: 10,
+      shaoyanhua7: 10,
+      mamadamajiang1: 10,
+      mamadamajiang2: 10,
+      mamadamajiang3: 10
     }),
     prGoodOrBad: (events = {}) => ({
       ...events,
