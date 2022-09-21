@@ -14,8 +14,8 @@ import {
   // getEventObj,
   // getCertainEvent,
   // pushEventKeyToStack,
-  // getOptEventOptions,
-  // getMultiOptEventOptions,
+  getOptEventOptions,
+  getMultiOptEventOptions,
   // selectOptEventOption,
   // selectMultiOptEventOption,
   execEvent,
@@ -103,7 +103,24 @@ export default {
         this.newUnitTime = true
         return
       }
-      this.events.push(JSON.parse(JSON.stringify(eventInfo.event)))
+      this.events.push(
+        JSON.parse(
+          JSON.stringify({
+            ...eventInfo.event,
+            viewSingleOptions: eventInfo.event.optEvents
+              ? getOptEventOptions(
+                this.userInfo.userId,
+                eventInfo.event,
+                this.curConditions
+              )
+              : null,
+            viewMultipleOptions: eventInfo.event.maxSelection
+              ? getMultiOptEventOptions(eventInfo.event, this.curConditions)
+              : null
+          })
+        )
+      )
+      console.log(this.events.at(-1))
       execEvent(
         this.userInfo.userId,
         eventInfo,
