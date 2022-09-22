@@ -1,9 +1,45 @@
 <template>
   <div class="Sceen">
-    <div v-for="(item, index) in events" :key="index">
-      {{ item.text }}
+    <div class="eventsBox">
+      <div class="eventsBox-list">
+        <div
+          class="eventList-list-item"
+          v-for="(item, index) in events"
+          :key="index"
+        >
+          {{ item.text }}
+          <template v-if="index === events.length - 1">
+            <div v-if="item.viewSingleOptions">
+              <div
+                v-for="(option, oindex) in item.viewSingleOptions"
+                :key="oindex"
+              >
+                <button @click="selectSingleOption(option)">
+                  {{ option.text }}
+                </button>
+              </div>
+            </div>
+            <div v-if="item.viewMultipleOptions">
+              <div
+                v-for="(option, oindex) in item.viewMultipleOptions"
+                :key="oindex"
+              >
+                <button @click="selectMultipleOption(oindex)">
+                  {{ option.text }}
+                </button>
+              </div>
+              <button @click="submitMultipleOptions(item)">确定</button>
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
-    <button style="width: 120px" @click="getOneEvent">
+    <button
+      class="nextButton"
+      style="width: 120px"
+      @click="getOneEvent"
+      :disabled="!showNextUnitTimeButton"
+    >
       {{ newUnitTime ? "喜迎春节" : "下一事件" }}
     </button>
   </div>
@@ -16,8 +52,8 @@ import {
   // pushEventKeyToStack,
   getOptEventOptions,
   getMultiOptEventOptions,
-  // selectOptEventOption,
-  // selectMultiOptEventOption,
+  selectOptEventOption,
+  selectMultiOptEventOptions,
   execEvent,
   getNextEvent,
   toNewUnitTime,
@@ -48,10 +84,19 @@ export default {
         date: [1996, 6, 14]
       },
       events: [],
-      newUnitTime: false
+      newUnitTime: false,
+      selectedMultipleOptionIndex: []
     }
   },
   computed: {
+    showNextUnitTimeButton () {
+      return this.events.length
+        ? !(
+          this.events.at(-1).viewSingleOptions ||
+            this.events.at(-1).viewMultipleOptions
+        )
+        : true
+    },
     textOptions () {
       return {
         userInfo: { ...this.userInfo, ...this.userStatus },
@@ -79,6 +124,26 @@ export default {
     this.toNewUnitTime()
   },
   methods: {
+    selectMultipleOption (index) {
+      if (this.selectedMultipleOptionIndex.includes(index)) {
+        this.selectedMultipleOptionIndex =
+          this.selectedMultipleOptionIndex.filter((item) => item !== index)
+      } else this.selectedMultipleOptionIndex.push(index)
+    },
+    submitMultipleOptions (event) {
+      selectMultiOptEventOptions(
+        this.userInfo.userId,
+        this.curConditions,
+        event,
+        this.selectedMultipleOptionIndex
+      )
+      this.selectedMultipleOptionIndex = []
+      this.getOneEvent()
+    },
+    selectSingleOption (option) {
+      selectOptEventOption(this.userInfo.userId, option)
+      this.getOneEvent()
+    },
     updateUserAge () {
       this.$set(this.userInfo, 'age', this.userInfo.age + 1)
       this.$set(
@@ -103,23 +168,19 @@ export default {
         this.newUnitTime = true
         return
       }
-      this.events.push(
-        JSON.parse(
-          JSON.stringify({
-            ...eventInfo.event,
-            viewSingleOptions: eventInfo.event.optEvents
-              ? getOptEventOptions(
-                this.userInfo.userId,
-                eventInfo.event,
-                this.curConditions
-              )
-              : null,
-            viewMultipleOptions: eventInfo.event.maxSelection
-              ? getMultiOptEventOptions(eventInfo.event, this.curConditions)
-              : null
-          })
-        )
-      )
+      this.events.push({
+        ...JSON.parse(JSON.stringify(eventInfo.event)),
+        viewSingleOptions: eventInfo.event.optEvents
+          ? getOptEventOptions(
+            this.userInfo.userId,
+            eventInfo.event,
+            this.curConditions
+          )
+          : null,
+        viewMultipleOptions: eventInfo.event.maxSelection
+          ? getMultiOptEventOptions(eventInfo.event, this.curConditions)
+          : null
+      })
       console.log(this.events.at(-1))
       execEvent(
         this.userInfo.userId,
@@ -140,6 +201,27 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  // cursor: none;
+  align-items: center;
+  justify-content: space-between;
+  .eventsBox {
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow: auto;
+    &-list {
+      width: 100%;
+      height: fit-content;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+      align-items: center;
+      &-item {
+        flex: none;
+        width: fit-content;
+      }
+    }
+  }
+  .nextButton {
+    height: 36px;
+  }
 }
 </style>

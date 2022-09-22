@@ -766,18 +766,23 @@ export const selectOptEventOption = (userId, selectedOption) => {
   pushEventKeyToStack(userId, [selectedOption.event], 'priority')
 }
 
-export const selectMultiOptEventOption = (userId, conditions, _event, selections = []) => {
+export const selectMultiOptEventOptions = (userId, conditions, _event, selections = []) => {
   const event = JSON.parse(JSON.stringify(_event))
   let eventKey = ''
   const { multiMixEvents } = event
-  const cSelections = selections.sort((a, b) => a - b).toString()
+  selections.sort((a, b) => a - b)
+  const cSelections = JSON.stringify(selections)
   let eventObj = null
   for (const rkey in multiMixEvents) {
     if (rkey === 'any') continue
-    const rSeletions = rkey.split('_').sort((a, b) => a - b).toString()
+    const mixEventSelections = rkey.split('_').map(item => parseInt(item))
+    mixEventSelections.sort((a, b) => a - b)
+    const rSeletions = JSON.stringify(mixEventSelections)
+    console.log(cSelections, rSeletions)
     if (rSeletions === cSelections) {
       eventKey = multiMixEvents[rkey]
       eventObj = getEventObj(userId, { key: multiMixEvents[rkey] }, conditions)
+      console.log(eventObj)
       // 判断当前选项的反馈事件是否可用
       switch (eventObj) {
         case EventCode.NotExist:
