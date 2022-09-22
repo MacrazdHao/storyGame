@@ -612,8 +612,6 @@ const EventsRecord = {
   }
 }
 
-// 版本通用：
-
 // 获取事件对象EventObj
 export const getEventObj = (userId, options = {}, conditions = {}, execNormalDefaultWhenMismatchConditions = false) => {
   const defaultOptions = {
