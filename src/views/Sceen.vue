@@ -1,47 +1,119 @@
 <template>
   <div class="Sceen">
-    <div class="eventsBox">
-      <div class="eventsBox-list">
-        <div
-          class="eventList-list-item"
-          v-for="(item, index) in events"
-          :key="index"
-        >
-          {{ item.text }}
-          <template v-if="index === events.length - 1">
-            <div v-if="item.viewSingleOptions">
-              <div
-                v-for="(option, oindex) in item.viewSingleOptions"
-                :key="oindex"
-              >
-                <button @click="selectSingleOption(option)">
-                  {{ option.text }}
-                </button>
-              </div>
-            </div>
-            <div v-if="item.viewMultipleOptions">
-              <div
-                v-for="(option, oindex) in item.viewMultipleOptions"
-                :key="oindex"
-              >
-                <button @click="selectMultipleOption(oindex)">
-                  {{ option.text }}
-                </button>
-              </div>
-              <button @click="submitMultipleOptions(item)">确定</button>
-            </div>
-          </template>
+    <div class="infoBox">
+      <div class="infoBox-unitTimeInfo">
+        <p class="infoBox-unitTimeInfo-username">{{ userInfo.name }}</p>
+        <p class="infoBox-unitTimeInfo-date">
+          {{ unitTimeString }} - {{ unitTimeNumString }}
+        </p>
+      </div>
+      <div class="infoBox-userInfo">
+        <div class="infoBox-userInfo-row">
+          <div
+            class="infoBox-userInfo-row-item"
+            v-for="(item, index) in userInfoStringArr.basic"
+            :key="index"
+          >
+            <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
+            <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
+          </div>
+        </div>
+        <div class="infoBox-userInfo-row">
+          <div
+            class="infoBox-userInfo-row-item"
+            v-for="(item, index) in userInfoStringArr.status"
+            :key="index"
+          >
+            <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
+            <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
+          </div>
+        </div>
+        <div class="infoBox-userInfo-row">
+          <div
+            class="infoBox-userInfo-row-item"
+            v-for="(item, index) in userInfoStringArr.buffs"
+            :key="index"
+          >
+            <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
+            <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
+          </div>
         </div>
       </div>
     </div>
-    <button
-      class="nextButton"
-      style="width: 120px"
-      @click="getOneEvent"
-      :disabled="!showNextUnitTimeButton"
-    >
-      {{ newUnitTime ? "喜迎春节" : "下一事件" }}
-    </button>
+    <div class="eventsBox">
+      <div class="eventsBox-list">
+        <div
+          class="eventsBox-list-item"
+          v-for="(item, index) in events"
+          :key="index"
+        >
+          <p class="eventsBox-list-item-text">{{ item.text }}</p>
+          <div
+            class="eventsBox-list-item-extra"
+            v-if="index === events.length - 1"
+          >
+            <div
+              class="eventsBox-list-item-extra-optionBox"
+              :style="{
+                justifyContent:
+                  item.viewSingleOptions.length % 3 ? 'center' : 'flex-start',
+              }"
+              v-if="item.viewSingleOptions"
+            >
+              <div
+                class="eventsBox-list-item-extra-optionBox-item"
+                v-for="(option, oindex) in item.viewSingleOptions"
+                :key="oindex"
+              >
+                <div
+                  class="button eventsBox-list-item-extra-optionBox-item-option"
+                  @click="selectSingleOption(option)"
+                >
+                  {{ option.text }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="eventsBox-list-item-extra-optionBox"
+              :style="{
+                justifyContent:
+                  item.viewMultipleOptions.length % 3 ? 'center' : 'flex-start',
+              }"
+              v-if="item.viewMultipleOptions"
+            >
+              <div
+                class="eventsBox-list-item-extra-optionBox-item"
+                v-for="(option, oindex) in item.viewMultipleOptions"
+                :key="oindex"
+              >
+                <div
+                  :class="[
+                    'button',
+                    selectedMultipleOptionIndex.includes(oindex)
+                      ? 'button--active'
+                      : '',
+                    'eventsBox-list-item-extra-optionBox-item-option',
+                  ]"
+                  @click="selectMultipleOption(oindex)"
+                >
+                  {{ option.text }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="button eventsBox-list-item-extra-confirm"
+              v-if="item.viewMultipleOptions"
+              @click="submitMultipleOptions(item)"
+            >
+              确定
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="button nextButton" @click="getOneEvent(true)">
+      {{ nextButtonString }}
+    </div>
   </div>
 </template>
 
@@ -63,6 +135,19 @@ export default {
   components: {},
   data () {
     return {
+      userBasicInfoLabels: {
+        age: '年龄',
+        meili: '魅力',
+        jiajing: '家境',
+        yongqi: '勇气',
+        yunqi: '运气'
+      },
+      userStatusInfoLabels: {
+        zaijia: '在家'
+      },
+      userBuffInfoLabels: {
+        fennu: '愤怒'
+      },
       userInfo: {
         userId: 'test',
         name: '测试用户名',
@@ -75,7 +160,7 @@ export default {
       userStatus: {
         zaijia: 1
       },
-      userBuff: {
+      userBuffs: {
         fennu: 0
       },
       unitTimeInfo: {
@@ -89,7 +174,50 @@ export default {
     }
   },
   computed: {
-    showNextUnitTimeButton () {
+    nextButtonString () {
+      if (this.newUnitTime) return '喜迎新年，恭喜你又老了一岁，施舍个红包吧'
+      if (!this.enabledNextUnitTimeButton) {
+        return '请做出你的选择，别老想着全都要'
+      }
+      return '下一事件'
+    },
+    userInfoStringArr () {
+      const userInfo = {
+        basic: [],
+        status: [],
+        buffs: []
+      }
+      for (const key in this.userBasicInfoLabels) {
+        userInfo.basic.push([
+          this.userBasicInfoLabels[key],
+          this.userInfo[key]
+        ])
+      }
+      for (const key in this.userStatusInfoLabels) {
+        userInfo.status.push([
+          this.userStatusInfoLabels[key],
+          this.userStatus[key]
+        ])
+      }
+      for (const key in this.userBuffInfoLabels) {
+        userInfo.buffs.push([
+          this.userBuffInfoLabels[key],
+          this.userBuffs[key]
+        ])
+      }
+      return userInfo
+    },
+    unitTimeNumString () {
+      return `第${this.unitTimeInfo.curUnitTimeNum}年`
+    },
+    unitTimeString () {
+      return `${this.unitTimeInfo.chronology[0]} ${
+        this.unitTimeInfo.date[0] + this.unitTimeInfo.chronology[1]
+      }${this.unitTimeInfo.date[1] + this.unitTimeInfo.chronology[2]}${
+        this.unitTimeInfo.date[2] + this.unitTimeInfo.chronology[3]
+      }`
+    },
+    enabledNextUnitTimeButton () {
       return this.events.length
         ? !(
           this.events.at(-1).viewSingleOptions ||
@@ -107,7 +235,7 @@ export default {
       return {
         ...this.userInfo,
         ...this.userStatus,
-        ...this.userBuff,
+        ...this.userBuffs,
         ...this.unitTimeInfo
       }
     },
@@ -157,7 +285,8 @@ export default {
       toNewUnitTime(this.userInfo.userId, this.curConditions)
       this.newUnitTime = false
     },
-    getOneEvent () {
+    getOneEvent (fromButton = false) {
+      if (fromButton && !this.enabledNextUnitTimeButton) return
       if (this.newUnitTime) this.toNewUnitTime()
       const eventInfo = getNextEvent(
         this.userInfo.userId,
@@ -203,25 +332,149 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  .infoBox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &-unitTimeInfo {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #000;
+      box-sizing: border-box;
+      padding: 0px 4px;
+      p {
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      &-username {
+      }
+      &-date {
+      }
+    }
+    &-userInfo {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #000;
+      &-row {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        &-item {
+          display: flex;
+          flex-direction: row;
+          width: calc(33.333% - 2px);
+          // border: 1px solid #000;
+          p {
+            font-size: 12px;
+            white-space: nowrap;
+            line-height: 24px;
+          }
+          &-label {
+            width: fit-content;
+            // border-right: 1px solid #000;
+            background-color: rgb(142, 219, 255);
+            box-sizing: border-box;
+            padding: 0 4px;
+          }
+          &-value {
+            width: fit-content;
+            flex: 1;
+            background-color: rgb(206, 240, 255);
+            padding: 0 4px;
+          }
+        }
+      }
+    }
+  }
   .eventsBox {
     width: 100%;
     height: calc(100% - 60px);
     overflow: auto;
+    border-bottom: 1px solid #000;
+    display: flex;
+    flex-direction: column-reverse;
     &-list {
       width: 100%;
       height: fit-content;
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
       justify-content: flex-end;
       align-items: center;
       &-item {
-        flex: none;
-        width: fit-content;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid rgb(55, 105, 255);
+        box-sizing: border-box;
+        padding: 6px;
+        &-text {
+          font-size: 14px;
+          text-align: left;
+        }
+        &-extra {
+          margin-top: 12px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          &-optionBox {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            &-item {
+              width: calc(33.333% - 8px);
+              margin: 0 4px;
+              &-option {
+              }
+            }
+          }
+          &-confirm {
+            margin-top: 12px;
+            width: fit-content;
+          }
+        }
       }
     }
   }
   .nextButton {
-    height: 36px;
+    width: 100%;
+    min-height: 36px;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .button {
+    cursor: pointer;
+    color: #fff;
+    user-select: none;
+    background-color: rgb(112, 131, 255);
+    transition: 0.2s all;
+    padding: 4px 8px;
+    box-sizing: border-box;
+  }
+  .button--active {
+    background-color: rgb(93, 114, 255) !important;
+  }
+  .button:hover {
+    background-color: rgb(126, 143, 252);
+  }
+  .button:active {
+    background-color: rgb(93, 114, 255);
   }
 }
 </style>
