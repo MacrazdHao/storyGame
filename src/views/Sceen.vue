@@ -67,6 +67,7 @@
               >
                 <div
                   class="button eventsBox-list-item-extra-optionBox-item-option"
+                  :style="{ color: option.color }"
                   @click="selectSingleOption(option)"
                 >
                   {{ option.text }}
@@ -94,6 +95,7 @@
                       : '',
                     'eventsBox-list-item-extra-optionBox-item-option',
                   ]"
+                  :style="{ color: option.color }"
                   @click="selectMultipleOption(oindex)"
                 >
                   {{ option.text }}
@@ -137,6 +139,7 @@ export default {
     return {
       userBasicInfoLabels: {
         age: '年龄',
+        tizhi: '体质',
         meili: '魅力',
         jiajing: '家境',
         yongqi: '勇气',
@@ -152,13 +155,16 @@ export default {
         userId: 'test',
         name: '测试用户名',
         age: -1,
-        meili: 1,
-        jiajing: 1,
-        yongqi: 1,
-        yunqi: 1
+        tizhi: 3,
+        meili: 3,
+        jiajing: 3,
+        yongqi: 31,
+        yunqi: 3
       },
       userStatus: {
-        zaijia: 1
+        zaijia: 1,
+        mamazaishi: 1,
+        babazaishi: 1
       },
       userBuffs: {
         fennu: 0
@@ -177,7 +183,13 @@ export default {
     nextButtonString () {
       if (this.newUnitTime) return '喜迎新年，恭喜你又老了一岁，施舍个红包吧'
       if (!this.enabledNextUnitTimeButton) {
-        return '请做出你的选择，别老想着全都要'
+        let callname = ''
+        if (this.userInfo.age < 12) callname = '龟孙儿'
+        else if (this.userInfo.age < 18) callname = '后生仔'
+        else if (this.userInfo.age < 29) callname = 'giegie'
+        else if (this.userInfo.age < 50) callname = '欧吉桑'
+        else callname = '老闭灯，一把年纪了'
+        return callname + '，请做出你的选择，别老想着什么“我全都要”'
       }
       return '下一事件'
     },
@@ -311,13 +323,22 @@ export default {
           : null
       })
       console.log(this.events.at(-1))
-      execEvent(
+      const { userInfo } = execEvent(
         this.userInfo.userId,
         eventInfo,
         this.unitTimeInfo.curUnitTimeNum,
-        this.userInfo,
+        this.curConditions,
         this.curConditions
       )
+      for (const key in this.userInfo) {
+        this.$set(this.userInfo, key, userInfo[key])
+      }
+      for (const key in this.userBuffs) {
+        this.$set(this.userBuffs, key, userInfo[key])
+      }
+      for (const key in this.unitTimeInfo) {
+        this.$set(this.unitTimeInfo, key, userInfo[key])
+      }
     }
   }
 }

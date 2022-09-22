@@ -1,6 +1,7 @@
 <template>
   <div class="Home">
     <p @click="start">start</p>
+    <p @click="maker">Maker</p>
   </div>
 </template>
 
@@ -12,6 +13,9 @@ export default {
   methods: {
     start () {
       this.$router.push({ path: 'sceen' })
+    },
+    maker () {
+      this.$router.push({ path: 'maker' })
     }
   }
 }

@@ -1,6 +1,7 @@
 
 const MAXNUM = 999999
 const MINNUM = -999999
+const BasicYunqi = 3
 // 越稀有，运气影响效果越低
 const RareValue = {
   NORMAL: 0,
@@ -18,15 +19,14 @@ const EventCode = {
 
 const defaultDefaultEvent = {
   // 默认事件，仅可通过命令行调用的默认事件，默认事件也可以是[概率事件/绑定事件/可选事件]事件，但不可以作为被动/必然事件
-  text: (options) => '',
   isDefault: (_default = true) => true,
   // 注：被动事件和必然事件相冲
   isCertain: (certain = false) => false,
   // 注：必然事件和被动事件相冲
   isPassive: (passive = false) => false,
   // 默认事件的执行次数必须为【MAXNUM】
-  times: (initTimes = MAXNUM) => initTimes,
-  timesOfUnit: (times = MAXNUM) => times
+  times: (initTimes = MAXNUM) => MAXNUM,
+  timesOfUnit: (times = MAXNUM) => MAXNUM
 }
 const defaultNormalEvent = {
   // 普通事件，当某些条件下无可执行的结果，则会默认执行normalDefault事件
@@ -55,7 +55,6 @@ const defaultPrEvent = {
 }
 const defaultBindingEvent = {
   // 绑定事件事件，必定触发所有事件（含延迟单位时间数，执行顺序按事件首字母排序），当某些条件下无可执行的结果，则会默认执行bindDefault事件
-  // 待修改：添加逻辑，duration为0加入priority，非0则入duration并重排序
   bindEvents: (events = {}) => ({ ...events }),
   bindDefault: (eventKey = 'bangdingmoren') => eventKey
 }
@@ -114,7 +113,7 @@ const defaultCertainEvent = {
  ** 【概率事件】prEvents: (events[Object({'EventName[String]': weight[Number]})]) => Object
  ** 【概率默认事件】prDefault: (eventKey[String]) => String
  ** 【概率事件的好/坏结果标识(负坏,0,正好)】prGoodOrBad: (events[Object({'EventName[String]': goodOrBad[Number]})]) => Object
- ** 【绑定事件】bindEvents: (events[Object({'EventName[String]': {'duration': Number, 'conditions': { attr[Object({ 'Attr[String]': [Array(Number, 2)] }}})]) => Object
+ ** 【绑定事件】bindEvents: (events[Object({'EventName[String]': {'duration': Number, 'conditions': { attr[Object({ 'Attr[String]': [Array(Number, 2)] })]}, 'donotMismatchToDefault': Boolean})]) => Object
  ** 【绑定默认事件】bindDefault: (eventKey[String]) => String
  ** 【被动事件标识】isPassive: (passive[Boolean]) => Boolean
  ** 【必然事件标识】isCertain: (passive[Boolean]) => Boolean
@@ -174,6 +173,55 @@ const NormalEvents = {
     times: (times = 1) => 1,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 1] })
   },
+  nihenyongo: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【勇气达成100——你很勇哦】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果...(魅力+5，体质-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 5,
+      tizhi: -2
+    })
+  },
+  fayudebucuoma: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【体质达成100——发育得不错嘛】杰哥温柔地捏了你的大腿几下，说：发育得不错嘛，还蛮结实的喔。然后...(魅力+5，勇气-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 5,
+      yongqi: -2
+    })
+  },
+  baozugong: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【家境达成100——包租公】你的钱多到花不完，北上广深已经没有一个地方你是没有房子的，每天穿着人字拖，白背心，大裤衩，天天家里蹲看着房价天天涨，不要太舒服(魅力+3，家境+3，体质-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], jiajing: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 3,
+      jiajing: 3,
+      tizhi: -2
+    })
+  },
+  ouzhougou: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【运气达成100——欧洲狗】你的运气高到连种族都变了，变成了真正的欧洲狗，在大街上人人都给你一矛吃，你都不敢出门了(魅力-3，体质-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: -3,
+      tizhi: -2
+    })
+  },
   putong1: {
     ...defaultNormalEvent,
     text: (options) => '【普通事件】'
@@ -182,6 +230,112 @@ const NormalEvents = {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     text: (options) => '【被动普通事件】'
+  },
+  jiemojirouchuan_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    ...defaultBindingEvent,
+    text: (options) => '【点了一串试试】你迫不及待咬下一口芥末鸡肉，那股上头劲儿...',
+    bindEvents: (events = {}) => ({
+      ...events,
+      jiemojirouchuan_jieguo1_bangdingjieguo1: {
+        duration: 0,
+        donotMismatchToDefault: true,
+        conditions: {
+          yongqi: [MINNUM, 7]
+        }
+      },
+      jiemojirouchuan_jieguo1_bangdingjieguo2: {
+        duration: 0,
+        donotMismatchToDefault: true,
+        conditions: {
+          yongqi: [7, MAXNUM]
+        }
+      }
+    })
+  },
+  jiemojirouchuan_jieguo1_bangdingjieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，你幻想着咬牙吞下去，结果差点被芥末刺杀，最后还是吐掉了，过了好一会依然心有余悸，心里暗骂到底谁才吃得下这玩意儿'
+  },
+  jiemojirouchuan_jieguo1_bangdingjieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去(勇气+1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 1
+    })
+  },
+  jiemojirouchuan_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    ...defaultBindingEvent,
+    text: (options) => '【一串怎么够，当然是来十打】你迫不及待咬下一口芥末鸡肉，那股上头劲儿...(家境-1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: -1
+    }),
+    bindEvents: (events = {}) => ({
+      ...events,
+      jiemojirouchuan_jieguo2_bangdingjieguo1: {
+        duration: 0,
+        donotMismatchToDefault: true,
+        conditions: {
+          yongqi: [MINNUM, 7]
+        }
+      },
+      jiemojirouchuan_jieguo2_bangdingjieguo2: {
+        duration: 0,
+        donotMismatchToDefault: true,
+        conditions: {
+          yongqi: [7, 10]
+        }
+      },
+      jiemojirouchuan_jieguo2_bangdingjieguo3: {
+        duration: 0,
+        donotMismatchToDefault: true,
+        conditions: {
+          yongqi: [10, MAXNUM]
+        }
+      }
+    })
+  },
+  jiemojirouchuan_jieguo2_bangdingjieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，你幻想着咬牙吞下去，结果差点被芥末刺杀，最后还是吐掉了，过了好一会依然心有余悸，心里暗骂到底谁才吃得下这玩意儿，最后你一串串地把芥末挑走才吃完了'
+  },
+  jiemojirouchuan_jieguo2_bangdingjieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去，但剩下的你再也吃下了，一串串地把芥末挑走才吃完了(勇气+1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 1
+    })
+  },
+  jiemojirouchuan_jieguo2_bangdingjieguo3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去，还把剩下的全都给吃完了，事后你去了医院，在家躺了一天才恢复过来(勇气+3，家境-1，体质-1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 3,
+      tizhi: -1,
+      jiajing: -1
+    })
+  },
+  jiemojirouchuan_jieguo3: {
+    ...defaultNormalEvent,
+    ...defaultDefaultEvent,
+    text: (options) => '【算了，不点】你和美味失之交臂'
   },
   shaoyanhua1: {
     ...defaultNormalEvent,
@@ -222,6 +376,7 @@ const NormalEvents = {
     text: (options) => '过年你爸给你买了一大堆烟花，附近的小朋友都羡慕极了，纷纷上前讨好你，好一段时间里他们都尊你为孩子王(魅力+2)',
     triggerConditions: (attr = {}) => ({
       ...attr,
+      babazaishi: [1, MAXNUM],
       zaijia: [1, MAXNUM],
       age: [5, 12],
       jiajing: [10, MAXNUM]
@@ -298,6 +453,7 @@ const NormalEvents = {
     text: (options) => '过年你跟着你妈去亲戚家打麻将，你在旁边大吵大闹影响了风水，亏惨了，于是你的红包被上缴了，还被骂了一顿(家境-1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
+      mamazaishi: [1, MAXNUM],
       age: [5, 18]
     }),
     effectAttr: (attr = {}) => ({
@@ -313,6 +469,7 @@ const NormalEvents = {
     text: (options) => '过年你妈去亲戚家打麻将，亏惨了，幸好你没跟着去，不然肯定少不了一顿迁怒',
     triggerConditions: (attr = {}) => ({
       ...attr,
+      mamazaishi: [1, MAXNUM],
       age: [5, 18]
     }),
     effectAttr: (attr = {}) => ({
@@ -326,6 +483,7 @@ const NormalEvents = {
     text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包(家境+1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
+      mamazaishi: [1, MAXNUM],
       zaijia: [1, MAXNUM],
       age: [5, 18],
       jiajing: [10, MAXNUM]
@@ -471,6 +629,21 @@ const BindingEvents = {
   }
 }
 const OptEvents = {
+  jiemojirouchuan: {
+    ...defaultNormalEvent,
+    ...defaultOptEvent,
+    text: (options) => '你去鸟刀居日料店看到菜单里有芥末鸡肉串（鸡肉上真的有好几坨绿绿的芥末），你决定',
+    times: (initTimes = MAXNUM) => initTimes,
+    curTimesOfUnit: (times = 3) => times,
+    triggerConditions: (attr = { age: [4, MAXNUM] }) => ({ ...attr }),
+    optEvents: (events = {}) => ({
+      ...events,
+      jiemojirouchuan_jieguo1: { text: '点一串试试', color: '#2545C4', conditions: { jiajing: [1, MAXNUM] } },
+      jiemojirouchuan_jieguo2: { text: '一串怎么够，当然是来十打', color: '#2545C4', conditions: { jiajing: [5, MAXNUM] } },
+      jiemojirouchuan_jieguo3: { text: '算了，不点', color: '#2545C4' }
+    })
+
+  },
   // 可选事件-事件
   kexuan: {
     ...defaultNormalEvent,
@@ -800,8 +973,9 @@ export const selectMultiOptEventOptions = (userId, conditions, _event, selection
   pushEventKeyToStack(userId, [eventKey], 'priority')
 }
 
-export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditions) => {
+export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditions) => {
   const eventInfo = JSON.parse(JSON.stringify(_eventInfo))
+  const userInfo = JSON.parse(JSON.stringify(_userInfo))
   // 事件对象存入事件记录
   // 【单位时间可触发次数上限】timesOfUnit
   // 【当前单位时间可触发次数】curTimesOfUnit
@@ -843,8 +1017,8 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditio
           if (mismatch) break
         }
       }
-      if (!mismatch)pushEventKeyToStack(userId, event.bindEvents[ekey].duration === 0 ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], event.bindEvents[ekey].duration === 0 ? 'priority' : 'duration')
-      else pushEventKeyToStack(userId, [event.defaultBindingEvent], 'priority')
+      if (!mismatch)pushEventKeyToStack(userId, !event.bindEvents[ekey].duration ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], !event.bindEvents[ekey].duration ? 'priority' : 'duration')
+      else if (!event.bindEvents[ekey].donotMismatchToDefault) pushEventKeyToStack(userId, [event.defaultBindingEvent], 'priority')
     }
   }
   // 【获取概率结果数】prNumber
@@ -853,7 +1027,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, userInfo, curConditio
   // 【概率默认事件】prDefault
   if (event.prEvents) {
     const { prNumber, prEvents, prRepeat, prDefault, prGoodOrBad } = event
-    const realYunqi = curConditions.yunqi - 3
+    const realYunqi = curConditions.yunqi - BasicYunqi
     // realYunqi 每 1运气 加 1% 概率基数，按稀有度效果递减
     const yunqiPersent = Math.abs(0.01 * realYunqi)
     let totalWeight = 0
