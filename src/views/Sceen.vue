@@ -148,7 +148,7 @@ export default {
         zhili: '智力'
       },
       userStatusInfoLabels: {
-        zaijia: '在家'
+        zailaojia: '在老家'
       },
       userBuffInfoLabels: {
         fennu: '愤怒'
@@ -159,22 +159,25 @@ export default {
         xingbie: '男',
         // 男1，女0，中性-1
         sex: 1,
-        age: 100,
+        age: -1,
         tizhi: 3,
         zhili: 3,
         meili: 3,
         jiajing: 3,
-        yongqi: 100,
-        yunqi: 100
+        yongqi: 3,
+        yunqi: 3
       },
       userStatus: {
+        jieshu: 0,
+        siwang: 0,
         zaijia: 1,
         mamazaishi: 1,
         babazaishi: 1,
         danshen: 1,
         lianaicishu: 0,
         chunan: 1,
-        linglixiulian: 0
+        linglixiulian: 0,
+        routibusi: 0
       },
       userBuffs: {
         fennu: 0
@@ -196,7 +199,11 @@ export default {
         let callname = ''
         if (this.userInfo.age < 12) callname = '龟孙儿'
         else if (this.userInfo.age < 18) callname = '后生仔'
-        else if (this.userInfo.age < 29 && this.userInfo.xingbie === '男') { callname = 'giegie' } else if (this.userInfo.age < 29 && this.userInfo.xingbie === '女') { callname = '靓女' } else if (this.userInfo.age < 50) callname = '欧吉桑'
+        else if (this.userInfo.age < 29 && this.userInfo.xingbie === '男') {
+          callname = 'giegie'
+        } else if (this.userInfo.age < 29 && this.userInfo.xingbie === '女') {
+          callname = '靓女'
+        } else if (this.userInfo.age < 50) callname = '欧吉桑'
         else callname = '老闭灯，一把年纪了'
         return callname + '，请做出你的选择，别老想着什么“我全都要”'
       }
@@ -272,6 +279,9 @@ export default {
     userStatus () {
       if (this.userStatus.danshen === 0) {
         this.$set(this.userStatus, 'yizhidanshen', 0)
+      }
+      if (this.userStatus.siwang) {
+        // 待修改：gameover逻辑
       }
     }
   },

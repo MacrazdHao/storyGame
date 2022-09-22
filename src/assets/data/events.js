@@ -330,6 +330,36 @@ const NormalEvents = {
       linglixiulian: 1
     })
   },
+  // 结束-必然事件
+  siwang: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【Game Over】',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, tizhi: [MINNUM, -10], routibusi: [0, 1] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      siwang: 1,
+      jieshu: 1
+    })
+  },
+  // 普通-随机事件
+  caigoushi: {
+    ...defaultNormalEvent,
+    text: (options) => '你走在街上踩到了狗屎，心想肯定要走狗屎运了(运气+1)',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 2) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, MAXNUM] }),
+    effectAttr: (attr = {}) => ({ ...attr, yunqi: 1 })
+  },
+  ganmao: {
+    ...defaultNormalEvent,
+    text: (options) => '你因为吹到冷风而发烧感冒，难顶(体质-1)',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 2) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, tizhi: [MINNUM, 30] }),
+    effectAttr: (attr = {}) => ({ ...attr, tizhi: -1 })
+  },
 
   putong1: {
     ...defaultNormalEvent,
@@ -453,8 +483,8 @@ const NormalEvents = {
     text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，结果因为穿得太穷酸，被嘲笑了一顿然后把你赶走了(魅力-1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
-      age: [5, 12],
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
       jiajing: [MINNUM, 5]
     }),
     effectAttr: (attr = {}) => ({
@@ -469,8 +499,8 @@ const NormalEvents = {
     text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，小朋友们看到你身上穿着崭新的高仿奶哥牌衣服，极为羡慕，过年这段时间你都成了这条guy最靓的崽(魅力+1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
-      age: [5, 12],
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
       jiajing: [5, 10]
     }),
     effectAttr: (attr = {}) => ({
@@ -486,8 +516,8 @@ const NormalEvents = {
     triggerConditions: (attr = {}) => ({
       ...attr,
       babazaishi: [1, MAXNUM],
-      zaijia: [1, MAXNUM],
-      age: [5, 12],
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
       jiajing: [10, MAXNUM]
     }),
     effectAttr: (attr = {}) => ({
@@ -515,7 +545,7 @@ const NormalEvents = {
     text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎，把你爸妈熏得够呛',
     triggerConditions: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
       age: [0, 5],
       yongqi: [MINNUM, 3]
     }),
@@ -530,7 +560,7 @@ const NormalEvents = {
     text: (options) => '外面烟花鞭炮噼啪响，你却出其的镇定，大家都说你有大将之风(勇气+1, 魅力+1)',
     triggerConditions: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
       age: [0, 5],
       yongqi: [5, MAXNUM]
     }),
@@ -547,7 +577,7 @@ const NormalEvents = {
     text: (options) => '外面烟花鞭炮噼啪响，你被吓哭了，但没多久又能平静下来，如此反复横跳了很久，你爸妈因此被折腾得不行',
     triggerConditions: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
       age: [0, 5],
       yongqi: [3, 5]
     }),
@@ -567,7 +597,7 @@ const NormalEvents = {
     }),
     effectAttr: (attr = {}) => ({
       ...attr,
-      zaijia: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
       jiajing: -1
     })
   },
@@ -593,7 +623,7 @@ const NormalEvents = {
     triggerConditions: (attr = {}) => ({
       ...attr,
       mamazaishi: [1, MAXNUM],
-      zaijia: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
       age: [5, 18],
       jiajing: [10, MAXNUM]
     }),
@@ -1351,7 +1381,7 @@ export const createUser = (userId, reset = true) => {
 
 // 待补充：
 // 属性：meili jiajing yongqi yunqi
-// 状态：zaijia
+// 状态：zailaojia
 // Buff：
 
 // 待补充：
