@@ -173,39 +173,89 @@ const NormalEvents = {
     times: (times = 1) => 1,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 1] })
   },
+  // 成就-必然事件
   nihenyongo: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【勇气达成100——你很勇哦】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果...(魅力+5，体质-2)',
+    text: () => '【勇气达成100——你很勇哦】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果...(魅力+10，体质-1，智力-1)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
-      meili: 5,
-      tizhi: -2
+      meili: 10,
+      tizhi: -1,
+      zhili: -1
+    })
+  },
+  nihenyongo2: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【勇气达成100——勇个屁】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果他好像发现了什么，突然说：你勇个屁。然后吧你赶走了，你愣在了原地，不知所措(运气+4，魅力-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yunqi: 4,
+      meili: -2
+    })
+  },
+  dashayifang: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【勇气达成100——大杀一方】尖叫？不存在的，徒手擒拿南方大老鼠，手执拖鞋打遍南方大蟑螂，南方的老鼠蟑螂在你附近都能被你的气场震慑得当场去世，你的生活没有了老鼠蟑螂，再也不用担心脏乱差了(体质+8)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [0, 1], age: [4, MAXNUM], yongqi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      tizhi: 8
     })
   },
   fayudebucuoma: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【体质达成100——发育得不错嘛】杰哥温柔地捏了你的大腿几下，说：发育得不错嘛，还蛮结实的喔。然后...(魅力+5，勇气-2)',
+    text: () => '【体质达成100——发育得不错嘛】杰哥温柔地捏了你的大腿几下，说：发育得不错嘛，还蛮结实的喔。然后...(魅力+10，勇气-2)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
-      meili: 5,
+      meili: 10,
       yongqi: -2
+    })
+  },
+  nvhanzi: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【体质达成100——女汉子】抱歉，男人是什么？有什么用？你并不是那种喊giegie的人，而是手拎起桶装水，肩扛煤气罐的超级女汉子(勇气+10，魅力-3)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [0, 1], age: [4, MAXNUM], tizhi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 10,
+      meili: -3
+    })
+  },
+  kuihuabaodian: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【体质达成100——葵花宝典】葵花宝典大成，阴阳怪气天下无双，你的一套组合拳下去，连某博拳师都不敢轻易惹上你(体质+3，勇气+3，智力+2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [4, MAXNUM], tizhi: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 3,
+      tizhi: 3,
+      zhili: 2
     })
   },
   baozugong: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【家境达成100——包租公】你的钱多到花不完，北上广深已经没有一个地方你是没有房子的，每天穿着人字拖，白背心，大裤衩，天天家里蹲看着房价天天涨，不要太舒服(魅力+3，家境+3，体质-2)',
+    text: (options) => `【家境达成100——包租${options.userInfo.sex === 1 ? '公' : options.userInfo.sex === 0 ? '婆' : ''}】你的钱多到花不完，北上广深已经没有一个地方你是没有房子的${options.userInfo.sex === 1 || options.userInfo.sex === -1 ? '，每天穿着人字拖，白背心，大裤衩' : '，每天穿着人字拖，花睡裙，卷着头发'}，天天家里蹲看着房价天天涨，不要太舒服(魅力+5，家境+3，体质-2)`,
     times: () => 1,
     triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], jiajing: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
-      meili: 3,
+      meili: 5,
       jiajing: 3,
       tizhi: -2
     })
@@ -213,15 +263,74 @@ const NormalEvents = {
   ouzhougou: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【运气达成100——欧洲狗】你的运气高到连种族都变了，变成了真正的欧洲狗，在大街上人人都给你一矛吃，你都不敢出门了(魅力-3，体质-2)',
+    text: () => '【运气达成100——欧洲狗】有一天，你发现自己无论走到哪都能捡到钱，最后你的运气好到连种族都变了，你变成了真正的欧洲狗，在大街上人人都想给你一矛吃，你被吓得不敢出门(家境+10，魅力-3，勇气-2)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, MAXNUM], yunqi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
+      jiajing: 10,
       meili: -3,
       tizhi: -2
     })
   },
+  changtiaorap: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【魅力达成100——唱跳Rap】你人不仅长得炫，唱跳Rap篮球还样样精通，就连练习两年半的练习生阿坤都对你佩服得五体投地，某博打榜你月月稳居第一，无人超越(家境+10，体质+2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, MAXNUM], meili: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 10,
+      tizhi: 2
+    })
+  },
+  laobideng: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【年龄达成100——老闭灯】你在家做健身体操的时候，常常会碰到家里灯的开关，你家里人开了你又不小心关上，开了你又关上，这时候你家里人经常会对你说：诶，你老闭灯噶蛤鸭(体质+5)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      tizhi: 5
+    })
+  },
+  mutaidanshen_nan: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【母胎单身】汪汪汪(魅力-2，体质-2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [30, MAXNUM], lianaicishu: [0, 1] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: -2,
+      tizhi: -2
+    })
+  },
+  mutaidanshen_nv: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【母胎单身】汪汪汪(魅力-3)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [0, 1], age: [30, MAXNUM], lianaicishu: [0, 1] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: -3
+    })
+  },
+  kaizhi: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【智力达成100——开智】你的大脑开发程度超越爱因斯坦，你除了五官之外还多了一种奇妙的神秘第六感，感知到了一种遍布世界却又从未曾感知到的神奇能量(开启灵力修炼)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, MAXNUM], zhili: [100, MAXNUM] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      linglixiulian: 1
+    })
+  },
+
   putong1: {
     ...defaultNormalEvent,
     text: (options) => '【普通事件】'

@@ -139,11 +139,13 @@ export default {
     return {
       userBasicInfoLabels: {
         age: '年龄',
+        xingbie: '性别',
         tizhi: '体质',
         meili: '魅力',
         jiajing: '家境',
         yongqi: '勇气',
-        yunqi: '运气'
+        yunqi: '运气',
+        zhili: '智力'
       },
       userStatusInfoLabels: {
         zaijia: '在家'
@@ -154,17 +156,25 @@ export default {
       userInfo: {
         userId: 'test',
         name: '测试用户名',
-        age: -1,
+        xingbie: '男',
+        // 男1，女0，中性-1
+        sex: 1,
+        age: 100,
         tizhi: 3,
+        zhili: 3,
         meili: 3,
         jiajing: 3,
-        yongqi: 31,
-        yunqi: 3
+        yongqi: 100,
+        yunqi: 100
       },
       userStatus: {
         zaijia: 1,
         mamazaishi: 1,
-        babazaishi: 1
+        babazaishi: 1,
+        danshen: 1,
+        lianaicishu: 0,
+        chunan: 1,
+        linglixiulian: 0
       },
       userBuffs: {
         fennu: 0
@@ -186,8 +196,7 @@ export default {
         let callname = ''
         if (this.userInfo.age < 12) callname = '龟孙儿'
         else if (this.userInfo.age < 18) callname = '后生仔'
-        else if (this.userInfo.age < 29) callname = 'giegie'
-        else if (this.userInfo.age < 50) callname = '欧吉桑'
+        else if (this.userInfo.age < 29 && this.userInfo.xingbie === '男') { callname = 'giegie' } else if (this.userInfo.age < 29 && this.userInfo.xingbie === '女') { callname = '靓女' } else if (this.userInfo.age < 50) callname = '欧吉桑'
         else callname = '老闭灯，一把年纪了'
         return callname + '，请做出你的选择，别老想着什么“我全都要”'
       }
@@ -256,6 +265,13 @@ export default {
         eventOptions: {
           text: this.textOptions
         }
+      }
+    }
+  },
+  watch: {
+    userStatus () {
+      if (this.userStatus.danshen === 0) {
+        this.$set(this.userStatus, 'yizhidanshen', 0)
       }
     }
   },
@@ -394,7 +410,7 @@ export default {
         &-item {
           display: flex;
           flex-direction: row;
-          width: calc(33.333% - 2px);
+          width: 33.333%;
           // border: 1px solid #000;
           p {
             font-size: 12px;
