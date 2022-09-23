@@ -3,6 +3,7 @@
  * 构造器内所有属性均为函数
  * 'EventName[String]': {
  ** 【事件陈述】text: (options[Object({'userInfo': [Object], 'unitTimeInfo': [Object]), ...待补充]) => String
+ ** 【事件样式】style: (options[Object({'userInfo': [Object], 'unitTimeInfo': [Object]), ...待补充]) => CSS[Object]
  ** 【可执行次数】times: (initTimes[Number]) => Number
  ** 【单位时间可触发次数上限】timesOfUnit: (times[Number]) => Number
  ** 【当前单位时间可触发次数】curTimesOfUnit: (times[Number]) => Number
@@ -52,6 +53,10 @@ export const EventCode = {
   MismatchConditions: 'mismatchConditions'
 }
 
+export const getRandom = (max = 1) => {
+  return (Math.random() * max).toFixed(0)
+}
+
 export const defaultDefaultEvent = {
   // 默认事件，仅可通过命令行调用的默认事件，默认事件也可以是[概率事件/绑定事件/可选事件]事件，但不可以作为被动/必然事件
   isDefault: (_default = true) => true,
@@ -67,6 +72,7 @@ export const defaultNormalEvent = {
   // 普通事件，当某些条件下无可执行的结果，则会默认执行normalDefault事件
   // text每次调用事件都必须重构
   text: (options) => '',
+  style: (options) => {},
   times: (initTimes = MAXNUM) => initTimes,
   timesOfUnit: (times = 1) => times,
   // curTimesOfUnit: (times = 1) => times,

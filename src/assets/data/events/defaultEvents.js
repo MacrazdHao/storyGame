@@ -14,6 +14,11 @@ import {
   defaultCertainEvent
 } from './eventObjects'
 export default {
+  pingfandeyitian: {
+    ...defaultNormalEvent,
+    ...defaultDefaultEvent,
+    text: (options) => '平凡的一天，什么都没发生'
+  },
   moren: {
     ...defaultNormalEvent,
     ...defaultDefaultEvent,

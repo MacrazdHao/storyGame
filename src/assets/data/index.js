@@ -106,8 +106,9 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
         } catch (err) {
           eventObj[ekey] = `---${key}: 生成文案错误(params error, ${err})---`
         }
-      }
-      eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+      } else if (ekey === 'style') {
+        eventObj.style = AllEvents[key].style(eventOptions.style)
+      } else eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
       // 无传入参数则走默认
       // else eventObj[ekey] = AllEvents[key][ekey]()
     }
@@ -118,12 +119,13 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
     }
   } else {
     eventObj = JSON.parse(JSON.stringify(events[key]))
-    // text每次调用事件都必须重构
+    // text、style每次调用事件都必须重构
     try {
       eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 重新生成文案错误(no params)---`
     } catch (err) {
       eventObj.text = `---${key}: 重新生成文案错误(params error, ${err})---`
     }
+    eventObj.style = AllEvents[key].style(eventOptions.style)
     if (updateMode) {
       // 重置/更新事件属性
       for (const ekey in update) {
@@ -396,8 +398,10 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   let key = null
   let event = null
   if (EventsRecord[userId].stack.priority.length) {
-    key = EventsRecord[userId].stack.priority.pop()
-    event = getEventObj(userId, { key, ...options }, conditions)
+    while ((!event || typeof event === 'string') && EventsRecord[userId].stack.priority.length) {
+      key = EventsRecord[userId].stack.priority.pop()
+      event = getEventObj(userId, { key, ...options }, conditions)
+    }
   }
   // 必然事件
   if (!event || typeof event === 'string') {
@@ -432,13 +436,17 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   }
   // 常规事件栈
   if ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
-    key = EventsRecord[userId].stack.common.pop()
-    event = getEventObj(userId, { key, ...options }, conditions)
+    console.log('===>', key)
+    while ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
+      key = EventsRecord[userId].stack.common.pop()
+      event = getEventObj(userId, { key, ...options }, conditions)
+    }
   }
+  console.log('===>', event)
   return (!event || typeof event === 'string') ? 'end' : { key, event }
 }
 
-export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, randomEventNum = 3) => {
+export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, randomEventNum = 8) => {
   if (EventsRecord[userId].stack.duration.length) {
     // 延迟事件倒计时结算
     for (let i = 0; i < EventsRecord[userId].stack.duration.length; i++) {
@@ -492,11 +500,15 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
     EventsRecord[userId].extraEventTimes[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
   }
   // 插入过新年事件
-  EventsRecord[userId].stack.priority.push('guoxinnian')
-  // 获取当前单位时间的随机事件(3)
-  const randomEventKeys = Object.keys(NonPassiveEvents)
+  if (!EventsRecord[userId].stack.priority.includes('guoxinnian'))EventsRecord[userId].stack.priority.push('guoxinnian')
+  // 获取当前单位时间的随机事件(8)
+  let randomEventKeys = Object.keys(NonPassiveEvents)
   const randomEvents = []
   for (let i = 0; i < randomEventNum; i++) {
+    if (randomEventKeys.length === 0) {
+      randomEvents.push('pingfandeyitian')
+      continue
+    }
     const randomNum = (Math.random() * randomEventKeys.length - 1).toFixed(0)
     // randomEvents.push()
     const eventObj = getEventObj(userId, { key: randomEventKeys[randomNum], ...options }, conditions)
@@ -505,10 +517,13 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
       case EventCode.OutOfTimes:
       case EventCode.MismatchConditions:
         i--
+        // 剔除不符合条件的事件，避免重复随机到
+        randomEventKeys = randomEventKeys.filter((item, index) => parseInt(randomNum) !== index)
         break
       default: randomEvents.push(randomEventKeys[randomNum])
     }
   }
+  console.log(randomEvents)
   pushEventKeyToStack(userId, randomEvents)
   if (callback) callback()
 }

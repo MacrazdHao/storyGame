@@ -44,6 +44,7 @@
       <div class="eventsBox-list">
         <div
           class="eventsBox-list-item"
+          :style="item.style"
           v-for="(item, index) in events"
           :key="index"
         >
@@ -206,7 +207,8 @@ export default {
         // Buff，特殊等级
         fennu: 0,
         dengji_jianshu: 0,
-        dengji_weiwuzhuyi: 30
+        dengji_weiwuzhuyi: 30,
+        dengji_koucai: 1
       },
       unitTimeInfo: {
         curUnitTimeNum: 0,
@@ -285,6 +287,12 @@ export default {
         unitTimeInfo: { ...this.unitTimeInfo }
       }
     },
+    styleOptions () {
+      return {
+        userInfo: { ...this.userInfo, ...this.userStatus, ...this.userBuffs },
+        unitTimeInfo: { ...this.unitTimeInfo }
+      }
+    },
     curConditions () {
       return {
         ...this.userInfo,
@@ -296,7 +304,8 @@ export default {
     eventOptions () {
       return {
         eventOptions: {
-          text: this.textOptions
+          text: this.textOptions,
+          style: this.styleOptions
         }
       }
     }

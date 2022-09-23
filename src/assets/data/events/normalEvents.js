@@ -4,6 +4,7 @@ import {
   BasicYunqi,
   RareValue,
   EventCode,
+  getRandom,
   defaultDefaultEvent,
   defaultNormalEvent,
   defaultPrEvent,
@@ -19,6 +20,7 @@ export default {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
     text: (options) => `${options.unitTimeInfo.chronology[0]} ${options.unitTimeInfo.date[0] + options.unitTimeInfo.chronology[1]}${options.unitTimeInfo.date[1] + options.unitTimeInfo.chronology[2]}${options.unitTimeInfo.date[2] + options.unitTimeInfo.chronology[3]}，你出生了，你${options.userInfo.babazaishi && options.userInfo.mamazaishi ? '的父母带上美好的祝福和希望，为你取名' : !options.userInfo.babazaishi && options.userInfo.mamazaishi ? '的妈妈带上美好的祝福和希望，为你取名' : options.userInfo.babazaishi && !options.userInfo.mamazaishi ? '的爸爸带上美好的祝福和希望，为你取名' : '被福利院随便取了个名字叫'}【${options.userInfo.name}】`,
+    style: () => ({ backgroundColor: 'rgb(206, 240, 255)' }),
     times: (times = 1) => 1,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 1] })
   },
@@ -28,7 +30,7 @@ export default {
     ...defaultCertainEvent,
     text: () => '【勇气达成100——你很勇哦】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果...(魅力+10，体质-1，智力-1)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [12, MAXNUM], yongqi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
       meili: 10,
@@ -41,7 +43,7 @@ export default {
     ...defaultCertainEvent,
     text: () => '【勇气达成100——勇个屁】在路上你遇到了杰哥，他觉得你很勇，邀请你到他的房子里康些好康的东西，你当然觉得你很勇，就跟着去了，结果他好像发现了什么，突然说：你勇个屁。然后吧你赶走了，你愣在了原地，不知所措(运气+4，魅力-2)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [18, MAXNUM], yongqi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [12, MAXNUM], yongqi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
       yunqi: 4,
@@ -64,7 +66,7 @@ export default {
     ...defaultCertainEvent,
     text: () => '【体质达成100——发育得不错嘛】杰哥温柔地捏了你的大腿几下，说：发育得不错嘛，还蛮结实的喔。然后...(魅力+10，勇气-2)',
     times: () => 1,
-    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [18, MAXNUM], tizhi: [100, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [1, 2], age: [12, MAXNUM], tizhi: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
       ...attr,
       meili: 10,
@@ -272,6 +274,23 @@ export default {
     times: (initTimes = MAXNUM) => initTimes,
     timesOfUnit: (times = 1) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [5, 18], babazaishi: [1, MAXNUM] })
+  },
+  diyicishuohua: {
+    ...defaultNormalEvent,
+    text: (options) => `你出生以来第一次清晰地喊出${options.userInfo.babazaishi && options.userInfo.mamazaishi ? (getRandom() === 0 ? '妈咪，你妈妈喜极而泣' : '爸比，你爸猛男落泪') : options.userInfo.babazaishi ? '爸比，你爸猛男落泪' : options.userInfo.mamazaishi ? '妈咪，你妈妈喜极而泣' : 'hi，周围的人都惊呆了'}，大家都说你早说话，以后一定口齿伶俐`,
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 2], dengji_koucai: [0, 1] }),
+    effectAttr: (attr = {}) => ({ ...attr, dengji_koucai: 2 })
+  },
+  diyicishuohua2: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: (options) => `你出生以来第一次清晰地喊出${options.userInfo.babazaishi && options.userInfo.mamazaishi ? (getRandom() === 0 ? '妈咪，你妈妈喜极而泣' : '爸比，你爸猛男落泪') : options.userInfo.babazaishi ? '爸比，你爸猛男落泪' : options.userInfo.mamazaishi ? '妈咪，你妈妈喜极而泣' : 'hi，周围的人都惊呆了'}，大家都说你晚说话，以后嘴巴可能会比较笨`,
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [2, 3], dengji_koucai: [0, 1] }),
+    effectAttr: (attr = {}) => ({ ...attr, dengji_koucai: 1 })
   },
   // 选项/多选/绑定事件结果（注：一般都是被动事件）
   jiemojirouchuan_jieguo1: {

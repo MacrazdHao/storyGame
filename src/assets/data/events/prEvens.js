@@ -53,6 +53,7 @@ export default {
     // ...defaultCertainEvent,
     ...defaultPrEvent,
     text: () => '新的一年开始了',
+    style: () => ({ backgroundColor: 'red', color: '#fff' }),
     times: () => MAXNUM,
     prEvents: (events = {}) => ({
       ...events,
