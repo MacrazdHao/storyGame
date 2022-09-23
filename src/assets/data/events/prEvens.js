@@ -50,7 +50,7 @@ export default {
   },
   guoxinnian: {
     ...defaultNormalEvent,
-    ...defaultCertainEvent,
+    // ...defaultCertainEvent,
     ...defaultPrEvent,
     text: () => '新的一年开始了',
     times: () => MAXNUM,

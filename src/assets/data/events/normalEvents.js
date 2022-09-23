@@ -651,7 +651,7 @@ export default {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '【木剑】这虽然只是一把粗劣的木剑，但你仿佛天生对这种剑形状的东西异常敏感，根本无法克制它对你的吸引力(体质+4，剑术天赋+1)',
+    text: (options) => '【木剑】这虽然只是一把粗劣的木剑，但你仿佛天生对这种剑形状的东西异常敏感，根本无法克制它对你的吸引力(体质+4)',
     triggerConditions: (attr = {}) => ({
       ...attr,
       tizhi: [5, MAXNUM],
@@ -701,7 +701,7 @@ export default {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '【仙女棒】这虽然只是一把粗劣的塑料玩具，但你仿佛天生对魔法棒这种东西异常敏感，仿佛拥有魔力一般将你吸引住(智力+4，魔法天赋+1)',
+    text: (options) => '【仙女棒】这虽然只是一把粗劣的塑料玩具，但你仿佛天生对魔法棒这种东西异常敏感，仿佛拥有魔力一般将你吸引住(智力+4)',
     triggerConditions: (attr = {}) => ({
       ...attr,
       zhili: [5, MAXNUM],

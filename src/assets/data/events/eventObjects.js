@@ -69,7 +69,7 @@ export const defaultNormalEvent = {
   text: (options) => '',
   times: (initTimes = MAXNUM) => initTimes,
   timesOfUnit: (times = 1) => times,
-  curTimesOfUnit: (times = 1) => times,
+  // curTimesOfUnit: (times = 1) => times,
   triggerConditions: (attr = { age: [0, MAXNUM] }) => ({ ...attr }),
   execNormalDefaultWhenMismatchConditions: (execDefault = false) => execDefault,
   effectAttr: (attr = {}) => ({ ...attr }),

@@ -113,7 +113,8 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
     }
     eventObj = {
       ...AllEvents[key],
-      ...eventObj
+      ...eventObj,
+      curTimesOfUnit: eventObj.timesOfUnit
     }
   } else {
     eventObj = JSON.parse(JSON.stringify(events[key]))
@@ -437,7 +438,7 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   return (!event || typeof event === 'string') ? 'end' : { key, event }
 }
 
-export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, randomEventNum = 2) => {
+export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, randomEventNum = 3) => {
   if (EventsRecord[userId].stack.duration.length) {
     // 延迟事件倒计时结算
     for (let i = 0; i < EventsRecord[userId].stack.duration.length; i++) {
@@ -490,7 +491,9 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
     // 移除耗尽次数的内容
     EventsRecord[userId].extraEventTimes[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
   }
-  // 获取当前单位时间的随机事件(2)
+  // 插入过新年事件
+  EventsRecord[userId].stack.priority.push('guoxinnian')
+  // 获取当前单位时间的随机事件(3)
   const randomEventKeys = Object.keys(NonPassiveEvents)
   const randomEvents = []
   for (let i = 0; i < randomEventNum; i++) {
