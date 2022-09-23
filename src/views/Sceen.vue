@@ -60,19 +60,25 @@
               }"
               v-if="item.viewSingleOptions"
             >
-              <div
-                class="eventsBox-list-item-extra-optionBox-item"
-                v-for="(option, oindex) in item.viewSingleOptions"
-                :key="oindex"
-              >
+              <template v-for="(option, oindex) in item.viewSingleOptions">
                 <div
-                  class="button eventsBox-list-item-extra-optionBox-item-option"
-                  :style="{ color: option.color }"
-                  @click="selectSingleOption(option)"
+                  class="eventsBox-list-item-extra-optionBox-item"
+                  v-if="!option.hide"
+                  :key="oindex"
                 >
-                  {{ option.text }}
+                  <div
+                    :class="[
+                      'button',
+                      option.disabled ? 'button--disabled' : '',
+                      'eventsBox-list-item-extra-optionBox-item-option',
+                    ]"
+                    :style="{ color: option.color }"
+                    @click="selectSingleOption(option)"
+                  >
+                    {{ option.text }}
+                  </div>
                 </div>
-              </div>
+              </template>
             </div>
             <div
               class="eventsBox-list-item-extra-optionBox"
@@ -82,25 +88,28 @@
               }"
               v-if="item.viewMultipleOptions"
             >
-              <div
-                class="eventsBox-list-item-extra-optionBox-item"
-                v-for="(option, oindex) in item.viewMultipleOptions"
-                :key="oindex"
-              >
+              <template v-for="(option, oindex) in item.viewMultipleOptions">
                 <div
-                  :class="[
-                    'button',
-                    selectedMultipleOptionIndex.includes(oindex)
-                      ? 'button--active'
-                      : '',
-                    'eventsBox-list-item-extra-optionBox-item-option',
-                  ]"
-                  :style="{ color: option.color }"
-                  @click="selectMultipleOption(oindex)"
+                  class="eventsBox-list-item-extra-optionBox-item"
+                  v-if="!option.hide"
+                  :key="oindex"
                 >
-                  {{ option.text }}
+                  <div
+                    :class="[
+                      'button',
+                      option.disabled ? 'button--disabled' : '',
+                      selectedMultipleOptionIndex.includes(oindex)
+                        ? 'button--active'
+                        : '',
+                      'eventsBox-list-item-extra-optionBox-item-option',
+                    ]"
+                    :style="{ color: option.color }"
+                    @click="selectMultipleOption(oindex, option)"
+                  >
+                    {{ option.text }}
+                  </div>
                 </div>
-              </div>
+              </template>
             </div>
             <div
               class="button eventsBox-list-item-extra-confirm"
@@ -113,7 +122,14 @@
         </div>
       </div>
     </div>
-    <div class="button nextButton" @click="getOneEvent(true)">
+    <div
+      :class="[
+        'button',
+        !this.enabledNextUnitTimeButton ? 'button--disabled' : '',
+        'nextButton',
+      ]"
+      @click="getOneEvent(true)"
+    >
       {{ nextButtonString }}
     </div>
   </div>
@@ -132,7 +148,7 @@ import {
   getNextEvent,
   toNewUnitTime,
   createUser
-} from '../assets/data/events'
+} from '../assets/data'
 export default {
   components: {},
   data () {
@@ -145,7 +161,8 @@ export default {
         jiajing: '家境',
         yongqi: '勇气',
         yunqi: '运气',
-        zhili: '智力'
+        zhili: '智力',
+        jiankang: '健康'
       },
       userStatusInfoLabels: {
         zailaojia: '在老家'
@@ -161,6 +178,7 @@ export default {
         sex: 1,
         age: -1,
         tizhi: 3,
+        jiankang: 3,
         zhili: 3,
         meili: 3,
         jiajing: 3,
@@ -168,19 +186,27 @@ export default {
         yunqi: 3
       },
       userStatus: {
+        // 常规状态，天赋，特质
         jieshu: 0,
         siwang: 0,
-        zaijia: 1,
+        zailaojia: 1,
         mamazaishi: 1,
         babazaishi: 1,
         danshen: 1,
         lianaicishu: 0,
         chunan: 1,
         linglixiulian: 0,
-        routibusi: 0
+        routibusi: 0, // 肉体不死
+        tezhi_meishaonvzhanshi: 0,
+        tezhi_weizhi: 0,
+        tianfu_jianshu: 0,
+        tianfu_mofa: 0
       },
       userBuffs: {
-        fennu: 0
+        // Buff，特殊等级
+        fennu: 0,
+        dengji_jianshu: 0,
+        dengji_weiwuzhuyi: 30
       },
       unitTimeInfo: {
         curUnitTimeNum: 0,
@@ -255,7 +281,7 @@ export default {
     },
     textOptions () {
       return {
-        userInfo: { ...this.userInfo, ...this.userStatus },
+        userInfo: { ...this.userInfo, ...this.userStatus, ...this.userBuffs },
         unitTimeInfo: { ...this.unitTimeInfo }
       }
     },
@@ -276,6 +302,12 @@ export default {
     }
   },
   watch: {
+    userInfo () {
+      const { jiankang, tizhi } = this.userInfo
+      if (jiankang > tizhi * 10 + 10) {
+        this.$set(this.userInfo, 'jiankang', tizhi * 10 + 10)
+      }
+    },
     userStatus () {
       if (this.userStatus.danshen === 0) {
         this.$set(this.userStatus, 'yizhidanshen', 0)
@@ -287,10 +319,16 @@ export default {
   },
   mounted () {
     createUser(this.userInfo.userId)
+    this.initUserInfo()
     this.toNewUnitTime()
   },
   methods: {
-    selectMultipleOption (index) {
+    initUserInfo () {
+      const { tizhi } = this.userInfo
+      this.$set(this.userInfo, 'jiankang', tizhi * 10 + 10)
+    },
+    selectMultipleOption (index, option) {
+      if (option.disabled || option.hide) return
       if (this.selectedMultipleOptionIndex.includes(index)) {
         this.selectedMultipleOptionIndex =
           this.selectedMultipleOptionIndex.filter((item) => item !== index)
@@ -307,6 +345,7 @@ export default {
       this.getOneEvent()
     },
     selectSingleOption (option) {
+      if (option.disabled || option.hide) return
       selectOptEventOption(this.userInfo.userId, option)
       this.getOneEvent()
     },
@@ -320,7 +359,11 @@ export default {
     },
     toNewUnitTime () {
       this.updateUserAge()
-      toNewUnitTime(this.userInfo.userId, this.curConditions)
+      toNewUnitTime(
+        this.userInfo.userId,
+        this.eventOptions,
+        this.curConditions
+      )
       this.newUnitTime = false
     },
     getOneEvent (fromButton = false) {
@@ -482,8 +525,9 @@ export default {
             flex-wrap: wrap;
             width: 100%;
             &-item {
-              width: calc(33.333% - 8px);
-              margin: 0 4px;
+              min-width: calc(33.333% - 8px);
+              max-width: 100%;
+              margin: 2px 4px;
               &-option {
               }
             }
@@ -513,6 +557,9 @@ export default {
     transition: 0.2s all;
     padding: 4px 8px;
     box-sizing: border-box;
+  }
+  .button--disabled {
+    background-color: rgb(149, 163, 255) !important;
   }
   .button--active {
     background-color: rgb(93, 114, 255) !important;
