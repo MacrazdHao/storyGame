@@ -14,6 +14,20 @@ import {
   defaultCertainEvent
 } from './eventObjects'
 export default {
+  // 常规事件
+  shenmishitou: {
+    ...defaultNormalEvent,
+    ...defaultPrEvent,
+    text: () => '你在地上捡了个形状不正常的黑石头，刚拿起来就有一股黑烟冒了出来，逐渐凝成一个人影...',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    prNumber: (num = 1) => num,
+    prEvents: (events = {}) => ({
+      shenmishitou_jieguo2: 10,
+      ...events
+    }),
+    prDefault: (eventKey = 'shenmishitou_jieguo1') => eventKey
+  },
   // 概率结果-事件
   gailv: {
     ...defaultNormalEvent,
@@ -29,6 +43,10 @@ export default {
       passive1: 10,
       passive2: 20,
       ...events
+    }),
+    prGoodOrBad: (event = {}) => ({
+      ...event,
+      passive1: RareValue.RARE
     })
   },
   beidong_gailv: {

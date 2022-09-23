@@ -10,7 +10,7 @@
  ** 【事件触发条件[min, max)】triggerConditions: (attr[Object({ 'Attr[String]': [Array(Number, 2)] })]) => Object
  ** 【不符合条件时是否执行普通事件默认事件标识】execNormalDefaultWhenMismatchConditions: (execDefault[Boolean]) => Boolean
  ** 【事件属性影响】effectAttr: (attr[Object({ 'Attr[String]': Number })]) => Object
- ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({'times': Number, 'timesOfUnit': Number, 'timesReplace': Boolean, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
+ ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({ 'timesOfUnit': Number, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
  ** 【概率事件结果额外概率调整】prEventsExtraWeight: (events[Object({ 'EventName[String]': Object({'lastUnitTime': Number, persent: Number, 'weight': Number, 'times': Number, 'weightReplace': Boolean}) })]) => Object
  ** 【额外随机事件概率触发】extraRandomEvents: (events[Object({ 'EventName[String]': Object({'persent': Number, 'lastUnitTime': Number, 'times': Number, 'persentReplace': Boolean}) })]) => Object
  ** 【普通事件默认事件】normalDefault: (eventKey[String]) => String
@@ -72,7 +72,7 @@ export const defaultNormalEvent = {
   // 普通事件，当某些条件下无可执行的结果，则会默认执行normalDefault事件
   // text每次调用事件都必须重构
   text: (options) => '',
-  style: (options) => {},
+  style: (options) => ({}),
   times: (initTimes = MAXNUM) => initTimes,
   timesOfUnit: (times = 1) => times,
   // curTimesOfUnit: (times = 1) => times,

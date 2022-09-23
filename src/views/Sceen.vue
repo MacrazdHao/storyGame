@@ -184,7 +184,7 @@ export default {
         meili: 3,
         jiajing: 3,
         yongqi: 3,
-        yunqi: 3
+        yunqi: 6
       },
       userStatus: {
         // 常规状态，天赋，特质
@@ -208,7 +208,8 @@ export default {
         fennu: 0,
         dengji_jianshu: 0,
         dengji_weiwuzhuyi: 30,
-        dengji_koucai: 1
+        dengji_koucai: 1,
+        dengji_linghun: 10
       },
       unitTimeInfo: {
         curUnitTimeNum: 0,

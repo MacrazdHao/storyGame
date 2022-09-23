@@ -137,6 +137,16 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       }
     }
   }
+  // 额外事件次数叠加/覆盖
+  if (EventsRecord[userId].extraEventTimes[key]) {
+    for (let i = 0; i < EventsRecord[userId].extraEventTimes[key].length; i++) {
+      if (EventsRecord[userId].extraEventTimes[key][i].lastUnitTime > 0) {
+        const { timesOfUnit, times, timesOfUnitReplace, timesReplace } = EventsRecord[userId].extraEventTimes[key][i]
+        eventObj.curTimesOfUnit = typeof timesOfUnit === 'number' ? (timesOfUnit + (timesOfUnitReplace ? 0 : eventObj.curTimesOfUnit)) : eventObj.timesOfUnit
+        eventObj.times = typeof times === 'number' ? (times + (timesReplace ? 0 : eventObj.times)) : eventObj.times
+      }
+    }
+  }
   for (const key in eventObj.triggerConditions) {
     if (typeof conditions[key] === 'undefined') {
       if (eventObj.execNormalDefaultWhenMismatchConditions || execNormalDefaultWhenMismatchConditions) return getEventObj(userId, { key: eventObj.normalDefault, options }, conditions)
@@ -254,11 +264,9 @@ export const selectMultiOptEventOptions = (userId, conditions, _event, selection
     const mixEventSelections = rkey.split('_').map(item => parseInt(item))
     mixEventSelections.sort((a, b) => a - b)
     const rSeletions = JSON.stringify(mixEventSelections)
-    console.log(cSelections, rSeletions)
     if (rSeletions === cSelections) {
       eventKey = multiMixEvents[rkey]
       eventObj = getEventObj(userId, { key: multiMixEvents[rkey] }, conditions)
-      console.log(eventObj)
       // 判断当前选项的反馈事件是否可用
       switch (eventObj) {
         case EventCode.NotExist:
@@ -296,17 +304,29 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
   }
   // 【关联事件影响】effectEvents
   for (const ekey in event.effectEvents) {
-    const { times, timesOfUnit, timesReplace, timesOfUnitReplace, lastUnitTime } = event.effectEvents[ekey]
-    EventsRecord[userId].events[ekey].times = timesReplace ? times : (EventsRecord[userId].events[ekey].times + times)
-    // 此处不作处理，下一个单位时间开始加成
-    EventsRecord[userId].extraEventTimes[ekey].push({ timesOfUnit, timesOfUnitReplace, lastUnitTime })
+    if (!EventsRecord[userId].extraEventTimes[ekey]) EventsRecord[userId].extraEventTimes[ekey] = []
+    const { times, timesReplace, timesOfUnit, timesOfUnitReplace, lastUnitTime } = event.effectEvents[ekey]
+    // 当前不作处理，下一个单位时间开始加成
+    const extraEventTimesObj = {}
+    if (typeof timesOfUnit === 'number') {
+      extraEventTimesObj.timesOfUnit = timesOfUnit
+      extraEventTimesObj.timesOfUnitReplace = !!timesOfUnitReplace
+    }
+    if (typeof times === 'number') {
+      extraEventTimesObj.times = times
+      extraEventTimesObj.timesReplace = !!timesReplace
+    }
+    extraEventTimesObj.lastUnitTime = lastUnitTime || 1
+    EventsRecord[userId].extraEventTimes[ekey].push(extraEventTimesObj)
   }
   // 【概率事件结果额外概率调整】prEventsExtraWeight
   for (const ekey in event.prEventsExtraWeight) {
+    if (!EventsRecord[userId].prEventsExtraWeight[ekey]) EventsRecord[userId].prEventsExtraWeight[ekey] = []
     EventsRecord[userId].prEventsExtraWeight[ekey].push(JSON.parse(JSON.stringify(event.prEventsExtraWeight[ekey])))
   }
   // 【额外随机事件概率触发】extraRandomEvents
   for (const ekey in event.extraRandomEvents) {
+    if (!EventsRecord[userId].extraRandomEvents[ekey]) EventsRecord[userId].extraRandomEvents[ekey] = []
     EventsRecord[userId].extraRandomEvents[ekey].push(JSON.parse(JSON.stringify(event.extraRandomEvents[ekey])))
   }
   // 【绑定事件】bindEvents
@@ -337,24 +357,32 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
     const yunqiPersent = Math.abs(0.01 * realYunqi)
     let totalWeight = 0
     for (const pkey in prEvents) {
-      let weight = prEvents[pkey]
+      let realWeight = prEvents[pkey]
       // 【概率事件结果额外概率调整】prEventsExtraWeight
-      if (EventsRecord[userId].prEventsExtraWeight[key]) {
-        for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[key].length; i++) {
-          if (EventsRecord[userId].prEventsExtraWeight[key].lastUnitTime <= 0 || EventsRecord[userId].prEventsExtraWeight[key].lastTimes <= 0) continue
-          EventsRecord[userId].prEventsExtraWeight[key].lastTimes--
-          weight = EventsRecord[userId].prEventsExtraWeight[key].weightReplace ? EventsRecord[userId].prEventsExtraWeight[key].weight : (weight + weight * EventsRecord[userId].prEventsExtraWeight[key].weight)
+      if (EventsRecord[userId].prEventsExtraWeight[pkey]) {
+        for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[pkey].length; i++) {
+          const { lastUnitTime, lastTimes, weight, persent, weightReplace } = EventsRecord[userId].prEventsExtraWeight[pkey][i]
+          if (lastUnitTime <= 0 || lastTimes <= 0 || (!weight && !persent)) continue
+          EventsRecord[userId].prEventsExtraWeight[pkey][i].lastTimes--
+          // weightReplace置true后，persent无效
+          // weightReplace置false时，先以原概率基数*persent再叠加weight
+          // 不设置weight时，weightReplace不生效
+          realWeight = realWeight * (1 + (persent / 100))
+          if (typeof weight === 'number') realWeight = weightReplace ? weight : (realWeight + weight)
         }
       }
+      console.log('概率调整', realWeight)
       if (prGoodOrBad[pkey]) {
+        // 运气概率增幅由原概率基数决定，与prEventsExtraWeight效果不互相作用
         // 运气>3，好事概率增幅，运气<3，坏事概率减幅
-        if (prGoodOrBad[pkey] > 0) weight = weight + (realYunqi > 0 ? 1 : -1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+        if (prGoodOrBad[pkey] > 0) realWeight = realWeight + (realYunqi > 0 ? 1 : -1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
         // 运气>3，坏事概率减幅，运气<3，坏事概率增幅
-        if (prGoodOrBad[pkey] < 0) weight = weight + (realYunqi > 0 ? -1 : 1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+        if (prGoodOrBad[pkey] < 0) realWeight = realWeight + (realYunqi > 0 ? -1 : 1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
       }
-      prEvents[pkey] = weight
+      prEvents[pkey] = realWeight
       totalWeight += prEvents[pkey]
     }
+    console.log('概率调整', prEvents)
     let randomEvents = []
     const prEventKeys = Object.keys(prEvents)
     // 按权重大小倒序排序（由大到小）
@@ -419,10 +447,10 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
     }
   }
   // 额外概率随机事件
-  if ((!event || typeof event === 'string') && JSON.stringify(EventsRecord[userId].extraRandomEvents) !== '{}') {
+  if (!event || typeof event === 'string') {
     for (const ekey in EventsRecord[userId].extraRandomEvents) {
       for (let i = 0; i < EventsRecord[userId].extraRandomEvents[ekey].length; i++) {
-        if (EventsRecord[userId].extraRandomEvents[ekey][i].lastUnitTime || EventsRecord[userId].extraRandomEvents[ekey][i].times <= 0) continue
+        if (EventsRecord[userId].extraRandomEvents[ekey][i].lastUnitTime <= 0 || EventsRecord[userId].extraRandomEvents[ekey][i].times <= 0) continue
         const randomNum = (Math.random() * 100).toFixed(0)
         if (EventsRecord[userId].extraRandomEvents[ekey][i].persent >= randomNum) {
           EventsRecord[userId].extraRandomEvents[ekey][i].times--
@@ -436,13 +464,11 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
   }
   // 常规事件栈
   if ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
-    console.log('===>', key)
     while ((!event || typeof event === 'string') && EventsRecord[userId].stack.common.length) {
       key = EventsRecord[userId].stack.common.pop()
       event = getEventObj(userId, { key, ...options }, conditions)
     }
   }
-  console.log('===>', event)
   return (!event || typeof event === 'string') ? 'end' : { key, event }
 }
 
@@ -473,7 +499,7 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
       }
     }
     // 移除耗尽次数的内容
-    EventsRecord[userId].extraEventTimes[ekey].filter((item, index) => !noLastUnitTimeExtraWeightIndex[`${index}`])
+    EventsRecord[userId].prEventsExtraWeight[ekey].filter((item, index) => !noLastUnitTimeExtraWeightIndex[`${index}`])
   }
   // 结算额外每单位时间事件次数剩余持续单位时间数
   for (const ekey in EventsRecord[userId].extraEventTimes) {
@@ -497,7 +523,7 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
       }
     }
     // 移除耗尽次数的内容
-    EventsRecord[userId].extraEventTimes[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
+    EventsRecord[userId].extraRandomEvents[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
   }
   // 插入过新年事件
   if (!EventsRecord[userId].stack.priority.includes('guoxinnian'))EventsRecord[userId].stack.priority.push('guoxinnian')
@@ -523,7 +549,6 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
       default: randomEvents.push(randomEventKeys[randomNum])
     }
   }
-  console.log(randomEvents)
   pushEventKeyToStack(userId, randomEvents)
   if (callback) callback()
 }

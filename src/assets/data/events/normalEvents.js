@@ -292,7 +292,96 @@ export default {
     triggerConditions: (attr = {}) => ({ ...attr, age: [2, 3], dengji_koucai: [0, 1] }),
     effectAttr: (attr = {}) => ({ ...attr, dengji_koucai: 1 })
   },
-  // 选项/多选/绑定事件结果（注：一般都是被动事件）
+  babamaiwanju: {
+    ...defaultNormalEvent,
+    text: (options) => '你爸给你买了新的益智玩具，你高兴极了(智力+1)',
+    times: (initTimes = 3) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 14], babazaishi: [1, MAXNUM] }),
+    effectAttr: (attr = {}) => ({ ...attr, zhili: 1 })
+  },
+  mamamaiwanju: {
+    ...defaultNormalEvent,
+    text: (options) => '你妈妈给你买了新的益智玩具，你高兴极了(智力+1)',
+    times: (initTimes = 3) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 14], mamazaishi: [1, MAXNUM] }),
+    effectAttr: (attr = {}) => ({ ...attr, zhili: 1 })
+  },
+  buchiqingcai: {
+    ...defaultNormalEvent,
+    text: (options) => '你不爱吃青菜，被狠狠地教训了一顿，你妈妈说不吃青菜就吃藤条焖猪肉，最后你哭着吃了大半盆的青菜',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [3, 14], mamazaishi: [1, MAXNUM] })
+  },
+  buchiqingcai2: {
+    ...defaultNormalEvent,
+    text: (options) => '你不爱吃青菜，但并没有人理你(体质-1)',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [3, 14], mamazaishi: [0, 1], babazaishi: [0, 1] }),
+    effectAttr: (attr = {}) => ({ ...attr, tizhi: -1 })
+  },
+  babamailingshi: {
+    ...defaultNormalEvent,
+    text: (options) => '你爸常常背着你妈妈给你买零食吃，零食你倒是吃得嘎嘎香，最后吃饭的时候倒是吃不下几口了',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 2) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [3, 14], babazaishi: [0, 1] })
+  },
+  jiakubaba: {
+    ...defaultNormalEvent,
+    text: (options) => '不知道你从哪里学会了假哭，俗话说爱哭的孩子有奶吃，可惜你爸不吃这套，没奶给你喝',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 5], babazaishi: [1, MAXNUM] }),
+    effectEvents: (events) => ({
+      ...events,
+      jiakumama: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      }
+    })
+  },
+  jiakumama: {
+    ...defaultNormalEvent,
+    text: (options) => '不知道你从哪里学会了假哭，俗话说爱哭的孩子有奶吃，你妈妈一看你哭就心疼，对你十分宠溺，虽然你年纪不大，却能感受到十足的母爱',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 5], mamazaishi: [1, MAXNUM] }),
+    effectEvents: (events) => ({
+      ...events,
+      jiakubaba: {
+        times: 0,
+        timesReplace: true,
+        lastUnitTime: MAXNUM
+      }
+    })
+  },
+  maicaipiao: {
+    ...defaultNormalEvent,
+    // ...defaultCertainEvent,
+    text: (options) => '你买了一张彩票',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    // triggerConditions: (attr = {}) => ({ ...attr, age: [0, 5], mamazaishi: [1, MAXNUM] }),
+    extraRandomEvents: (events) => ({
+      ...events,
+      zhongcaipiao: {
+        persent: 100,
+        lastUnitTime: 2,
+        times: 2
+      }
+    })
+  },
+  zhongcaipiao: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '很可惜，你的彩票没有中奖'
+  },
+  // 选项事件结果（注：一般都是被动事件）
   jiemojirouchuan_jieguo1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
@@ -401,162 +490,6 @@ export default {
     ...defaultNormalEvent,
     ...defaultDefaultEvent,
     text: (options) => '【算了，不点】你和美味失之交臂'
-  },
-  shaoyanhua1: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，结果因为穿得太穷酸，被嘲笑了一顿然后把你赶走了(魅力-1)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      age: [5, 17],
-      jiajing: [MINNUM, 5]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      meili: -1
-    })
-  },
-  shaoyanhua2: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，小朋友们看到你身上穿着崭新的高仿奶哥牌衣服，极为羡慕，过年这段时间你都成了这条guy最靓的崽(魅力+1)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      age: [5, 17],
-      jiajing: [5, 10]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      meili: 1
-    })
-  },
-  shaoyanhua3: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '过年你爸给你买了一大堆烟花，附近的小朋友都羡慕极了，纷纷上前讨好你，好一段时间里他们都尊你为孩子王(魅力+2)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      babazaishi: [1, MAXNUM],
-      zailaojia: [1, MAXNUM],
-      age: [5, 17],
-      jiajing: [10, MAXNUM]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      meili: 2
-    })
-  },
-  shaoyanhua4: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '外面烟花噼啪响，百花齐放，但你好像完全不感兴趣',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      age: [5, MAXNUM]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr
-    })
-  },
-  shaoyanhua5: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎，把你爸妈熏得够呛',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      age: [0, 5],
-      yongqi: [MINNUM, 3]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr
-    })
-  },
-  shaoyanhua6: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '外面烟花鞭炮噼啪响，你却出其的镇定，大家都说你有大将之风(勇气+1, 魅力+1)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      age: [0, 5],
-      yongqi: [5, MAXNUM]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      yongqi: 1,
-      meili: 1
-    })
-  },
-  shaoyanhua7: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '外面烟花鞭炮噼啪响，你被吓哭了，但没多久又能平静下来，如此反复横跳了很久，你爸妈因此被折腾得不行',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      age: [0, 5],
-      yongqi: [3, 5]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr
-    })
-  },
-  mamadamajiang1: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '过年你跟着你妈去亲戚家打麻将，你在旁边大吵大闹影响了风水，亏惨了，于是你的红包被上缴了，还被骂了一顿(家境-1)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      mamazaishi: [1, MAXNUM],
-      age: [5, 18]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      zailaojia: [1, MAXNUM],
-      jiajing: -1
-    })
-  },
-  mamadamajiang2: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '过年你妈去亲戚家打麻将，亏惨了，幸好你没跟着去，不然肯定少不了一顿迁怒',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      mamazaishi: [1, MAXNUM],
-      age: [5, 18]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr
-    })
-  },
-  mamadamajiang3: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包(家境+1)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      mamazaishi: [1, MAXNUM],
-      zailaojia: [1, MAXNUM],
-      age: [5, 18],
-      jiajing: [10, MAXNUM]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiajing: 1
-    })
   },
   bbzhuazhou_jieguo12: {
     ...defaultNormalEvent,
@@ -733,8 +666,207 @@ export default {
       tianfu_mofa: 1
     })
   },
+  // 多选事件结果（注：一般都是被动事件）
+  shenmishitou_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '随后你就什么都没看清，直接眼前一黑倒在了地上，到了半夜你才醒了过来，你觉得自己脑子好像不太好使了，不知道是不是错觉(智力-2)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zhili: -2
+    })
+  },
+  shenmishitou_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '没等你反应过来，那团黑影朝着你的脑袋就是嗖的一下飞了过来，接着你脑袋里就响起了一道尖叫：啊！不可能！你的灵魂怎么可能...，接着你就晕了过去。等你醒来之后发现石头已经消失不见，你感觉浑身神清气爽，脑子也异常清晰(智力+3)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      dengji_linghun: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zhili: 3,
+      dengji_linghun: 2
+    })
+  },
+  // 概率事件结果（注：一般都是被动事件）
+  shaoyanhua1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，结果因为穿得太穷酸，被嘲笑了一顿然后把你赶走了(魅力-1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
+      jiajing: [MINNUM, 5]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: -1
+    })
+  },
+  shaoyanhua2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '看到其他小朋友们烧烟花烧得起劲，你走过去也想上去烧，小朋友们看到你身上穿着崭新的高仿奶哥牌衣服，极为羡慕，过年这段时间你都成了这条guy最靓的崽(魅力+1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
+      jiajing: [5, 10]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 1
+    })
+  },
+  shaoyanhua3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你爸给你买了一大堆烟花，附近的小朋友都羡慕极了，纷纷上前讨好你，好一段时间里他们都尊你为孩子王(魅力+2)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      babazaishi: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
+      age: [5, 17],
+      jiajing: [10, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: 2
+    })
+  },
+  shaoyanhua4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花噼啪响，百花齐放，但你好像完全不感兴趣',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      age: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  shaoyanhua5: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你被吓出了屎，把你爸妈熏得够呛',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [MINNUM, 3]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  shaoyanhua6: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你却出其的镇定，大家都说你有大将之风(勇气+1, 魅力+1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      yongqi: 1,
+      meili: 1
+    })
+  },
+  shaoyanhua7: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '外面烟花鞭炮噼啪响，你被吓哭了，但没多久又能平静下来，如此反复横跳了很久，你爸妈因此被折腾得不行',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      age: [0, 5],
+      yongqi: [3, 5]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  mamadamajiang1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你跟着你妈去亲戚家打麻将，你在旁边大吵大闹影响了风水，亏惨了，于是你的红包被上缴了，还被骂了一顿(家境-1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      mamazaishi: [1, MAXNUM],
+      age: [5, 18]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zailaojia: [1, MAXNUM],
+      jiajing: -1
+    })
+  },
+  mamadamajiang2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你妈去亲戚家打麻将，亏惨了，幸好你没跟着去，不然肯定少不了一顿迁怒',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      mamazaishi: [1, MAXNUM],
+      age: [5, 18]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  mamadamajiang3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '过年你跟着你妈去亲戚家打麻将，隐约中你仿佛感应到了什么，鬼使神差地坐在了你妈身后的某个角落，结果你妈打麻将赢麻了，还给了你一封大红包(家境+1)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      mamazaishi: [1, MAXNUM],
+      zailaojia: [1, MAXNUM],
+      age: [5, 18],
+      jiajing: [10, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 1
+    })
+  },
+  // 绑定事件结果（注：一般都是被动事件）
 
   // 测试示例事件
+  zengjiagailv: {
+    ...defaultNormalEvent,
+    text: (options) => '【增加概率事件】',
+    prEventsExtraWeight: (events = {}) => ({
+      ...events,
+      passive1: {
+        lastUnitTime: 2,
+        times: 2,
+        persent: 50,
+        weight: 100,
+        weightReplace: true
+        // weightReplace: false
+      }
+    })
+  },
   putong1: {
     ...defaultNormalEvent,
     text: (options) => '【普通事件】'
