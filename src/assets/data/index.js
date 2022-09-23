@@ -143,7 +143,10 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       if (EventsRecord[userId].extraEventTimes[key][i].lastUnitTime > 0) {
         const { timesOfUnit, times, timesOfUnitReplace, timesReplace } = EventsRecord[userId].extraEventTimes[key][i]
         eventObj.curTimesOfUnit = typeof timesOfUnit === 'number' ? (timesOfUnit + (timesOfUnitReplace ? 0 : eventObj.curTimesOfUnit)) : eventObj.timesOfUnit
-        eventObj.times = typeof times === 'number' ? (times + (timesReplace ? 0 : eventObj.times)) : eventObj.times
+        if (!EventsRecord[userId].extraEventTimes[key][i].timesAdded) {
+          eventObj.times = typeof times === 'number' ? (times + (timesReplace ? 0 : eventObj.times)) : eventObj.times
+          EventsRecord[userId].extraEventTimes[key][i].timesAdded = true
+        }
       }
     }
   }
@@ -371,7 +374,6 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
           if (typeof weight === 'number') realWeight = weightReplace ? weight : (realWeight + weight)
         }
       }
-      console.log('概率调整', realWeight)
       if (prGoodOrBad[pkey]) {
         // 运气概率增幅由原概率基数决定，与prEventsExtraWeight效果不互相作用
         // 运气>3，好事概率增幅，运气<3，坏事概率减幅
@@ -382,7 +384,6 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
       prEvents[pkey] = realWeight
       totalWeight += prEvents[pkey]
     }
-    console.log('概率调整', prEvents)
     let randomEvents = []
     const prEventKeys = Object.keys(prEvents)
     // 按权重大小倒序排序（由大到小）
@@ -567,7 +568,7 @@ export const createUser = (userId, reset = true) => {
       // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
       // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
       // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number })] }
-      // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number })] }
+      // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number, timesAdded: Boolean })] }
       prEventsExtraWeight: {},
       extraRandomEvents: {},
       extraEventTimes: {},
