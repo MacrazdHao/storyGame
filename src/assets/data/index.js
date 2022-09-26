@@ -184,10 +184,10 @@ export const getCertainEvent = (userId, eventOptions, conditions) => {
 export const pushEventKeyToStack = (userId, events = [], stackType = 'common') => {
   EventsRecord[userId].stack[stackType].push(...events)
 }
-
 export const getOptEventOptions = (userId, _event, curConditions) => {
   const event = JSON.parse(JSON.stringify(_event))
-  if (!event.optEvents) return []
+  const defaultOption = { color: '#000', text: '跳过', event: event.optDefault, disabled: false, hide: false }
+  if (!event.optEvents) return [defaultOption]
   const options = []
   // 将可选项根据当前状态和条件解析出可用内容
   for (const key in event.optEvents) {
@@ -214,6 +214,7 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
     }
     options.push(option)
   }
+  if (options.length === 0)options.push(defaultOption)
   return options
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }

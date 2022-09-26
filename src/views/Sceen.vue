@@ -117,7 +117,7 @@
               v-if="item.viewMultipleOptions"
               @click="submitMultipleOptions(item)"
             >
-              确定
+              {{ mutipleConfirmButtonText }}
             </div>
           </div>
         </div>
@@ -309,6 +309,9 @@ export default {
           style: this.styleOptions
         }
       }
+    },
+    mutipleConfirmButtonText () {
+      return this.selectedMultipleOptionIndex.length === 0 ? '跳过' : '确定'
     }
   },
   watch: {

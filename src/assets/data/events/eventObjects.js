@@ -57,17 +57,7 @@ export const getRandom = (max = 1) => {
   return (Math.random() * max).toFixed(0)
 }
 
-export const defaultDefaultEvent = {
-  // 默认事件，仅可通过命令行调用的默认事件，默认事件也可以是[概率事件/绑定事件/可选事件]事件，但不可以作为被动/必然事件
-  isDefault: (_default = true) => true,
-  // 注：被动事件和必然事件相冲
-  isCertain: (certain = false) => false,
-  // 注：必然事件和被动事件相冲
-  isPassive: (passive = false) => false,
-  // 默认事件的执行次数必须为【MAXNUM】
-  times: (initTimes = MAXNUM) => MAXNUM,
-  timesOfUnit: (times = MAXNUM) => MAXNUM
-}
+// 原始事件类型
 export const defaultNormalEvent = {
   // 普通事件，当某些条件下无可执行的结果，则会默认执行normalDefault事件
   // text每次调用事件都必须重构
@@ -86,6 +76,36 @@ export const defaultNormalEvent = {
   extraRandomEvents: (events = {}) => ({ ...events }),
   normalDefault: (eventKey = 'putongmoren') => eventKey
 }
+// 基础事件类型
+export const defaultDefaultEvent = {
+  // 默认事件，仅可通过命令行调用的默认事件，默认事件也可以是[概率事件/绑定事件/可选事件]事件，但不可以作为被动/必然事件
+  isDefault: (_default = true) => true,
+  // 注：被动事件和必然事件相冲
+  isCertain: (certain = false) => false,
+  // 注：必然事件和被动事件相冲
+  isPassive: (passive = false) => false,
+  // 默认事件的执行次数必须为【MAXNUM】
+  times: (initTimes = MAXNUM) => MAXNUM,
+  timesOfUnit: (times = MAXNUM) => MAXNUM
+}
+export const defaultPassiveEvent = {
+  // 被动事件，非主动事件，不可直接触发，仅通过概率/绑定/可选事件触发
+  isPassive: (passive = true) => true,
+  // 注：被动事件和必然事件相冲
+  isCertain: (certain = false) => false,
+  // 注：被动事件和默认事件相冲
+  isDefault: (_default = false) => false
+}
+export const defaultCertainEvent = {
+  // 必然事件，达到条件必定触发
+  isCertain: (certain = true) => true,
+  unitTimeBegin: (unitTimeBegin = true) => unitTimeBegin,
+  // 注：必然事件和被动事件相冲
+  isPassive: (passive = false) => false,
+  // 注：必然事件和默认事件相冲
+  isDefault: (_default = false) => false
+}
+// 功能事件类型
 export const defaultPrEvent = {
   // 概率结果事件，按权重概率触发结果事件，当某些条件下无可执行的结果，则会默认执行prDefault事件
   prNumber: (num = 1) => num,
@@ -115,21 +135,4 @@ export const defaultMultiOptEvent = {
   multiOptDefault: (eventKey = 'duoxuanmoren') => eventKey,
   // 注：多选事件和单选事件相冲
   optEvents: (events = {}) => null
-}
-export const defaultPassiveEvent = {
-  // 被动事件，非主动事件，不可直接触发，仅通过概率/绑定/可选事件触发
-  isPassive: (passive = true) => true,
-  // 注：被动事件和必然事件相冲
-  isCertain: (certain = false) => false,
-  // 注：被动事件和默认事件相冲
-  isDefault: (_default = false) => false
-}
-export const defaultCertainEvent = {
-  // 必然事件，达到条件必定触发
-  isCertain: (certain = true) => true,
-  unitTimeBegin: (unitTimeBegin = true) => unitTimeBegin,
-  // 注：必然事件和被动事件相冲
-  isPassive: (passive = false) => false,
-  // 注：必然事件和默认事件相冲
-  isDefault: (_default = false) => false
 }
