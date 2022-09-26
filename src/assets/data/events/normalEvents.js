@@ -127,7 +127,7 @@ export default {
   changtiaorap: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【魅力达成100——唱跳Rap】你人不仅长得炫，唱跳Rap篮球还样样精通，就连练习两年半的练习生阿坤都对你佩服得五体投地，某博打榜你月月稳居第一，无人超越(家境+10，体质+2)',
+    text: () => '【魅力达成100——唱跳Rap】你人不仅长得炫，唱跳Rap篮球还样样精通，就连练习两年半的练习生阿坤都自叹不如，某博打榜你月月稳居第一，无人超越(家境+10，体质+2)',
     times: () => 1,
     triggerConditions: (attr = {}) => ({ ...attr, age: [4, MAXNUM], meili: [100, MAXNUM] }),
     effectAttr: (attr = {}) => ({
@@ -168,6 +168,19 @@ export default {
     effectAttr: (attr = {}) => ({
       ...attr,
       meili: -3
+    })
+  },
+  mutaidanshen_zhong: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【红尘之外】可艳可飒，看破红尘，独善其身，一人吃饱，全家不饿(智力+3，魅力+2，勇气+2)',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [40, MAXNUM], lianaicishu: [0, 1] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zhili: 3,
+      meili: 2,
+      yongqi: 2
     })
   },
   kaizhi: {
@@ -216,7 +229,7 @@ export default {
   },
   xiyinwenzi: {
     ...defaultNormalEvent,
-    text: (options) => '你的咿咿呀呀声莫名吸引蚊子，难道你上辈子是蚊子，懂蚊子的语言？',
+    text: (options) => '你的咿咿呀呀声莫名吸引蚊子，嘴里还跑进去了好几只，你呸都呸不及，难道你上辈子是蚊子，懂蚊子的语言？',
     times: (initTimes = 1) => initTimes,
     timesOfUnit: (times = 1) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 2] })
@@ -241,7 +254,30 @@ export default {
     text: (options) => `${options.userInfo.age < 3 ? '你学会了走路，还意外马上学会了跑步，在极度兴奋之下，一下子' : '你正打算上床睡觉，一不小心'}撞到了脚趾尾，那酸爽...`,
     times: (initTimes = MAXNUM) => initTimes,
     timesOfUnit: (times = MAXNUM) => times,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [1, MAXNUM] })
+    triggerConditions: (attr = {}) => ({ ...attr, age: [2, MAXNUM] }),
+    effectEvents: (events) => ({
+      ...events,
+      xuebuche: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      },
+      xuebuche2: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      },
+      xuebuche3: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      },
+      xuebuchepiaoyi: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      }
+    })
   },
   dayufangzhen: {
     ...defaultNormalEvent,
@@ -294,18 +330,33 @@ export default {
   },
   babamaiwanju: {
     ...defaultNormalEvent,
+    text: (options) => '你爸给你买了新的玩具，但你因为年龄太小还不会玩，一拿起来就给摔坏了',
+    times: (initTimes = 3) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 4], babazaishi: [1, MAXNUM] })
+  },
+  babamaiwanju2: {
+    ...defaultNormalEvent,
     text: (options) => '你爸给你买了新的益智玩具，你高兴极了(智力+1)',
     times: (initTimes = 3) => initTimes,
     timesOfUnit: (times = 1) => times,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 14], babazaishi: [1, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, 14], babazaishi: [1, MAXNUM] }),
     effectAttr: (attr = {}) => ({ ...attr, zhili: 1 })
   },
   mamamaiwanju: {
     ...defaultNormalEvent,
+    text: (options) => '你妈妈给你买了新的玩具，但你因为年龄太小还不会玩，一拿起来就给摔坏了',
+    times: (initTimes = 3) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 4], mamazaishi: [1, MAXNUM] }),
+    effectAttr: (attr = {}) => ({ ...attr, zhili: 1 })
+  },
+  mamamaiwanju2: {
+    ...defaultNormalEvent,
     text: (options) => '你妈妈给你买了新的益智玩具，你高兴极了(智力+1)',
     times: (initTimes = 3) => initTimes,
     timesOfUnit: (times = 1) => times,
-    triggerConditions: (attr = {}) => ({ ...attr, age: [1, 14], mamazaishi: [1, MAXNUM] }),
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, 14], mamazaishi: [1, MAXNUM] }),
     effectAttr: (attr = {}) => ({ ...attr, zhili: 1 })
   },
   buchiqingcai: {
@@ -360,26 +411,141 @@ export default {
       }
     })
   },
-  maicaipiao: {
+  niaozuili: {
     ...defaultNormalEvent,
-    // ...defaultCertainEvent,
-    text: (options) => '你买了一张彩票',
+    text: (options) => '洗澡时，你正面朝上滋了泡老长的尿尿，没想到却瞄准了自己的嘴巴，那股骚味，差点没把自己给呛坏',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
+  },
+  chibaba: {
+    ...defaultNormalEvent,
+    text: (options) => '就在换纸尿片的间歇，你就爬在床上屙了一大泡屎，屙就算了，你竟然还拿起一块放嘴里啃！',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
+  },
+  tunai: {
+    ...defaultNormalEvent,
+    text: (options) => '喝完奶后，你常常会吐抱你的人一身奶，据说这是婴儿常见的问题',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
+  },
+  yibaojiuku: {
+    ...defaultNormalEvent,
+    text: (options) => '家里来了客人，他们看你一脸人畜无害，就把你抱了起来，没想到一抱就在人家耳边撕心裂肺地哭喊，比十个扩音器还夸张，差点没把人家当场送走',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
+  },
+  xuebuche: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: (options) => '你第一次坐上了学步车，歪歪扭扭地移动着，周围的人看着你可爱的样子不禁怜爱之心四溢',
     times: (initTimes = 1) => initTimes,
     timesOfUnit: (times = 1) => times,
-    // triggerConditions: (attr = {}) => ({ ...attr, age: [0, 5], mamazaishi: [1, MAXNUM] }),
-    extraRandomEvents: (events) => ({
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] }),
+    effectEvents: (events) => ({
       ...events,
-      zhongcaipiao: {
-        persent: 100,
-        lastUnitTime: 2,
-        times: 2
+      xuebuche2: {
+        timesOfUnit: MAXNUM,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
       }
     })
   },
-  zhongcaipiao: {
+  xuebuche2: {
+    ...defaultNormalEvent,
+    text: (options) => '你玩学步车越来越熟练，技巧愈发纯熟',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 0) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] }),
+    extraRandomEvents: (events) => ({
+      ...events,
+      xuebuchepiaoyi: {
+        lastUnitTime: MAXNUM,
+        times: 1,
+        persent: 30
+      }
+    }),
+    effectEvents: (events) => ({
+      ...events,
+      xuebuchepiaoyi: {
+        timesOfUnit: 1,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      }
+    })
+  },
+  xuebuche3: {
+    ...defaultNormalEvent,
+    text: (options) => '你三天两头就在小区的公园和其他学步车宝宝竞速，压弯漂移，每次都把周围的叔叔阿姨阿伯阿婆惊呆了',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 0) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] }),
+    extraRandomEvents: (events) => ({
+      ...events,
+      xuebuchepiaoyi: {
+        lastUnitTime: MAXNUM,
+        times: 1,
+        persent: 30
+      }
+    })
+  },
+  xuebuchepiaoyi: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
-    text: (options) => '很可惜，你的彩票没有中奖'
+    text: (options) => '你玩学步车越来越溜，甚至还有一次偶然使出了漂移，至此之后只要你坐上学步车，你就是婴儿界的秋名山车神',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 0) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] }),
+    effectEvents: (events) => ({
+      ...events,
+      xuebuche: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      },
+      xuebuche2: {
+        timesOfUnit: 0,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      },
+      xuebuche3: {
+        timesOfUnit: MAXNUM,
+        timesOfUnitReplace: true,
+        lastUnitTime: MAXNUM
+      }
+    })
+  },
+  babakaiche: {
+    ...defaultNormalEvent,
+    text: (options) => '今天你爸爸载着你出去游车河，在减速带他竟然丝毫不减速，把在婴儿座椅上的你颠得屎都出来了',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [2, 4], babazaishi: [1, MAXNUM] })
+  },
+  biaoqingbao: {
+    ...defaultNormalEvent,
+    text: (options) => '由于你的脸部表情太过丰富，说变就变，每一张照片的都不带重样的，于是被你周围的人做成了表情包放在了微x上，下载量竟然意外的多',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 4] })
+  },
+  kenmao: {
+    ...defaultNormalEvent,
+    text: (options) => '你在别人家抓起人家的猫就是一顿啃，啃得满嘴是毛，又是一顿嚎啕大哭',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
+  },
+  haimulike: {
+    ...defaultNormalEvent,
+    text: (options) => '你吃到小粒的东西呛到，幸好你周围有人懂【海姆立克法】，不然这次得凉了',
+    times: (initTimes = 2) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [0, 8] })
   },
   // 选项事件结果（注：一般都是被动事件）
   jiemojirouchuan_jieguo1: {
@@ -664,6 +830,41 @@ export default {
       ...attr,
       zhili: 4,
       tianfu_mofa: 1
+    })
+  },
+  maicaipiao_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '很遗憾，你的彩票并没有中奖',
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  maicaipiao_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你的彩票数字离大奖也就差了两个，与大奖失之交臂，你暗暗自我安慰道：每次买彩票都是中几个数字，这彩票到底是不是暗箱操作骗人的，中大奖的一定都是内部人员(家境+2)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 2
+    })
+  },
+  maicaipiao_jieguo3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复（家境+50）',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 50
+    })
+  },
+  maicaipiao_jieguo4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复，你突然想起，这一期福利彩票恰好还搞了赠送超级加倍的活动，你成功挖空奖池，一夜之间你就变成了超级富豪（家境+100）',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 100
     })
   },
   // 多选事件结果（注：一般都是被动事件）

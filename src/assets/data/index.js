@@ -304,7 +304,11 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
   // 获取事件结果
   // 【事件属性影响】effectAttr
   for (const akey in event.effectAttr) {
-    userInfo[akey] += event.effectAttr[akey]
+    if (Array.isArray(event.effectAttr[akey])) {
+      const min = event.effectAttr[akey][0]
+      const max = event.effectAttr[akey][1]
+      userInfo[akey] += (Math.random() * (max - min) + min)
+    } else userInfo[akey] += event.effectAttr[akey]
   }
   // 【关联事件影响】effectEvents
   for (const ekey in event.effectEvents) {

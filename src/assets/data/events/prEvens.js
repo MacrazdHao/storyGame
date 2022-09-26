@@ -28,6 +28,33 @@ export default {
     }),
     prDefault: (eventKey = 'shenmishitou_jieguo1') => eventKey
   },
+  maicaipiao: {
+    ...defaultNormalEvent,
+    ...defaultPrEvent,
+    text: (options) => `你路过一家福利彩票的店，你心血来潮，${options.userInfo.yunqi > 30 ? '灵光一闪，凭借此时的第六感' : options.userInfo.yunqi > 8 ? '照着昨晚梦里梦到的数字' : '凭感觉随便'}买了一张双色球彩票(家境-1)`,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [18, 80], jiajing: [0, MAXNUM] }),
+    prEvents: (events = {}) => ({
+      maicaipiao_jieguo1: 60,
+      maicaipiao_jieguo2: 30,
+      maicaipiao_jieguo3: 10,
+      maicaipiao_jieguo4: 2,
+      ...events
+    }),
+    prGoodOrBad: (event = {}) => ({
+      ...event,
+      maicaipiao_jieguo1: RareValue.NORMAL,
+      maicaipiao_jieguo2: RareValue.RARE,
+      maicaipiao_jieguo3: RareValue.SUPER_RARE,
+      maicaipiao_jieguo4: RareValue.SUPERIOR_SUPER_RARE
+    }),
+    prDefault: (eventKey = 'maicaipiao_jieguo1') => eventKey,
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: -1
+    })
+  },
   // 概率结果-事件
   gailv: {
     ...defaultNormalEvent,
