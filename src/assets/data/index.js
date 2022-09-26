@@ -70,7 +70,7 @@ const EventsRecord = {
     },
     // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
     // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
-    // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number })] }
+    // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number, persentReplace: Boolean, goodOrBad: Number })] }
     // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number })] }
     prEventsExtraWeight: {},
     extraRandomEvents: {},
@@ -357,7 +357,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
     const { prNumber, prEvents, prRepeat, prDefault, prGoodOrBad } = event
     const realYunqi = curConditions.yunqi - BasicYunqi
     // realYunqi 每 1运气 加 1% 概率基数，按稀有度效果递减
-    const yunqiPersent = Math.abs(0.01 * realYunqi)
+    const yunqiPersent = Math.abs(0.1 * realYunqi)
     let totalWeight = 0
     for (const pkey in prEvents) {
       let realWeight = prEvents[pkey]
@@ -452,8 +452,20 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
     for (const ekey in EventsRecord[userId].extraRandomEvents) {
       for (let i = 0; i < EventsRecord[userId].extraRandomEvents[ekey].length; i++) {
         if (EventsRecord[userId].extraRandomEvents[ekey][i].lastUnitTime <= 0 || EventsRecord[userId].extraRandomEvents[ekey][i].times <= 0) continue
+        const { goodOrBad, persent } = EventsRecord[userId].extraRandomEvents[ekey][i]
+        const realYunqi = conditions.yunqi - BasicYunqi
+        const yunqiPersent = Math.abs(0.1 * realYunqi)
+        let realPersent = persent
+        // 额外概率随机事件相对运气的概率加成
+        if (goodOrBad) {
+          // 运气概率增幅由原概率基数决定，与prEventsExtraWeight效果不互相作用
+          // 运气>3，好事概率增幅，运气<3，坏事概率减幅
+          if (goodOrBad > 0) realPersent = realPersent + (realYunqi > 0 ? 1 : -1) * persent * yunqiPersent / Math.abs(goodOrBad)
+          // 运气>3，坏事概率减幅，运气<3，坏事概率增幅
+          if (goodOrBad < 0) realPersent = realPersent + (realYunqi > 0 ? -1 : 1) * persent * yunqiPersent / Math.abs(goodOrBad)
+        }
         const randomNum = (Math.random() * 100).toFixed(0)
-        if (EventsRecord[userId].extraRandomEvents[ekey][i].persent >= randomNum) {
+        if (realPersent >= randomNum) {
           EventsRecord[userId].extraRandomEvents[ekey][i].times--
           key = ekey
           event = getEventObj(userId, { key, ...options }, conditions)
@@ -589,8 +601,8 @@ export const createUser = (userId, reset = true) => {
 // 待补充：
 // 属性：meili jiajing yongqi yunqi
 // 状态：zailaojia
-// Buff：
+// Buff：...
 
 // 待补充：
 // 随机事件中的好事或坏事，无需增加概率属性或运气判断
-// 只需在该事件triggerConditions加上运气条件即可（注：随机好/坏事件则不要设为必然事件）
+// 只需在该事件triggerConditions加上运气值作为条件即可（注：随机好/坏事件则不要设为必然事件）

@@ -12,7 +12,7 @@
  ** 【事件属性影响】effectAttr: (attr[Object({ 'Attr[String]': Number })]) => Object
  ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({ 'timesOfUnit': Number, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
  ** 【概率事件结果额外概率调整】prEventsExtraWeight: (events[Object({ 'EventName[String]': Object({'lastUnitTime': Number, persent: Number, 'weight': Number, 'times': Number, 'weightReplace': Boolean}) })]) => Object
- ** 【额外随机事件概率触发】extraRandomEvents: (events[Object({ 'EventName[String]': Object({'persent': Number, 'lastUnitTime': Number, 'times': Number, 'persentReplace': Boolean}) })]) => Object
+ ** 【额外随机事件概率触发】extraRandomEvents: (events[Object({ 'EventName[String]': Object({'persent': Number, 'lastUnitTime': Number, 'times': Number,  'goodOrBad': Number}) })]) => Object
  ** 【普通事件默认事件】normalDefault: (eventKey[String]) => String
  ** 【默认事件标识】isDefault: (_default[Boolean]) => Boolean
  ** 【获取概率结果数】prNumber: (num[Number]) => Number
