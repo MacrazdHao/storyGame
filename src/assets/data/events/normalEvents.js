@@ -210,9 +210,22 @@ export default {
   siwang: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【Game Over】',
+    text: () => '【Game Over】弱不禁风的你根本经不起敲打，当场去世了',
     times: () => 1,
     triggerConditions: (attr = {}) => ({ ...attr, tizhi: [MINNUM, -10], routibusi: [0, 1] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      siwang: 1,
+      jieshu: 1
+    })
+  },
+  // 结束-必然事件
+  siwang2: {
+    ...defaultNormalEvent,
+    ...defaultCertainEvent,
+    text: () => '【Game Over】你重伤身亡了',
+    times: () => 1,
+    triggerConditions: (attr = {}) => ({ ...attr, jiankang: [MINNUM, 1], routibusi: [0, 1] }),
     effectAttr: (attr = {}) => ({
       ...attr,
       siwang: 1,
@@ -547,6 +560,13 @@ export default {
     timesOfUnit: (times = 1) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 8] })
   },
+  piguzhen: {
+    ...defaultNormalEvent,
+    text: (options) => `你因为生病被扎了一针屁股针，右半边的屁股疼得要死，右腿大半晌还在那麻痹${options.userInfo.age >= 8 ? '' : '，哭得眼泪都要干了'}`,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [5, MAXNUM] })
+  },
   // 选项事件结果（注：一般都是被动事件）
   jiemojirouchuan_jieguo1: {
     ...defaultNormalEvent,
@@ -865,6 +885,43 @@ export default {
     effectAttr: (attr = {}) => ({
       ...attr,
       jiajing: 100
+    })
+  },
+  tiaolouti_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你下意识地将头部要害保护住，所幸并没有摔出什么毛病来，只是摔破了点皮(健康-1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -1
+    })
+  },
+  tiaolouti_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你下意识地将头部要害保护住，但护得住头护不住手脚，还是把腿给摔折了，痛得你嗷嗷大叫，从此以后你再也不敢跳楼梯了(健康-3)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -3
+    })
+  },
+  tiaolouti_jieguo3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你不小心摔倒了脖子，你被送到医院时已经太迟了...',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -MAXNUM
+    })
+  },
+  tiaolouti_jieguo4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => `${options.userInfo.jiankang > 80 ? '你浑身好几处的骨头都摔骨折了，受了比较严重的伤，所幸没什么生命危险，除此之外，等你醒来发觉似乎对周围的事物更加灵敏了，难道这就是传说中的打通任二脉？' : '你浑身好几处的骨头都摔骨折了，受了比较严重的伤...'}`,
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -80,
+      zhili: 8
     })
   },
   // 多选事件结果（注：一般都是被动事件）

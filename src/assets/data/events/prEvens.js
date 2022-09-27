@@ -55,6 +55,21 @@ export default {
       jiajing: -1
     })
   },
+  tiaolouti: {
+    ...defaultNormalEvent,
+    ...defaultPrEvent,
+    text: (options) => '最近你迷恋上了跳楼梯，结果这次没站稳一个不小心直接摔了下去',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [4, 13] }),
+    prEvents: (events = {}) => ({
+      tiaolouti_jieguo1: 60,
+      tiaolouti_jieguo2: 20,
+      tiaolouti_jieguo3: 15,
+      tiaolouti_jieguo4: 5,
+      ...events
+    })
+  },
   // 概率结果-事件
   gailv: {
     ...defaultNormalEvent,
