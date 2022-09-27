@@ -177,7 +177,7 @@ export default {
         xingbie: '男',
         // 男1，女0，中性-1
         sex: 1,
-        age: -1,
+        age: 10,
         tizhi: 3,
         jiankang: 3,
         zhili: 3,
@@ -213,8 +213,9 @@ export default {
       },
       unitTimeInfo: {
         curUnitTimeNum: 0,
+        dm: 0,
         chronology: ['公元', '年', '月', '日'],
-        date: [1996, 6, 14]
+        date: [2004, 6, 14]
       },
       events: [],
       newUnitTime: false,
@@ -299,7 +300,10 @@ export default {
         ...this.userInfo,
         ...this.userStatus,
         ...this.userBuffs,
-        ...this.unitTimeInfo
+        ...this.unitTimeInfo,
+        year: this.unitTimeInfo.date[0],
+        month: this.unitTimeInfo.date[1],
+        day: this.unitTimeInfo.date[2]
       }
     },
     eventOptions () {

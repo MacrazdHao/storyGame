@@ -457,6 +457,14 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
     for (const ekey in EventsRecord[userId].extraRandomEvents) {
       for (let i = 0; i < EventsRecord[userId].extraRandomEvents[ekey].length; i++) {
         if (EventsRecord[userId].extraRandomEvents[ekey][i].lastUnitTime <= 0 || EventsRecord[userId].extraRandomEvents[ekey][i].times <= 0) continue
+        key = ekey
+        event = getEventObj(userId, { key, ...options }, conditions)
+        // 不符合条件则不执行
+        if (typeof event === 'string') {
+          key = null
+          event = null
+          continue
+        }
         const { goodOrBad, persent } = EventsRecord[userId].extraRandomEvents[ekey][i]
         const realYunqi = conditions.yunqi - BasicYunqi
         const yunqiPersent = Math.abs(0.1 * realYunqi)
@@ -472,8 +480,6 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
         const randomNum = (Math.random() * 100).toFixed(0)
         if (realPersent >= randomNum) {
           EventsRecord[userId].extraRandomEvents[ekey][i].times--
-          key = ekey
-          event = getEventObj(userId, { key, ...options }, conditions)
           break
         }
       }

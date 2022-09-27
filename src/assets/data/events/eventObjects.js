@@ -47,6 +47,11 @@ export const RareValue = {
   ULTRA_RARE: 4
 }
 
+export const DMMap = {
+  // [min, max)
+  0: { text: '公元', scope: [0, 1] }
+}
+
 export const EventCode = {
   NotExist: 'notExist',
   OutOfTimes: 'outOfTimes',

@@ -3,6 +3,7 @@ import {
   MINNUM,
   BasicYunqi,
   RareValue,
+  DMMap,
   EventCode,
   getRandom,
   defaultDefaultEvent,
@@ -567,11 +568,54 @@ export default {
     timesOfUnit: (times = MAXNUM) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [5, MAXNUM] })
   },
+  feizhuliu: {
+    ...defaultNormalEvent,
+    text: (options) => '网上盛行着一种叫非主流的流行文化，与之相辅相成的尻尻空间和火星文输入法风靡一时，上到三十，下到五六岁，似乎都沉浸其中',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, dm: DMMap['0'].scope, year: [2002, 2009] }),
+    extraRandomEvents: (events) => ({
+      ...events,
+      feizhuliu2: {
+        lastUnitTime: MAXNUM,
+        times: 1,
+        persent: 50
+      },
+      feizhuliu3: {
+        lastUnitTime: MAXNUM,
+        times: 1,
+        persent: 20
+      }
+    })
+  },
+  feizhuliu2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你沉迷非主流文化，每天浸淫在尻尻空间里，你因为没有尻币只能上百毒搜索各种装饰代码来修饰自己的尻尻空间，还用蜜汁角度和朋友们拍了各种奇奇怪怪的羞耻照片',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 0) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [7, 30], jiajing: [MINNUM, 2], year: [2002, 2009] })
+  },
+  feizhuliu3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你沉迷非主流文化，每天浸淫在尻尻空间和尻尻秀的世界里，为此你充了很多尻币，为你的尻尻空间增添了大量花里胡哨的装饰，还充了各种钻和尻尻会员，甚至当上了非主流某堂的堂主，一度成为朋友中最发笋的崽(魅力+2，家境-2)',
+    times: (initTimes = 1) => initTimes,
+    timesOfUnit: (times = 0) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [12, 30], jiajing: [2, MAXNUM], year: [2002, 2009] }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      meili: +2,
+      jiajing: -2
+    })
+  },
   // 选项事件结果（注：一般都是被动事件）
   jiemojirouchuan_jieguo1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultBindingEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '【点了一串试试】你迫不及待咬下一口芥末鸡肉，那股上头劲儿...',
     bindEvents: (events = {}) => ({
       ...events,
@@ -594,12 +638,16 @@ export default {
   jiemojirouchuan_jieguo1_bangdingjieguo1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     execNormalDefaultWhenMismatchConditions: () => true,
     text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，你幻想着咬牙吞下去，结果差点被芥末刺杀，最后还是吐掉了，过了好一会依然心有余悸，心里暗骂到底谁才吃得下这玩意儿'
   },
   jiemojirouchuan_jieguo1_bangdingjieguo2: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     execNormalDefaultWhenMismatchConditions: () => true,
     text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去(勇气+1)',
     effectAttr: (attr = {}) => ({
@@ -611,6 +659,8 @@ export default {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
     ...defaultBindingEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '【一串怎么够，东北爷们儿当然直接是来十打】你迫不及待咬下一口芥末鸡肉，那股上头劲儿...(家境-1)',
     triggerConditions: (attr = {}) => ({
       jiajing: [5, MAXNUM]
@@ -647,12 +697,16 @@ export default {
   jiemojirouchuan_jieguo2_bangdingjieguo1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     execNormalDefaultWhenMismatchConditions: () => true,
     text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，你幻想着咬牙吞下去，结果差点被芥末刺杀，最后还是吐掉了，过了好一会依然心有余悸，心里暗骂到底谁才吃得下这玩意儿，最后你一串串地把芥末挑走才吃完了'
   },
   jiemojirouchuan_jieguo2_bangdingjieguo2: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     execNormalDefaultWhenMismatchConditions: () => true,
     text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去，但剩下的你再也吃下了，一串串地把芥末挑走才吃完了(勇气+1)',
     effectAttr: (attr = {}) => ({
@@ -663,6 +717,8 @@ export default {
   jiemojirouchuan_jieguo2_bangdingjieguo3: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     execNormalDefaultWhenMismatchConditions: () => true,
     text: (options) => '那股上头劲儿如同针扎电钻一般不断冲击突袭着你的五官，最后你竟然还是坚持吞了下去，还把剩下的全都给吃完了，事后你去了医院，在家躺了一天才恢复过来(勇气+3，家境-1，体质-1)',
     effectAttr: (attr = {}) => ({
@@ -675,6 +731,8 @@ export default {
   jiemojirouchuan_jieguo3: {
     ...defaultNormalEvent,
     ...defaultDefaultEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '【算了，不点】你和美味失之交臂'
   },
   bbzhuazhou_jieguo12: {
@@ -855,6 +913,8 @@ export default {
   maicaipiao_jieguo1: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '很遗憾，你的彩票并没有中奖',
     effectAttr: (attr = {}) => ({
       ...attr
@@ -863,6 +923,8 @@ export default {
   maicaipiao_jieguo2: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '你的彩票数字离大奖也就差了两个，与大奖失之交臂，你暗暗自我安慰道：每次买彩票都是中几个数字，这彩票到底是不是暗箱操作骗人的，中大奖的一定都是内部人员(家境+2)',
     effectAttr: (attr = {}) => ({
       ...attr,
@@ -872,6 +934,8 @@ export default {
   maicaipiao_jieguo3: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复（家境+50）',
     effectAttr: (attr = {}) => ({
       ...attr,
@@ -881,6 +945,8 @@ export default {
   maicaipiao_jieguo4: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
     text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复，你突然想起，这一期福利彩票恰好还搞了赠送超级加倍的活动，你成功挖空奖池，一夜之间你就变成了超级富豪（家境+100）',
     effectAttr: (attr = {}) => ({
       ...attr,
