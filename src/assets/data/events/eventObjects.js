@@ -58,8 +58,8 @@ export const EventCode = {
   MismatchConditions: 'mismatchConditions'
 }
 
-export const getRandom = (max = 1) => {
-  return (Math.random() * max).toFixed(0)
+export const getRandom = (max = 1, min = 0) => {
+  return (Math.random() * (max - min + 1) + min).toFixed(0)
 }
 
 // 原始事件类型

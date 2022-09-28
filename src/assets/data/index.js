@@ -100,15 +100,20 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
   if (!events[key]) {
     // 正在使用的事件列表无该事件，则从事件库中获取并初始化
     for (const ekey in AllEvents[key]) {
-      if (ekey === 'text') {
-        try {
-          eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 重新生成文案错误(no params)---`
-        } catch (err) {
-          eventObj[ekey] = `---${key}: 生成文案错误(params error, ${err})---`
-        }
-      } else if (ekey === 'style') {
-        eventObj.style = AllEvents[key].style(eventOptions.style)
-      } else eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+      switch (ekey) {
+        case 'text':
+          try {
+            eventObj.text = eventOptions.text ? AllEvents[key].text(eventOptions.text) : `---${key}: 重新生成文案错误(no params)---`
+          } catch (err) {
+            eventObj[ekey] = `---${key}: 生成文案错误(params error, ${err})---`
+          }
+          break
+        case 'style':
+          eventObj.style = AllEvents[key].style(eventOptions.style)
+          break
+        default:
+          eventObj[ekey] = AllEvents[key][ekey](eventOptions[ekey])
+      }
       // 无传入参数则走默认
       // else eventObj[ekey] = AllEvents[key][ekey]()
     }
@@ -126,6 +131,8 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       eventObj.text = `---${key}: 重新生成文案错误(params error, ${err})---`
     }
     eventObj.style = AllEvents[key].style(eventOptions.style)
+    if (eventObj.prEvents)eventObj.prEvents = AllEvents[key].prEvents(eventOptions.prEvents || {})
+    // if (eventObj.prRepeat)eventObj.prRepeat = AllEvents[key].prRepeat(eventOptions.prRepeat || {})
     if (updateMode) {
       // 重置/更新事件属性
       for (const ekey in update) {
@@ -137,6 +144,7 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       }
     }
   }
+  // 额外概率事件结果概率不在此调整，而是在执行事件时当下实时计算
   // 额外事件次数叠加/覆盖
   if (EventsRecord[userId].extraEventTimes[key]) {
     for (let i = 0; i < EventsRecord[userId].extraEventTimes[key].length; i++) {
@@ -307,7 +315,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
     if (Array.isArray(event.effectAttr[akey])) {
       const min = event.effectAttr[akey][0]
       const max = event.effectAttr[akey][1]
-      userInfo[akey] += (Math.random() * (max - min) + min)
+      userInfo[akey] += (Math.random() * (max - min + 1) + min)
     } else userInfo[akey] += event.effectAttr[akey]
   }
   // 【关联事件影响】effectEvents
@@ -360,12 +368,14 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
   // 【概率默认事件】prDefault
   if (event.prEvents) {
     const { prNumber, prEvents, prRepeat, prDefault, prGoodOrBad } = event
+    const _prRepeat = JSON.parse(JSON.stringify(prRepeat))
+    const _prEvents = JSON.parse(JSON.stringify(prEvents))
     const realYunqi = curConditions.yunqi - BasicYunqi
     // realYunqi 每 1运气 加 1% 概率基数，按稀有度效果递减
     const yunqiPersent = Math.abs(0.1 * realYunqi)
     let totalWeight = 0
-    for (const pkey in prEvents) {
-      let realWeight = prEvents[pkey]
+    for (const pkey in _prEvents) {
+      let realWeight = _prEvents[pkey]
       // 【概率事件结果额外概率调整】prEventsExtraWeight
       if (EventsRecord[userId].prEventsExtraWeight[pkey]) {
         for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[pkey].length; i++) {
@@ -382,31 +392,34 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
       if (prGoodOrBad[pkey]) {
         // 运气概率增幅由原概率基数决定，与prEventsExtraWeight效果不互相作用
         // 运气>3，好事概率增幅，运气<3，坏事概率减幅
-        if (prGoodOrBad[pkey] > 0) realWeight = realWeight + (realYunqi > 0 ? 1 : -1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+        if (prGoodOrBad[pkey] > 0) realWeight = realWeight + (realYunqi > 0 ? 1 : -1) * _prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
         // 运气>3，坏事概率减幅，运气<3，坏事概率增幅
-        if (prGoodOrBad[pkey] < 0) realWeight = realWeight + (realYunqi > 0 ? -1 : 1) * prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
+        if (prGoodOrBad[pkey] < 0) realWeight = realWeight + (realYunqi > 0 ? -1 : 1) * _prEvents[pkey] * yunqiPersent / Math.abs(prGoodOrBad[pkey])
       }
-      prEvents[pkey] = realWeight
-      totalWeight += prEvents[pkey]
+      _prEvents[pkey] = realWeight
+      totalWeight += _prEvents[pkey]
     }
     let randomEvents = []
-    const prEventKeys = Object.keys(prEvents)
+    const prEventKeys = Object.keys(_prEvents)
     // 按权重大小倒序排序（由大到小）
-    prEventKeys.sort((a, b) => prEvents[b] - prEvents[a])
+    prEventKeys.sort((a, b) => _prEvents[b] - _prEvents[a])
     Array(prNumber).fill(0).map(() => {
-      let randomNum = (Math.random() * totalWeight).toFixed(1)
+      let randomNum = (Math.random() * (totalWeight + 1)).toFixed(1)
+      console.log(randomNum, totalWeight, prEventKeys, _prEvents)
+      // 有两种随机方式：离散随机和连续随机，此处使用连续随机
       for (let i = 0; i < prEventKeys.length; i++) {
         const ekey = prEventKeys[i]
-        randomNum -= prEvents[ekey]
+        randomNum -= _prEvents[ekey]
         // 未定义重复次数的默认为1
-        if (typeof prRepeat[ekey] === 'undefined') prRepeat[ekey] = 1
+        if (typeof _prRepeat[ekey] === 'undefined') _prRepeat[ekey] = 1
         // 当前概率结果可重复次数耗尽，则取下一个作为结果
-        if (prRepeat[ekey] <= 0) continue
+        if (_prRepeat[ekey] <= 0) continue
         if (randomNum <= 0) randomEvents.push(ekey)
-        prRepeat[ekey]--
+        _prRepeat[ekey]--
         if (randomEvents.length >= prNumber) break
       }
     })
+    console.log('===>', event)
     // 不足概率结果数的部分，补充为默认概率事件
     if (randomEvents.length < prNumber) {
       randomEvents.push(...((new Array(prNumber - randomEvents.length).fill(prDefault))))
@@ -477,10 +490,13 @@ export const getNextEvent = (userId, options = {}, conditions = {}, prEventsExtr
           // 运气>3，坏事概率减幅，运气<3，坏事概率增幅
           if (goodOrBad < 0) realPersent = realPersent + (realYunqi > 0 ? -1 : 1) * persent * yunqiPersent / Math.abs(goodOrBad)
         }
-        const randomNum = (Math.random() * 100).toFixed(0)
+        const randomNum = (Math.random() * 101).toFixed(0)
         if (realPersent >= randomNum) {
           EventsRecord[userId].extraRandomEvents[ekey][i].times--
           break
+        } else {
+          key = null
+          event = null
         }
       }
       if (!event || typeof event === 'string') break
@@ -559,7 +575,7 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
       randomEvents.push('pingfandeyitian')
       continue
     }
-    const randomNum = (Math.random() * randomEventKeys.length - 1).toFixed(0)
+    const randomNum = (Math.random() * randomEventKeys.length).toFixed(0)
     // randomEvents.push()
     const eventObj = getEventObj(userId, { key: randomEventKeys[randomNum], ...options }, conditions)
     switch (eventObj) {
@@ -584,7 +600,7 @@ export const createUser = (userId, reset = true) => {
         // 常规事件栈
         common: [],
         // 优先栈
-        priority: ['guoxinnian', 'chusheng'],
+        priority: ['guoxinnian', 'chusheng', 'maicaipiao', 'maicaipiao', 'maicaipiao'],
         // 计时事件栈
         duration: []
       },

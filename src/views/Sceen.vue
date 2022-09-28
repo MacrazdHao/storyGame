@@ -177,7 +177,7 @@ export default {
         xingbie: '男',
         // 男1，女0，中性-1
         sex: 1,
-        age: 10,
+        age: 18,
         tizhi: 3,
         jiankang: 3,
         zhili: 3,
@@ -301,9 +301,9 @@ export default {
         ...this.userStatus,
         ...this.userBuffs,
         ...this.unitTimeInfo,
-        year: this.unitTimeInfo.date[0],
-        month: this.unitTimeInfo.date[1],
-        day: this.unitTimeInfo.date[2]
+        year: this.unitTimeInfo.date[0]
+        // month: this.unitTimeInfo.date[1],
+        // day: this.unitTimeInfo.date[2]
       }
     },
     eventOptions () {
@@ -335,6 +335,14 @@ export default {
     }
   },
   mounted () {
+    // const rNum = new Array(100000)
+    //   .fill(0)
+    //   .map(() => (Math.random() * 101).toFixed(0))
+    // const pr = {}
+    // for (let i = 0; i < 101; i++) {
+    //   pr[i] = rNum.filter((item) => parseInt(item) === i).length / 100000
+    // }
+    // console.log(pr)
     createUser(this.userInfo.userId)
     this.initUserInfo()
     this.toNewUnitTime()
@@ -373,6 +381,11 @@ export default {
         'curUnitTimeNum',
         this.unitTimeInfo.curUnitTimeNum + 1
       )
+      this.$set(this.unitTimeInfo, 'date', [
+        this.unitTimeInfo.date[0] + 1,
+        this.unitTimeInfo.date[1],
+        this.unitTimeInfo.date[2]
+      ])
     },
     toNewUnitTime () {
       this.updateUserAge()

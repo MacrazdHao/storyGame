@@ -910,112 +910,8 @@ export default {
       tianfu_mofa: 1
     })
   },
-  maicaipiao_jieguo1: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    times: (initTimes = MAXNUM) => initTimes,
-    timesOfUnit: (times = MAXNUM) => times,
-    text: (options) => '很遗憾，你的彩票并没有中奖',
-    effectAttr: (attr = {}) => ({
-      ...attr
-    })
-  },
-  maicaipiao_jieguo2: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    times: (initTimes = MAXNUM) => initTimes,
-    timesOfUnit: (times = MAXNUM) => times,
-    text: (options) => '你的彩票数字离大奖也就差了两个，与大奖失之交臂，你暗暗自我安慰道：每次买彩票都是中几个数字，这彩票到底是不是暗箱操作骗人的，中大奖的一定都是内部人员(家境+2)',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiajing: 2
-    })
-  },
-  maicaipiao_jieguo3: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    times: (initTimes = MAXNUM) => initTimes,
-    timesOfUnit: (times = MAXNUM) => times,
-    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复（家境+50）',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiajing: 50
-    })
-  },
-  maicaipiao_jieguo4: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    times: (initTimes = MAXNUM) => initTimes,
-    timesOfUnit: (times = MAXNUM) => times,
-    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复，你突然想起，这一期福利彩票恰好还搞了赠送超级加倍的活动，你成功挖空奖池，一夜之间你就变成了超级富豪（家境+100）',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiajing: 100
-    })
-  },
-  tiaolouti_jieguo1: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    text: (options) => '你下意识地将头部要害保护住，所幸并没有摔出什么毛病来，只是摔破了点皮(健康-1)',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiankang: -1
-    })
-  },
-  tiaolouti_jieguo2: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    text: (options) => '你下意识地将头部要害保护住，但护得住头护不住手脚，还是把腿给摔折了，痛得你嗷嗷大叫，从此以后你再也不敢跳楼梯了(健康-3)',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiankang: -3
-    })
-  },
-  tiaolouti_jieguo3: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    text: (options) => '你不小心摔倒了脖子，你被送到医院时已经太迟了...',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiankang: -MAXNUM
-    })
-  },
-  tiaolouti_jieguo4: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    text: (options) => `${options.userInfo.jiankang > 80 ? '你浑身好几处的骨头都摔骨折了，受了比较严重的伤，所幸没什么生命危险，除此之外，等你醒来发觉似乎对周围的事物更加灵敏了，难道这就是传说中的打通任二脉？' : '你浑身好几处的骨头都摔骨折了，受了比较严重的伤...'}`,
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      jiankang: -80,
-      zhili: 8
-    })
-  },
   // 多选事件结果（注：一般都是被动事件）
-  shenmishitou_jieguo1: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '随后你就什么都没看清，直接眼前一黑倒在了地上，到了半夜你才醒了过来，你觉得自己脑子好像不太好使了，不知道是不是错觉(智力-2)',
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      zhili: -2
-    })
-  },
-  shenmishitou_jieguo2: {
-    ...defaultNormalEvent,
-    ...defaultPassiveEvent,
-    execNormalDefaultWhenMismatchConditions: () => true,
-    text: (options) => '没等你反应过来，那团黑影朝着你的脑袋就是嗖的一下飞了过来，接着你脑袋里就响起了一道尖叫：啊！不可能！你的灵魂怎么可能...，接着你就晕了过去。等你醒来之后发现石头已经消失不见，你感觉浑身神清气爽，脑子也异常清晰(智力+3)',
-    triggerConditions: (attr = {}) => ({
-      ...attr,
-      dengji_linghun: [5, MAXNUM]
-    }),
-    effectAttr: (attr = {}) => ({
-      ...attr,
-      zhili: 3,
-      dengji_linghun: 2
-    })
-  },
+  // ...
   // 概率事件结果（注：一般都是被动事件）
   shaoyanhua1: {
     ...defaultNormalEvent,
@@ -1171,6 +1067,111 @@ export default {
     effectAttr: (attr = {}) => ({
       ...attr,
       jiajing: 1
+    })
+  },
+  shenmishitou_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '随后你就什么都没看清，直接眼前一黑倒在了地上，到了半夜你才醒了过来，你觉得自己脑子好像不太好使了，不知道是不是错觉(智力-2)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zhili: -2
+    })
+  },
+  shenmishitou_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => '没等你反应过来，那团黑影朝着你的脑袋就是嗖的一下飞了过来，接着你脑袋里就响起了一道尖叫：啊！不可能！你的灵魂怎么可能...，接着你就晕了过去。等你醒来之后发现石头已经消失不见，你感觉浑身神清气爽，脑子也异常清晰(智力+3)',
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      dengji_linghun: [5, MAXNUM]
+    }),
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      zhili: 3,
+      dengji_linghun: 2
+    })
+  },
+  maicaipiao_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    text: (options) => '很遗憾，你的彩票并没有中奖',
+    effectAttr: (attr = {}) => ({
+      ...attr
+    })
+  },
+  maicaipiao_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    text: (options) => '你的彩票数字离大奖也就差了两个，与大奖失之交臂，你暗暗自我安慰道：每次买彩票都是中几个数字，这彩票到底是不是暗箱操作骗人的，中大奖的一定都是内部人员(家境+2)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 2
+    })
+  },
+  maicaipiao_jieguo3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复（家境+50）',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 50
+    })
+  },
+  maicaipiao_jieguo4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = MAXNUM) => times,
+    text: (options) => '你大喊了一句“卧槽”，只见电视上公布的中奖号码赫然就是你手里的彩票数字，天天念叨着天天看新闻都有人中大奖，怎么还没轮到自己，没想到幸运之神如今就降临在自己头上了，你心中极度的心情难以平复，你突然想起，这一期福利彩票恰好还搞了赠送超级加倍的活动，你成功挖空奖池，一夜之间你就变成了超级富豪（家境+100）',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiajing: 100
+    })
+  },
+  tiaolouti_jieguo1: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你下意识地将头部要害保护住，所幸并没有摔出什么毛病来，只是摔破了点皮(健康-1)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -1
+    })
+  },
+  tiaolouti_jieguo2: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你下意识地将头部要害保护住，但护得住头护不住手脚，还是把腿给摔折了，痛得你嗷嗷大叫，从此以后你再也不敢跳楼梯了(健康-3)',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -3
+    })
+  },
+  tiaolouti_jieguo3: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => '你不小心摔倒了脖子，你被送到医院时已经太迟了...',
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -MAXNUM
+    })
+  },
+  tiaolouti_jieguo4: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    text: (options) => `${options.userInfo.jiankang > 80 ? '你浑身好几处的骨头都摔骨折了，受了比较严重的伤，所幸没什么生命危险，除此之外，等你醒来发觉似乎对周围的事物更加灵敏了，难道这就是传说中的打通任二脉？' : '你浑身好几处的骨头都摔骨折了，受了比较严重的伤...'}`,
+    effectAttr: (attr = {}) => ({
+      ...attr,
+      jiankang: -80,
+      zhili: 8
     })
   },
   // 绑定事件结果（注：一般都是被动事件）

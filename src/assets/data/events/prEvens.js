@@ -33,12 +33,12 @@ export default {
     ...defaultPrEvent,
     text: (options) => `你路过一家福利彩票的店，你心血来潮，${options.userInfo.yunqi > 30 ? '灵光一闪，凭借此时的第六感' : options.userInfo.yunqi > 8 ? '照着昨晚梦里梦到的数字' : '凭感觉随便'}买了一张双色球彩票(家境-1)`,
     times: (initTimes = MAXNUM) => initTimes,
-    timesOfUnit: (times = 1) => times,
+    timesOfUnit: (times = MAXNUM) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [18, 80], jiajing: [0, MAXNUM] }),
     prEvents: (events = {}) => ({
-      maicaipiao_jieguo1: 60,
-      maicaipiao_jieguo2: 30,
-      maicaipiao_jieguo3: 10,
+      maicaipiao_jieguo1: 600,
+      maicaipiao_jieguo2: 394,
+      maicaipiao_jieguo3: 6,
       maicaipiao_jieguo4: 2,
       ...events
     }),
