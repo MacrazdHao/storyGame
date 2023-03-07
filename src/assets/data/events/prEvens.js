@@ -126,7 +126,8 @@ export default {
       shaoyanhua7: 10,
       mamadamajiang1: 10,
       mamadamajiang2: 10,
-      mamadamajiang3: 10
+      mamadamajiang3: 10,
+      meiyounianwei: 10
     }),
     prGoodOrBad: (events = {}) => ({
       ...events,

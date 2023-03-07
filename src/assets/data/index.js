@@ -80,6 +80,8 @@ const EventsRecord = {
   }
 }
 
+const UsersRecord = {}
+
 // 获取事件对象EventObj
 export const getEventObj = (userId, options = {}, conditions = {}, execNormalDefaultWhenMismatchConditions = false) => {
   const defaultOptions = {
@@ -298,6 +300,13 @@ export const selectMultiOptEventOptions = (userId, conditions, _event, selection
   pushEventKeyToStack(userId, [eventKey], 'priority')
 }
 
+// 数据存档
+export const updateLocalRecords = (userId, record) => {
+  UsersRecord[userId] = JSON.parse(JSON.stringify(record))
+  localStorage.setItem('usersRecord', JSON.stringify(UsersRecord))
+  localStorage.setItem('eventRecord', JSON.stringify(EventsRecord))
+}
+
 export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditions) => {
   const eventInfo = JSON.parse(JSON.stringify(_eventInfo))
   const userInfo = JSON.parse(JSON.stringify(_userInfo))
@@ -405,7 +414,6 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
     prEventKeys.sort((a, b) => _prEvents[b] - _prEvents[a])
     Array(prNumber).fill(0).map(() => {
       let randomNum = (Math.random() * (totalWeight + 1)).toFixed(1)
-      console.log(randomNum, totalWeight, prEventKeys, _prEvents)
       // 有两种随机方式：离散随机和连续随机，此处使用连续随机
       for (let i = 0; i < prEventKeys.length; i++) {
         const ekey = prEventKeys[i]
@@ -419,7 +427,6 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
         if (randomEvents.length >= prNumber) break
       }
     })
-    console.log('===>', event)
     // 不足概率结果数的部分，补充为默认概率事件
     if (randomEvents.length < prNumber) {
       randomEvents.push(...((new Array(prNumber - randomEvents.length).fill(prDefault))))
@@ -600,7 +607,7 @@ export const createUser = (userId, reset = true) => {
         // 常规事件栈
         common: [],
         // 优先栈
-        priority: ['guoxinnian', 'chusheng', 'maicaipiao', 'maicaipiao', 'maicaipiao'],
+        priority: ['guoxinnian', 'chusheng'],
         // 计时事件栈
         duration: []
       },

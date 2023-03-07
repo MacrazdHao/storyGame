@@ -145,11 +145,13 @@ import {
   getMultiOptEventOptions,
   selectOptEventOption,
   selectMultiOptEventOptions,
+  updateLocalRecords,
   execEvent,
   getNextEvent,
   toNewUnitTime,
   createUser
 } from '../assets/data'
+// 待修改：jieshu=1时，使jieshu为1后面的事件不再执行和显示
 export default {
   components: {},
   data () {
@@ -177,7 +179,7 @@ export default {
         xingbie: '男',
         // 男1，女0，中性-1
         sex: 1,
-        age: 18,
+        age: -1,
         tizhi: 3,
         jiankang: 3,
         zhili: 3,
@@ -206,16 +208,17 @@ export default {
       userBuffs: {
         // Buff，特殊等级
         fennu: 0,
+        dengji_shoushang: 0, // 受伤等级(1-2轻，3-4中，5-max重)
         dengji_jianshu: 0,
-        dengji_weiwuzhuyi: 30,
-        dengji_koucai: 1,
-        dengji_linghun: 10
+        dengji_weiwuzhuyi: 0,
+        dengji_koucai: 0,
+        dengji_linghun: 0
       },
       unitTimeInfo: {
         curUnitTimeNum: 0,
         dm: 0,
         chronology: ['公元', '年', '月', '日'],
-        date: [2004, 6, 14]
+        date: [2001, 6, 14]
       },
       events: [],
       newUnitTime: false,
@@ -438,6 +441,19 @@ export default {
       for (const key in this.unitTimeInfo) {
         this.$set(this.unitTimeInfo, key, userInfo[key])
       }
+      updateLocalRecords(this.userInfo.userId,
+        {
+          userBasicInfoLabels: this.userBasicInfoLabels,
+          userStatusInfoLabels: this.userStatusInfoLabels,
+          userBuffInfoLabels: this.userBuffInfoLabels,
+          userInfo: this.userInfo,
+          userStatus: this.userStatus,
+          userBuffs: this.userBuffs,
+          unitTimeInfo: this.unitTimeInfo,
+          events: this.events,
+          newUnitTime: this.newUnitTime,
+          selectedMultipleOptionIndex: this.selectedMultipleOptionIndex
+        })
     }
   }
 }

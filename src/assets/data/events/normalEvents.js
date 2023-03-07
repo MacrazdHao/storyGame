@@ -174,7 +174,7 @@ export default {
   mutaidanshen_zhong: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【红尘之外】可艳可飒，看破红尘，独善其身，一人吃饱，全家不饿(智力+3，魅力+2，勇气+2)',
+    text: (options) => `【红尘之外】可艳可飒${options.userInfo.tizhi >= 100 ? '，练就葵花宝典' : ''}，看破红尘，独善其身，一人吃饱，全家不饿(智力+3，魅力+2，勇气+2)`,
     times: () => 1,
     triggerConditions: (attr = {}) => ({ ...attr, sex: [-1, 0], age: [40, MAXNUM], lianaicishu: [0, 1] }),
     effectAttr: (attr = {}) => ({
@@ -220,11 +220,10 @@ export default {
       jieshu: 1
     })
   },
-  // 结束-必然事件
   siwang2: {
     ...defaultNormalEvent,
     ...defaultCertainEvent,
-    text: () => '【Game Over】你重伤身亡了',
+    text: (options) => `【Game Over】你${options.userInfo.dengji_shoushang < 5 ? '.只因病缠身而死' : '你重伤到底，最终没等到有人来救援'}，享年${options.age}岁`,
     times: () => 1,
     triggerConditions: (attr = {}) => ({ ...attr, jiankang: [MINNUM, 1], routibusi: [0, 1] }),
     effectAttr: (attr = {}) => ({
@@ -439,6 +438,13 @@ export default {
     timesOfUnit: (times = 1) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 3] })
   },
+  chibaba2: {
+    ...defaultNormalEvent,
+    text: (options) => '洗完澡光着身子在床上的你，肚子里一阵扭动，忍不住把屎憋了出来，上面沾着粒粒完好如初的金黄玉米粒，你抵不住诱惑抠出来吃了几粒',
+    times: (initTimes = MAXNUM) => initTimes,
+    timesOfUnit: (times = 1) => times,
+    triggerConditions: (attr = {}) => ({ ...attr, age: [3, 6] })
+  },
   tunai: {
     ...defaultNormalEvent,
     text: (options) => '喝完奶后，你常常会吐抱你的人一身奶，据说这是婴儿常见的问题',
@@ -547,6 +553,13 @@ export default {
     timesOfUnit: (times = 1) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [0, 4] })
   },
+  // : {
+  //   ...defaultNormalEvent,
+  //   text: (options) => '',
+  //   times: (initTimes = 1) => initTimes,
+  //   timesOfUnit: (times = 1) => times,
+  //   triggerConditions: (attr = {}) => ({ ...attr, age: [0, 4] })
+  // },
   kenmao: {
     ...defaultNormalEvent,
     text: (options) => '你在别人家抓起人家的猫就是一顿啃，啃得满嘴是毛，又是一顿嚎啕大哭',
@@ -599,7 +612,7 @@ export default {
   feizhuliu3: {
     ...defaultNormalEvent,
     ...defaultPassiveEvent,
-    text: (options) => '你沉迷非主流文化，每天浸淫在尻尻空间和尻尻秀的世界里，为此你充了很多尻币，为你的尻尻空间增添了大量花里胡哨的装饰，还充了各种钻和尻尻会员，甚至当上了非主流某堂的堂主，一度成为朋友中最发笋的崽(魅力+2，家境-2)',
+    text: (options) => '你沉迷非主流文化，每天浸淫在尻尻空间和尻尻秀的世界里，为此你充了很多尻币，为你的尻尻空间增添了大量花里胡哨的装饰，还充了各种钻和尻尻会员，甚至当上了非主流某堂的堂主，一度成为亲戚朋友中最发笋的崽(魅力+2，家境-2)',
     times: (initTimes = 1) => initTimes,
     timesOfUnit: (times = 0) => times,
     triggerConditions: (attr = {}) => ({ ...attr, age: [12, 30], jiajing: [2, MAXNUM], year: [2002, 2009] }),
@@ -1067,6 +1080,16 @@ export default {
     effectAttr: (attr = {}) => ({
       ...attr,
       jiajing: 1
+    })
+  },
+  meiyounianwei: {
+    ...defaultNormalEvent,
+    ...defaultPassiveEvent,
+    execNormalDefaultWhenMismatchConditions: () => true,
+    text: (options) => `你觉得春节越来越没有年味，不知是因为${options.userInfo.age > 40 ? '老' : '长大'}了，还是因为时代变了`,
+    triggerConditions: (attr = {}) => ({
+      ...attr,
+      age: [18, MAXNUM]
     })
   },
   shenmishitou_jieguo1: {
