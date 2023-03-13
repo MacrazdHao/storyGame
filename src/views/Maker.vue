@@ -147,7 +147,7 @@ export default {
         }
       ],
       originEventObj: {
-        text: '',
+        text: '', // 可使用属性条件
         style: {}, // 可使用属性条件
         times: MAXNUM,
         timesOfUnit: 1,
