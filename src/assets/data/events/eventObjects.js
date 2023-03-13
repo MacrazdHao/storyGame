@@ -29,7 +29,7 @@
  ** 【可选默认事件】optDefault: (eventKey[String]) => String
  ** 【多选选项】multiOptions: (events[Array({text: [String], color: String, maxRepeat: 1, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)], disabledConditions: attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] })]) => Object
  ** 【多选上限】maxSelection: (num[Number]) => Number
- ** 【要求选满多选上限标识】isFullMaxSelection: (isFullMaxSelection[Boolean]) => Boolean
+ ** 【要求选满多选上限标识】requireSelectNum: (nums[Array(Number)]) => Array(Number)
  ** 【多选匹配事件】multiMixEvents: (events[Object({ '[index0]_[index1]_...(String)': EventName[String], 'any(默认)': EventName[String] })]) => Object
  ** 【多选默认事件】multiOptDefault: (eventKey[String]) => String
  * }
@@ -135,7 +135,7 @@ export const defaultMultiOptEvent = {
   // 多选事件，根据所选择的选项匹配反馈事件，当某些条件下无可执行的结果，则会默认执行multiOptDefault事件
   multiOptions: (options = []) => ([...options]),
   maxSelection: (num = 2) => num,
-  isFullMaxSelection: (isFullMaxSelection = false) => isFullMaxSelection,
+  requireSelectNum: (nums = [2, MAXNUM]) => nums,
   multiMixEvents: (mixEvents = { any: 'duoxuanmoren' }) => ({ ...mixEvents }),
   multiOptDefault: (eventKey = 'duoxuanmoren') => eventKey,
   // 注：多选事件和单选事件相冲

@@ -368,7 +368,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
         }
       }
       if (!mismatch)pushEventKeyToStack(userId, !event.bindEvents[ekey].duration ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], !event.bindEvents[ekey].duration ? 'priority' : 'duration')
-      else if (!event.bindEvents[ekey].donotMismatchToDefault) pushEventKeyToStack(userId, [event.defaultBindingEvent], 'priority')
+      else if (!event.bindEvents[ekey].donotMismatchToDefault) pushEventKeyToStack(userId, [event.bindDefault], 'priority')
     }
   }
   // 【获取概率结果数】prNumber

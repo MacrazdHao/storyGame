@@ -34,7 +34,7 @@ export default {
       disabledConditons: {}
     }, ...options]),
     maxSelection: (num = 2) => num,
-    isFullMaxSelection: (isFullMaxSelection = false) => isFullMaxSelection,
+    requireSelectNum: (nums = [2, MAXNUM]) => nums,
     multiMixEvents: (mixEvents) => ({
       '0_1': 'duoxuanshijian1',
       1: 'duoxuanshijian2',
@@ -58,7 +58,7 @@ export default {
       conditions: {}
     }, ...options]),
     maxSelection: (num = 2) => num,
-    isFullMaxSelection: (isFullMaxSelection = false) => isFullMaxSelection,
+    requireSelectNum: (nums = [2, MAXNUM]) => nums,
     multiMixEvents: (mixEvents) => ({
       '0_1': 'duoxuanshijian1',
       1: 'duoxuanshijian2',

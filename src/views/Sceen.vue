@@ -363,6 +363,11 @@ export default {
       } else this.selectedMultipleOptionIndex.push(index)
     },
     submitMultipleOptions (event) {
+      // 多选参数待修改：
+      // multiOptDefault
+      // requireSelectNum
+      // maxSelection
+      // maxRepeat
       selectMultiOptEventOptions(
         this.userInfo.userId,
         this.curConditions,
