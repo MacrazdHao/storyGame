@@ -69,7 +69,7 @@ const EventsRecord = {
       duration: []
     },
     // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
-    // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
+    // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, times: Number, weightReplace: Boolean }] }
     // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number, persentReplace: Boolean, goodOrBad: Number })] }
     // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number })] }
     prEventsExtraWeight: {},
@@ -133,7 +133,7 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       eventObj.text = `---${key}: 重新生成文案错误(params error, ${err})---`
     }
     eventObj.style = AllEvents[key].style(eventOptions.style)
-    if (eventObj.prEvents)eventObj.prEvents = AllEvents[key].prEvents(eventOptions.prEvents || {})
+    if (eventObj.prEvents) eventObj.prEvents = AllEvents[key].prEvents(eventOptions.prEvents || {})
     // if (eventObj.prRepeat)eventObj.prRepeat = AllEvents[key].prRepeat(eventOptions.prRepeat || {})
     if (updateMode) {
       // 重置/更新事件属性
@@ -224,7 +224,7 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
     }
     options.push(option)
   }
-  if (options.length === 0)options.push(defaultOption)
+  if (options.length === 0) options.push(defaultOption)
   return options
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
@@ -367,7 +367,7 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
           if (mismatch) break
         }
       }
-      if (!mismatch)pushEventKeyToStack(userId, !event.bindEvents[ekey].duration ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], !event.bindEvents[ekey].duration ? 'priority' : 'duration')
+      if (!mismatch) pushEventKeyToStack(userId, !event.bindEvents[ekey].duration ? [ekey] : [{ key: ekey, duration: event.bindEvents[ekey].duration }], !event.bindEvents[ekey].duration ? 'priority' : 'duration')
       else if (!event.bindEvents[ekey].donotMismatchToDefault) pushEventKeyToStack(userId, [event.bindDefault], 'priority')
     }
   }
@@ -388,9 +388,9 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
       // 【概率事件结果额外概率调整】prEventsExtraWeight
       if (EventsRecord[userId].prEventsExtraWeight[pkey]) {
         for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[pkey].length; i++) {
-          const { lastUnitTime, lastTimes, weight, persent, weightReplace } = EventsRecord[userId].prEventsExtraWeight[pkey][i]
-          if (lastUnitTime <= 0 || lastTimes <= 0 || (!weight && !persent)) continue
-          EventsRecord[userId].prEventsExtraWeight[pkey][i].lastTimes--
+          const { lastUnitTime, times, weight, persent, weightReplace } = EventsRecord[userId].prEventsExtraWeight[pkey][i]
+          if (lastUnitTime <= 0 || times <= 0 || (!weight && !persent)) continue
+          EventsRecord[userId].prEventsExtraWeight[pkey][i].times--
           // weightReplace置true后，persent无效
           // weightReplace置false时，先以原概率基数*persent再叠加weight
           // 不设置weight时，weightReplace不生效
@@ -541,7 +541,7 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
     const noLastUnitTimeExtraWeightIndex = {}
     for (let i = 0; i < EventsRecord[userId].prEventsExtraWeight[ekey]; i++) {
       EventsRecord[userId].prEventsExtraWeight[ekey][i].lastUnitTime--
-      if (EventsRecord[userId].prEventsExtraWeight[ekey][i].lastUnitTime <= 0) {
+      if (EventsRecord[userId].prEventsExtraWeight[ekey][i].lastUnitTime <= 0 || EventsRecord[userId].prEventsExtraWeight[ekey][i].times <= 0) {
         noLastUnitTimeExtraWeightIndex[`${i}`] = true
       }
     }
@@ -573,7 +573,7 @@ export const toNewUnitTime = (userId, options = {}, conditions = {}, callback, r
     EventsRecord[userId].extraRandomEvents[ekey].filter((item, index) => !noLastUnitTimeExtraEventIndex[`${index}`])
   }
   // 插入过新年事件
-  if (!EventsRecord[userId].stack.priority.includes('guoxinnian'))EventsRecord[userId].stack.priority.push('guoxinnian')
+  if (!EventsRecord[userId].stack.priority.includes('guoxinnian')) EventsRecord[userId].stack.priority.push('guoxinnian')
   // 获取当前单位时间的随机事件(8)
   let randomEventKeys = Object.keys(NonPassiveEvents)
   const randomEvents = []
@@ -612,7 +612,7 @@ export const createUser = (userId, reset = true) => {
         duration: []
       },
       // weightReplace为true时，weight生效，否则生效persent(按比例增幅权重)
-      // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, lastTimes: Number, weightReplace: Boolean }] }
+      // prEventsExtraWeight: { 'EventName': Array[Object{ persent: Number, weight: Number, lastUnitTime: Number, times: Number, weightReplace: Boolean }] }
       // extraRandomEvents: { 'EventName': Array[Object({ persent: Number, lastUnitTime: Number, times: Number })] }
       // extraEventTimes: { 'EventName': Array[Object({ timesOfUnit: Number, timesOfUnitReplace: Boolean, lastUnitTime: Number, timesAdded: Boolean })] }
       prEventsExtraWeight: {},

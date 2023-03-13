@@ -15,6 +15,8 @@ import {
   EventCode,
   getRandom
 } from '@/eventObjects'
+// 可编辑内容：
+// 事件、属性
 export default {
   data () {
     return {
@@ -145,21 +147,45 @@ export default {
         }
       ],
       originEventObj: {
-        text: (options) => '',
-        style: (options) => ({}),
-        times: (initTimes = MAXNUM) => initTimes,
-        timesOfUnit: (times = 1) => times,
-        // curTimesOfUnit: (times = 1) => times,
-        triggerConditions: (attr = { age: [0, MAXNUM] }) => ({ ...attr }),
-        execNormalDefaultWhenMismatchConditions: (execDefault = false) =>
-          execDefault,
-        effectAttr: (attr = {}) => ({ ...attr }),
-        // 用于变更或替换其他事件次数(times, timesOfUnit, curTimesOfUnit)（待修改：添加处理逻辑）
-        effectEvents: (events = {}) => ({ ...events }),
-        // 待修改： 添加prEventsExtraWeight和extraRandomEvents的逻辑
-        prEventsExtraWeight: (events = {}) => ({ ...events }),
-        extraRandomEvents: (events = {}) => ({ ...events }),
-        normalDefault: (eventKey = 'putongmoren') => eventKey
+        text: '',
+        style: {}, // 可使用属性条件
+        times: MAXNUM,
+        timesOfUnit: 1,
+        triggerConditions: {
+          // attr: [min, max]
+        },
+        execNormalDefaultWhenMismatchConditions: false,
+        effectAttr: {
+          // attr: Number
+        },
+        // 事件次数额外增益
+        effectEvents: {
+          demo: {
+            timesOfUnit: 1, // 每回合执行次数上限
+            timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
+            lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
+          }
+        },
+        // 概率事件额外权重增益
+        prEventsExtraWeight: {
+          demo: {
+            persent: 0, // 按百分比增加概率权重
+            weight: 0, // 叠加概率权重
+            times: 1, // 总有效次数，最多可执行次数
+            weightReplace: false, // 为true时，将该事件权重直接替换为weight的值，persent变为无效
+            lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
+          }
+        },
+        // 额外的随机事件
+        extraRandomEvents: {
+          demo: {
+            persent: 10, // 该事件的百分比概率
+            lastUnitTime: 1, // 该项事件影响效果剩余持续回合数
+            times: 1, // 总有效次数，最多可执行次数
+            goodOrBad: 0 // 负坏事，正好事
+          }
+        },
+        normalDefault: 'putongmoren' // 未达成事件条件时执行的事件
       }
     }
   },
