@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="6px" viewBox="0 0 14 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon_arrow</title>
+    <g id="icon_arrow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon_arrow" transform="translate(-760.000000, -1756.000000)" fill="#C7C7C7">
+            <g id="activity-time" transform="translate(396.000000, 1743.000000)">
+                <g id="icon_arrow-" transform="translate(364.000000, 13.000043)">
+                    <path d="M13.125,6.00012849 L0.875,6.00012849 C0.392,6.00012849 -3.05533376e-13,5.61612849 -3.05533376e-13,5.14298563 C-3.05533376e-13,4.66984277 0.392,4.28584277 0.875,4.28584277 L11.3045625,4.28584277 L8.941625,1.39298563 C8.63975,1.02312849 8.701,0.483557058 9.0785625,0.187842772 C9.45525,-0.107871514 10.0065,-0.0478715139 10.308375,0.321557058 L13.808375,4.60727134 C14.018375,4.86484277 14.0595,5.21712849 13.9138125,5.51412849 C13.768125,5.81155706 13.4614375,6.00012849 13.125,6.00012849" id="icon_arrow"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

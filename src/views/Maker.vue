@@ -1,6 +1,8 @@
 <template>
   <div class="Maker">
-    <div class="formBox"></div>
+    <div class="formBox">
+
+    </div>
     <div class="previewBox"></div>
   </div>
 </template>

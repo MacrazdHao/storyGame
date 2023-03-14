@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="11px" height="6px" viewBox="0 0 11 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon_drop down box</title>
+    <g id="icon_drop_selected" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1105.000000, -844.000000)" fill="#b7b7b7" id="pagination">
+            <g transform="translate(662.000000, 832.000000)">
+                <g id="btn_drop-down-box" transform="translate(374.000000, 0.000000)">
+                    <g id="icon_drop-down-box-" transform="translate(68.500000, 11.500000)">
+                        <path d="M8.38733932,9 C8.23047857,9 8.0739242,8.94041625 7.95413406,8.8209432 L3.26883848,4.14804964 C2.91038717,3.79054716 2.91038717,3.20937645 3.26883848,2.85187397 L7.95413406,-1.82101959 C8.19340797,-2.05966014 8.58127066,-2.05966014 8.82054457,-1.82101959 C9.05981848,-1.58237904 9.05981848,-1.19554302 8.82054457,-0.956902478 L4.35185162,3.49996181 L8.82054457,7.95682609 C9.05981848,8.19546664 9.05981848,8.58230265 8.82054457,8.8209432 C8.70075443,8.94041625 8.54420006,9 8.38733932,9" id="icon_drop-down-box" transform="translate(6.000000, 3.500000) scale(1, -1) rotate(90.000000) translate(-6.000000, -3.500000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
