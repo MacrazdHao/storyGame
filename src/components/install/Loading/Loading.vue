@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       text: '',
       duration: 3000,
@@ -18,15 +18,15 @@ export default {
     }
   },
   computed: {
-    refPrefix() {
+    refPrefix () {
       return 'Loading-'
     },
-    refSuffix() {
+    refSuffix () {
       return new Date().getTime() + Math.random() * 1000
     }
   },
   methods: {
-    showLoading(options) {
+    showLoading (options) {
       for (const key in options) {
         this[key] = options[key]
       }
@@ -41,7 +41,7 @@ export default {
         }
       })
     },
-    hideLoading() {
+    hideLoading () {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dLoading =
         this.$refs[`${this.refPrefix}-loading-${this.refSuffix}`]

@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       width: 360,
       title: '',
@@ -76,13 +76,13 @@ export default {
     }
   },
   computed: {
-    refPrefix() {
+    refPrefix () {
       return 'Dialog-'
     },
-    refSuffix() {
+    refSuffix () {
       return new Date().getTime() + Math.random() * 1000
     },
-    dialogTitle() {
+    dialogTitle () {
       if (this.title) return this.title
       else {
         switch (this.type) {
@@ -101,7 +101,7 @@ export default {
         }
       }
     },
-    iconClass() {
+    iconClass () {
       switch (this.type) {
         case 'success':
           return 'icon-icon_filled-circle_success'
@@ -117,10 +117,10 @@ export default {
     }
   },
   methods: {
-    shadeHandler() {
+    shadeHandler () {
       if (this.enableShadeClose) this.cancelHandler()
     },
-    showMessage(options) {
+    showMessage (options) {
       for (const key in options) {
         this[key] = options[key]
       }
@@ -137,7 +137,7 @@ export default {
         }
       }, 100)
     },
-    closeWindow(cb) {
+    closeWindow (cb) {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dWindow = this.$refs[`${this.refPrefix}-window-${this.refSuffix}`]
       dWindow.style.opacity = 0
@@ -147,10 +147,10 @@ export default {
         setTimeout(cb, 100)
       }, 100)
     },
-    confirmHandler() {
+    confirmHandler () {
       this.closeWindow(this.callback())
     },
-    cancelHandler() {
+    cancelHandler () {
       this.closeWindow(this.cancelCallback())
     }
   }

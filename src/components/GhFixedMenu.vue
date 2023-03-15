@@ -123,7 +123,7 @@ export default {
       type: Boolean
     }
   },
-  data() {
+  data () {
     return {
       showMenu: false,
       menuTop: 0,
@@ -131,10 +131,10 @@ export default {
     }
   },
   computed: {
-    boxMinWidth() {
+    boxMinWidth () {
       return this.minWidth || this.$refs.menuBox.offsetWidth
     },
-    menuPosition() {
+    menuPosition () {
       let menuTop = this.menuTop
       let menuRight = this.menuRight
       if (this.$refs.coverBox) {
@@ -152,20 +152,20 @@ export default {
         right: menuRight + 'px'
       }
     },
-    itemHeight() {
+    itemHeight () {
       return this.singleItemHeight || 34
     },
-    height() {
+    height () {
       if (this.itemHeight * this.menu.length + 8 < this.maxHeight) {
         return this.itemHeight * this.menu.length + 8
       } else return this.maxHeight || this.itemHeight * this.menu.length + 8
     },
-    menuContentHeight() {
+    menuContentHeight () {
       return this.itemHeight * this.menu.length + 8
     }
   },
   watch: {
-    showMenu(val) {
+    showMenu (val) {
       this.$emit('handleOpen', val)
       if (val) {
         const position = this.$refs.menuText.getBoundingClientRect()
@@ -175,14 +175,14 @@ export default {
       } else this.$emit('blur', val)
     }
   },
-  mounted() {
+  mounted () {
     document.addEventListener('mousedown', this.handleMouseDown, false)
     window.addEventListener('resize', this.closeMenu)
     window.addEventListener('wheel', this.updatePosition)
     this.updatePosition()
   },
   methods: {
-    updatePosition() {
+    updatePosition () {
       setTimeout(() => {
         if (this.$refs.menuText) {
           const position = this.$refs.menuText.getBoundingClientRect()
@@ -191,17 +191,17 @@ export default {
         }
       }, 300)
     },
-    handleMouseDown(e) {
+    handleMouseDown (e) {
       if (e.target.id.match(/menuItem/)) {
         e.preventDefault()
       }
     },
-    toggleMenu() {
+    toggleMenu () {
       if (this.disabled) return
       if (this.showMenu) this.closeMenu()
       else this.openMenu()
     },
-    openMenu() {
+    openMenu () {
       if (this.showMenu) return
       if (this.dynamicMinWidth) this.$emit('getDynamicMinWidth')
       this.showMenu = true
@@ -209,14 +209,14 @@ export default {
         this.menuAnimate(this.$refs.menu)
       }, 0)
     },
-    closeMenu() {
+    closeMenu () {
       if (!this.showMenu) return
       this.menuAnimate(this.$refs.menu, true)
       setTimeout(() => {
         this.showMenu = false
       }, 100)
     },
-    menuAnimate(element, hide) {
+    menuAnimate (element, hide) {
       if (!element) return
       element.style.padding = '4px 0'
       const targetHeight = this.height + 'px'
@@ -227,14 +227,14 @@ export default {
         element.style.padding = hide ? '0' : '4px 0'
       }, 0)
     },
-    handleSelect(index, item) {
+    handleSelect (index, item) {
       if (item.disabled) {
         return
       }
       item.callback(this.extra, index)
       this.closeMenu()
     },
-    scrollToBottom(e) {
+    scrollToBottom (e) {
       if (e.target.scrollTop / this.itemHeight >= this.menu.length - 6) {
         try {
           this.$emit('scrollToBottom', e)
@@ -244,7 +244,7 @@ export default {
       }
     }
   },
-  beforeUnmount() {
+  beforeUnmount () {
     document.removeEventListener('mousedown', this.handleMouseDown)
     window.removeEventListener('resize', this.closeMenu)
     window.removeEventListener('wheel', this.updatePosition)

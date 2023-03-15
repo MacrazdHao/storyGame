@@ -43,24 +43,24 @@ _Alert.install = (Vue) => {
   }
 
   const AlertMain = {
-    showMessage(options) {
+    showMessage (options) {
       const instance = createMessage()
       const _options = { ...defaultOptions, ...options, id: new Date().getTime() + Math.random() * 1000 }
       instance.addMessage(_options, closeAlertBox)
     },
-    info(options) {
+    info (options) {
       this.showMessage({ ...options, type: 'info' })
     },
-    success(options) {
+    success (options) {
       this.showMessage({ ...options, type: 'success' })
     },
-    notify(options) {
+    notify (options) {
       this.showMessage({ ...options, type: 'notify' })
     },
-    warn(options) {
+    warn (options) {
       this.showMessage({ ...options, type: 'warn' })
     },
-    fail(options) {
+    fail (options) {
       this.showMessage({ ...options, type: 'fail' })
     }
   }

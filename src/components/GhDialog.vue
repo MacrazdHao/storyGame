@@ -156,25 +156,25 @@ export default {
       default: 2000
     }
   },
-  data() {
+  data () {
     return {
       showBuffer: false
     }
   },
   computed: {
-    relCancelText() {
+    relCancelText () {
       return this.cancelText || this.$t('gray.cancelBtn')
     },
-    relConfirmText() {
+    relConfirmText () {
       return this.confirmText || this.$t('gray.confirmBtn')
     },
-    refPrefix() {
+    refPrefix () {
       return 'GhDialog-'
     },
-    refSuffix() {
+    refSuffix () {
       return new Date().getTime() + Math.random() * 1000
     },
-    dialogTitle() {
+    dialogTitle () {
       if (this.title) return this.title
       else {
         switch (this.type) {
@@ -193,7 +193,7 @@ export default {
         }
       }
     },
-    iconClass() {
+    iconClass () {
       switch (this.type) {
         case 'success':
           return 'icon-icon_filled-circle_success'
@@ -209,7 +209,7 @@ export default {
     }
   },
   watch: {
-    show() {
+    show () {
       if (this.show) {
         this.showBuffer = true
         setTimeout(() => {
@@ -220,7 +220,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     if (this.show) {
       this.showBuffer = true
       setTimeout(() => {
@@ -229,10 +229,10 @@ export default {
     }
   },
   methods: {
-    shadeHandler() {
+    shadeHandler () {
       if (this.enableShadeClose) this.cancelHandler()
     },
-    showMessage(options) {
+    showMessage (options) {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dWindow = this.$refs[`${this.refPrefix}-window-${this.refSuffix}`]
       setTimeout(() => {
@@ -248,7 +248,7 @@ export default {
         }
       }, 100)
     },
-    closeWindow() {
+    closeWindow () {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dWindow = this.$refs[`${this.refPrefix}-window-${this.refSuffix}`]
       dWindow.style.opacity = 0
@@ -265,12 +265,12 @@ export default {
         this.showBuffer = false
       }, 300)
     },
-    confirmHandler() {
+    confirmHandler () {
       if (this.disabledConfirm) return
       this.$emit('confirm')
       if (!this.dontHideWhenConfirm) this.closeWindow()
     },
-    cancelHandler() {
+    cancelHandler () {
       this.$emit('cancel')
       this.closeWindow()
     }

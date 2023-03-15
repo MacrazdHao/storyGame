@@ -41,17 +41,18 @@ _Loading.install = (Vue) => {
   }
 
   const LoadingMain = {
-    show(options = {}) {
+    show (options = {}) {
       createLoading()
       const _options = {
-        ...defaultOptions, ...options,
+        ...defaultOptions,
+        ...options,
         callback: () => {
           closeLoading(options.callback || null, instance)
         }
       }
       instance.showLoading(_options)
     },
-    hide() {
+    hide () {
       instance.hideLoading()
     }
   }

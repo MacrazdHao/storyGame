@@ -39,25 +39,25 @@ export default {
     'height',
     'readonly'
   ],
-  data() {
+  data () {
     return {
       focus: false
     }
   },
   computed: {
-    _value() {
+    _value () {
       return this.value
     }
   },
-  mounted() {},
+  mounted () {},
   methods: {
-    tFocus() {
+    tFocus () {
       this.focus = true
     },
-    tBlur() {
+    tBlur () {
       this.focus = false
     },
-    inputHandler(e) {
+    inputHandler (e) {
       this.$emit('input', e.target.value)
     }
   }

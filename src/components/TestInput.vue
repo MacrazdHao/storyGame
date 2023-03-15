@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import GhInput from './GhInput.vue'
 const getTestChildren = () => {
   return new Array(Math.floor(Math.random() * 20 + 1)).fill(null).map(() => {
     const val = Math.floor(Math.random() * 10000) + 1
@@ -37,12 +38,11 @@ const createCascadeData = (arr, lev = 0) => {
     return newItem
   })
 }
-import GhInput from './GhInput.vue'
 export default {
   components: {
     GhInput
   },
-  data() {
+  data () {
     return {
       keyword: '',
       indexes: [],
@@ -62,10 +62,10 @@ export default {
 
   },
   methods: {
-    initRuleSelectorData() {
+    initRuleSelectorData () {
       // do sth
     },
-    handleSelect(indexes, item) {
+    handleSelect (indexes, item) {
       console.log('TestInput ===> ', indexes)
       this.indexes = indexes
     }

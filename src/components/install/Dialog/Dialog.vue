@@ -28,7 +28,7 @@ export default {
   components: {
     GhDialog
   },
-  data() {
+  data () {
     return {
       width: 360,
       title: '',
@@ -49,18 +49,18 @@ export default {
     }
   },
   methods: {
-    showMessage(options) {
+    showMessage (options) {
       for (const key in options) {
         this[key] = options[key]
       }
     },
-    closeWindow(cb) {
+    closeWindow (cb) {
       cb()
     },
-    confirmHandler() {
+    confirmHandler () {
       this.closeWindow(this.callback())
     },
-    cancelHandler() {
+    cancelHandler () {
       this.closeWindow(this.cancelCallback())
     }
   }

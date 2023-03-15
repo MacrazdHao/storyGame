@@ -64,7 +64,7 @@ _Dialog.install = (Vue) => {
   }
 
   const DialogMain = {
-    showMessage(options) {
+    showMessage (options) {
       const _options = {
         ...defaultOptions, ...options
       }
@@ -75,32 +75,32 @@ _Dialog.install = (Vue) => {
       const instance = createMessage()
       instance.showMessage({
         ..._options,
-        callback() {
+        callback () {
           if (_options.groupName) groupNameObj[_options.groupName]--
           closeDialog(_options.callback, instance)
         },
-        cancelCallback() {
+        cancelCallback () {
           if (_options.onlyOne) groupNameObj[_options.groupName]--
           closeDialog(_options.cancelCallback, instance)
         }
       })
     },
-    info(options) {
+    info (options) {
       this.showMessage({ ...options, type: 'info' })
     },
-    success(options) {
+    success (options) {
       this.showMessage({ ...options, type: 'success' })
     },
-    warn(options) {
+    warn (options) {
       this.showMessage({ ...options, type: 'warn' })
     },
-    fail(options) {
+    fail (options) {
       this.showMessage({ ...options, type: 'fail' })
     },
-    popconfirm(options) {
+    popconfirm (options) {
       this.showMessage({ ...options, showTitle: false, showCancel: true, showClose: false })
     },
-    popover(options) {
+    popover (options) {
       this.showMessage({ ...options, popover: true })
     }
   }

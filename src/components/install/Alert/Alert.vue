@@ -32,7 +32,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       /** messages item
         text: '',
@@ -49,12 +49,12 @@ export default {
     }
   },
   computed: {
-    alertdomIdPrefix() {
+    alertdomIdPrefix () {
       return 'alert-item-'
     }
   },
   methods: {
-    clearMessages() {
+    clearMessages () {
       if (this.clearTimer) clearTimeout(this.clearTimer)
       this.clearTimer = setTimeout(() => {
         const msg = this.messages.filter((item) => {
@@ -66,7 +66,7 @@ export default {
         } else this.clearMessages()
       }, 3000)
     },
-    closeAlert(msgIndex) {
+    closeAlert (msgIndex) {
       setTimeout(() => {
         const alert = document.getElementById(
           `${this.alertdomIdPrefix}${msgIndex}-${this.messages[msgIndex].id}`
@@ -80,7 +80,7 @@ export default {
         this.clearMessages()
       }, 300)
     },
-    getIconClass(type) {
+    getIconClass (type) {
       switch (type) {
         case 'info':
           return 'icon-icon_filled-circle_warn'
@@ -96,7 +96,7 @@ export default {
           return ''
       }
     },
-    addMessage(option, closeAlertBox = () => {}) {
+    addMessage (option, closeAlertBox = () => {}) {
       this.messages.push(option)
       this.closeAlertBox = closeAlertBox
       const index = this.messages.length - 1
