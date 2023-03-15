@@ -137,7 +137,12 @@
               :max-length="MaxNumLength"
               @input="inputTimes"
             />
-            <p v-if="timesNotNumber" class="formBox-block-item-tips formBox-block-item-tips--warning">请输入正确的数字</p>
+            <p
+              v-if="timesNotNumber"
+              class="formBox-block-item-tips formBox-block-item-tips--warning"
+            >
+              请输入正确的数字
+            </p>
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
@@ -150,13 +155,27 @@
               :max-length="MaxNumLength"
               @input="inputTimesOfUnit"
             />
-            <p v-if="timesOfUnitNotNumber" class="formBox-block-item-tips formBox-block-item-tips--warning">请输入正确的数字</p>
+            <p
+              v-if="timesOfUnitNotNumber"
+              class="formBox-block-item-tips formBox-block-item-tips--warning"
+            >
+              请输入正确的数字
+            </p>
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">触发条件</p>
           <div class="formBox-block-item-conditionBox">
-            <p :class="['formBox-block-item-tips', triggerConditionsError?'formBox-block-item-tips--warning':'']">最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制</p>
+            <p
+              :class="[
+                'formBox-block-item-tips',
+                triggerConditionsError
+                  ? 'formBox-block-item-tips--warning'
+                  : '',
+              ]"
+            >
+              最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+            </p>
             <div
               v-for="(item, index) in triggerConditions"
               :key="index"
@@ -172,12 +191,14 @@
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="角色属性最小值(含)"
                 :value="item.min"
+                :max-length="MaxNumLength"
                 @input="(text) => inputConditionMinValue(index, text)"
               />
               <GhInput
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="角色属性最大值(不含)"
                 :value="item.max"
+                :max-length="MaxNumLength"
                 @input="(text) => inputConditionMaxValue(index, text)"
               />
               <p
@@ -187,11 +208,19 @@
                 -- 移除 --
               </p>
             </div>
-            <p class="formBox-block-item-conditionBox-addBtn" @click="addConditionItem">
+            <p
+              class="formBox-block-item-conditionBox-addBtn"
+              @click="addConditionItem"
+            >
               ++ 添加一项 ++
             </p>
-            <p class="formBox-block-item-tips">Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff, 回合信息(unitTimeInfo), 年份(year)</p>
-            <p class="formBox-block-item-tips">Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a 10 11</p>
+            <p class="formBox-block-item-tips">
+              Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+              回合信息(unitTimeInfo), 年份(year)
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a 10 11
+            </p>
           </div>
         </div>
         <div class="formBox-block-item">
@@ -220,6 +249,86 @@
             >
               <span class="formBox-block-item-radioBox-radio-dot" />
               否
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">角色影响</p>
+          <div class="formBox-block-item-attrEffectBox">
+            <p
+              :class="[
+                'formBox-block-item-tips',
+                attrEffectError ? 'formBox-block-item-tips--warning' : '',
+              ]"
+            >
+              准确值、最大值和最小值必须为数字（小数将只保留整数位）
+            </p>
+            <div
+              v-for="(item, index) in effectAttr"
+              :key="index"
+              class="formBox-block-item-attrEffectBox-item"
+            >
+              <GhInput
+                class="formBox-block-item-attrEffectBox-item-input"
+                placeholder="角色属性名"
+                :value="item.key"
+                @input="(text) => inputAttrEffectKey(index, text)"
+              />
+              <template v-if="item.mode === 'random'">
+                <GhInput
+                  class="formBox-block-item-attrEffectBox-item-input"
+                  placeholder="影响属性最小值(含)"
+                  :value="item.min"
+                  :max-length="MaxNumLength"
+                  @input="(text) => inputAttrEffectMinValue(index, text)"
+                />
+                <GhInput
+                  class="formBox-block-item-attrEffectBox-item-input"
+                  placeholder="影响属性最大值(不含)"
+                  :value="item.max"
+                  :max-length="MaxNumLength"
+                  @input="(text) => inputAttrEffectMaxValue(index, text)"
+                />
+              </template>
+              <GhInput
+                v-else-if="item.mode === 'exact'"
+                class="formBox-block-item-attrEffectBox-item-input"
+                placeholder="影响属性值"
+                :value="item.value"
+                :max-length="MaxNumLength"
+                @input="(text) => inputAttrEffectValue(index, text)"
+              />
+              <p
+                class="formBox-block-item-attrEffectBox-item-trigBtn"
+                @click="changeAttrEffectItem(index)"
+              >
+                -- 切换值模式 --
+              </p>
+              <p
+                class="formBox-block-item-attrEffectBox-item-delBtn"
+                @click="removeAttrEffectItem(index)"
+              >
+                -- 移除 --
+              </p>
+            </div>
+            <p
+              class="formBox-block-item-attrEffectBox-addBtn"
+              @click="addAttrEffectItem"
+            >
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+              回合信息(unitTimeInfo)
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 值模式分为准确值模式和随机值模式
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips3: 值模式为随机值模式时，min或max任一为空时，生成事件时将自动转为准确值模式，对应值为min / max-1
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips4: 负值为负面影响，正值为正面影响
             </p>
           </div>
         </div>
@@ -409,6 +518,7 @@ export default {
       timesNotNumber: false,
       timesOfUnitNotNumber: false,
       triggerConditionsError: false,
+      attrEffectError: false,
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -418,9 +528,7 @@ export default {
       timesOfUnit: 1,
       triggerConditions: [],
       execNormalDefaultWhenMismatchConditions: true,
-      effectAttr: {
-        // attr: Number
-      },
+      effectAttr: [], // attr: Number|Array
       // 事件次数额外增益
       effectEvents: {
         demo: {
@@ -477,13 +585,37 @@ export default {
       const times = parseInt(this.times)
       const timesOfUnit = parseInt(this.timesOfUnit)
       const triggerConditions = {}
+      const effectAttr = {}
       this.style.forEach((item) => {
         if (item.key) style[item.key] = item.value
       })
       this.triggerConditions.forEach((item) => {
-        const max = parseInt(item.max)
-        const min = parseInt(item.min)
-        if (item.key) { triggerConditions[item.key] = [isNaN(min) ? MINNUM : min, isNaN(max) ? MAXNUM : max] }
+        if (item.key) {
+          const max = parseInt(item.max)
+          const min = parseInt(item.min)
+          triggerConditions[item.key] = [
+            isNaN(min) ? MINNUM : min,
+            isNaN(max) ? MAXNUM : max
+          ]
+        }
+      })
+      this.effectAttr.forEach((item) => {
+        if (item.key) {
+          if (item.mode === 'random' && (item.max || item.min)) {
+            const max = parseInt(item.max)
+            const min = parseInt(item.min)
+            if (!isNaN(min) && !isNaN(max)) effectAttr[item.key] = [min, max]
+            else if (isNaN(min) && !isNaN(max)) {
+              effectAttr[item.key] = max - 1
+            } else if (!isNaN(min) && isNaN(max)) {
+              effectAttr[item.key] = min
+            }
+          }
+          if (item.mode === 'exact' && item.value) {
+            const value = parseInt(item.value)
+            effectAttr[item.key] = isNaN(value) ? 0 : value
+          }
+        }
       })
       return {
         eventKey: this.key,
@@ -492,7 +624,8 @@ export default {
         style,
         times: isNaN(times) ? MAXNUM : times,
         timesOfUnit: isNaN(timesOfUnit) ? 1 : timesOfUnit,
-        triggerConditions
+        triggerConditions,
+        effectAttr
       }
     }
   },
@@ -513,6 +646,22 @@ export default {
         const max = item.max ? parseInt(item.max) : MAXNUM
         const min = item.min ? parseInt(item.min) : MINNUM
         this.triggerConditionsError = isNaN(max) || isNaN(min)
+        if (this.triggerConditionsError) break
+      }
+    },
+    effectAttr() {
+      this.triggerConditionsError = false
+      for (let i = 0; i < this.triggerConditions.length; i++) {
+        const item = this.triggerConditions[i]
+        if (item.mode === 'random') {
+          const max = item.max ? parseInt(item.max) : MAXNUM
+          const min = item.min ? parseInt(item.min) : MINNUM
+          this.triggerConditionsError = isNaN(max) || isNaN(min)
+        }
+        if (item.mode === 'exact') {
+          const value = item.min ? parseInt(item.min) : 0
+          this.triggerConditionsError = isNaN(value)
+        }
         if (this.triggerConditionsError) break
       }
     }
@@ -611,10 +760,50 @@ export default {
       this.triggerConditions.push({ key: '', min: '', max: '' })
     },
     removeConditionItem(sindex) {
-      this.triggerConditions = this.triggerConditions.filter((item, index) => sindex !== index)
+      this.triggerConditions = this.triggerConditions.filter(
+        (item, index) => sindex !== index
+      )
     },
     setExecNormalDefaultWhenMismatchConditions(value) {
       this.execNormalDefaultWhenMismatchConditions = value
+    },
+    inputAttrEffectKey(index, text) {
+      this.$set(this.effectAttr, index, {
+        ...this.effectAttr[index],
+        key: text
+      })
+    },
+    inputAttrEffectMinValue(index, text) {
+      this.$set(this.effectAttr, index, {
+        ...this.effectAttr[index],
+        min: text
+      })
+    },
+    inputAttrEffectMaxValue(index, text) {
+      this.$set(this.effectAttr, index, {
+        ...this.effectAttr[index],
+        max: text
+      })
+    },
+    inputAttrEffectValue(index, text) {
+      this.$set(this.effectAttr, index, {
+        ...this.effectAttr[index],
+        value: text
+      })
+    },
+    changeAttrEffectItem(index) {
+      this.$set(this.effectAttr, index, {
+        ...this.effectAttr[index],
+        mode: this.effectAttr[index].mode === 'exact' ? 'random' : 'exact'
+      })
+    },
+    addAttrEffectItem() {
+      this.effectAttr.push({ key: '', min: '', max: '', value: '', mode: 'exact' })
+    },
+    removeAttrEffectItem(sindex) {
+      this.effectAttr = this.effectAttr.filter(
+        (item, index) => sindex !== index
+      )
     }
   }
 }
@@ -723,6 +912,44 @@ export default {
               line-height: 32px;
               margin-left: 12px;
               width: 160px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+          }
+        }
+        &-attrEffectBox {
+          width: 816px;
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: row;
+            .formBox-block-item-attrEffectBox-item-input
+              + .formBox-block-item-attrEffectBox-item-input {
+              margin-left: 12px;
+            }
+            &-input {
+              width: 180px;
+            }
+            &-trigBtn {
+              line-height: 32px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 32px;
+              margin-left: 12px;
+              width: 120px;
               border: 1px dashed #a92228;
               color: #a92228;
               user-select: none;

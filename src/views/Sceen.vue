@@ -440,12 +440,15 @@ export default {
       )
       for (const key in this.userInfo) {
         this.$set(this.userInfo, key, userInfo[key])
-      }
-      for (const key in this.userBuffs) {
-        this.$set(this.userBuffs, key, userInfo[key])
+        delete userInfo[key]
       }
       for (const key in this.unitTimeInfo) {
         this.$set(this.unitTimeInfo, key, userInfo[key])
+        delete userInfo[key]
+      }
+      // 除了userInfo和unitTimeInfo这两个部分的属性值是固定的，其余所有均列入userBuffs
+      for (const key in userInfo) {
+        this.$set(this.userBuffs, key, userInfo[key])
       }
       updateLocalRecords(this.userInfo.userId,
         {
