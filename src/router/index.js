@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Sceen from '../views/Sceen.vue'
+import Maker from '../views/Maker.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/sceen',
     name: 'Sceen',
     component: Sceen
+  },
+  {
+    path: '/maker',
+    name: 'Maker',
+    component: Maker
   }
 ]
 

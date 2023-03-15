@@ -10,9 +10,9 @@
       <div class="infoBox-userInfo">
         <div class="infoBox-userInfo-row">
           <div
-            class="infoBox-userInfo-row-item"
             v-for="(item, index) in userInfoStringArr.basic"
             :key="index"
+            class="infoBox-userInfo-row-item"
           >
             <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
             <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
@@ -20,9 +20,9 @@
         </div>
         <div class="infoBox-userInfo-row">
           <div
-            class="infoBox-userInfo-row-item"
             v-for="(item, index) in userInfoStringArr.status"
             :key="index"
+            class="infoBox-userInfo-row-item"
           >
             <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
             <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
@@ -30,9 +30,9 @@
         </div>
         <div class="infoBox-userInfo-row">
           <div
-            class="infoBox-userInfo-row-item"
             v-for="(item, index) in userInfoStringArr.buffs"
             :key="index"
+            class="infoBox-userInfo-row-item"
           >
             <p class="infoBox-userInfo-row-item-label">{{ item[0] }}</p>
             <p class="infoBox-userInfo-row-item-value">{{ item[1] }}</p>
@@ -43,29 +43,29 @@
     <div class="eventsBox">
       <div class="eventsBox-list">
         <div
-          class="eventsBox-list-item"
-          :style="item.style"
           v-for="(item, index) in events"
           :key="index"
+          class="eventsBox-list-item"
+          :style="item.style"
         >
           <p class="eventsBox-list-item-text">{{ item.text }}</p>
           <div
-            class="eventsBox-list-item-extra"
             v-if="index === events.length - 1"
+            class="eventsBox-list-item-extra"
           >
             <div
+              v-if="item.viewSingleOptions"
               class="eventsBox-list-item-extra-optionBox"
               :style="{
                 justifyContent:
                   item.viewSingleOptions.length % 3 ? 'center' : 'flex-start',
               }"
-              v-if="item.viewSingleOptions"
             >
               <template v-for="(option, oindex) in item.viewSingleOptions">
                 <div
-                  class="eventsBox-list-item-extra-optionBox-item"
                   v-if="!option.hide"
                   :key="oindex"
+                  class="eventsBox-list-item-extra-optionBox-item"
                 >
                   <div
                     :class="[
@@ -82,18 +82,18 @@
               </template>
             </div>
             <div
+              v-if="item.viewMultipleOptions"
               class="eventsBox-list-item-extra-optionBox"
               :style="{
                 justifyContent:
                   item.viewMultipleOptions.length % 3 ? 'center' : 'flex-start',
               }"
-              v-if="item.viewMultipleOptions"
             >
               <template v-for="(option, oindex) in item.viewMultipleOptions">
                 <div
-                  class="eventsBox-list-item-extra-optionBox-item"
                   v-if="!option.hide"
                   :key="oindex"
+                  class="eventsBox-list-item-extra-optionBox-item"
                 >
                   <div
                     :class="[
@@ -113,8 +113,8 @@
               </template>
             </div>
             <div
-              class="button eventsBox-list-item-extra-confirm"
               v-if="item.viewMultipleOptions"
+              class="button eventsBox-list-item-extra-confirm"
               @click="submitMultipleOptions(item)"
             >
               {{ mutipleConfirmButtonText }}
@@ -154,7 +154,7 @@ import {
 // 待修改：jieshu=1时，使jieshu为1后面的事件不再执行和显示
 export default {
   components: {},
-  data () {
+  data() {
     return {
       userBasicInfoLabels: {
         age: '年龄',
@@ -173,6 +173,7 @@ export default {
       userBuffInfoLabels: {
         fennu: '愤怒'
       },
+      // 待修改：后续将这部分提取到js文件，用函数获取初始属性
       userInfo: {
         userId: 'test',
         name: '测试用户名',
@@ -226,7 +227,7 @@ export default {
     }
   },
   computed: {
-    nextButtonString () {
+    nextButtonString() {
       if (this.newUnitTime) return '喜迎新年，恭喜你又老了一岁，施舍个红包吧'
       if (!this.enabledNextUnitTimeButton) {
         let callname = ''
@@ -242,7 +243,7 @@ export default {
       }
       return '下一事件'
     },
-    userInfoStringArr () {
+    userInfoStringArr() {
       const userInfo = {
         basic: [],
         status: [],
@@ -268,17 +269,17 @@ export default {
       }
       return userInfo
     },
-    unitTimeNumString () {
+    unitTimeNumString() {
       return `第${this.unitTimeInfo.curUnitTimeNum}年`
     },
-    unitTimeString () {
+    unitTimeString() {
       return `${this.unitTimeInfo.chronology[0]} ${
         this.unitTimeInfo.date[0] + this.unitTimeInfo.chronology[1]
       }${this.unitTimeInfo.date[1] + this.unitTimeInfo.chronology[2]}${
         this.unitTimeInfo.date[2] + this.unitTimeInfo.chronology[3]
       }`
     },
-    enabledNextUnitTimeButton () {
+    enabledNextUnitTimeButton() {
       return this.events.length
         ? !(
           this.events.at(-1).viewSingleOptions ||
@@ -286,19 +287,19 @@ export default {
         )
         : true
     },
-    textOptions () {
+    textOptions() {
       return {
         userInfo: { ...this.userInfo, ...this.userStatus, ...this.userBuffs },
         unitTimeInfo: { ...this.unitTimeInfo }
       }
     },
-    styleOptions () {
+    styleOptions() {
       return {
         userInfo: { ...this.userInfo, ...this.userStatus, ...this.userBuffs },
         unitTimeInfo: { ...this.unitTimeInfo }
       }
     },
-    curConditions () {
+    curConditions() {
       return {
         ...this.userInfo,
         ...this.userStatus,
@@ -309,7 +310,7 @@ export default {
         // day: this.unitTimeInfo.date[2]
       }
     },
-    eventOptions () {
+    eventOptions() {
       return {
         eventOptions: {
           text: this.textOptions,
@@ -317,18 +318,18 @@ export default {
         }
       }
     },
-    mutipleConfirmButtonText () {
+    mutipleConfirmButtonText() {
       return this.selectedMultipleOptionIndex.length === 0 ? '跳过' : '确定'
     }
   },
   watch: {
-    userInfo () {
+    userInfo() {
       const { jiankang, tizhi } = this.userInfo
       if (jiankang > tizhi * 10 + 10) {
         this.$set(this.userInfo, 'jiankang', tizhi * 10 + 10)
       }
     },
-    userStatus () {
+    userStatus() {
       if (this.userStatus.danshen === 0) {
         this.$set(this.userStatus, 'yizhidanshen', 0)
       }
@@ -337,7 +338,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     // const rNum = new Array(100000)
     //   .fill(0)
     //   .map(() => (Math.random() * 101).toFixed(0))
@@ -351,18 +352,18 @@ export default {
     this.toNewUnitTime()
   },
   methods: {
-    initUserInfo () {
+    initUserInfo() {
       const { tizhi } = this.userInfo
       this.$set(this.userInfo, 'jiankang', tizhi * 10 + 10)
     },
-    selectMultipleOption (index, option) {
+    selectMultipleOption(index, option) {
       if (option.disabled || option.hide) return
       if (this.selectedMultipleOptionIndex.includes(index)) {
         this.selectedMultipleOptionIndex =
           this.selectedMultipleOptionIndex.filter((item) => item !== index)
       } else this.selectedMultipleOptionIndex.push(index)
     },
-    submitMultipleOptions (event) {
+    submitMultipleOptions(event) {
       // 多选参数待修改：
       // multiOptDefault
       // requireSelectNum
@@ -377,12 +378,12 @@ export default {
       this.selectedMultipleOptionIndex = []
       this.getOneEvent()
     },
-    selectSingleOption (option) {
+    selectSingleOption(option) {
       if (option.disabled || option.hide) return
       selectOptEventOption(this.userInfo.userId, option)
       this.getOneEvent()
     },
-    updateUserAge () {
+    updateUserAge() {
       this.$set(this.userInfo, 'age', this.userInfo.age + 1)
       this.$set(
         this.unitTimeInfo,
@@ -395,7 +396,7 @@ export default {
         this.unitTimeInfo.date[2]
       ])
     },
-    toNewUnitTime () {
+    toNewUnitTime() {
       this.updateUserAge()
       toNewUnitTime(
         this.userInfo.userId,
@@ -404,7 +405,7 @@ export default {
       )
       this.newUnitTime = false
     },
-    getOneEvent (fromButton = false) {
+    getOneEvent(fromButton = false) {
       if (fromButton && !this.enabledNextUnitTimeButton) return
       if (this.newUnitTime) this.toNewUnitTime()
       const eventInfo = getNextEvent(

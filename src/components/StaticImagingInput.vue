@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import GhInput from '../../../components/GhInput.vue'
+import GhInput from './GhInput.vue'
 export default {
   components: {
     GhInput

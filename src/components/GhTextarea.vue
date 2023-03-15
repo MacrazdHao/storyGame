@@ -1,13 +1,5 @@
 <template>
   <div class="Textarea">
-    <p v-if="label" class="label">{{ label }}：</p>
-    <div v-if="labels" class="labels">
-      <p>
-        <span v-for="(item, index) in labels" :key="index" class="label">
-          {{ `${item}${index == labels.length - 1 ? "：" : ""}` }}
-        </span>
-      </p>
-    </div>
     <div :class="['textareaBox', focus ? 'textareaBox--focus' : '', disabled ? 'textareaBox--disabled' : '']">
       <p v-if="innerLabel">{{ innerLabel }}</p>
       <textarea
@@ -28,8 +20,6 @@
 <script>
 export default {
   props: [
-    'label',
-    'labels',
     'innerLabel',
     'value',
     'placeholder',
@@ -39,25 +29,25 @@ export default {
     'height',
     'readonly'
   ],
-  data () {
+  data() {
     return {
       focus: false
     }
   },
   computed: {
-    _value () {
+    _value() {
       return this.value
     }
   },
-  mounted () {},
+  mounted() {},
   methods: {
-    tFocus () {
+    tFocus() {
       this.focus = true
     },
-    tBlur () {
+    tBlur() {
       this.focus = false
     },
-    inputHandler (e) {
+    inputHandler(e) {
       this.$emit('input', e.target.value)
     }
   }
@@ -170,8 +160,8 @@ export default {
     }
   }
   .textareaBox--focus {
-    border: 1px solid #5c87ff;
-    box-shadow: 0 0 0 1px #5c88ff50;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 1px #23232350;
   }
   .textareaBox--disabled {
     border: 1px solid #d3d3d3;

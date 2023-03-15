@@ -1,13 +1,263 @@
 <template>
   <div class="Maker">
     <div class="formBox">
-
+      <div class="formBox-block">
+        <p class="formBox-block-label">事件类型</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">基础类型(必选)</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              v-for="(item, index) in baseType"
+              :key="index"
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                index === selectedBaseType
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="selectBaseType(index)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              {{ item.text }}
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">功能类型(多选)</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              v-for="(item, index) in funcType"
+              :key="index"
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                selectedFuncType.includes(index)
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="selectFuncType(index)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              {{ item.text }}
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">选项类型</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              v-for="(item, index) in optType"
+              :key="index"
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                index === selectedOptType
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="selectOptType(index)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              {{ item.text }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="formBox-block">
+        <p class="formBox-block-label">事件属性</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">事件KEY</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入事件KEY"
+            :value="key"
+            @input="inputKey"
+          />
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">事件描述</p>
+          <div class="formBox-block-item-textareaBox">
+            <GhTextarea
+              class="formBox-block-item-textarea"
+              placeholder="请输入事件描述段落"
+              :value="text"
+              @input="inputText"
+            />
+            <p class="formBox-block-item-tips">
+              Tips1:
+              如若加入属性三目运算，请使用双中括号"[[]]"将内容括起，例：[[a>=1?'是':'否']]
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 可用属性1 角色信息userInfo，悬停可查看可用属性
+              <!-- 待修改，次数点击可预览可用属性 -->
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips3: 可用属性2 回合信息unitTimeInfo({ curUnitTimeNum: 0, dm: 0,
+              chronology: ['公元', '年', '月', '日'], date: [2001, 6, 14] })
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">事件样式</p>
+          <div class="formBox-block-item-styleBox">
+            <div
+              v-for="(item, index) in style"
+              :key="index"
+              class="formBox-block-item-styleBox-item"
+            >
+              <GhInput
+                class="formBox-block-item-styleBox-item-input"
+                placeholder="style属性名"
+                :value="item.key"
+                @input="(text) => inputStyleKey(index, text)"
+              />
+              <GhInput
+                class="formBox-block-item-styleBox-item-input"
+                placeholder="style属性值"
+                :value="item.value"
+                @input="(text) => inputStyleValue(index, text)"
+              />
+              <p
+                class="formBox-block-item-styleBox-item-delBtn"
+                @click="removeStyleItem(index)"
+              >
+                -- 移除 --
+              </p>
+            </div>
+            <p class="formBox-block-item-styleBox-addBtn" @click="addStyleItem">
+              ++ 添加一项 ++
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">总可执行次数</p>
+          <div class="formBox-block-item-inputBox">
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入总可执行次数（小数将只保留整数位）"
+              :value="times"
+              :max-length="MaxNumLength"
+              @input="inputTimes"
+            />
+            <p v-if="timesNotNumber" class="formBox-block-item-tips formBox-block-item-tips--warning">请输入正确的数字</p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">回合可执行次数</p>
+          <div class="formBox-block-item-inputBox">
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入回合可执行次数（小数将只保留整数位）"
+              :value="timesOfUnit"
+              :max-length="MaxNumLength"
+              @input="inputTimesOfUnit"
+            />
+            <p v-if="timesOfUnitNotNumber" class="formBox-block-item-tips formBox-block-item-tips--warning">请输入正确的数字</p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">触发条件</p>
+          <div class="formBox-block-item-conditionBox">
+            <p :class="['formBox-block-item-tips', triggerConditionsError?'formBox-block-item-tips--warning':'']">最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制</p>
+            <div
+              v-for="(item, index) in triggerConditions"
+              :key="index"
+              class="formBox-block-item-conditionBox-item"
+            >
+              <GhInput
+                class="formBox-block-item-conditionBox-item-input"
+                placeholder="角色属性名"
+                :value="item.key"
+                @input="(text) => inputConditionKey(index, text)"
+              />
+              <GhInput
+                class="formBox-block-item-conditionBox-item-input"
+                placeholder="角色属性最小值(含)"
+                :value="item.min"
+                @input="(text) => inputConditionMinValue(index, text)"
+              />
+              <GhInput
+                class="formBox-block-item-conditionBox-item-input"
+                placeholder="角色属性最大值(不含)"
+                :value="item.max"
+                @input="(text) => inputConditionMaxValue(index, text)"
+              />
+              <p
+                class="formBox-block-item-conditionBox-item-delBtn"
+                @click="removeConditionItem(index)"
+              >
+                -- 移除 --
+              </p>
+            </div>
+            <p class="formBox-block-item-conditionBox-addBtn" @click="addConditionItem">
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff, 回合信息(unitTimeInfo), 年份(year)</p>
+            <p class="formBox-block-item-tips">Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a 10 11</p>
+          </div>
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">条件不足是否执行通用默认事件</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                execNormalDefaultWhenMismatchConditions
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="setExecNormalDefaultWhenMismatchConditions(true)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              是
+            </p>
+            <p
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                !execNormalDefaultWhenMismatchConditions
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="setExecNormalDefaultWhenMismatchConditions(false)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              否
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="previewBox"></div>
+    <div class="formBox-block">
+      <p class="formBox-block-label">生成事件</p>
+      <div class="formBox-block-item">
+        <p class="formBox-block-item-label">输出模式</p>
+        <div class="formBox-block-item-radioBox">
+          <p
+            v-for="(item, index) in createModes"
+            :key="index"
+            :class="[
+              'formBox-block-item-radioBox-radio',
+              index === selectedCreateMode
+                ? 'formBox-block-item-radioBox-radio--selected'
+                : '',
+            ]"
+            @click="selectCreateMode(index)"
+          >
+            <span class="formBox-block-item-radioBox-radio-dot" />
+            {{ item.text }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="previewBox" />
   </div>
 </template>
 
+// 不存在事件检测（关联的事件不存在）
+// 事件联想输入框（搜索text和key）
+
 <script>
+import GhInput from '@/components/GhInput'
+import GhTextarea from '@/components/GhTextarea'
+import StaticImagingInput from '@/components/StaticImagingInput'
 import {
   MAXNUM,
   MINNUM,
@@ -16,11 +266,16 @@ import {
   DMMap,
   EventCode,
   getRandom
-} from '@/eventObjects'
+} from '@/assets/data/events/eventObjects'
 // 可编辑内容：
 // 事件、属性
 export default {
-  data () {
+  components: {
+    GhInput,
+    GhTextarea,
+    StaticImagingInput
+  },
+  data() {
     return {
       // 单选(必选)
       baseType: [
@@ -148,55 +403,367 @@ export default {
           }
         }
       ],
-      originEventObj: {
-        text: '', // 可使用属性条件
-        style: {}, // 可使用属性条件
-        times: MAXNUM,
-        timesOfUnit: 1,
-        triggerConditions: {
-          // attr: [min, max]
+      selectedBaseType: 0,
+      selectedFuncType: [],
+      selectedOptType: -1,
+      timesNotNumber: false,
+      timesOfUnitNotNumber: false,
+      triggerConditionsError: false,
+      // 属性
+      key: '',
+      text: '', // 可使用属性条件
+      textArr: [], // 用于生成text
+      style: [], // 可使用属性条件
+      times: MAXNUM,
+      timesOfUnit: 1,
+      triggerConditions: [],
+      execNormalDefaultWhenMismatchConditions: true,
+      effectAttr: {
+        // attr: Number
+      },
+      // 事件次数额外增益
+      effectEvents: {
+        demo: {
+          timesOfUnit: 1, // 每回合执行次数上限
+          timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
+          lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
+        }
+      },
+      // 概率事件额外权重增益
+      prEventsExtraWeight: {
+        demo: {
+          persent: 0, // 按百分比增加概率权重
+          weight: 0, // 叠加概率权重
+          times: 1, // 总有效次数，最多可执行次数
+          weightReplace: false, // 为true时，将该事件权重直接替换为weight的值，persent变为无效
+          lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
+        }
+      },
+      // 额外的随机事件
+      extraRandomEvents: {
+        demo: {
+          persent: 10, // 该事件的百分比概率
+          lastUnitTime: 1, // 该项事件影响效果剩余持续回合数
+          times: 1, // 总有效次数，最多可执行次数
+          goodOrBad: 0 // 负坏事，正好事
+        }
+      },
+      normalDefault: 'putongmoren', // 未达成事件条件时执行的事件
+
+      // 生成模式
+      createModes: [
+        {
+          text: '输出字符串'
         },
-        execNormalDefaultWhenMismatchConditions: false,
-        effectAttr: {
-          // attr: Number
-        },
-        // 事件次数额外增益
-        effectEvents: {
-          demo: {
-            timesOfUnit: 1, // 每回合执行次数上限
-            timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
-            lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
-          }
-        },
-        // 概率事件额外权重增益
-        prEventsExtraWeight: {
-          demo: {
-            persent: 0, // 按百分比增加概率权重
-            weight: 0, // 叠加概率权重
-            times: 1, // 总有效次数，最多可执行次数
-            weightReplace: false, // 为true时，将该事件权重直接替换为weight的值，persent变为无效
-            lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
-          }
-        },
-        // 额外的随机事件
-        extraRandomEvents: {
-          demo: {
-            persent: 10, // 该事件的百分比概率
-            lastUnitTime: 1, // 该项事件影响效果剩余持续回合数
-            times: 1, // 总有效次数，最多可执行次数
-            goodOrBad: 0 // 负坏事，正好事
-          }
-        },
-        normalDefault: 'putongmoren' // 未达成事件条件时执行的事件
+        {
+          text: '写入文件'
+        }
+      ],
+      selectedCreateMode: 0
+    }
+  },
+  computed: {
+    MaxNumLength() {
+      return (MAXNUM + '').length
+    },
+    eventObjString() {
+      return `{
+        text: (options) =>
+      }`
+    },
+    eventObj() {
+      const textArr = this.getTextArr()
+      const style = {}
+      const times = parseInt(this.times)
+      const timesOfUnit = parseInt(this.timesOfUnit)
+      const triggerConditions = {}
+      this.style.forEach((item) => {
+        if (item.key) style[item.key] = item.value
+      })
+      this.triggerConditions.forEach((item) => {
+        const max = parseInt(item.max)
+        const min = parseInt(item.min)
+        if (item.key) { triggerConditions[item.key] = [isNaN(min) ? MINNUM : min, isNaN(max) ? MAXNUM : max] }
+      })
+      return {
+        eventKey: this.key,
+        textArr,
+        text: "false||function(options){let text='';for(let i=0;i<this.textArr.length;i++){const item=this.textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if(!isJur){text+=item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval('options.'+jurCmd);}catch(err){console.log(err);text+='';}}}return text;}",
+        style,
+        times: isNaN(times) ? MAXNUM : times,
+        timesOfUnit: isNaN(timesOfUnit) ? 1 : timesOfUnit,
+        triggerConditions
       }
     }
   },
-  watch: {},
-  methods: {}
+  watch: {
+    eventObj() {
+      console.log(this.eventObj)
+    },
+    times() {
+      this.timesNotNumber = isNaN(parseInt(this.times))
+    },
+    timesOfUnit() {
+      this.timesOfUnitNotNumber = isNaN(parseInt(this.timesOfUnit))
+    },
+    triggerConditions() {
+      this.triggerConditionsError = false
+      for (let i = 0; i < this.triggerConditions.length; i++) {
+        const item = this.triggerConditions[i]
+        const max = item.max ? parseInt(item.max) : MAXNUM
+        const min = item.min ? parseInt(item.min) : MINNUM
+        this.triggerConditionsError = isNaN(max) || isNaN(min)
+        if (this.triggerConditionsError) break
+      }
+    }
+  },
+  mounted() {
+    // console.log(this.MaxNumLength)
+  },
+  methods: {
+    getTextArr() {
+      let text = this.text
+      const texts = []
+      while (text) {
+        const st = text.indexOf('[[')
+        const en = text.indexOf(']]')
+        if (st < 0 || en < 0) {
+          texts.push(text)
+          text = ''
+          continue
+        }
+        const comText = text.substring(0, st)
+        const jurText = text.substring(st, en + 2)
+        if (comText) texts.push(comText)
+        if (jurText) texts.push(jurText)
+        text = text.substring(en + 2)
+      }
+      return texts
+    },
+    selectBaseType(sindex) {
+      this.selectedBaseType = this.selectedBaseType === sindex ? -1 : sindex
+    },
+    selectFuncType(sindex) {
+      if (this.selectedFuncType.includes(sindex)) {
+        this.selectedFuncType = this.selectedFuncType.filter(
+          (item) => item !== sindex
+        )
+        return
+      }
+      this.selectedFuncType.push(sindex)
+    },
+    selectOptType(sindex) {
+      this.selectedOptType = this.selectedOptType === sindex ? -1 : sindex
+    },
+    selectCreateMode(sindex) {
+      this.selectedCreateMode =
+        this.selectedCreateMode === sindex ? -1 : sindex
+    },
+    inputKey(text) {
+      this.key = text
+    },
+    inputText(text) {
+      this.text = text
+    },
+    inputStyleKey(index, text) {
+      this.$set(this.style, index, {
+        ...this.style[index],
+        key: text
+      })
+    },
+    inputStyleValue(index, text) {
+      this.$set(this.style, index, {
+        ...this.style[index],
+        value: text
+      })
+    },
+    addStyleItem() {
+      this.style.push({ key: '', value: '' })
+    },
+    removeStyleItem(sindex) {
+      this.style = this.style.filter((item, index) => sindex !== index)
+    },
+    inputTimes(text) {
+      this.times = text
+    },
+    inputTimesOfUnit(text) {
+      this.timesOfUnit = text
+    },
+    inputConditionKey(index, text) {
+      this.$set(this.triggerConditions, index, {
+        ...this.triggerConditions[index],
+        key: text
+      })
+    },
+    inputConditionMinValue(index, text) {
+      this.$set(this.triggerConditions, index, {
+        ...this.triggerConditions[index],
+        min: text
+      })
+    },
+    inputConditionMaxValue(index, text) {
+      this.$set(this.triggerConditions, index, {
+        ...this.triggerConditions[index],
+        max: text
+      })
+    },
+    addConditionItem() {
+      this.triggerConditions.push({ key: '', min: '', max: '' })
+    },
+    removeConditionItem(sindex) {
+      this.triggerConditions = this.triggerConditions.filter((item, index) => sindex !== index)
+    },
+    setExecNormalDefaultWhenMismatchConditions(value) {
+      this.execNormalDefaultWhenMismatchConditions = value
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .Maker {
+  width: 100%;
+  padding: 8px 12px;
+  .formBox {
+    width: 100%;
+    .formBox-block + .formBox-block {
+      margin-top: 16px;
+    }
+    &-block {
+      width: 100%;
+      &-label {
+        // width: 100%;
+        text-align: left;
+        border-left: 4px solid #000;
+        padding-left: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      &-item--multi {
+        align-items: flex-start !important;
+        .formBox-block-item-label {
+          line-height: 36px;
+        }
+      }
+      &-item {
+        // width: 100%;
+        padding: 6px 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        &-label {
+          min-width: 120px;
+          text-align: left;
+        }
+        &-input {
+          flex: 1;
+        }
+        &-textareaBox {
+          width: 100%;
+        }
+        &-textarea {
+          height: 200px;
+          width: 100%;
+          max-width: 620px;
+        }
+        &-tips {
+          width: 100%;
+          text-align: left;
+          padding: 4px 0;
+          color: #999;
+        }
+        &-tips--warning {
+          color: #a92228;
+        }
+        &-styleBox {
+          width: 386px;
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: row;
+            .formBox-block-item-styleBox-item-input
+              + .formBox-block-item-styleBox-item-input {
+              margin-left: 12px;
+            }
+            &-input {
+              width: 120px;
+            }
+            &-delBtn {
+              line-height: 32px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+          }
+        }
+        &-conditionBox {
+          width: 724px;
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: row;
+            .formBox-block-item-conditionBox-item-input
+              + .formBox-block-item-conditionBox-item-input {
+              margin-left: 12px;
+            }
+            &-input {
+              width: 180px;
+            }
+            &-delBtn {
+              line-height: 32px;
+              margin-left: 12px;
+              width: 160px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+          }
+        }
+        &-radioBox {
+          display: flex;
+          flex-direction: row;
+          &-radio {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 18px;
+            user-select: none;
+            cursor: pointer;
+            white-space: nowrap;
+            &-dot {
+              width: 10px;
+              height: 10px;
+              border: 1px dashed #000;
+              margin-right: 6px;
+              transition: 0.1s all;
+            }
+          }
+          &-radio--selected {
+            .formBox-block-item-radioBox-radio-dot {
+              background-color: #000;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

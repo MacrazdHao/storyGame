@@ -354,7 +354,7 @@ export default {
       default: 168
     }
   },
-  data () {
+  data() {
     return {
       time: Math.random().toString(36).slice(2),
       isFocus: false,
@@ -377,43 +377,43 @@ export default {
     }
   },
   computed: {
-    GhInputId () {
+    GhInputId() {
       return `GhInput--${this.time}`
     },
-    readOnly () {
+    readOnly() {
       return this.readonly
     },
     // 自动建议选择框中，单项的文字key值：
-    relSelectionTextKey () {
+    relSelectionTextKey() {
       return this.selectionTextKey || 'text'
     },
-    relSelectionLoadingTips () {
+    relSelectionLoadingTips() {
       return this.selectionLoadingTips || '检索中...'
     },
-    relSelectionEmptyTips () {
+    relSelectionEmptyTips() {
       return this.selectionErrorTips || '暂无符合条件的选项'
     },
-    relSelectionErrorTips () {
+    relSelectionErrorTips() {
       return this.selectionErrorTips || '检索失败，请重试'
     },
-    relSelectionTips () {
+    relSelectionTips() {
       if (!this.hasSelections) return false
       if (this.selectionError) return this.relSelectionErrorTips
       if (this.selectionLoading) return this.relSelectionLoadingTips
       if (this.selectionData.length === 0) return this.relSelectionEmptyTips
       return false
     },
-    relShowSelectionBox () {
+    relShowSelectionBox() {
       if (!this.hasSelections || this.disabled || this.readonly) return false
       if (!this.onlySelector && this.selectionHideWhenNoKey && !this.value) {
         return false
       }
       return this.isFocus
     },
-    relSelectionNumOfPage () {
+    relSelectionNumOfPage() {
       return this.selectionNumOfPage || 5
     },
-    selectionBoxStyle () {
+    selectionBoxStyle() {
       if (!this.hasSelections || !this.relShowSelectionBox) {
         return {
           // height: 0,
@@ -450,30 +450,30 @@ export default {
       }
     },
 
-    relPrefixIcon () {
+    relPrefixIcon() {
       if (this.hidePrefixIcon) return false
       if (this.prefixIcon) return this.prefixIcon
       return this.hasSelections && !this.onlySelector
         ? require('../assets/icon_search.svg')
         : false
     },
-    watchPasswordIcon () {
+    watchPasswordIcon() {
       if (this.inputType === 'password') {
         return require('../assets/icon_hide.svg')
       }
       return require('../assets/icon_view.svg')
     },
-    inputType () {
+    inputType() {
       if (this.type === 'password') {
         return this.showingPassword ? 'text' : 'password'
       }
       return this.type
     },
 
-    relShowCascadeBox () {
+    relShowCascadeBox() {
       return this.cascadeData.length
     },
-    selectedCascadePaths () {
+    selectedCascadePaths() {
       const paths = []
       let pathStr = ''
       for (let i = 0; i < this.selectedCascadePath.length; i++) {
@@ -483,7 +483,7 @@ export default {
       }
       return paths
     },
-    cascadeData () {
+    cascadeData() {
       if (!this.cascadePath.length) return []
       const children = []
       let i = 0
@@ -508,15 +508,15 @@ export default {
     }
   },
   watch: {
-    relShowSelectionBox () {
+    relShowSelectionBox() {
       if (this.relShowSelectionBox) this.preShowSelections()
       else this.preCloseSelections()
     },
-    hasSelections () {
+    hasSelections() {
       // this.preShowSelections()
       this.resetSelectionBoxStyle()
     },
-    selectionData () {
+    selectionData() {
       if (!this.onlySelector && !this.isCascade) {
         if (this.selectionData.length > 0) {
           const item = this.selectionData[0]
@@ -535,15 +535,15 @@ export default {
         this.selectedCascadePath = []
       }
     },
-    relSelectionTips () {
+    relSelectionTips() {
       // this.preShowSelections()
       this.resetSelectionBoxStyle()
     },
-    value () {
+    value() {
       // this.$emit('selectionInitData')
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     if (this.hasSelections) {
       window.removeEventListener('scroll', this.scrollFollow, true)
       if (this.$refs.selectionBox) {
@@ -551,7 +551,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.hasSelections) {
       window.addEventListener('scroll', this.scrollFollow, true)
     }
@@ -562,7 +562,7 @@ export default {
     }
   },
   methods: {
-    showCascade (cascadeIndex, itemIndex) {
+    showCascade(cascadeIndex, itemIndex) {
       const tmp = []
       if (this.cascadePath.length > 0) {
         for (let i = 0; i < cascadeIndex - 1; i++) {
@@ -576,7 +576,7 @@ export default {
         this.relSelectionBoxStyle = this.selectionBoxStyle
       })
     },
-    scrollFollow (e) {
+    scrollFollow(e) {
       setTimeout(() => {
         if (this.relShowSelectionBox) {
           this.setSelectionBoxPosition()
@@ -584,7 +584,7 @@ export default {
         }
       })
     },
-    relHeight () {
+    relHeight() {
       const singleItems = document.getElementsByClassName(
         `selectionItem-${this.time}`
       )
@@ -598,7 +598,7 @@ export default {
       }
       return relHeight
     },
-    toggleSelector () {
+    toggleSelector() {
       if (this.onlySelector) {
         if (this.isFocus) this.closeSelector()
       }
@@ -606,23 +606,23 @@ export default {
     },
     // 选择框模式下，点击外部收缩效果依赖closeSelector函数（clickoutside除外）
     // 输入联想式下，点击外部收缩效果依赖input的blur函数
-    closeSelector () {
+    closeSelector() {
       this.isFocus = false
       // this.preCloseSelections()
     },
-    showSelector () {
+    showSelector() {
       this.isFocus = true
       this.$refs[`input-${this.time}`].focus()
       if (this.onlySelector) this.preShowSelections()
     },
-    handleFocus () {
+    handleFocus() {
       if (!this.selectionData || this.selectionData.length === 0) { this.$emit('selectionInitData') }
       if (!this.onlySelector) {
         this.isFocus = true
         this.$emit('focus')
       }
     },
-    handleBlur () {
+    handleBlur() {
       clearTimeout(this.blurTimer)
       // setTimeout的作用：
       // 1. 留出时间间隙触发选择选项的绑定事件
@@ -637,18 +637,18 @@ export default {
         }
       }, 100)
     },
-    handleInput (e) {
+    handleInput(e) {
       this.selectedItem = false
       if (this.isCascade) this.selectedCascadePath = []
       this.$emit('input', e.target.value, false)
       if (this.hasSelections) this.$emit('selectionInitData')
     },
-    handleEnter (e) {
+    handleEnter(e) {
       if (e.keyCode === 13) {
         this.$emit('enter')
       }
     },
-    copyValue () {
+    copyValue() {
       const text = this.$refs[`input-${this.time}`]
       text.disabled = false
       if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
@@ -674,16 +674,16 @@ export default {
       }
       text.disabled = true
     },
-    togglePassword () {
+    togglePassword() {
       this.showingPassword = !this.showingPassword
     },
-    clearValue () {
+    clearValue() {
       this.selectedItem = false
       if (this.isCascade) this.selectedCascadePath = []
       this.$emit('input', '', false)
       this.$emit('clear')
     },
-    setSelectionBoxPosition () {
+    setSelectionBoxPosition() {
       if (!this.$refs[this.GhInputId]) return
       const pos = this.$refs[this.GhInputId].getBoundingClientRect()
       const y = pos.y + pos.height
@@ -735,13 +735,13 @@ export default {
         document.body.appendChild(this.$refs.selectionBox)
       }
     },
-    resetSelectionBoxStyle () {
+    resetSelectionBoxStyle() {
       setTimeout(() => {
         this.setSelectionBoxPosition()
         this.relSelectionBoxStyle = this.selectionBoxStyle
       })
     },
-    preShowSelections () {
+    preShowSelections() {
       if (!this.animToggle) {
         setTimeout(() => {
           this.setSelectionBoxPosition()
@@ -750,7 +750,7 @@ export default {
         })
       }
     },
-    preCloseSelections () {
+    preCloseSelections() {
       if (this.animToggle) {
         this.relSelectionBoxStyle = this.selectionBoxStyle
         setTimeout(() => {
@@ -758,14 +758,14 @@ export default {
         }, 200)
       }
     },
-    handleScroll (e) {
+    handleScroll(e) {
       if (this.relSelectionTips) return
       const { scrollTop, offsetHeight } = e.target
       if (offsetHeight - scrollTop <= 42) {
         this.$emit('selectionLoadMore')
       }
     },
-    handleSelect (index, item, cascadeIndex) {
+    handleSelect(index, item, cascadeIndex) {
       // 此处showCascade作用为：更新selectedCascadePath
       if (this.isCascade && item?.children) {
         this.showCascade(cascadeIndex, index)
@@ -792,7 +792,7 @@ export default {
         }
       }, 200)
     },
-    prevScrollerClick () {
+    prevScrollerClick() {
       this.isSelectCascade = true
     }
   }
@@ -843,7 +843,7 @@ export default {
       font-weight: bold;
     }
     &-item--selected {
-      background-color: #5c88ff8d;
+      background-color: #3d3d3d8d;
       font-weight: bold;
       p {
         color: #fff;
@@ -874,7 +874,7 @@ export default {
       }
     }
     .selectionBox-inner-item:hover {
-      background: #5c87ff;
+      background: #000;
       box-shadow: 0 0 0 1px #fff;
       ::v-deep p {
         color: #fff;
@@ -914,10 +914,10 @@ export default {
   }
 }
 .GhInput--focus {
-  border: 1px solid #5c87ff !important;
-  box-shadow: 0 0 0 1px #5c88ff50 !important;
+  border: 1px solid #000 !important;
+  box-shadow: 0 0 0 1px #23232350 !important;
   .suffix {
-    border-left: 1px solid #5c87ff !important;
+    border-left: 1px solid #000 !important;
   }
 }
 .GhInput--readonly {
