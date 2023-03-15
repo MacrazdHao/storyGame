@@ -202,6 +202,16 @@
                 @input="(text) => inputConditionMaxValue(index, text)"
               />
               <p
+                :class="[
+                  'formBox-block-item-conditionBox-item-errTag',
+                  triggerConditionsErrorIndex.includes(index)
+                    ? 'formBox-block-item-conditionBox-item-errTag--show'
+                    : '',
+                ]"
+              >
+                ×
+              </p>
+              <p
                 class="formBox-block-item-conditionBox-item-delBtn"
                 @click="removeConditionItem(index)"
               >
@@ -299,6 +309,16 @@
                 @input="(text) => inputAttrEffectValue(index, text)"
               />
               <p
+                :class="[
+                  'formBox-block-item-attrEffectBox-item-errTag',
+                  attrEffectErrorIndex.includes(index)
+                    ? 'formBox-block-item-attrEffectBox-item-errTag--show'
+                    : '',
+                ]"
+              >
+                ×
+              </p>
+              <p
                 class="formBox-block-item-attrEffectBox-item-trigBtn"
                 @click="changeAttrEffectItem(index)"
               >
@@ -325,10 +345,142 @@
               Tips2: 值模式分为准确值模式和随机值模式
             </p>
             <p class="formBox-block-item-tips">
-              Tips3: 值模式为随机值模式时，min或max任一为空时，生成事件时将自动转为准确值模式，对应值为min / max-1
+              Tips3:
+              值模式为随机值模式时，min或max任一为空时，生成事件时将自动转为准确值模式，对应值为min
+              / max-1，两种模式都不填写值时，不写入事件内
             </p>
             <p class="formBox-block-item-tips">
               Tips4: 负值为负面影响，正值为正面影响
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">事件影响</p>
+          <div class="formBox-block-item-effectEvent">
+            <p
+              :class="[
+                'formBox-block-item-tips',
+                attrEffectError ? 'formBox-block-item-tips--warning' : '',
+              ]"
+            >
+              回合执行次数上限、持续回合数必须为数字（小数将只保留整数位）
+            </p>
+            <div
+              v-for="(item, index) in effectAttr"
+              :key="index"
+              class="formBox-block-item-effectEvent-item"
+            >
+              <div class="formBox-block-item-effectEvent-item-row">
+                <GhInput
+                  class="formBox-block-item-effectEvent-item-input"
+                  placeholder="事件Key"
+                  :value="item.key"
+                  @input="(text) => inputEffectEventKey(index, text)"
+                />
+              </div>
+              <div class="formBox-block-item-effectEvent-item-row">
+                <GhInput
+                  class="formBox-block-item-effectEvent-item-input"
+                  placeholder="回合执行次数上限"
+                  :value="item.timesOfUnit"
+                  :max-length="MaxNumLength"
+                  @input="(text) => inputEffectEventTimesOfUnit(index, text)"
+                />
+                <div class="">
+                  <p class="formBox-block-item-label">次数模式</p>
+                  <div class="formBox-block-item-radioBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-radioBox-radio',
+                        item.timesOfUnitReplace
+                          ? 'formBox-block-item-radioBox-radio--selected'
+                          : '',
+                      ]"
+                      @click="setEffectEventTimesOfUnitMode(index, true)"
+                    >
+                      <span class="formBox-block-item-radioBox-radio-dot" />
+                      替换
+                    </p>
+                    <p
+                      :class="[
+                        'formBox-block-item-radioBox-radio',
+                        !item.timesOfUnitReplace
+                          ? 'formBox-block-item-radioBox-radio--selected'
+                          : '',
+                      ]"
+                      @click="setEffectEventTimesOfUnitMode(index, false)"
+                    >
+                      <span class="formBox-block-item-radioBox-radio-dot" />
+                      叠加
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="formBox-block-item-effectEvent-item-row">
+                <GhInput
+                  class="formBox-block-item-effectEvent-item-input"
+                  placeholder="回合执行次数上限"
+                  :value="item.times"
+                  :max-length="MaxNumLength"
+                  @input="(text) => inputEffectEventTimes(index, text)"
+                />
+                <div class="">
+                  <p class="formBox-block-item-label">次数模式</p>
+                  <div class="formBox-block-item-radioBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-radioBox-radio',
+                        item.timesReplace
+                          ? 'formBox-block-item-radioBox-radio--selected'
+                          : '',
+                      ]"
+                      @click="setEffectEventTimesMode(index, true)"
+                    >
+                      <span class="formBox-block-item-radioBox-radio-dot" />
+                      替换
+                    </p>
+                    <p
+                      :class="[
+                        'formBox-block-item-radioBox-radio',
+                        !item.timesReplace
+                          ? 'formBox-block-item-radioBox-radio--selected'
+                          : '',
+                      ]"
+                      @click="setEffectEventTimesMode(index, false)"
+                    >
+                      <span class="formBox-block-item-radioBox-radio-dot" />
+                      叠加
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="formBox-block-item-effectEvent-item-row">
+                <GhInput
+                  class="formBox-block-item-effectEvent-item-input"
+                  placeholder="效果持续回合数"
+                  :value="item.lastUnitTime"
+                  :max-length="MaxNumLength"
+                  @input="(text) => inputEffectEventLastUnitTime(index, text)"
+                />
+              </div>
+              <p
+                class="formBox-block-item-effectEvent-item-delBtn"
+                @click="removeEffectEventItem(index)"
+              >
+                -- 移除 --
+              </p>
+            </div>
+            <p
+              class="formBox-block-item-effectEvent-addBtn"
+              @click="addEffectEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips1: 该属性用于改变其他已存在事件的【回合执行次数上限】、【总执行次数上限】
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 次数模式分为叠加/替换两种模式
             </p>
           </div>
         </div>
@@ -518,7 +670,9 @@ export default {
       timesNotNumber: false,
       timesOfUnitNotNumber: false,
       triggerConditionsError: false,
+      triggerConditionsErrorIndex: [],
       attrEffectError: false,
+      attrEffectErrorIndex: [],
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -532,6 +686,8 @@ export default {
       // 事件次数额外增益
       effectEvents: {
         demo: {
+          times: 1, // 总执行次数上限
+          timesReplace: false, // false为直接替换times，true为叠加
           timesOfUnit: 1, // 每回合执行次数上限
           timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
           lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
@@ -641,29 +797,33 @@ export default {
     },
     triggerConditions() {
       this.triggerConditionsError = false
+      this.triggerConditionsErrorIndex = []
       for (let i = 0; i < this.triggerConditions.length; i++) {
         const item = this.triggerConditions[i]
         const max = item.max ? parseInt(item.max) : MAXNUM
         const min = item.min ? parseInt(item.min) : MINNUM
-        this.triggerConditionsError = isNaN(max) || isNaN(min)
-        if (this.triggerConditionsError) break
+        const errItem = isNaN(max) || isNaN(min)
+        if (errItem) this.triggerConditionsErrorIndex.push(i)
       }
     },
     effectAttr() {
-      this.triggerConditionsError = false
-      for (let i = 0; i < this.triggerConditions.length; i++) {
-        const item = this.triggerConditions[i]
+      this.attrEffectError = false
+      this.attrEffectErrorIndex = []
+      for (let i = 0; i < this.effectAttr.length; i++) {
+        const item = this.effectAttr[i]
+        let errItem = false
         if (item.mode === 'random') {
           const max = item.max ? parseInt(item.max) : MAXNUM
           const min = item.min ? parseInt(item.min) : MINNUM
-          this.triggerConditionsError = isNaN(max) || isNaN(min)
+          errItem = isNaN(max) || isNaN(min)
         }
         if (item.mode === 'exact') {
-          const value = item.min ? parseInt(item.min) : 0
-          this.triggerConditionsError = isNaN(value)
+          const value = item.value ? parseInt(item.value) : 0
+          errItem = isNaN(value)
         }
-        if (this.triggerConditionsError) break
+        if (errItem) this.attrEffectErrorIndex.push(i)
       }
+      this.attrEffectError = this.attrEffectErrorIndex.length
     }
   },
   mounted() {
@@ -798,7 +958,13 @@ export default {
       })
     },
     addAttrEffectItem() {
-      this.effectAttr.push({ key: '', min: '', max: '', value: '', mode: 'exact' })
+      this.effectAttr.push({
+        key: '',
+        min: '',
+        max: '',
+        value: '',
+        mode: 'exact'
+      })
     },
     removeAttrEffectItem(sindex) {
       this.effectAttr = this.effectAttr.filter(
@@ -879,7 +1045,7 @@ export default {
               width: 120px;
             }
             &-delBtn {
-              line-height: 32px;
+              line-height: 34px;
               margin-left: 12px;
               width: 120px;
               border: 1px dashed #a92228;
@@ -896,7 +1062,7 @@ export default {
           }
         }
         &-conditionBox {
-          width: 724px;
+          width: 760px;
           &-item {
             margin-bottom: 12px;
             display: flex;
@@ -908,8 +1074,22 @@ export default {
             &-input {
               width: 180px;
             }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
             &-delBtn {
-              line-height: 32px;
+              line-height: 34px;
               margin-left: 12px;
               width: 160px;
               border: 1px dashed #a92228;
@@ -938,8 +1118,22 @@ export default {
             &-input {
               width: 180px;
             }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
             &-trigBtn {
-              line-height: 32px;
+              line-height: 34px;
               margin-left: 12px;
               width: 120px;
               border: 1px dashed #000;
@@ -947,7 +1141,7 @@ export default {
               cursor: pointer;
             }
             &-delBtn {
-              line-height: 32px;
+              line-height: 34px;
               margin-left: 12px;
               width: 120px;
               border: 1px dashed #a92228;

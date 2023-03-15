@@ -10,7 +10,7 @@
  ** 【事件触发条件[min, max)】triggerConditions: (attr[Object({ 'Attr[String]': [Array(Number, 2)] })]) => Object
  ** 【不符合条件时是否执行普通事件默认事件标识】execNormalDefaultWhenMismatchConditions: (execDefault[Boolean]) => Boolean
  ** 【事件属性影响】effectAttr: (attr[Object({ 'Attr[String]': Number|RandomScope(Array[Number,2]) })]) => Object
- ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({ 'timesOfUnit': Number, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
+ ** 【关联事件影响（持续回合数lastUnitTime仅对timesOfUnit有效，times则为一次性加成）】effectEvents：(events[Object({ 'EventName[String]': Object({ 'times': Number, 'timesReplace': Boolean,'timesOfUnit': Number, 'timesOfUnitReplace': Boolean, 'lastUnitTime': Number}) })]) => Object
  ** 【概率事件结果额外概率调整】prEventsExtraWeight: (events[Object({ 'EventName[String]': Object({'lastUnitTime': Number, persent: Number, 'weight': Number, 'times': Number, 'weightReplace': Boolean}) })]) => Object
  ** 【额外随机事件概率触发】extraRandomEvents: (events[Object({ 'EventName[String]': Object({'persent': Number, 'lastUnitTime': Number, 'times': Number,  'goodOrBad': Number}) })]) => Object
  ** 【普通事件默认事件】normalDefault: (eventKey[String]) => String
@@ -74,7 +74,7 @@ export const defaultNormalEvent = {
   triggerConditions: (attr = { age: [0, MAXNUM] }) => ({ ...attr }),
   execNormalDefaultWhenMismatchConditions: (execDefault = false) => execDefault,
   effectAttr: (attr = {}) => ({ ...attr }),
-  // 用于变更或替换其他事件次数(times, timesOfUnit, curTimesOfUnit)（待修改：添加处理逻辑）
+  // 用于变更或替换其他事件次数(times, timesReplace, timesOfUnit, timesOfUnitReplace, curTimesOfUnit)（待修改：添加处理逻辑）
   effectEvents: (events = {}) => ({ ...events }),
   // 待修改： 添加prEventsExtraWeight和extraRandomEvents的逻辑
   prEventsExtraWeight: (events = {}) => ({ ...events }),
