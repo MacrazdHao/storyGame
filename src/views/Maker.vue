@@ -605,7 +605,7 @@
               >
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
-                  placeholder="按百分比增益权重"
+                  placeholder="按百分比增益权重(%)"
                   :value="item.persent"
                   :max-length="MaxNumLength"
                   @input="(text) => inputEffectPrPersent(index, text)"
@@ -985,6 +985,7 @@ export default {
       const triggerConditions = {}
       const effectAttr = {}
       const effectEvents = {}
+      const prEventsExtraWeight = {}
       this.style.forEach((item) => {
         if (item.key) style[item.key] = item.value
       })
@@ -1041,6 +1042,27 @@ export default {
           }
         }
       })
+      this.prEventsExtraWeight.forEach((item) => {
+        if (item.key) {
+          const { key, persent, weight, times, weightReplace, lastUnitTime } =
+            item
+          const persentInt = parseInt(persent)
+          const weightInt = parseInt(weight)
+          const timesInt = parseInt(times)
+          const lastUnitTimeInt = parseInt(lastUnitTime)
+          const rpersent = isNaN(persentInt) ? 0 : persentInt
+          const rweight = isNaN(weightInt) ? 0 : weightInt
+          const rtimes = isNaN(timesInt) ? MAXNUM : timesInt
+          const rlastUnitTime = isNaN(lastUnitTimeInt) ? 1 : lastUnitTimeInt
+          prEventsExtraWeight[key] = {
+            persent: rpersent,
+            weight: rweight,
+            times: rtimes,
+            lastUnitTime: rlastUnitTime,
+            weightReplace
+          }
+        }
+      })
       return {
         eventKey: this.key,
         textArr,
@@ -1050,7 +1072,8 @@ export default {
         timesOfUnit: isNaN(timesOfUnit) ? 1 : timesOfUnit,
         triggerConditions,
         effectAttr,
-        effectEvents
+        effectEvents,
+        prEventsExtraWeight
       }
     }
   },
@@ -1357,12 +1380,13 @@ export default {
     setEffectPrEventWeightMode(index, isReplace) {
       this.$set(this.prEventsExtraWeight, index, {
         ...this.prEventsExtraWeight[index],
-        weightReplace: isReplace
+        weightReplace: isReplace,
+        weight: ''
       })
     },
     inputEffectPrPersent(index, text) {
       this.$set(this.prEventsExtraWeight, index, {
-        ...this.effectEvents[index],
+        ...this.prEventsExtraWeight[index],
         persent: text
       })
     },
