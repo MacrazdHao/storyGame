@@ -263,6 +263,29 @@
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">默认事件KEY</p>
+          <div
+            class="formBox-block-item formBox-block-item--column formBox-block-item--child"
+          >
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入默认事件KEY"
+              :value="normalDefault"
+              @input="inputNormalDefault"
+            />
+            <p class="formBox-block-item-tips">
+              Tips1:
+              除特殊情况外，设置条件不足是否执行通用默认事件为是，且当本事件触发条件不足时，将执行该默认事件
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 不填写则自动填充为【putongmoren】
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="formBox-block">
+        <p class="formBox-block-label">事件影响</p>
+        <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">角色影响</p>
           <div class="formBox-block-item-attrEffectBox">
             <p
@@ -886,13 +909,13 @@
           </p>
         </div>
       </div>
-      <div class="formBox-block-item">
+      <div class="formBox-block-item formBox-block-item--multi">
         <p class="formBox-block-item-label">输出说明</p>
-
-        <p class="formBox-block-item-tips">
+        <p class="formBox-block-item-text">
           所有数值设置，除特殊要求外，值大于{{ MAXNUM }}的都自动转为{{
             MAXNUM
-          }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}
+          }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}<br>
+          回合数、次数相关数值，如果小于0将自动转为0
         </p>
       </div>
     </div>
@@ -1089,7 +1112,7 @@ export default {
       prEventsExtraWeight: [],
       // 额外的随机事件
       extraRandomEvents: [],
-      normalDefault: 'putongmoren', // 未达成事件条件时执行的事件
+      normalDefault: '', // 未达成事件条件时执行的事件
 
       // 生成模式
       createModes: [
@@ -1119,7 +1142,13 @@ export default {
       const textArr = this.getTextArr()
       const style = {}
       const times = parseInt(this.times)
+      const rtimes = isNaN(times)
+        ? MAXNUM
+        : this.getScopeNum(times, [0, MAXNUM])
       const timesOfUnit = parseInt(this.timesOfUnit)
+      const rtimesOfUnit = isNaN(timesOfUnit)
+        ? 1
+        : this.getScopeNum(timesOfUnit, [0, MAXNUM])
       const triggerConditions = {}
       const effectAttr = {}
       const effectEvents = {}
@@ -1227,19 +1256,40 @@ export default {
         textArr,
         text: "false||function(options){let text='';for(let i=0;i<this.textArr.length;i++){const item=this.textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if(!isJur){text+=item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval('options.'+jurCmd);}catch(err){console.log(err);text+='';}}}return text;}",
         style,
-        times: isNaN(times) ? MAXNUM : times,
-        timesOfUnit: isNaN(timesOfUnit) ? 1 : timesOfUnit,
-        triggerConditions,
-        effectAttr,
-        effectEvents,
-        prEventsExtraWeight,
-        extraRandomEvents
+        times: `false||function(initTimes=${rtimes}){return initTimes}`,
+        timesOfUnit: `false||function(times=${rtimesOfUnit}){return times}`,
+        triggerConditions: `false||function(attr={...JSON.parse('${JSON.stringify(
+          triggerConditions
+        )}')}){return {...attr}}`,
+        effectAttr: `false||function(attr={...JSON.parse('${JSON.stringify(
+          effectAttr
+        )}')}){return {...attr}}`,
+        effectEvents: `false||function(events={...JSON.parse('${JSON.stringify(
+          effectEvents
+        )}')}){return {...events}}`,
+        prEventsExtraWeight: `false||function(events={...JSON.parse('${JSON.stringify(
+          prEventsExtraWeight
+        )}')}){return {...events}}`,
+        extraRandomEvents: `false||function(events={...JSON.parse('${JSON.stringify(
+          extraRandomEvents
+        )}')}){return {...events}}`,
+        normalDefault: this.normalDefault || 'putongmoren'
       }
     }
   },
   watch: {
     eventObj() {
       console.log(this.eventObj)
+      // const test1 = eval(this.eventObj.triggerConditions)
+      // const test2 = eval(this.eventObj.effectAttr)
+      // const test3 = eval(this.eventObj.effectEvents)
+      // const test4 = eval(this.eventObj.prEventsExtraWeight)
+      // const test5 = eval(this.eventObj.extraRandomEvents)
+      // console.log(test1())
+      // console.log(test2())
+      // console.log(test3())
+      // console.log(test4())
+      // console.log(test5())
     },
     times() {
       this.timesNotNumber = isNaN(parseInt(this.times))
@@ -1661,6 +1711,9 @@ export default {
         times: '', // 总有效次数，最多可执行次数
         goodOrBad: '' // 负坏事，正好事
       })
+    },
+    inputNormalDefault(text) {
+      this.normalDefault = text
     }
   }
 }
@@ -1696,8 +1749,16 @@ export default {
       &-item--nopadding {
         padding: 6px 0 !important;
       }
+      &-item--child {
+        padding: 0 !important;
+      }
       &-item--column {
+        width: 100%;
         flex-direction: column !important;
+        align-items: flex-start !important;
+        .formBox-block-item-input {
+          width: 100%;
+        }
       }
       &-item {
         // width: 100%;
@@ -1709,6 +1770,12 @@ export default {
           min-width: 120px;
           text-align: left;
           padding-right: 12px;
+        }
+        &-text {
+          padding: 4.5px 0;
+          width: 100%;
+          text-align: left;
+          color: #999;
         }
         &-input {
           flex: 1;
@@ -2082,7 +2149,7 @@ export default {
           flex-direction: row;
           .formBox-block-item-radioBox-radio
             + .formBox-block-item-radioBox-radio {
-            margin-left: 12px;
+            margin-left: 36px;
           }
           &-radio {
             display: flex;
