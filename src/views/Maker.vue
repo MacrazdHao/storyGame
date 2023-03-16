@@ -137,7 +137,6 @@
               class="formBox-block-item-input"
               placeholder="请输入总可执行次数（小数将只保留整数位）"
               :value="times"
-              :max-length="MaxNumLength"
               @input="inputTimes"
             />
             <p
@@ -155,7 +154,6 @@
               class="formBox-block-item-input"
               placeholder="请输入回合可执行次数（小数将只保留整数位）"
               :value="timesOfUnit"
-              :max-length="MaxNumLength"
               @input="inputTimesOfUnit"
             />
             <p
@@ -194,14 +192,12 @@
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="角色属性最小值(含)"
                 :value="item.min"
-                :max-length="MaxNumLength"
                 @input="(text) => inputConditionMinValue(index, text)"
               />
               <GhInput
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="角色属性最大值(不含)"
                 :value="item.max"
-                :max-length="MaxNumLength"
                 @input="(text) => inputConditionMaxValue(index, text)"
               />
               <p
@@ -293,14 +289,12 @@
                   class="formBox-block-item-attrEffectBox-item-input"
                   placeholder="影响属性最小值(含)"
                   :value="item.min"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputAttrEffectMinValue(index, text)"
                 />
                 <GhInput
                   class="formBox-block-item-attrEffectBox-item-input"
                   placeholder="影响属性最大值(不含)"
                   :value="item.max"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputAttrEffectMaxValue(index, text)"
                 />
               </template>
@@ -309,7 +303,6 @@
                 class="formBox-block-item-attrEffectBox-item-input"
                 placeholder="影响属性值"
                 :value="item.value"
-                :max-length="MaxNumLength"
                 @input="(text) => inputAttrEffectValue(index, text)"
               />
               <p
@@ -381,7 +374,7 @@
                     受影响事件{{ index + 1 }}
                   </p>
                   <GhInput
-                    class="formBox-block-item-effectEventBox-item-input"
+                    class="formBox-block-item-input"
                     placeholder="事件Key"
                     :value="item.key"
                     @input="(text) => inputEffectEventKey(index, text)"
@@ -395,11 +388,11 @@
                 </div>
               </div>
               <div class="formBox-block-item-effectEventBox-item-row">
+                <p class="formBox-block-item-label">回合执行次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
                   placeholder="回合执行次数上限"
                   :value="item.timesOfUnit"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventTimesOfUnit(index, text)"
                 />
                 <p
@@ -444,11 +437,11 @@
                 </div>
               </div>
               <div class="formBox-block-item-effectEventBox-item-row">
+                <p class="formBox-block-item-label">总执行次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
                   placeholder="总执行次数上限"
                   :value="item.times"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventTimes(index, text)"
                 />
                 <p
@@ -493,11 +486,11 @@
                 </div>
               </div>
               <div class="formBox-block-item-effectEventBox-item-row">
+                <p class="formBox-block-item-label">效果持续回合数</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
                   placeholder="效果持续回合数"
                   :value="item.lastUnitTime"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventLastUnitTime(index, text)"
                 />
                 <p
@@ -603,11 +596,11 @@
                 v-if="!item.weightReplace"
                 class="formBox-block-item-effectPrEventBox-item-row"
               >
+                <p class="formBox-block-item-label">按百分比增益权重</p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
                   placeholder="按百分比增益权重(%)"
                   :value="item.persent"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectPrPersent(index, text)"
                 />
                 <p
@@ -624,13 +617,15 @@
                 </p>
               </div>
               <div class="formBox-block-item-effectPrEventBox-item-row">
+                <p class="formBox-block-item-label">
+                  {{ item.weightReplace ? "权重替换值" : "权重增益值" }}
+                </p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
                   :placeholder="
                     item.weightReplace ? '权重替换值' : '权重增益值'
                   "
                   :value="item.weight"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectPrWeight(index, text)"
                 />
                 <p
@@ -647,11 +642,11 @@
                 </p>
               </div>
               <div class="formBox-block-item-effectPrEventBox-item-row">
+                <p class="formBox-block-item-label">总有效次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
                   placeholder="总有效次数上限"
                   :value="item.times"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectPrEventTimes(index, text)"
                 />
                 <p
@@ -668,11 +663,11 @@
                 </p>
               </div>
               <div class="formBox-block-item-effectPrEventBox-item-row">
+                <p class="formBox-block-item-label">效果持续回合数</p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
                   placeholder="效果持续回合数"
                   :value="item.lastUnitTime"
-                  :max-length="MaxNumLength"
                   @input="(text) => inputEffectPrEventLastUnitTime(index, text)"
                 />
                 <p
@@ -723,6 +718,151 @@
             </p>
           </div>
         </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">携带额外事件</p>
+          <div class="formBox-block-item-effectRandomEventBox">
+            <p
+              :class="[
+                'formBox-block-item-pretips',
+                effectEventError ? 'formBox-block-item-pretips--warning' : '',
+              ]"
+            >
+              概率百分比、总生效次数上限、持续回合数必须为数字（小数将只保留整数位）
+            </p>
+            <div
+              v-for="(item, index) in extraRandomEvents"
+              :key="index"
+              class="formBox-block-item-effectRandomEventBox-item"
+            >
+              <div class="formBox-block-item-effectRandomEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--nopadding">
+                  <p class="formBox-block-item-label">
+                    额外随机事件{{ index + 1 }}
+                  </p>
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="事件Key"
+                    :value="item.key"
+                    @input="(text) => inputEffectRandomEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-effectRandomEventBox-item-delBtn"
+                    @click="removeEffectRandomEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-effectRandomEventBox-item-row">
+                <p class="formBox-block-item-label">百分比概率</p>
+                <GhInput
+                  class="formBox-block-item-effectRandomEventBox-item-input"
+                  placeholder="百分比概率(0-100%)"
+                  :value="item.persent"
+                  @input="(text) => inputEffectRandomEventPersent(index, text)"
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-effectRandomEventBox-item-errTag',
+                    effectRandomEventErrorIndex[index] &&
+                      effectRandomEventErrorIndex[index].persent
+                      ? 'formBox-block-item-effectRandomEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
+                </p>
+              </div>
+              <div class="formBox-block-item-effectRandomEventBox-item-row">
+                <p class="formBox-block-item-label">事件好坏程度值</p>
+                <GhInput
+                  class="formBox-block-item-effectRandomEventBox-item-input"
+                  placeholder="事件好坏程度值(负为坏，正为好)"
+                  :value="item.goodOrBad"
+                  @input="
+                    (text) => inputEffectRandomEventGoodOrBad(index, text)
+                  "
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-effectRandomEventBox-item-errTag',
+                    effectRandomEventErrorIndex[index] &&
+                      effectRandomEventErrorIndex[index].goodOrBad
+                      ? 'formBox-block-item-effectRandomEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
+                </p>
+              </div>
+              <div class="formBox-block-item-effectRandomEventBox-item-row">
+                <p class="formBox-block-item-label">总有效次数上限</p>
+                <GhInput
+                  class="formBox-block-item-effectRandomEventBox-item-input"
+                  placeholder="总有效次数上限"
+                  :value="item.times"
+                  @input="(text) => inputEffectRandomEventTimes(index, text)"
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-effectRandomEventBox-item-errTag',
+                    effectRandomEventErrorIndex[index] &&
+                      effectRandomEventErrorIndex[index].times
+                      ? 'formBox-block-item-effectRandomEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
+                </p>
+              </div>
+              <div class="formBox-block-item-effectRandomEventBox-item-row">
+                <p class="formBox-block-item-label">效果持续回合数</p>
+                <GhInput
+                  class="formBox-block-item-effectRandomEventBox-item-input"
+                  placeholder="效果持续回合数"
+                  :value="item.lastUnitTime"
+                  @input="
+                    (text) => inputEffectRandomEventLastUnitTime(index, text)
+                  "
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-effectRandomEventBox-item-errTag',
+                    effectRandomEventErrorIndex[index] &&
+                      effectRandomEventErrorIndex[index].lastUnitTime
+                      ? 'formBox-block-item-effectRandomEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
+                </p>
+              </div>
+            </div>
+            <p
+              class="formBox-block-item-effectRandomEventBox-addBtn"
+              @click="addEffectRandomEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips1:
+              概率百分比最大值为100，大于100时，将默认视为100,；小于0时，则视为0
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2:
+              事件好坏程度值与运气值会联合影响事件概率，概率运算为，基础概率 +
+              (运气值 - 基础运气值) * 0.1 * / |goodOrBad|，(运气值 -
+              基础运气值)为正则坏事概率减幅，好事概率增幅；反之坏事增幅，好事减幅
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips3: 概率百分比、事件好坏程度值不输入则视为0
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="formBox-block">
@@ -745,6 +885,15 @@
             {{ item.text }}
           </p>
         </div>
+      </div>
+      <div class="formBox-block-item">
+        <p class="formBox-block-item-label">输出说明</p>
+
+        <p class="formBox-block-item-tips">
+          所有数值设置，除特殊要求外，值大于{{ MAXNUM }}的都自动转为{{
+            MAXNUM
+          }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}
+        </p>
       </div>
     </div>
     <div class="previewBox" />
@@ -922,6 +1071,8 @@ export default {
       effectEventErrorIndex: {},
       effectPrEventError: false,
       effectPrEventErrorIndex: {},
+      effectRandomEventError: false,
+      effectRandomEventErrorIndex: {},
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -933,27 +1084,11 @@ export default {
       execNormalDefaultWhenMismatchConditions: true,
       effectAttr: [], // attr: Number|Array
       // 事件次数额外增益
-      effectEvents: [
-        {
-          key: '',
-          times: '', // 总执行次数上限
-          timesReplace: false, // false为直接替换times，true为叠加
-          timesOfUnit: '', // 每回合执行次数上限
-          timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
-          lastUnitTime: '' // 该项事件影响效果剩余持续回合数
-        }
-      ],
+      effectEvents: [],
       // 概率事件额外权重增益
       prEventsExtraWeight: [],
       // 额外的随机事件
-      extraRandomEvents: {
-        demo: {
-          persent: 10, // 该事件的百分比概率
-          lastUnitTime: 1, // 该项事件影响效果剩余持续回合数
-          times: 1, // 总有效次数，最多可执行次数
-          goodOrBad: 0 // 负坏事，正好事
-        }
-      },
+      extraRandomEvents: [],
       normalDefault: 'putongmoren', // 未达成事件条件时执行的事件
 
       // 生成模式
@@ -969,8 +1104,11 @@ export default {
     }
   },
   computed: {
-    MaxNumLength() {
-      return (MAXNUM + '').length
+    MAXNUM() {
+      return MAXNUM
+    },
+    MINNUM() {
+      return MINNUM
     },
     eventObjString() {
       return `{
@@ -986,6 +1124,7 @@ export default {
       const effectAttr = {}
       const effectEvents = {}
       const prEventsExtraWeight = {}
+      const extraRandomEvents = {}
       this.style.forEach((item) => {
         if (item.key) style[item.key] = item.value
       })
@@ -994,8 +1133,8 @@ export default {
           const max = parseInt(item.max)
           const min = parseInt(item.min)
           triggerConditions[item.key] = [
-            isNaN(min) ? MINNUM : min,
-            isNaN(max) ? MAXNUM : max
+            isNaN(min) ? MINNUM : this.getMinNum(min),
+            isNaN(max) ? MAXNUM : this.getMaxNum(max)
           ]
         }
       })
@@ -1004,16 +1143,17 @@ export default {
           if (item.mode === 'random' && (item.max || item.min)) {
             const max = parseInt(item.max)
             const min = parseInt(item.min)
-            if (!isNaN(min) && !isNaN(max)) effectAttr[item.key] = [min, max]
-            else if (isNaN(min) && !isNaN(max)) {
-              effectAttr[item.key] = max - 1
+            if (!isNaN(min) && !isNaN(max)) {
+              effectAttr[item.key] = [this.getMinNum(min), this.getMaxNum(max)]
+            } else if (isNaN(min) && !isNaN(max)) {
+              effectAttr[item.key] = this.getScopeNum(max - 1)
             } else if (!isNaN(min) && isNaN(max)) {
-              effectAttr[item.key] = min
+              effectAttr[item.key] = this.getScopeNum(min)
             }
           }
           if (item.mode === 'exact' && item.value) {
             const value = parseInt(item.value)
-            effectAttr[item.key] = isNaN(value) ? 0 : value
+            effectAttr[item.key] = isNaN(value) ? 0 : this.getScopeNum(value)
           }
         }
       })
@@ -1034,11 +1174,11 @@ export default {
         const rlastUnitTimeIsNaN = isNaN(rlastUnitTime)
         if (key && !rtimesIsNaN && !rtimesOfUnitIsNaN && !rlastUnitTimeIsNaN) {
           effectEvents[key] = {
-            times: rtimes,
+            times: this.getScopeNum(rtimes, [0, MAXNUM]),
             timesReplace,
-            timesOfUnit: rtimesOfUnit,
+            timesOfUnit: this.getScopeNum(rtimesOfUnit, [0, MAXNUM]),
             timesOfUnitReplace,
-            lastUnitTime: rlastUnitTime
+            lastUnitTime: this.getScopeNum(rlastUnitTime, [0, MAXNUM])
           }
         }
       })
@@ -1055,11 +1195,30 @@ export default {
           const rtimes = isNaN(timesInt) ? MAXNUM : timesInt
           const rlastUnitTime = isNaN(lastUnitTimeInt) ? 1 : lastUnitTimeInt
           prEventsExtraWeight[key] = {
-            persent: rpersent,
-            weight: rweight,
-            times: rtimes,
-            lastUnitTime: rlastUnitTime,
+            persent: this.getScopeNum(rpersent),
+            weight: this.getScopeNum(rweight),
+            times: this.getScopeNum(rtimes, [0, MAXNUM]),
+            lastUnitTime: this.getScopeNum(rlastUnitTime, [0, MAXNUM]),
             weightReplace
+          }
+        }
+      })
+      this.extraRandomEvents.forEach((item) => {
+        if (item.key) {
+          const { key, persent, goodOrBad, times, lastUnitTime } = item
+          const persentInt = parseInt(persent)
+          const goodOrBadInt = parseInt(goodOrBad)
+          const timesInt = parseInt(times)
+          const lastUnitTimeInt = parseInt(lastUnitTime)
+          const rpersent = isNaN(persentInt) ? 0 : persentInt
+          const rgoodOrBad = isNaN(goodOrBadInt) ? 0 : goodOrBadInt
+          const rtimes = isNaN(timesInt) ? 1 : timesInt
+          const rlastUnitTime = isNaN(lastUnitTimeInt) ? 1 : lastUnitTimeInt
+          extraRandomEvents[key] = {
+            persent: this.getScopeNum(rlastUnitTime, [0, 100]),
+            goodOrBad: this.getScopeNum(rgoodOrBad),
+            times: this.getScopeNum(rtimes, [0, MAXNUM]),
+            lastUnitTime: this.getScopeNum(rlastUnitTime, [0, MAXNUM])
           }
         }
       })
@@ -1073,7 +1232,8 @@ export default {
         triggerConditions,
         effectAttr,
         effectEvents,
-        prEventsExtraWeight
+        prEventsExtraWeight,
+        extraRandomEvents
       }
     }
   },
@@ -1123,13 +1283,11 @@ export default {
       for (let i = 0; i < this.effectEvents.length; i++) {
         const item = this.effectEvents[i]
         let errItem = false
-        const times = item.times ? parseInt(item.times) : MAXNUM
-        const timesOfUnit = item.timesOfUnit
-          ? parseInt(item.timesOfUnit)
-          : MINNUM
+        const times = item.times ? parseInt(item.times) : 1
+        const timesOfUnit = item.timesOfUnit ? parseInt(item.timesOfUnit) : 1
         const lastUnitTime = item.lastUnitTime
           ? parseInt(item.lastUnitTime)
-          : MINNUM
+          : 1
         errItem = isNaN(times) || isNaN(timesOfUnit) || isNaN(lastUnitTime)
         if (errItem) {
           this.effectEventError = this.effectEventError || errItem
@@ -1168,12 +1326,54 @@ export default {
           })
         }
       }
+    },
+    extraRandomEvents() {
+      this.effectRandomEventError = false
+      this.effectRandomEventErrorIndex = {}
+      for (let i = 0; i < this.extraRandomEvents.length; i++) {
+        const item = this.extraRandomEvents[i]
+        let errItem = false
+        const persent = item.persent ? parseInt(item.persent) : 0
+        const goodOrBad = item.goodOrBad ? parseInt(item.goodOrBad) : 0
+        const times = item.times ? parseInt(item.times) : 1
+        const lastUnitTime = item.lastUnitTime
+          ? parseInt(item.lastUnitTime)
+          : 1
+        errItem =
+          isNaN(persent) ||
+          isNaN(goodOrBad) ||
+          isNaN(times) ||
+          isNaN(lastUnitTime)
+        if (errItem) {
+          this.effectRandomEventError = this.effectRandomEventError || errItem
+          this.$set(this.effectRandomEventErrorIndex, i, {
+            persent: isNaN(persent),
+            goodOrBad: isNaN(goodOrBad),
+            times: isNaN(times),
+            lastUnitTime: isNaN(lastUnitTime)
+          })
+        }
+      }
     }
   },
   mounted() {
     // console.log(this.MaxNumLength)
+    // console.log(this.getScopeNum(-111111111111))
   },
   methods: {
+    getMaxNum(num) {
+      return num > MAXNUM ? MAXNUM : num
+    },
+    getMinNum(num) {
+      return num < MINNUM ? MINNUM : num
+    },
+    getScopeNum(num, scope = [MINNUM, MAXNUM]) {
+      const min = Math.min(...scope)
+      const max = Math.max(...scope)
+      if (num < min) return min
+      if (num > max) return max
+      return num
+    },
     getTextArr() {
       let text = this.text
       const texts = []
@@ -1417,6 +1617,50 @@ export default {
         weightReplace: false,
         lastUnitTime: ''
       })
+    },
+    inputEffectRandomEventKey(index, text) {
+      this.$set(this.extraRandomEvents, index, {
+        ...this.extraRandomEvents[index],
+        key: text
+      })
+    },
+    removeEffectRandomEventItem(sindex) {
+      this.extraRandomEvents = this.extraRandomEvents.filter(
+        (item, index) => sindex !== index
+      )
+    },
+    inputEffectRandomEventPersent(index, text) {
+      this.$set(this.extraRandomEvents, index, {
+        ...this.extraRandomEvents[index],
+        persent: text
+      })
+    },
+    inputEffectRandomEventGoodOrBad(index, text) {
+      this.$set(this.extraRandomEvents, index, {
+        ...this.extraRandomEvents[index],
+        goodOrBad: text
+      })
+    },
+    inputEffectRandomEventTimes(index, text) {
+      this.$set(this.extraRandomEvents, index, {
+        ...this.extraRandomEvents[index],
+        times: text
+      })
+    },
+    inputEffectRandomEventLastUnitTime(index, text) {
+      this.$set(this.extraRandomEvents, index, {
+        ...this.extraRandomEvents[index],
+        lastUnitTime: text
+      })
+    },
+    addEffectRandomEventItem() {
+      this.extraRandomEvents.push({
+        key: '',
+        persent: '', // 该事件的百分比概率
+        lastUnitTime: '', // 该项事件影响效果剩余持续回合数
+        times: '', // 总有效次数，最多可执行次数
+        goodOrBad: '' // 负坏事，正好事
+      })
     }
   }
 }
@@ -1451,6 +1695,9 @@ export default {
       }
       &-item--nopadding {
         padding: 6px 0 !important;
+      }
+      &-item--column {
+        flex-direction: column !important;
       }
       &-item {
         // width: 100%;
@@ -1507,7 +1754,7 @@ export default {
             &-delBtn {
               line-height: 34px;
               margin-left: 12px;
-              width: 120px;
+              width: 160px;
               border: 1px dashed #a92228;
               color: #a92228;
               user-select: none;
@@ -1519,6 +1766,8 @@ export default {
             cursor: pointer;
             padding: 6px 0;
             border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
           }
         }
         &-conditionBox {
@@ -1563,6 +1812,8 @@ export default {
             cursor: pointer;
             padding: 6px 0;
             border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
           }
         }
         &-attrEffectBox {
@@ -1615,6 +1866,8 @@ export default {
             cursor: pointer;
             padding: 6px 0;
             border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
           }
         }
         &-effectEventBox {
@@ -1642,7 +1895,7 @@ export default {
               flex-direction: row;
             }
             &-input {
-              width: 180px;
+              width: 100%;
             }
             &-errTag {
               opacity: 0;
@@ -1682,6 +1935,8 @@ export default {
             cursor: pointer;
             padding: 6px 0;
             border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
           }
         }
         &-effectPrEventBox {
@@ -1709,7 +1964,7 @@ export default {
               flex-direction: row;
             }
             &-input {
-              width: 180px;
+              width: 100%;
             }
             &-errTag {
               opacity: 0;
@@ -1749,17 +2004,92 @@ export default {
             cursor: pointer;
             padding: 6px 0;
             border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
+          }
+        }
+        &-effectRandomEventBox {
+          width: 828px;
+          .formBox-block-item-effectRandomEventBox-item
+            + .formBox-block-item-effectRandomEventBox-item {
+            border-top: 1px solid #000;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            .formBox-block-item-effectRandomEventBox-item-input
+              + .formBox-block-item-effectRandomEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-effectRandomEventBox-item-row
+              + .formBox-block-item-effectRandomEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 100%;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
           }
         }
         &-radioBox {
           display: flex;
           flex-direction: row;
+          .formBox-block-item-radioBox-radio
+            + .formBox-block-item-radioBox-radio {
+            margin-left: 12px;
+          }
           &-radio {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding: 2px 18px;
+            padding: 2px 0;
             user-select: none;
             cursor: pointer;
             white-space: nowrap;
