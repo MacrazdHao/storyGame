@@ -199,6 +199,8 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
   const defaultOption = { color: '#000', text: '跳过', event: event.optDefault, disabled: false, hide: false }
   if (!event.optEvents) return [defaultOption]
   const options = []
+  let hideNum = 0
+  let disabledNum = 0
   // 将可选项根据当前状态和条件解析出可用内容
   for (const key in event.optEvents) {
     const { color, text, conditions } = event.optEvents[key]
@@ -211,7 +213,10 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
         const min = conditions[ckey][0]
         const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
         if (curConditions[ckey] < min || curConditions[ckey] >= max) option.hide = true
-        if (option.hide) break
+        if (option.hide) {
+          hideNum++
+          break
+        }
       }
     }
     const eventObj = getEventObj(userId, { key }, curConditions)
@@ -221,10 +226,11 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
       case EventCode.OutOfTimes:
       case EventCode.MismatchConditions:
         option.disabled = true
+        disabledNum++
     }
     options.push(option)
   }
-  if (options.length === 0) options.push(defaultOption)
+  if (options.length === 0 || (disabledNum + hideNum) === options.length) options.push(defaultOption)
   return options
   // 界面逻辑中，若返回为空数组，则跳过当前事件
 }
@@ -269,10 +275,22 @@ export const selectOptEventOption = (userId, selectedOption) => {
 export const selectMultiOptEventOptions = (userId, conditions, _event, selections = []) => {
   const event = JSON.parse(JSON.stringify(_event))
   let eventKey = ''
-  const { multiMixEvents } = event
+  const { multiMixEvents, multiOptDefault } = event
   selections.sort((a, b) => a - b)
   const cSelections = JSON.stringify(selections)
   let eventObj = null
+  let anyEventKey = multiMixEvents.any
+  if (anyEventKey) {
+    const anyObj = getEventObj(userId, { key: anyEventKey }, conditions)
+    // 判断当前选项的反馈事件是否可用
+    switch (anyObj) {
+      case EventCode.NotExist:
+      case EventCode.OutOfTimes:
+      case EventCode.MismatchConditions:
+        anyEventKey = multiOptDefault
+        break
+    }
+  } else anyEventKey = multiOptDefault
   for (const rkey in multiMixEvents) {
     if (rkey === 'any') continue
     const mixEventSelections = rkey.split('_').map(item => parseInt(item))
@@ -286,16 +304,16 @@ export const selectMultiOptEventOptions = (userId, conditions, _event, selection
         case EventCode.NotExist:
         case EventCode.OutOfTimes:
         case EventCode.MismatchConditions:
-          eventKey = multiMixEvents.any
-          eventObj = getEventObj(userId, { key: multiMixEvents.any }, conditions)
+          eventKey = anyEventKey
+          eventObj = getEventObj(userId, { key: anyEventKey }, conditions)
           break
       }
     }
   }
-  // 没有相匹配的反馈事件
+  // 没有相匹配的反馈事件（或没有选择任何选项，也会执行该逻辑）
   if (!eventObj) {
-    eventKey = multiMixEvents.any
-    eventObj = getEventObj(userId, { key: multiMixEvents.any }, conditions)
+    eventKey = anyEventKey
+    eventObj = getEventObj(userId, { key: anyEventKey }, conditions)
   }
   pushEventKeyToStack(userId, [eventKey], 'priority')
 }

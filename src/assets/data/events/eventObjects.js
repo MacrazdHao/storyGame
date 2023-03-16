@@ -27,7 +27,7 @@
  ** 【必然事件发生时机（单位时间的起始）】unitTimeBegin: (unitTimeBegin[Boolean]) => Boolean
  ** 【可选事件】optEvents: (events[Object({'EventName[String]': {text: [String], color: String, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] }})]) => Object
  ** 【可选默认事件】optDefault: (eventKey[String]) => String
- ** 【多选选项】multiOptions: (events[Array({text: [String], color: String, maxRepeat: 1, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)], disabledConditions: attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] })]) => Object
+ ** 【多选选项】multiOptions: (events[Array({text: [String], color: String, maxRepeat: 1, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)], disabledConditions(优先级大于conditions): attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] })]) => Object
  ** 【多选上限】maxSelection: (num[Number]) => Number
  ** 【要求选满多选上限标识】requireSelectNum: (nums[Array(Number)]) => Array(Number)
  ** 【多选匹配事件】multiMixEvents: (events[Object({ '[index0]_[index1]_...(String)': EventName[String], 'any(默认)': EventName[String] })]) => Object
