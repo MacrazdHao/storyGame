@@ -356,131 +356,164 @@
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">事件影响</p>
-          <div class="formBox-block-item-effectEvent">
+          <div class="formBox-block-item-effectEventBox">
             <p
               :class="[
                 'formBox-block-item-tips',
-                attrEffectError ? 'formBox-block-item-tips--warning' : '',
+                effectEventError ? 'formBox-block-item-tips--warning' : '',
               ]"
             >
               回合执行次数上限、持续回合数必须为数字（小数将只保留整数位）
             </p>
             <div
-              v-for="(item, index) in effectAttr"
+              v-for="(item, index) in effectEvents"
               :key="index"
-              class="formBox-block-item-effectEvent-item"
+              class="formBox-block-item-effectEventBox-item"
             >
-              <div class="formBox-block-item-effectEvent-item-row">
-                <GhInput
-                  class="formBox-block-item-effectEvent-item-input"
-                  placeholder="事件Key"
-                  :value="item.key"
-                  @input="(text) => inputEffectEventKey(index, text)"
-                />
+              <div class="formBox-block-item-effectEventBox-item-row">
+                <div class="formBox-block-item">
+                  <p class="formBox-block-item-label">
+                    受影响事件{{ index + 1 }}
+                  </p>
+                  <GhInput
+                    class="formBox-block-item-effectEventBox-item-input"
+                    placeholder="事件Key"
+                    :value="item.key"
+                    @input="(text) => inputEffectEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-effectEventBox-item-delBtn"
+                    @click="removeEffectEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
               </div>
-              <div class="formBox-block-item-effectEvent-item-row">
+              <div class="formBox-block-item-effectEventBox-item-row">
                 <GhInput
-                  class="formBox-block-item-effectEvent-item-input"
+                  class="formBox-block-item-effectEventBox-item-input"
                   placeholder="回合执行次数上限"
                   :value="item.timesOfUnit"
                   :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventTimesOfUnit(index, text)"
                 />
-                <div class="">
-                  <p class="formBox-block-item-label">次数模式</p>
-                  <div class="formBox-block-item-radioBox">
-                    <p
-                      :class="[
-                        'formBox-block-item-radioBox-radio',
-                        item.timesOfUnitReplace
-                          ? 'formBox-block-item-radioBox-radio--selected'
-                          : '',
-                      ]"
-                      @click="setEffectEventTimesOfUnitMode(index, true)"
-                    >
-                      <span class="formBox-block-item-radioBox-radio-dot" />
-                      替换
-                    </p>
-                    <p
-                      :class="[
-                        'formBox-block-item-radioBox-radio',
-                        !item.timesOfUnitReplace
-                          ? 'formBox-block-item-radioBox-radio--selected'
-                          : '',
-                      ]"
-                      @click="setEffectEventTimesOfUnitMode(index, false)"
-                    >
-                      <span class="formBox-block-item-radioBox-radio-dot" />
-                      叠加
-                    </p>
-                  </div>
+                <p
+                  :class="[
+                    'formBox-block-item-effectEventBox-item-errTag',
+                    effectEventErrorIndex[index]&&effectEventErrorIndex[index].timesOfUnit
+                      ? 'formBox-block-item-effectEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                >
+                  ×
+                </p>
+                <div class="formBox-block-item-radioBox">
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      !item.timesOfUnitReplace
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setEffectEventTimesOfUnitMode(index, false)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    叠加
+                  </p>
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      item.timesOfUnitReplace
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setEffectEventTimesOfUnitMode(index, true)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    替换
+                  </p>
                 </div>
               </div>
-              <div class="formBox-block-item-effectEvent-item-row">
+              <div class="formBox-block-item-effectEventBox-item-row">
                 <GhInput
-                  class="formBox-block-item-effectEvent-item-input"
-                  placeholder="回合执行次数上限"
+                  class="formBox-block-item-effectEventBox-item-input"
+                  placeholder="总执行次数上限"
                   :value="item.times"
                   :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventTimes(index, text)"
                 />
-                <div class="">
-                  <p class="formBox-block-item-label">次数模式</p>
-                  <div class="formBox-block-item-radioBox">
-                    <p
-                      :class="[
-                        'formBox-block-item-radioBox-radio',
-                        item.timesReplace
-                          ? 'formBox-block-item-radioBox-radio--selected'
-                          : '',
-                      ]"
-                      @click="setEffectEventTimesMode(index, true)"
-                    >
-                      <span class="formBox-block-item-radioBox-radio-dot" />
-                      替换
-                    </p>
-                    <p
-                      :class="[
-                        'formBox-block-item-radioBox-radio',
-                        !item.timesReplace
-                          ? 'formBox-block-item-radioBox-radio--selected'
-                          : '',
-                      ]"
-                      @click="setEffectEventTimesMode(index, false)"
-                    >
-                      <span class="formBox-block-item-radioBox-radio-dot" />
-                      叠加
-                    </p>
-                  </div>
+                <p
+                  :class="[
+                    'formBox-block-item-effectEventBox-item-errTag',
+                    effectEventErrorIndex[index]&&effectEventErrorIndex[index].times
+                      ? 'formBox-block-item-effectEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                >
+                  ×
+                </p>
+                <div class="formBox-block-item-radioBox">
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      !item.timesReplace
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setEffectEventTimesMode(index, false)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    叠加
+                  </p>
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      item.timesReplace
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setEffectEventTimesMode(index, true)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    替换
+                  </p>
                 </div>
               </div>
-              <div class="formBox-block-item-effectEvent-item-row">
+              <div class="formBox-block-item-effectEventBox-item-row">
                 <GhInput
-                  class="formBox-block-item-effectEvent-item-input"
+                  class="formBox-block-item-effectEventBox-item-input"
                   placeholder="效果持续回合数"
                   :value="item.lastUnitTime"
                   :max-length="MaxNumLength"
                   @input="(text) => inputEffectEventLastUnitTime(index, text)"
                 />
+                <p
+                  :class="[
+                    'formBox-block-item-effectEventBox-item-errTag',
+                    effectEventErrorIndex[index]&&effectEventErrorIndex[index].lastUnitTime
+                      ? 'formBox-block-item-effectEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                >
+                  ×
+                </p>
               </div>
-              <p
-                class="formBox-block-item-effectEvent-item-delBtn"
-                @click="removeEffectEventItem(index)"
-              >
-                -- 移除 --
-              </p>
             </div>
             <p
-              class="formBox-block-item-effectEvent-addBtn"
+              class="formBox-block-item-effectEventBox-addBtn"
               @click="addEffectEventItem"
             >
               ++ 添加一项 ++
             </p>
             <p class="formBox-block-item-tips">
-              Tips1: 该属性用于改变其他已存在事件的【回合执行次数上限】、【总执行次数上限】
+              Tips1:
+              该属性用于改变其他已存在事件的【回合执行次数上限】、【总执行次数上限】
             </p>
             <p class="formBox-block-item-tips">
               Tips2: 次数模式分为叠加/替换两种模式
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips3: 【回合执行次数上限】、【总执行次数上限】、【持续回合数】均不可为空，任一为空则在生成事件时将忽略该受影响事件
             </p>
           </div>
         </div>
@@ -512,8 +545,7 @@
   </div>
 </template>
 
-// 不存在事件检测（关联的事件不存在）
-// 事件联想输入框（搜索text和key）
+// 不存在事件检测（关联的事件不存在） // 事件联想输入框（搜索text和key）
 
 <script>
 import GhInput from '@/components/GhInput'
@@ -673,6 +705,8 @@ export default {
       triggerConditionsErrorIndex: [],
       attrEffectError: false,
       attrEffectErrorIndex: [],
+      effectEventError: false,
+      effectEventErrorIndex: {},
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -684,15 +718,16 @@ export default {
       execNormalDefaultWhenMismatchConditions: true,
       effectAttr: [], // attr: Number|Array
       // 事件次数额外增益
-      effectEvents: {
-        demo: {
-          times: 1, // 总执行次数上限
+      effectEvents: [
+        {
+          key: '',
+          times: '', // 总执行次数上限
           timesReplace: false, // false为直接替换times，true为叠加
-          timesOfUnit: 1, // 每回合执行次数上限
+          timesOfUnit: '', // 每回合执行次数上限
           timesOfUnitReplace: false, // false为直接替换timesOfUnit，true为叠加
-          lastUnitTime: 1 // 该项事件影响效果剩余持续回合数
+          lastUnitTime: '' // 该项事件影响效果剩余持续回合数
         }
-      },
+      ],
       // 概率事件额外权重增益
       prEventsExtraWeight: {
         demo: {
@@ -742,6 +777,7 @@ export default {
       const timesOfUnit = parseInt(this.timesOfUnit)
       const triggerConditions = {}
       const effectAttr = {}
+      const effectEvents = {}
       this.style.forEach((item) => {
         if (item.key) style[item.key] = item.value
       })
@@ -773,6 +809,24 @@ export default {
           }
         }
       })
+      this.effectEvents.forEach((item) => {
+        const { key, times, timesReplace, timesOfUnit, timesOfUnitReplace, lastUnitTime } = item
+        const rtimes = parseInt(times)
+        const rtimesOfUnit = parseInt(timesOfUnit)
+        const rlastUnitTime = parseInt(lastUnitTime)
+        const rtimesIsNaN = isNaN(rtimes)
+        const rtimesOfUnitIsNaN = isNaN(rtimesOfUnit)
+        const rlastUnitTimeIsNaN = isNaN(rlastUnitTime)
+        if (key && !rtimesIsNaN && !rtimesOfUnitIsNaN && !rlastUnitTimeIsNaN) {
+          effectEvents[key] = {
+            times: rtimes,
+            timesReplace,
+            timesOfUnit: rtimesOfUnit,
+            timesOfUnitReplace,
+            lastUnitTime: rlastUnitTime
+          }
+        }
+      })
       return {
         eventKey: this.key,
         textArr,
@@ -781,7 +835,8 @@ export default {
         times: isNaN(times) ? MAXNUM : times,
         timesOfUnit: isNaN(timesOfUnit) ? 1 : timesOfUnit,
         triggerConditions,
-        effectAttr
+        effectAttr,
+        effectEvents
       }
     }
   },
@@ -824,6 +879,30 @@ export default {
         if (errItem) this.attrEffectErrorIndex.push(i)
       }
       this.attrEffectError = this.attrEffectErrorIndex.length
+    },
+    effectEvents() {
+      this.effectEventError = false
+      this.effectEventErrorIndex = {}
+      for (let i = 0; i < this.effectEvents.length; i++) {
+        const item = this.effectEvents[i]
+        let errItem = false
+        const times = item.times ? parseInt(item.times) : MAXNUM
+        const timesOfUnit = item.timesOfUnit
+          ? parseInt(item.timesOfUnit)
+          : MINNUM
+        const lastUnitTime = item.lastUnitTime
+          ? parseInt(item.lastUnitTime)
+          : MINNUM
+        errItem = isNaN(times) || isNaN(timesOfUnit) || isNaN(lastUnitTime)
+        if (errItem) {
+          this.effectEventError = this.effectEventError || errItem
+          this.$set(this.effectEventErrorIndex, i, {
+            times: isNaN(times),
+            timesOfUnit: isNaN(timesOfUnit),
+            lastUnitTime: isNaN(lastUnitTime)
+          })
+        }
+      }
     }
   },
   mounted() {
@@ -970,6 +1049,57 @@ export default {
       this.effectAttr = this.effectAttr.filter(
         (item, index) => sindex !== index
       )
+    },
+    inputEffectEventKey(index, text) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        key: text
+      })
+    },
+    inputEffectEventTimesOfUnit(index, text) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        timesOfUnit: text
+      })
+    },
+    setEffectEventTimesOfUnitMode(index, isReplace) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        timesOfUnitReplace: isReplace
+      })
+    },
+    inputEffectEventTimes(index, text) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        times: text
+      })
+    },
+    setEffectEventTimesMode(index, isReplace) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        timesReplace: isReplace
+      })
+    },
+    inputEffectEventLastUnitTime(index, text) {
+      this.$set(this.effectEvents, index, {
+        ...this.effectEvents[index],
+        lastUnitTime: text
+      })
+    },
+    removeEffectEventItem(sindex) {
+      this.effectEvents = this.effectEvents.filter(
+        (item, index) => sindex !== index
+      )
+    },
+    addEffectEventItem() {
+      this.effectEvents.push({
+        key: '',
+        times: '',
+        timesReplace: false,
+        timesOfUnit: '',
+        timesOfUnitReplace: false,
+        lastUnitTime: ''
+      })
     }
   }
 }
@@ -1142,6 +1272,73 @@ export default {
             }
             &-delBtn {
               line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+          }
+        }
+        &-effectEventBox {
+          width: 816px;
+          .formBox-block-item-effectEventBox-item
+            + .formBox-block-item-effectEventBox-item {
+            border-top: 1px solid #000;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            .formBox-block-item-effectEventBox-item-input
+              + .formBox-block-item-effectEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-effectEventBox-item-row
+              + .formBox-block-item-effectEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 180px;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
               margin-left: 12px;
               width: 120px;
               border: 1px dashed #a92228;
