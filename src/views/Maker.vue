@@ -1215,7 +1215,7 @@ export default {
           const rtimes = isNaN(timesInt) ? 1 : timesInt
           const rlastUnitTime = isNaN(lastUnitTimeInt) ? 1 : lastUnitTimeInt
           extraRandomEvents[key] = {
-            persent: this.getScopeNum(rlastUnitTime, [0, 100]),
+            persent: this.getScopeNum(rpersent, [0, 100]),
             goodOrBad: this.getScopeNum(rgoodOrBad),
             times: this.getScopeNum(rtimes, [0, MAXNUM]),
             lastUnitTime: this.getScopeNum(rlastUnitTime, [0, MAXNUM])
