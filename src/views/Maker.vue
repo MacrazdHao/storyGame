@@ -135,7 +135,8 @@
           <div class="formBox-block-item-inputBox">
             <GhInput
               class="formBox-block-item-input"
-              placeholder="请输入总可执行次数（小数将只保留整数位）"
+              placeholder="请输入总可执行次数(≥0)"
+              :disabled="selectedBaseType === 0"
               :value="times"
               @input="inputTimes"
             />
@@ -152,7 +153,8 @@
           <div class="formBox-block-item-inputBox">
             <GhInput
               class="formBox-block-item-input"
-              placeholder="请输入回合可执行次数（小数将只保留整数位）"
+              placeholder="请输入回合可执行次数(≥0)"
+              :disabled="selectedBaseType === 0"
               :value="timesOfUnit"
               @input="inputTimesOfUnit"
             />
@@ -414,7 +416,7 @@
                 <p class="formBox-block-item-label">回合执行次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
-                  placeholder="回合执行次数上限"
+                  placeholder="回合执行次数上限(≥0)"
                   :value="item.timesOfUnit"
                   @input="(text) => inputEffectEventTimesOfUnit(index, text)"
                 />
@@ -463,7 +465,7 @@
                 <p class="formBox-block-item-label">总执行次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
-                  placeholder="总执行次数上限"
+                  placeholder="总执行次数上限(≥0)"
                   :value="item.times"
                   @input="(text) => inputEffectEventTimes(index, text)"
                 />
@@ -512,7 +514,7 @@
                 <p class="formBox-block-item-label">效果持续回合数</p>
                 <GhInput
                   class="formBox-block-item-effectEventBox-item-input"
-                  placeholder="效果持续回合数"
+                  placeholder="效果持续回合数(≥0)"
                   :value="item.lastUnitTime"
                   @input="(text) => inputEffectEventLastUnitTime(index, text)"
                 />
@@ -646,7 +648,7 @@
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
                   :placeholder="
-                    item.weightReplace ? '权重替换值' : '权重增益值'
+                    item.weightReplace ? '权重替换值(≥0)' : '权重增益值(≥0)'
                   "
                   :value="item.weight"
                   @input="(text) => inputEffectPrWeight(index, text)"
@@ -668,7 +670,7 @@
                 <p class="formBox-block-item-label">总有效次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
-                  placeholder="总有效次数上限"
+                  placeholder="总有效次数上限(≥0)"
                   :value="item.times"
                   @input="(text) => inputEffectPrEventTimes(index, text)"
                 />
@@ -689,7 +691,7 @@
                 <p class="formBox-block-item-label">效果持续回合数</p>
                 <GhInput
                   class="formBox-block-item-effectPrEventBox-item-input"
-                  placeholder="效果持续回合数"
+                  placeholder="效果持续回合数(≥0)"
                   :value="item.lastUnitTime"
                   @input="(text) => inputEffectPrEventLastUnitTime(index, text)"
                 />
@@ -824,7 +826,7 @@
                 <p class="formBox-block-item-label">总有效次数上限</p>
                 <GhInput
                   class="formBox-block-item-effectRandomEventBox-item-input"
-                  placeholder="总有效次数上限"
+                  placeholder="总有效次数上限(≥0)"
                   :value="item.times"
                   @input="(text) => inputEffectRandomEventTimes(index, text)"
                 />
@@ -845,7 +847,7 @@
                 <p class="formBox-block-item-label">效果持续回合数</p>
                 <GhInput
                   class="formBox-block-item-effectRandomEventBox-item-input"
-                  placeholder="效果持续回合数"
+                  placeholder="效果持续回合数(≥0)"
                   :value="item.lastUnitTime"
                   @input="
                     (text) => inputEffectRandomEventLastUnitTime(index, text)
@@ -887,36 +889,199 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="formBox-block">
-      <p class="formBox-block-label">生成事件</p>
-      <div class="formBox-block-item">
-        <p class="formBox-block-item-label">输出模式</p>
-        <div class="formBox-block-item-radioBox">
+      <div class="formBox-block">
+        <p class="formBox-block-label">概率事件属性</p>
+        <div class="formBox-block-item-prEventBox">
           <p
-            v-for="(item, index) in createModes"
-            :key="index"
             :class="[
-              'formBox-block-item-radioBox-radio',
-              index === selectedCreateMode
-                ? 'formBox-block-item-radioBox-radio--selected'
-                : '',
+              'formBox-block-item-pretips',
+              effectEventError ? 'formBox-block-item-pretips--warning' : '',
             ]"
-            @click="selectCreateMode(index)"
           >
-            <span class="formBox-block-item-radioBox-radio-dot" />
-            {{ item.text }}
+            概率权重、结果事件好坏程度、重复次数必须为数字（小数将只保留整数位）
+          </p>
+          <div class="formBox-block-item formBox-block-item--nopadding">
+            <p class="formBox-block-item-label">概率结果数</p>
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入概率结果数(≥0)"
+              :value="prNumber"
+              @input="inputPrNumber"
+            />
+            <p
+              :class="[
+                'formBox-block-item-prEventBox-item-errTag',
+                prNumberError
+                  ? 'formBox-block-item-prEventBox-item-errTag--show'
+                  : '',
+              ]"
+              title="请输入正确的数字"
+            >
+              ×
+            </p>
+          </div>
+          <div class="formBox-block-item formBox-block-item--nopadding">
+            <p class="formBox-block-item-label">默认结果事件KEY</p>
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入默认结果事件KEY"
+              :value="prDefault"
+              @input="inputPrDefault"
+            />
+          </div>
+          <div
+            v-for="(item, index) in prEventsArr"
+            :key="index"
+            class="formBox-block-item-prEventBox-item"
+          >
+            <div class="formBox-block-item-prEventBox-item-row">
+              <div class="formBox-block-item formBox-block-item--nopadding">
+                <p class="formBox-block-item-label">结果事件{{ index + 1 }}</p>
+                <GhInput
+                  class="formBox-block-item-input"
+                  placeholder="事件Key"
+                  :value="item.key"
+                  @input="(text) => inputPrEventKey(index, text)"
+                />
+                <p
+                  class="formBox-block-item-prEventBox-item-delBtn"
+                  @click="removePrEventItem(index)"
+                >
+                  -- 移除 --
+                </p>
+              </div>
+            </div>
+            <div class="formBox-block-item-prEventBox-item-row">
+              <p class="formBox-block-item-label">概率权重</p>
+              <GhInput
+                class="formBox-block-item-prEventBox-item-input"
+                placeholder="概率权重(≥0)"
+                :value="item.prWeight"
+                @input="(text) => inputPrEventPersent(index, text)"
+              />
+              <p
+                :class="[
+                  'formBox-block-item-prEventBox-item-errTag',
+                  prEventErrorIndex[index] && prEventErrorIndex[index].prWeight
+                    ? 'formBox-block-item-prEventBox-item-errTag--show'
+                    : '',
+                ]"
+                title="请输入正确的数字"
+              >
+                ×
+              </p>
+            </div>
+            <div class="formBox-block-item-prEventBox-item-row">
+              <p class="formBox-block-item-label">事件好坏程度值</p>
+              <GhInput
+                class="formBox-block-item-prEventBox-item-input"
+                placeholder="事件好坏程度值(负为坏，正为好)"
+                :value="item.prGoodOrBad"
+                @input="(text) => inputPrEventGoodOrBad(index, text)"
+              />
+              <p
+                :class="[
+                  'formBox-block-item-prEventBox-item-errTag',
+                  prEventErrorIndex[index] &&
+                    prEventErrorIndex[index].prGoodOrBad
+                    ? 'formBox-block-item-prEventBox-item-errTag--show'
+                    : '',
+                ]"
+                title="请输入正确的数字"
+              >
+                ×
+              </p>
+            </div>
+            <div class="formBox-block-item-prEventBox-item-row">
+              <p class="formBox-block-item-label">可重复次数</p>
+              <GhInput
+                class="formBox-block-item-prEventBox-item-input"
+                placeholder="可重复次数(≥0)"
+                :value="item.prRepeat"
+                @input="(text) => inputPrEventRepeatTimes(index, text)"
+              />
+              <p
+                :class="[
+                  'formBox-block-item-prEventBox-item-errTag',
+                  prEventErrorIndex[index] && prEventErrorIndex[index].prRepeat
+                    ? 'formBox-block-item-prEventBox-item-errTag--show'
+                    : '',
+                ]"
+                title="请输入正确的数字"
+              >
+                ×
+              </p>
+            </div>
+          </div>
+          <p
+            class="formBox-block-item-prEventBox-addBtn"
+            @click="addPrEventItem"
+          >
+            ++ 添加一项 ++
+          </p>
+          <p class="formBox-block-item-tips">
+            Tips1: 概率事件采用权重百分比计算方式，结果事件概率 = 结果事件权重 /
+            总权重
+          </p>
+          <p class="formBox-block-item-tips">Tips2: 概率权重必须 ≥ 0</p>
+          <p class="formBox-block-item-tips">
+            Tips3:
+            事件好坏程度值与运气值会联合影响事件概率，概率运算为，基础概率 +
+            (运气值 - 基础运气值) * 0.1 * / |goodOrBad|，(运气值 -
+            基础运气值)为正则坏事概率减幅，好事概率增幅；反之坏事增幅，好事减幅
+          </p>
+          <p class="formBox-block-item-tips">
+            Tips4: 概率结果数表示抽取的结果事件数
+          </p>
+          <p class="formBox-block-item-tips">
+            Tips5:
+            可重复次数表示在随机选取事件时，可以重复得到的该结果事件的次数
+          </p>
+          <p class="formBox-block-item-tips">
+            Tips6: 默认概率结果事件为空时，将自动填充为【gailvmoren】
           </p>
         </div>
       </div>
-      <div class="formBox-block-item formBox-block-item--multi">
-        <p class="formBox-block-item-label">输出说明</p>
-        <p class="formBox-block-item-text">
-          所有数值设置，除特殊要求外，值大于{{ MAXNUM }}的都自动转为{{
-            MAXNUM
-          }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}<br>
-          回合数、次数相关数值，如果小于0将自动转为0
-        </p>
+      <div class="formBox-block">
+        <p class="formBox-block-label">绑定事件属性</p>
+      </div>
+      <div class="formBox-block">
+        <p class="formBox-block-label">单选事件属性</p>
+      </div>
+      <div class="formBox-block">
+        <p class="formBox-block-label">多选事件属性</p>
+      </div>
+      <div class="formBox-block">
+        <p class="formBox-block-label">生成事件</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">输出模式</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              v-for="(item, index) in createModes"
+              :key="index"
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                index === selectedCreateMode
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="selectCreateMode(index)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              {{ item.text }}
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">输出说明</p>
+          <p class="formBox-block-item-text">
+            所有数值设置，除特殊要求外，值大于{{ MAXNUM }}的都自动转为{{
+              MAXNUM
+            }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}<br>
+            回合数、次数相关数值，如果小于0将自动转为0<br>
+            所有可复数项属性，当key值相同时，仅最后一个生效
+          </p>
+        </div>
       </div>
     </div>
     <div class="previewBox" />
@@ -953,7 +1118,7 @@ export default {
         {
           text: '默认事件',
           value: 'default',
-          desc: '不会主动执行，仅作为任意事件条件不足时触发使用',
+          desc: `不会主动执行，仅作为任意事件条件不足时触发使用，可执行次数和总可执行次数必须为${MAXNUM}`,
           obj: {
             isDefault: true,
             isCertain: false,
@@ -991,16 +1156,10 @@ export default {
           desc: '拥有不同概率的结果事件，该事件执行时会随机触发设定数量的概率结果事件，概率结果事件数少于设定的应触发数量时，以默认概率结果事件补充；概率结果事件不存在、不满足条件、超出次数时，将执行默认概率结果事件',
           obj: {
             prNumber: 0,
-            prEvents: {
-              demo: 100 // Number, 正数, 概率权重
-            },
-            prGoodOrBad: {
-              demo: 0 // Number, 负坏正好
-            },
-            prRepeat: {
-              demo: 1 // Number, 正数, 可重复次数
-            },
-            prDefault: 'gailvmoren'
+            prEvents: [],
+            prGoodOrBad: [],
+            prRepeat: [],
+            prDefault: ''
           }
         },
         {
@@ -1096,13 +1255,16 @@ export default {
       effectPrEventErrorIndex: {},
       effectRandomEventError: false,
       effectRandomEventErrorIndex: {},
+      prNumberError: false,
+      prEventError: false,
+      prEventErrorIndex: {},
       // 属性
       key: '',
       text: '', // 可使用属性条件
       textArr: [], // 用于生成text
       style: [], // 可使用属性条件
       times: MAXNUM,
-      timesOfUnit: 1,
+      timesOfUnit: MAXNUM,
       triggerConditions: [],
       execNormalDefaultWhenMismatchConditions: true,
       effectAttr: [], // attr: Number|Array
@@ -1113,6 +1275,15 @@ export default {
       // 额外的随机事件
       extraRandomEvents: [],
       normalDefault: '', // 未达成事件条件时执行的事件
+
+      // 基础类型属性
+      isDefault: false,
+      isCertain: false,
+      isPassive: false,
+      // 概率事件属性
+      prEventsArr: [],
+      prNumber: '',
+      prDefault: '', // 为空则gailvmoren
 
       // 生成模式
       createModes: [
@@ -1273,11 +1444,59 @@ export default {
         extraRandomEvents: `false||function(events={...JSON.parse('${JSON.stringify(
           extraRandomEvents
         )}')}){return {...events}}`,
-        normalDefault: this.normalDefault || 'putongmoren'
+        normalDefault: this.normalDefault || 'putongmoren',
+        ...this.baseTypeObj
+      }
+    },
+    baseTypeObj() {
+      return {
+        isDefault: `function(){return ${this.isDefault}}`,
+        isCertain: `function(){return ${this.isCertain}}`,
+        isPassive: `function(){return ${this.isPassive}}`
+      }
+    },
+    prEventObj() {
+      const prNumber = parseInt(this.prNumber)
+      const rPrNumber = isNaN(prNumber)
+        ? 0
+        : this.getScopeNum(prNumber, [0, MAXNUM])
+      const prEventsObj = {}
+      const prGoodOrBadObj = {}
+      const prRepeatObj = {}
+      this.prEventsArr.forEach((item) => {
+        const { key, prWeight, prGoodOrBad, prRepeat } = item
+        if (key) {
+          const prWeightInt = parseInt(prWeight)
+          const prGoodOrBadInt = parseInt(prGoodOrBad)
+          const prRepeatInt = parseInt(prRepeat)
+          const rPrWeight = isNaN(prWeightInt)
+            ? 0
+            : this.getScopeNum(prWeightInt, [0, MAXNUM])
+          const rPrGoodOrBad = isNaN(prGoodOrBadInt)
+            ? 0
+            : this.getScopeNum(prGoodOrBadInt)
+          const rPrRepeat = isNaN(prRepeatInt)
+            ? 0
+            : this.getScopeNum(prRepeatInt, [0, MAXNUM])
+          prEventsObj[key] = rPrWeight
+          prGoodOrBadObj[key] = rPrGoodOrBad
+          prRepeatObj[key] = rPrRepeat
+        }
+      })
+      // 待修改：该函数字符串，并加入eventObj
+      return {
+        prDefault: this.prDefault,
+        prNumber: rPrNumber,
+        prEvents: prEventsObj,
+        prGoodOrBad: prGoodOrBadObj,
+        prRepeat: prRepeatObj
       }
     }
   },
   watch: {
+    prEventObj() {
+      console.log(this.prEventObj)
+    },
     eventObj() {
       console.log(this.eventObj)
       // const test1 = eval(this.eventObj.triggerConditions)
@@ -1404,6 +1623,29 @@ export default {
           })
         }
       }
+    },
+    prNumber() {
+      this.prNumberError = this.prNumber && isNaN(parseInt(this.prNumber))
+    },
+    prEventsArr() {
+      this.prEventError = false
+      this.prEventErrorIndex = {}
+      for (let i = 0; i < this.prEventsArr.length; i++) {
+        const item = this.prEventsArr[i]
+        let errItem = false
+        const prWeight = item.prWeight ? parseInt(item.prWeight) : 0
+        const prGoodOrBad = item.prGoodOrBad ? parseInt(item.prGoodOrBad) : 0
+        const prRepeat = item.prRepeat ? parseInt(item.prRepeat) : 0
+        errItem = isNaN(prWeight) || isNaN(prGoodOrBad) || isNaN(prRepeat)
+        if (errItem) {
+          this.prEventError = this.prEventError || errItem
+          this.$set(this.prEventErrorIndex, i, {
+            prWeight: isNaN(prWeight),
+            prGoodOrBad: isNaN(prGoodOrBad),
+            prRepeat: isNaN(prRepeat)
+          })
+        }
+      }
     }
   },
   mounted() {
@@ -1445,6 +1687,11 @@ export default {
     },
     selectBaseType(sindex) {
       this.selectedBaseType = this.selectedBaseType === sindex ? -1 : sindex
+      if (this.selectedBaseType > -1) {
+        for (const key in this.baseType[this.selectedBaseType].obj) {
+          this[key] = this.baseType[this.selectedBaseType].obj[key]
+        }
+      }
     },
     selectFuncType(sindex) {
       if (this.selectedFuncType.includes(sindex)) {
@@ -1714,6 +1961,49 @@ export default {
     },
     inputNormalDefault(text) {
       this.normalDefault = text
+    },
+    inputPrNumber(text) {
+      this.prNumber = text
+    },
+    inputPrEventKey(index, text) {
+      this.$set(this.prEventsArr, index, {
+        ...this.prEventsArr[index],
+        key: text
+      })
+    },
+    removePrEventItem(sindex) {
+      this.prEventsArr = this.prEventsArr.filter(
+        (item, index) => sindex !== index
+      )
+    },
+    inputPrEventPersent(index, text) {
+      this.$set(this.prEventsArr, index, {
+        ...this.prEventsArr[index],
+        prWeight: text
+      })
+    },
+    inputPrEventGoodOrBad(index, text) {
+      this.$set(this.prEventsArr, index, {
+        ...this.prEventsArr[index],
+        prGoodOrBad: text
+      })
+    },
+    inputPrEventRepeatTimes(index, text) {
+      this.$set(this.prEventsArr, index, {
+        ...this.prEventsArr[index],
+        prRepeat: text
+      })
+    },
+    inputPrDefault(text) {
+      this.prDefault = text
+    },
+    addPrEventItem() {
+      this.prEventsArr.push({
+        key: '',
+        prWeight: '',
+        prGoodOrBad: '',
+        prRepeat: ''
+      })
     }
   }
 }
@@ -2092,6 +2382,75 @@ export default {
             }
             .formBox-block-item-effectRandomEventBox-item-row
               + .formBox-block-item-effectRandomEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 100%;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
+          }
+        }
+        &-prEventBox {
+          width: 828px;
+          .formBox-block-item-prEventBox-item
+            + .formBox-block-item-prEventBox-item {
+            border-top: 1px solid #000;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            .formBox-block-item-prEventBox-item-input
+              + .formBox-block-item-prEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-prEventBox-item-row
+              + .formBox-block-item-prEventBox-item-row {
               margin-top: 12px;
             }
             &-row {
