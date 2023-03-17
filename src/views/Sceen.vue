@@ -367,7 +367,7 @@ export default {
       // 多选参数待修改：
       // multiOptDefault
       // requireSelectNum
-      // maxSelection
+      // maxSelection(似乎可合并到requireSelectNum)
       // maxRepeat
       selectMultiOptEventOptions(
         this.userInfo.userId,

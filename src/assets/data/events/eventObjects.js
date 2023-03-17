@@ -30,6 +30,7 @@
  ** 【多选选项】multiOptions: (events[Array({text: [String], color: String, maxRepeat: 1, conditions: attr[Object({ 'Attr[String]': [Array(Number, 2)], disabledConditions(优先级大于conditions): attr[Object({ 'Attr[String]': [Array(Number, 2)] }})] })]) => Object
  ** 【多选上限】maxSelection: (num[Number]) => Number
  ** 【要求选满多选上限标识】requireSelectNum: (nums[Array(Number)]) => Array(Number)
+ ** 【是否有序多选】orderlySelections: (enable[Boolean]) => Boolean
  ** 【多选匹配事件】multiMixEvents: (events[Object({ '[index0]_[index1]_...(String)': EventName[String], 'any(默认)': EventName[String] })]) => Object
  ** 【多选默认事件】multiOptDefault: (eventKey[String]) => String
  * }
@@ -136,6 +137,7 @@ export const defaultMultiOptEvent = {
   multiOptions: (options = []) => ([...options]),
   maxSelection: (num = 2) => num,
   requireSelectNum: (nums = [2, MAXNUM]) => nums,
+  orderlySelections: (enable = false) => enable,
   multiMixEvents: (mixEvents = { any: 'duoxuanmoren' }) => ({ ...mixEvents }),
   multiOptDefault: (eventKey = 'duoxuanmoren') => eventKey,
   // 注：多选事件和单选事件相冲

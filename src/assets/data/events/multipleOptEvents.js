@@ -34,6 +34,7 @@ export default {
       disabledConditons: {}
     }, ...options]),
     maxSelection: (num = 2) => num,
+    orderlySelections: (enable = false) => false,
     requireSelectNum: (nums = [2, MAXNUM]) => nums,
     multiMixEvents: (mixEvents) => ({
       '0_1': 'duoxuanshijian1',
@@ -58,6 +59,7 @@ export default {
       conditions: {}
     }, ...options]),
     maxSelection: (num = 2) => num,
+    orderlySelections: (enable = false) => false,
     requireSelectNum: (nums = [2, MAXNUM]) => nums,
     multiMixEvents: (mixEvents) => ({
       '0_1': 'duoxuanshijian1',

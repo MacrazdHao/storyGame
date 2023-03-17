@@ -275,8 +275,8 @@ export const selectOptEventOption = (userId, selectedOption) => {
 export const selectMultiOptEventOptions = (userId, conditions, _event, selections = []) => {
   const event = JSON.parse(JSON.stringify(_event))
   let eventKey = ''
-  const { multiMixEvents, multiOptDefault } = event
-  selections.sort((a, b) => a - b)
+  const { multiMixEvents, multiOptDefault, orderlySelections } = event
+  if (!orderlySelections) selections.sort((a, b) => a - b)
   const cSelections = JSON.stringify(selections)
   let eventObj = null
   let anyEventKey = multiMixEvents.any
@@ -294,7 +294,7 @@ export const selectMultiOptEventOptions = (userId, conditions, _event, selection
   for (const rkey in multiMixEvents) {
     if (rkey === 'any') continue
     const mixEventSelections = rkey.split('_').map(item => parseInt(item))
-    mixEventSelections.sort((a, b) => a - b)
+    if (!orderlySelections) mixEventSelections.sort((a, b) => a - b)
     const rSeletions = JSON.stringify(mixEventSelections)
     if (rSeletions === cSelections) {
       eventKey = multiMixEvents[rkey]

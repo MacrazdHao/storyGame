@@ -383,7 +383,7 @@
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
-          <p class="formBox-block-item-label">事件影响</p>
+          <p class="formBox-block-item-label">影响事件</p>
           <div class="formBox-block-item-effectEventBox">
             <p
               :class="[
@@ -1249,10 +1249,10 @@
           </div>
         </div>
       </div>
-      <div class="formBox-block">
+      <div v-show="selectedOptType === 0" class="formBox-block">
         <p class="formBox-block-label">单选事件属性</p>
         <div class="formBox-block-item">
-          <p class="formBox-block-item-label">默认结果事件KEY</p>
+          <p class="formBox-block-item-label">默认选项事件KEY</p>
           <GhInput
             class="formBox-block-item-input"
             placeholder="请输入默认选项事件KEY"
@@ -1291,7 +1291,7 @@
                 <div
                   class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
                 >
-                  <p class="formBox-block-item-label">事件描述</p>
+                  <p class="formBox-block-item-label">选项标题</p>
                   <div class="formBox-block-item-textareaBox">
                     <GhInput
                       class="formBox-block-item-input"
@@ -1326,7 +1326,7 @@
                     </p>
                   </div>
                   <p class="formBox-block-item-tips">
-                    Tips1: 色号示例 三位【#000】 六位【#000000】
+                    Tips: 色号示例 三位【#000】 六位【#000000】
                     八位【#00000000】
                   </p>
                 </div>
@@ -1427,6 +1427,411 @@
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">多选事件属性</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">默认选项匹配事件KEY</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入默认选项匹配事件KEY"
+            :value="optDefault"
+            @input="inputOptDefault"
+          />
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">最大选择选项数</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="最大选择选项数(≥0)"
+            :value="optDefault"
+            @input="inputOptDefault"
+          />
+        </div>
+        <div class="formBox-block-item">
+          <div class="formBox-block-item-conditionBox">
+            <p
+              :class="[
+                'formBox-block-item-pretips',
+                triggerConditionsError
+                  ? 'formBox-block-item-pretips--warning'
+                  : '',
+              ]"
+            >
+              最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+            </p>
+            <div class="formBox-block-item-conditionBox-item">
+              <p class="formBox-block-item-label">可选数量范围</p>
+              <GhInput
+                class="formBox-block-item-conditionBox-item-input"
+                placeholder="可选最小数(含, ≥0)"
+                :value="multiOptRequireSelectNum[0]"
+                @input="(text) => inputConditionMinValue"
+              />
+              <GhInput
+                class="formBox-block-item-conditionBox-item-input"
+                placeholder="可选最大数(不含, ≥0)"
+                :value="multiOptRequireSelectNum[1]"
+                @input="(text) => inputConditionMaxValue"
+              />
+              <p
+                :class="[
+                  'formBox-block-item-conditionBox-item-errTag',
+                  triggerConditionsErrorIndex
+                    ? 'formBox-block-item-conditionBox-item-errTag--show'
+                    : '',
+                ]"
+                title="请输入正确的数字"
+              >
+                ×
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">有序选项</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                !multiOptOrderlySelections
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              title="匹配多选结果时无需选择顺序"
+              @click="selectBaseType(index, false)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              关闭
+            </p>
+            <p
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                multiOptOrderlySelections
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              title="匹配多选结果时需按照选择顺序"
+              @click="selectBaseType(index, true)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              开启
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">可选选项</p>
+          <div class="formBox-block-item-optEventBox">
+            <div
+              v-for="(item, index) in optEventsArr"
+              :key="index"
+              class="formBox-block-item-optEventBox-item"
+            >
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
+                  <p class="formBox-block-item-label">
+                    选项 {{ index + 1 }} 标题
+                  </p>
+                  <div class="formBox-block-item-textareaBox">
+                    <GhInput
+                      class="formBox-block-item-input"
+                      :placeholder="`选项 ${index + 1} 标题`"
+                      :value="item.optEventText"
+                      @input="(text) => inputOptEventText(index, text)"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <p class="formBox-block-item-label">字体颜色</p>
+                <div class="formBox-block-item-optEventBox">
+                  <div class="formBox-block-item formBox-block-item--child">
+                    <GhInput
+                      class="formBox-block-item-optEventBox-item-input"
+                      placeholder="字体颜色(默认:#000000)"
+                      :value="item.optEventColor"
+                      @input="(text) => inputOptEventColor(index, text)"
+                    />
+                    <p
+                      :class="[
+                        'formBox-block-item-optEventBox-item-errTag',
+                        optEventErrorIndex[index] &&
+                          optEventErrorIndex[index].optEventColor
+                          ? 'formBox-block-item-optEventBox-item-errTag--show'
+                          : '',
+                      ]"
+                      title="请输入正确的色号"
+                    >
+                      ×
+                    </p>
+                  </div>
+                  <p class="formBox-block-item-tips">
+                    Tips: 色号示例 三位【#000】 六位【#000000】
+                    八位【#00000000】
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <p class="formBox-block-item-label">选项重复数</p>
+                <div class="formBox-block-item-optEventBox">
+                  <div class="formBox-block-item formBox-block-item--child">
+                    <GhInput
+                      class="formBox-block-item-optEventBox-item-input"
+                      placeholder="选项重复数量"
+                      :value="item.optEventColor"
+                      @input="(text) => inputOptEventColor(index, text)"
+                    />
+                    <p
+                      :class="[
+                        'formBox-block-item-optEventBox-item-errTag',
+                        optEventErrorIndex[index] &&
+                          optEventErrorIndex[index].optEventColor
+                          ? 'formBox-block-item-optEventBox-item-errTag--show'
+                          : '',
+                      ]"
+                      title="请输入正确的数字"
+                    >
+                      ×
+                    </p>
+                  </div>
+                  <p class="formBox-block-item-tips">
+                    Tips: 为空则默认为1，n大于1时，玩家选择时会出现n个相同的该选项
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
+                  <p class="formBox-block-item-label">触发条件</p>
+                  <div class="formBox-block-item-conditionBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-pretips',
+                        optEventConditionsError
+                          ? 'formBox-block-item-pretips--warning'
+                          : '',
+                      ]"
+                    >
+                      最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+                    </p>
+                    <div
+                      v-for="(citem, cindex) in optEventConditions[index]"
+                      :key="cindex"
+                      class="formBox-block-item-conditionBox-item"
+                    >
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性名"
+                        :value="citem.key"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionKey(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最小值(含)"
+                        :value="citem.min"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMinValue(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最大值(不含)"
+                        :value="citem.max"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMaxValue(index, cindex, text)
+                        "
+                      />
+                      <p
+                        :class="[
+                          'formBox-block-item-conditionBox-item-errTag',
+                          optEventConditionsErrorIndex[index] &&
+                            optEventConditionsErrorIndex[index].includes(cindex)
+                            ? 'formBox-block-item-conditionBox-item-errTag--show'
+                            : '',
+                        ]"
+                        title="请输入正确的数字"
+                      >
+                        ×
+                      </p>
+                      <p
+                        class="formBox-block-item-conditionBox-item-delBtn"
+                        @click="removeOptEventConditionItem(index, cindex)"
+                      >
+                        -- 移除 --
+                      </p>
+                    </div>
+                    <p
+                      class="formBox-block-item-conditionBox-addBtn"
+                      @click="addOptEventConditionItem(index)"
+                    >
+                      ++ 添加一项 ++
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+                      回合信息(unitTimeInfo), 年份(year)
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a
+                      10 11
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
+                  <p class="formBox-block-item-label">禁用条件</p>
+                  <div class="formBox-block-item-conditionBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-pretips',
+                        optEventConditionsError
+                          ? 'formBox-block-item-pretips--warning'
+                          : '',
+                      ]"
+                    >
+                      最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+                    </p>
+                    <div
+                      v-for="(citem, cindex) in optEventConditions[index]"
+                      :key="cindex"
+                      class="formBox-block-item-conditionBox-item"
+                    >
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性名"
+                        :value="citem.key"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionKey(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最小值(含)"
+                        :value="citem.min"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMinValue(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最大值(不含)"
+                        :value="citem.max"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMaxValue(index, cindex, text)
+                        "
+                      />
+                      <p
+                        :class="[
+                          'formBox-block-item-conditionBox-item-errTag',
+                          optEventConditionsErrorIndex[index] &&
+                            optEventConditionsErrorIndex[index].includes(cindex)
+                            ? 'formBox-block-item-conditionBox-item-errTag--show'
+                            : '',
+                        ]"
+                        title="请输入正确的数字"
+                      >
+                        ×
+                      </p>
+                      <p
+                        class="formBox-block-item-conditionBox-item-delBtn"
+                        @click="removeOptEventConditionItem(index, cindex)"
+                      >
+                        -- 移除 --
+                      </p>
+                    </div>
+                    <p
+                      class="formBox-block-item-conditionBox-addBtn"
+                      @click="addOptEventConditionItem(index)"
+                    >
+                      ++ 添加一项 ++
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+                      回合信息(unitTimeInfo), 年份(year)
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a
+                      10 11
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips3: 优先级高于【触发条件】
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p
+              class="formBox-block-item-optEventBox-addBtn"
+              @click="addOptEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">选项匹配事件</p>
+          <div class="formBox-block-item-effectEventBox">
+            <p
+              :class="[
+                'formBox-block-item-pretips',
+                effectEventError ? 'formBox-block-item-pretips--warning' : '',
+              ]"
+            >
+              匹配选项按照选项序号填写，选项序号间用 下划线_ 间隔，例如: 1_2_5
+            </p>
+            <div
+              v-for="(item, index) in effectEvents"
+              :key="index"
+              class="formBox-block-item-effectEventBox-item"
+            >
+              <div class="formBox-block-item-effectEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--nopadding">
+                  <p class="formBox-block-item-label">
+                    匹配事件{{ index + 1 }}
+                  </p>
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="匹配选项序号"
+                    :value="item.key"
+                    @input="(text) => inputEffectEventKey(index, text)"
+                  />
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="匹配事件Key"
+                    :value="item.key"
+                    @input="(text) => inputEffectEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-effectEventBox-item-delBtn"
+                    @click="removeEffectEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p
+              class="formBox-block-item-effectEventBox-addBtn"
+              @click="addEffectEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips1:
+              有序选项开启后，玩家选择选项顺序与匹配选项序号顺序将以严格一致作为规则进行匹配
+            </p>
+          </div>
+        </div>
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">生成事件</p>
@@ -1455,7 +1860,8 @@
             所有数值设置，除特殊要求外，值大于{{ MAXNUM }}的都自动转为{{
               MAXNUM
             }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}<br>
-            回合数、次数相关数值，如果小于0将自动转为0<br>
+            回合数、次数相关数值、选项数等必须 ≥0
+            的数值，如果小于0将自动转为0<br>
             所有可复数项属性，当key值相同时，仅最后一个生效<br>
             所有范围数值，若最小值 >
             最大值，在实际生效时，最大值会自动作为最小值，最小值作为最大值
@@ -1549,7 +1955,7 @@ export default {
       // 单选(可选)
       optType: [
         {
-          text: '选项事件',
+          text: '单选事件',
           value: 'opt',
           desc: '提供单项选择，每个选择对应一个反馈事件；选项前置条件不满足时，隐藏选项；反馈事件触发条件不满足时，选项置灰；没有选项可选时，提供“跳过”选项，执行默认反馈事件'
         },
@@ -1582,14 +1988,14 @@ export default {
                 } // 达成条件时该选项隐藏
               }
             ],
+            orderlySelections: false, // 是否开启有序选项模式
             maxSelection: 2, // Number, 最大可选数，对[无满足条件的选项时]的唯一选项不起作用
             requireSelectNum: [2, MAXNUM], // Array(Number), 最少选择数、最大选择数
             multiMixEvents: {
               '0_1': 'demo',
               any: 'demo' // 所选择的选项没有对应的回调事件时执行的默认事件
             }, // 多选匹配事件
-            multiOptDefault: 'duoxuanmoren', // 无满足条件的选项时，返回的唯一选项对应的事件
-            optEvents: null
+            multiOptDefault: 'duoxuanmoren' // 无满足条件的选项时，返回的唯一选项对应的事件
           }
         }
       ],
@@ -1652,8 +2058,15 @@ export default {
       // 单选事件属性
       optEventsArr: [],
       optEventConditions: {},
-      optDefault: '', // 为空则bangdingmoren
-
+      optDefault: '', // 为空则kexuanmoren
+      // 多选事件属性
+      multiOptEventsOptions: [], // 选项配置
+      multiOptEventConditions: {},
+      multiOptOrderlySelections: false,
+      multiOptDefault: '', // 为空则duoxuanmoren
+      multiOptRequireSelectNum: ['', ''],
+      multiOptMultiMixEvents: [],
+      multiOptMultiMixDefaultEvent: '', // 可为空
       // 生成模式
       createModes: [
         {
@@ -2276,7 +2689,7 @@ export default {
       return styleArr
     },
     selectBaseType(sindex) {
-      this.selectedBaseType = this.selectedBaseType === sindex ? -1 : sindex
+      this.selectedBaseType = sindex
       if (this.selectedBaseType > -1) {
         for (const key in this.baseType[this.selectedBaseType].obj) {
           this[key] = this.baseType[this.selectedBaseType].obj[key]
@@ -2666,7 +3079,6 @@ export default {
       })
       this.$set(this.bindEventConditions, this.bindEventsArr.length - 1, [])
     },
-
     inputOptDefault(text) {
       this.optDefault = text
     },
