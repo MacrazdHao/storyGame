@@ -165,8 +165,8 @@ export const getEventObj = (userId, options = {}, conditions = {}, execNormalDef
       if (eventObj.execNormalDefaultWhenMismatchConditions || execNormalDefaultWhenMismatchConditions) return getEventObj(userId, { key: eventObj.normalDefault, options }, conditions)
       return EventCode.MismatchConditions
     }
-    const min = eventObj.triggerConditions[key][0]
-    const max = eventObj.triggerConditions[key][1] > min ? eventObj.triggerConditions[key][1] : MAXNUM
+    const min = Math.min(...eventObj.triggerConditions[key])
+    const max = Math.max(...eventObj.triggerConditions[key])
     if (conditions[key] < min || conditions[key] >= max) return EventCode.MismatchConditions
   }
   eventObj.times -= 1
@@ -210,8 +210,8 @@ export const getOptEventOptions = (userId, _event, curConditions) => {
     if (conditions) {
       for (const ckey in conditions) {
         if (typeof curConditions[ckey] === 'undefined') option.hide = true
-        const min = conditions[ckey][0]
-        const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+        const min = Math.min(...conditions[ckey])
+        const max = Math.max(...conditions[ckey])
         if (curConditions[ckey] < min || curConditions[ckey] >= max) option.hide = true
         if (option.hide) {
           hideNum++
@@ -248,8 +248,8 @@ export const getMultiOptEventOptions = (_event, curConditions) => {
     if (conditions) {
       for (const ckey in conditions) {
         if (typeof curConditions[ckey] === 'undefined') option.hide = true
-        const min = conditions[ckey][0]
-        const max = conditions[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+        const min = Math.min(...conditions[ckey])
+        const max = Math.max(...conditions[ckey])
         if (curConditions[ckey] < min || curConditions[ckey] >= max) option.hide = true
         if (option.hide) break
       }
@@ -257,8 +257,8 @@ export const getMultiOptEventOptions = (_event, curConditions) => {
     if (disabledConditons) {
       for (const ckey in disabledConditons) {
         if (typeof curConditions[ckey] === 'undefined') option.hide = true
-        const min = disabledConditons[ckey][0]
-        const max = disabledConditons[ckey][1] > min ? conditions[ckey][1] : MAXNUM
+        const min = Math.min(...disabledConditons[ckey])
+        const max = Math.max(...disabledConditons[ckey])
         if (curConditions[ckey] < min || curConditions[ckey] >= max) option.hide = true
         if (option.hide) break
       }
@@ -340,8 +340,8 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
   // 【事件属性影响】effectAttr
   for (const akey in event.effectAttr) {
     if (Array.isArray(event.effectAttr[akey])) {
-      const min = event.effectAttr[akey][0]
-      const max = event.effectAttr[akey][1]
+      const min = Math.min(...event.effectAttr[akey])
+      const max = Math.max(...event.effectAttr[akey])
       userInfo[akey] += (Math.random() * (max - min + 1) + min)
     } else userInfo[akey] += event.effectAttr[akey]
   }
@@ -379,8 +379,8 @@ export const execEvent = (userId, _eventInfo, unitTimeNum, _userInfo, curConditi
       if (event.bindEvents[ekey].conditions) {
         for (const ckey in event.bindEvents[ekey].conditions) {
           if (typeof curConditions[ckey] === 'undefined') mismatch = true
-          const min = event.bindEvents[ekey].conditions[ckey][0]
-          const max = event.bindEvents[ekey].conditions[ckey][1] > min ? event.bindEvents[ekey].conditions[ckey][1] : MAXNUM
+          const min = Math.min(...event.bindEvents[ekey].conditions[ckey])
+          const max = Math.max(...event.bindEvents[ekey].conditions[ckey])
           if (curConditions[ckey] < min || curConditions[ckey] >= max) mismatch = true
           if (mismatch) break
         }

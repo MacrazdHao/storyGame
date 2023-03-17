@@ -97,7 +97,8 @@
               chronology: ['公元', '年', '月', '日'], date: [2001, 6, 14] })
             </p>
             <p class="formBox-block-item-tips">
-              Tips4: 所有属性均需携带"options."前缀，如"[[options.a===100?options.a:333]]"
+              Tips4:
+              所有属性均需携带"options."前缀，如"[[options.a===100?options.a:333]]"
             </p>
           </div>
         </div>
@@ -554,7 +555,8 @@
               【回合执行次数上限】、【总执行次数上限】、【持续回合数】均不可为空，任一为空则在生成事件时将忽略该受影响事件
             </p>
             <p class="formBox-block-item-tips">
-              Tips4: 若填写当前事件本身为影响次数事件之一，则也会影响到当次次数结算
+              Tips4:
+              若填写当前事件本身为影响次数事件之一，则也会影响到当次次数结算
             </p>
           </div>
         </div>
@@ -749,7 +751,8 @@
               触发该概率事件结果事件的相关概率事件被执行时，该概率事件结果概率增益效果总有效次数即-1；持续回合数则以实际经过的回合数为准，与触不触发该概率事件结果的相关概率事件无关
             </p>
             <p class="formBox-block-item-tips">
-              Tips8: 若当前事件为概率事件，同时填写当前事件本身为影响的概率事件之一，则也会影响到当次概率结算
+              Tips8:
+              若当前事件为概率事件，同时填写当前事件本身为影响的概率事件之一，则也会影响到当次概率结算
             </p>
           </div>
         </div>
@@ -905,7 +908,7 @@
           :class="[
             'formBox-block-item-pretips',
             effectEventError ? 'formBox-block-item-pretips--warning' : '',
-            'formBox-block-any--extraPadding'
+            'formBox-block-any--extraPadding',
           ]"
         >
           概率权重、结果事件好坏程度、重复次数必须为数字（小数将只保留整数位）
@@ -939,130 +942,307 @@
             @input="inputPrDefault"
           />
         </div>
-        <div class="formBox-block-item-prEventBox formBox-block-any--extraPadding">
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">结果事件</p>
           <div
-            v-for="(item, index) in prEventsArr"
-            :key="index"
-            class="formBox-block-item-prEventBox-item"
+            class="formBox-block-item-prEventBox"
           >
-            <div class="formBox-block-item-prEventBox-item-row">
-              <div class="formBox-block-item formBox-block-item--nopadding">
-                <p class="formBox-block-item-label">结果事件{{ index + 1 }}</p>
+            <div
+              v-for="(item, index) in prEventsArr"
+              :key="index"
+              class="formBox-block-item-prEventBox-item formBox-block-item--child"
+            >
+              <div class="formBox-block-item-prEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--nopadding">
+                  <p class="formBox-block-item-label">结果事件{{ index + 1 }}</p>
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="事件Key"
+                    :value="item.key"
+                    @input="(text) => inputPrEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-prEventBox-item-delBtn"
+                    @click="removePrEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-prEventBox-item-row">
+                <p class="formBox-block-item-label">概率权重</p>
                 <GhInput
-                  class="formBox-block-item-input"
-                  placeholder="事件Key"
-                  :value="item.key"
-                  @input="(text) => inputPrEventKey(index, text)"
+                  class="formBox-block-item-prEventBox-item-input"
+                  placeholder="概率权重(≥0)"
+                  :value="item.prWeight"
+                  @input="(text) => inputPrEventWeight(index, text)"
                 />
                 <p
-                  class="formBox-block-item-prEventBox-item-delBtn"
-                  @click="removePrEventItem(index)"
+                  :class="[
+                    'formBox-block-item-prEventBox-item-errTag',
+                    prEventErrorIndex[index] && prEventErrorIndex[index].prWeight
+                      ? 'formBox-block-item-prEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
                 >
-                  -- 移除 --
+                  ×
+                </p>
+              </div>
+              <div class="formBox-block-item-prEventBox-item-row">
+                <p class="formBox-block-item-label">事件好坏程度值</p>
+                <GhInput
+                  class="formBox-block-item-prEventBox-item-input"
+                  placeholder="事件好坏程度值(负为坏，正为好)"
+                  :value="item.prGoodOrBad"
+                  @input="(text) => inputPrEventGoodOrBad(index, text)"
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-prEventBox-item-errTag',
+                    prEventErrorIndex[index] &&
+                      prEventErrorIndex[index].prGoodOrBad
+                      ? 'formBox-block-item-prEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
+                </p>
+              </div>
+              <div class="formBox-block-item-prEventBox-item-row">
+                <p class="formBox-block-item-label">可重复次数</p>
+                <GhInput
+                  class="formBox-block-item-prEventBox-item-input"
+                  placeholder="可重复次数(≥0)"
+                  :value="item.prRepeat"
+                  @input="(text) => inputPrEventRepeatTimes(index, text)"
+                />
+                <p
+                  :class="[
+                    'formBox-block-item-prEventBox-item-errTag',
+                    prEventErrorIndex[index] && prEventErrorIndex[index].prRepeat
+                      ? 'formBox-block-item-prEventBox-item-errTag--show'
+                      : '',
+                  ]"
+                  title="请输入正确的数字"
+                >
+                  ×
                 </p>
               </div>
             </div>
-            <div class="formBox-block-item-prEventBox-item-row">
-              <p class="formBox-block-item-label">概率权重</p>
-              <GhInput
-                class="formBox-block-item-prEventBox-item-input"
-                placeholder="概率权重(≥0)"
-                :value="item.prWeight"
-                @input="(text) => inputPrEventPersent(index, text)"
-              />
-              <p
-                :class="[
-                  'formBox-block-item-prEventBox-item-errTag',
-                  prEventErrorIndex[index] && prEventErrorIndex[index].prWeight
-                    ? 'formBox-block-item-prEventBox-item-errTag--show'
-                    : '',
-                ]"
-                title="请输入正确的数字"
-              >
-                ×
-              </p>
-            </div>
-            <div class="formBox-block-item-prEventBox-item-row">
-              <p class="formBox-block-item-label">事件好坏程度值</p>
-              <GhInput
-                class="formBox-block-item-prEventBox-item-input"
-                placeholder="事件好坏程度值(负为坏，正为好)"
-                :value="item.prGoodOrBad"
-                @input="(text) => inputPrEventGoodOrBad(index, text)"
-              />
-              <p
-                :class="[
-                  'formBox-block-item-prEventBox-item-errTag',
-                  prEventErrorIndex[index] &&
-                    prEventErrorIndex[index].prGoodOrBad
-                    ? 'formBox-block-item-prEventBox-item-errTag--show'
-                    : '',
-                ]"
-                title="请输入正确的数字"
-              >
-                ×
-              </p>
-            </div>
-            <div class="formBox-block-item-prEventBox-item-row">
-              <p class="formBox-block-item-label">可重复次数</p>
-              <GhInput
-                class="formBox-block-item-prEventBox-item-input"
-                placeholder="可重复次数(≥0)"
-                :value="item.prRepeat"
-                @input="(text) => inputPrEventRepeatTimes(index, text)"
-              />
-              <p
-                :class="[
-                  'formBox-block-item-prEventBox-item-errTag',
-                  prEventErrorIndex[index] && prEventErrorIndex[index].prRepeat
-                    ? 'formBox-block-item-prEventBox-item-errTag--show'
-                    : '',
-                ]"
-                title="请输入正确的数字"
-              >
-                ×
-              </p>
-            </div>
+            <p
+              class="formBox-block-item-prEventBox-addBtn"
+              @click="addPrEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips1: 概率事件采用权重百分比计算方式，结果事件概率 = 结果事件权重 /
+              总权重
+            </p>
+            <p class="formBox-block-item-tips">Tips2: 概率权重必须 ≥ 0</p>
+            <p class="formBox-block-item-tips">
+              Tips3:
+              事件好坏程度值与运气值会联合影响事件概率，概率运算为，基础概率 +
+              (运气值 - 基础运气值) * 0.1 * / |goodOrBad|，(运气值 -
+              基础运气值)为正则坏事概率减幅，好事概率增幅；反之坏事增幅，好事减幅
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips4: 概率结果数表示抽取的结果事件数
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips5:
+              可重复次数表示在随机选取事件时，可以重复得到的该结果事件的次数
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips6: 默认概率结果事件为空时，将自动填充为【gailvmoren】
+            </p>
           </div>
-          <p
-            class="formBox-block-item-prEventBox-addBtn"
-            @click="addPrEventItem"
-          >
-            ++ 添加一项 ++
-          </p>
-          <p class="formBox-block-item-tips">
-            Tips1: 概率事件采用权重百分比计算方式，结果事件概率 = 结果事件权重 /
-            总权重
-          </p>
-          <p class="formBox-block-item-tips">Tips2: 概率权重必须 ≥ 0</p>
-          <p class="formBox-block-item-tips">
-            Tips3:
-            事件好坏程度值与运气值会联合影响事件概率，概率运算为，基础概率 +
-            (运气值 - 基础运气值) * 0.1 * / |goodOrBad|，(运气值 -
-            基础运气值)为正则坏事概率减幅，好事概率增幅；反之坏事增幅，好事减幅
-          </p>
-          <p class="formBox-block-item-tips">
-            Tips4: 概率结果数表示抽取的结果事件数
-          </p>
-          <p class="formBox-block-item-tips">
-            Tips5:
-            可重复次数表示在随机选取事件时，可以重复得到的该结果事件的次数
-          </p>
-          <p class="formBox-block-item-tips">
-            Tips6: 默认概率结果事件为空时，将自动填充为【gailvmoren】
-          </p>
         </div>
       </div>
-      <div class="formBox-block">
+      <div v-show="selectedFuncType.includes(1)" class="formBox-block">
         <p class="formBox-block-label">绑定事件属性</p>
         <div class="formBox-block-item">
           <p class="formBox-block-item-label">默认结果事件KEY</p>
           <GhInput
             class="formBox-block-item-input"
             placeholder="请输入默认结果事件KEY"
-            :value="prDefault"
-            @input="inputPrDefault"
+            :value="bindDefault"
+            @input="inputBindDefault"
           />
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">绑定事件</p>
+          <div class="formBox-block-item-bindEventBox">
+            <div
+              v-for="(item, index) in bindEventsArr"
+              :key="index"
+              class="formBox-block-item-bindEventBox-item"
+            >
+              <div class="formBox-block-item-bindEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--child">
+                  <p class="formBox-block-item-label">
+                    结果事件{{ index + 1 }}
+                  </p>
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="事件Key"
+                    :value="item.key"
+                    @input="(text) => inputBindEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-bindEventBox-item-delBtn"
+                    @click="removeBindEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-bindEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--child">
+                  <p class="formBox-block-item-label">延迟回合数</p>
+                  <GhInput
+                    class="formBox-block-item-bindEventBox-item-input"
+                    placeholder="延迟回合数(≥0)"
+                    :value="item.bindEventDuration"
+                    @input="(text) => inputBindEventDuration(index, text)"
+                  />
+                  <p
+                    :class="[
+                      'formBox-block-item-bindEventBox-item-errTag',
+                      bindEventErrorIndex[index] &&
+                        bindEventErrorIndex[index].bindEventDuration
+                        ? 'formBox-block-item-bindEventBox-item-errTag--show'
+                        : '',
+                    ]"
+                    title="请输入正确的数字"
+                  >
+                    ×
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-bindEventBox-item-row">
+                <p class="formBox-block-item-label">
+                  条件不足是否执行通用默认事件
+                </p>
+                <div class="formBox-block-item-radioBox">
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      item.bindEventDonotMismatchToDefault
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setBindEventDonotMismatchToDefault(index, true)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    是
+                  </p>
+                  <p
+                    :class="[
+                      'formBox-block-item-radioBox-radio',
+                      !item.bindEventDonotMismatchToDefault
+                        ? 'formBox-block-item-radioBox-radio--selected'
+                        : '',
+                    ]"
+                    @click="setBindEventDonotMismatchToDefault(index, false)"
+                  >
+                    <span class="formBox-block-item-radioBox-radio-dot" />
+                    否
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-prEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--multi formBox-block-item--child">
+                  <p class="formBox-block-item-label">触发条件</p>
+                  <div class="formBox-block-item-conditionBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-pretips',
+                        bindEventConditionsError
+                          ? 'formBox-block-item-pretips--warning'
+                          : '',
+                      ]"
+                    >
+                      最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+                    </p>
+                    <div
+                      v-for="(citem, cindex) in bindEventConditions[index]"
+                      :key="cindex"
+                      class="formBox-block-item-conditionBox-item"
+                    >
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性名"
+                        :value="citem.key"
+                        @input="
+                          (text) =>
+                            inputBindEventConditionKey(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最小值(含)"
+                        :value="citem.min"
+                        @input="
+                          (text) =>
+                            inputBindEventConditionMinValue(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最大值(不含)"
+                        :value="citem.max"
+                        @input="
+                          (text) =>
+                            inputBindEventConditionMaxValue(index, cindex, text)
+                        "
+                      />
+                      <p
+                        :class="[
+                          'formBox-block-item-conditionBox-item-errTag',
+                          bindEventConditionsErrorIndex[index] &&
+                            bindEventConditionsErrorIndex[index].includes(cindex)
+                            ? 'formBox-block-item-conditionBox-item-errTag--show'
+                            : '',
+                        ]"
+                        title="请输入正确的数字"
+                      >
+                        ×
+                      </p>
+                      <p
+                        class="formBox-block-item-conditionBox-item-delBtn"
+                        @click="removeBindEventConditionItem(index, cindex)"
+                      >
+                        -- 移除 --
+                      </p>
+                    </div>
+                    <p
+                      class="formBox-block-item-conditionBox-addBtn"
+                      @click="addBindEventConditionItem(index)"
+                    >
+                      ++ 添加一项 ++
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+                      回合信息(unitTimeInfo), 年份(year)
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a
+                      10 11
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p
+              class="formBox-block-item-prEventBox-addBtn"
+              @click="addBindEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+          </div>
         </div>
       </div>
       <div class="formBox-block">
@@ -1099,7 +1279,9 @@
               MAXNUM
             }}，值小于{{ MINNUM }}的都自动转为{{ MINNUM }}<br>
             回合数、次数相关数值，如果小于0将自动转为0<br>
-            所有可复数项属性，当key值相同时，仅最后一个生效
+            所有可复数项属性，当key值相同时，仅最后一个生效<br>
+            所有范围数值，若最小值 >
+            最大值，在实际生效时，最大值会自动作为最小值，最小值作为最大值
           </p>
         </div>
       </div>
@@ -1278,6 +1460,11 @@ export default {
       prNumberError: false,
       prEventError: false,
       prEventErrorIndex: {},
+      bindEventError: [],
+      bindEventErrorIndex: [],
+      bindEventConditionsError: false,
+      bindEventConditionsErrorIndex: {},
+
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -1295,7 +1482,6 @@ export default {
       // 额外的随机事件
       extraRandomEvents: [],
       normalDefault: '', // 未达成事件条件时执行的事件
-
       // 基础类型属性
       isDefault: false,
       isCertain: false,
@@ -1304,6 +1490,10 @@ export default {
       prEventsArr: [],
       prNumber: '',
       prDefault: '', // 为空则gailvmoren
+      // 绑定事件属性
+      bindEventsArr: [],
+      bindEventConditions: {},
+      bindDefault: '', // 为空则bangdingmoren
 
       // 生成模式
       createModes: [
@@ -1443,10 +1633,10 @@ export default {
           }
         }
       })
-      const prEventObj = this.selectedFuncType.includes(0)
+      const prEventObj = this.selectedFuncType.includes(0) && this.prEventsArr.filter(item => !!item.key).length
         ? { ...this.prEventObj }
         : {}
-      const bindEventObj = this.selectedFuncType.includes(1)
+      const bindEventObj = this.selectedFuncType.includes(1) && this.bindEventsArr.filter(item => !!item.key).length
         ? { ...this.bindEventObj }
         : {}
       return {
@@ -1518,7 +1708,7 @@ export default {
         }
       })
       return {
-        prDefault: `false||function(eventKey='${this.prDefault}'){return eventKey}`,
+        prDefault: `false||function(eventKey='${this.prDefault || 'gailvmoren'}'){return eventKey}`,
         prNumber: `false||function(num=${rPrNumber}){return num}`,
         prEvents: `false||function(events={...JSON.parse('${JSON.stringify(
           prEventsObj
@@ -1530,12 +1720,50 @@ export default {
           prRepeatObj
         )}')}){return {...events}}`
       }
+    },
+    bindEventObj() {
+      const bindEventsObj = {}
+      this.bindEventsArr.forEach((item, index) => {
+        const { key, bindEventDuration, bindEventDonotMismatchToDefault } =
+          item
+        if (key) {
+          const bindEventDurationInt = parseInt(bindEventDuration)
+          const rBindEventDuration = isNaN(bindEventDurationInt)
+            ? 0
+            : this.getScopeNum(bindEventDurationInt, [0, MAXNUM])
+          bindEventsObj[key] = {
+            duration: rBindEventDuration,
+            donotMismatchToDefau: bindEventDonotMismatchToDefault,
+            conditions: {}
+          }
+          this.bindEventConditions[index].forEach((citem, cindex) => {
+            const bkey = citem.key
+            if (bkey) {
+              const max = parseInt(citem.max)
+              const min = parseInt(citem.min)
+              bindEventsObj[key].conditions[bkey] = [
+                isNaN(min) ? MINNUM : this.getMinNum(min),
+                isNaN(max) ? MAXNUM : this.getMaxNum(max)
+              ]
+            }
+          })
+        }
+      })
+      return {
+        bindDefault: `false||function(eventKey='${this.bindDefault || 'bangdingmoren'}'){return eventKey}`,
+        bindEvents: `false||function(events={...JSON.parse('${JSON.stringify(
+          bindEventsObj
+        )}')}){return {...events}}`
+      }
     }
   },
   watch: {
-    prEventObj() {
-      console.log(this.prEventObj)
-    },
+    // bindEventObj() {
+    //   console.log(this.bindEventObj)
+    // },
+    // prEventObj() {
+    //   console.log(this.prEventObj)
+    // },
     eventObj() {
       console.log(this.eventObj)
       // const obj = { ...this.eventObj }
@@ -1694,6 +1922,49 @@ export default {
           })
         }
       }
+    },
+    bindEventsArr() {
+      this.bindEventError = false
+      this.bindEventErrorIndex = []
+      for (let i = 0; i < this.bindEventsArr.length; i++) {
+        const item = this.bindEventsArr[i]
+        let errItem = false
+        const bindEventDuration = item.bindEventDuration
+          ? parseInt(item.bindEventDuration)
+          : 0
+        errItem = isNaN(bindEventDuration)
+        if (errItem) {
+          this.bindEventError = this.bindEventError || errItem
+          this.$set(this.bindEventErrorIndex, i, {
+            bindEventDuration: isNaN(bindEventDuration)
+          })
+        }
+      }
+    },
+    bindEventConditions: {
+      handler() {
+        this.bindEventConditionsError = false
+        this.bindEventConditionsErrorIndex = {}
+        for (const key in this.bindEventConditions) {
+          const errIndex = []
+          for (let i = 0; i < this.bindEventConditions[key].length; i++) {
+            const item = this.bindEventConditions[key][i]
+            if (item.key) {
+              let errItem = false
+              const min = item.min ? parseInt(item.min) : MINNUM
+              const max = item.max ? parseInt(item.max) : MAXNUM
+              errItem = isNaN(min) || isNaN(max)
+              if (errItem) {
+                this.bindEventConditionsError =
+                  this.bindEventConditionsError || errItem
+                errIndex.push(i)
+              }
+            }
+          }
+          this.$set(this.bindEventConditionsErrorIndex, key, errIndex)
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -2036,7 +2307,7 @@ export default {
         (item, index) => sindex !== index
       )
     },
-    inputPrEventPersent(index, text) {
+    inputPrEventWeight(index, text) {
       this.$set(this.prEventsArr, index, {
         ...this.prEventsArr[index],
         prWeight: text
@@ -2064,6 +2335,78 @@ export default {
         prGoodOrBad: '',
         prRepeat: ''
       })
+    },
+    inputBindDefault(text) {
+      this.bindDefault = text
+    },
+    inputBindEventKey(index, text) {
+      this.$set(this.bindEventsArr, index, {
+        ...this.bindEventsArr[index],
+        key: text
+      })
+    },
+    removeBindEventItem(sindex) {
+      this.bindEventsArr = this.bindEventsArr.filter(
+        (item, index) => sindex !== index
+      )
+      this.$set(this.bindEventConditions, sindex, [])
+      delete this.bindEventConditions[sindex]
+    },
+    inputBindEventDuration(index, text) {
+      this.$set(this.bindEventsArr, index, {
+        ...this.bindEventsArr[index],
+        bindEventDuration: text
+      })
+    },
+    setBindEventDonotMismatchToDefault(index, tog) {
+      this.$set(this.bindEventsArr, index, {
+        ...this.bindEventsArr[index],
+        bindEventDonotMismatchToDefault: tog
+      })
+    },
+    inputBindEventConditionKey(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.bindEventConditions[index])
+      )
+      conditions[cindex].key = text
+      this.$set(this.bindEventConditions, index, conditions)
+    },
+    inputBindEventConditionMinValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.bindEventConditions[index])
+      )
+      conditions[cindex].min = text
+      this.$set(this.bindEventConditions, index, conditions)
+    },
+    inputBindEventConditionMaxValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.bindEventConditions[index])
+      )
+      conditions[cindex].max = text
+      this.$set(this.bindEventConditions, index, conditions)
+    },
+    removeBindEventConditionItem(sindex, cindex) {
+      let conditions = JSON.parse(
+        JSON.stringify(this.bindEventConditions[sindex])
+      )
+      conditions = conditions.filter((item, index) => cindex !== index)
+      this.$set(this.bindEventConditions, sindex, conditions)
+    },
+    addBindEventConditionItem(sindex) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.bindEventConditions[sindex])
+      )
+      conditions.push({ key: '', min: '', max: '' })
+      this.$set(this.bindEventConditions, sindex, conditions)
+    },
+    addBindEventItem() {
+      this.bindEventsArr.push({
+        key: '',
+        bindEventDuration: '',
+        bindEventDonotMismatchToDefault: false
+      })
+      this.$set(this.bindEventConditions, this.bindEventsArr.length - 1, [])
+      console.log(this.bindEventConditions)
     }
   }
 }
@@ -2528,6 +2871,75 @@ export default {
             }
             .formBox-block-item-prEventBox-item-row
               + .formBox-block-item-prEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 100%;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
+          }
+        }
+        &-bindEventBox {
+          width: 828px;
+          .formBox-block-item-bindEventBox-item
+            + .formBox-block-item-bindEventBox-item {
+            border-top: 1px solid #000;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 0px;
+            .formBox-block-item-bindEventBox-item-input
+              + .formBox-block-item-bindEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-bindEventBox-item-row
+              + .formBox-block-item-bindEventBox-item-row {
               margin-top: 12px;
             }
             &-row {
