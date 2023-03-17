@@ -96,6 +96,9 @@
               Tips3: 可用属性2 回合信息unitTimeInfo({ curUnitTimeNum: 0, dm: 0,
               chronology: ['公元', '年', '月', '日'], date: [2001, 6, 14] })
             </p>
+            <p class="formBox-block-item-tips">
+              Tips4: 所有属性均需携带"options."前缀，如"[[options.a===100?options.a:333]]"
+            </p>
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
@@ -114,7 +117,8 @@
               />
               <GhInput
                 class="formBox-block-item-styleBox-item-input"
-                placeholder="style属性值"
+                style="width: 260px"
+                placeholder="style属性值(可加三目)"
                 :value="item.value"
                 @input="(text) => inputStyleValue(index, text)"
               />
@@ -1311,6 +1315,7 @@ export default {
     },
     eventObj() {
       const textArr = this.getTextArr()
+      const styleArr = this.getStyleArr()
       const style = {}
       const times = parseInt(this.times)
       const rtimes = isNaN(times)
@@ -1422,11 +1427,22 @@ export default {
           }
         }
       })
+      const prEventObj = this.selectedFuncType.includes(0)
+        ? { ...this.prEventObj }
+        : {}
+      const bindEventObj = this.selectedFuncType.includes(1)
+        ? { ...this.bindEventObj }
+        : {}
       return {
         eventKey: this.key,
-        textArr,
-        text: "false||function(options){let text='';for(let i=0;i<this.textArr.length;i++){const item=this.textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if(!isJur){text+=item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval('options.'+jurCmd);}catch(err){console.log(err);text+='';}}}return text;}",
-        style,
+        textArr: `false||function(textArr=[...JSON.parse('${JSON.stringify(
+          textArr
+        )}')]){return [...textArr]}`,
+        styleArr: `false||function(styleArr=[...JSON.parse('${JSON.stringify(
+          styleArr
+        )}')]){return [...styleArr]}`,
+        text: "false||function(options){const textArr=this.textArr;let text='';for(let i=0;i<textArr.length;i++){const item=textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if(!isJur){text+=item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval(jurCmd);}catch(err){console.log(err);text+='';}}}return text;}",
+        style: `false||function(options){const styleArr=this.styleArr;const style = {};for (let i=0;i<this.styleArr.length;i++){const key=this.styleArr[i].key;let text = '';const textArr=this.styleArr[i].value;for(let i=0;i<textArr.length;i++){const item=textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if (!isJur) {text += item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval(jurCmd);}catch(err){console.log(err);text+='';}}}style[key]=text;}return style;}`,
         times: `false||function(initTimes=${rtimes}){return initTimes}`,
         timesOfUnit: `false||function(times=${rtimesOfUnit}){return times}`,
         triggerConditions: `false||function(attr={...JSON.parse('${JSON.stringify(
@@ -1445,14 +1461,16 @@ export default {
           extraRandomEvents
         )}')}){return {...events}}`,
         normalDefault: this.normalDefault || 'putongmoren',
-        ...this.baseTypeObj
+        ...this.baseTypeObj,
+        ...prEventObj,
+        ...bindEventObj
       }
     },
     baseTypeObj() {
       return {
-        isDefault: `function(){return ${this.isDefault}}`,
-        isCertain: `function(){return ${this.isCertain}}`,
-        isPassive: `function(){return ${this.isPassive}}`
+        isDefault: `false||function(){return ${this.isDefault}}`,
+        isCertain: `false||function(){return ${this.isCertain}}`,
+        isPassive: `false||function(){return ${this.isPassive}}`
       }
     },
     prEventObj() {
@@ -1483,13 +1501,18 @@ export default {
           prRepeatObj[key] = rPrRepeat
         }
       })
-      // 待修改：该函数字符串，并加入eventObj
       return {
-        prDefault: this.prDefault,
-        prNumber: rPrNumber,
-        prEvents: prEventsObj,
-        prGoodOrBad: prGoodOrBadObj,
-        prRepeat: prRepeatObj
+        prDefault: `false||function(eventKey='${this.prDefault}'){return eventKey}`,
+        prNumber: `false||function(num=${rPrNumber}){return num}`,
+        prEvents: `false||function(events={...JSON.parse('${JSON.stringify(
+          prEventsObj
+        )}')}){return {...events}}`,
+        prGoodOrBad: `false||function(events={...JSON.parse('${JSON.stringify(
+          prGoodOrBadObj
+        )}')}){return {...events}}`,
+        prRepeat: `false||function(events={...JSON.parse('${JSON.stringify(
+          prRepeatObj
+        )}')}){return {...events}}`
       }
     }
   },
@@ -1499,6 +1522,15 @@ export default {
     },
     eventObj() {
       console.log(this.eventObj)
+      // const obj = { ...this.eventObj }
+      // obj.textArr = eval(obj.textArr)
+      // obj.styleArr = eval(obj.styleArr)
+      // obj.textArr = obj.textArr()
+      // obj.styleArr = obj.styleArr()
+      // obj.text = eval(obj.text)
+      // obj.style = eval(obj.style)
+      // console.log('===>', obj.text({ a: 5 }), obj.style({ a: 7 }))
+      // const test1 = eval(this.eventObj.triggerConditions)
       // const test1 = eval(this.eventObj.triggerConditions)
       // const test2 = eval(this.eventObj.effectAttr)
       // const test3 = eval(this.eventObj.effectEvents)
@@ -1666,8 +1698,8 @@ export default {
       if (num > max) return max
       return num
     },
-    getTextArr() {
-      let text = this.text
+    getTextArr(str) {
+      let text = str || this.text
       const texts = []
       while (text) {
         const st = text.indexOf('[[')
@@ -1684,6 +1716,18 @@ export default {
         text = text.substring(en + 2)
       }
       return texts
+    },
+    getStyleArr() {
+      const styleArr = []
+      for (let i = 0; i < this.style.length; i++) {
+        if (this.style[i].key && this.style[i].value) {
+          styleArr.push({
+            key: this.style[i].key,
+            value: this.getTextArr(this.style[i].value)
+          })
+        }
+      }
+      return styleArr
     },
     selectBaseType(sindex) {
       this.selectedBaseType = this.selectedBaseType === sindex ? -1 : sindex
@@ -2096,7 +2140,7 @@ export default {
           color: #a92228;
         }
         &-styleBox {
-          width: 386px;
+          width: 100%;
           &-item {
             margin-bottom: 12px;
             display: flex;
