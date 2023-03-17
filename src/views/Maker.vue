@@ -1535,8 +1535,8 @@
                     <GhInput
                       class="formBox-block-item-input"
                       :placeholder="`选项 ${index + 1} 标题`"
-                      :value="item.optEventText"
-                      @input="(text) => inputOptEventText(index, text)"
+                      :value="item.text"
+                      @input="(text) => inputMultiOptionsText(index, text)"
                     />
                   </div>
                 </div>
@@ -1548,14 +1548,14 @@
                     <GhInput
                       class="formBox-block-item-optEventBox-item-input"
                       placeholder="字体颜色(默认:#000000)"
-                      :value="item.optEventColor"
-                      @input="(text) => inputOptEventColor(index, text)"
+                      :value="item.color"
+                      @input="(text) => inputMultiOptinonsColor(index, text)"
                     />
                     <p
                       :class="[
                         'formBox-block-item-optEventBox-item-errTag',
                         optEventErrorIndex[index] &&
-                          optEventErrorIndex[index].optEventColor
+                          optEventErrorIndex[index].color
                           ? 'formBox-block-item-optEventBox-item-errTag--show'
                           : '',
                       ]"
@@ -1577,14 +1577,14 @@
                     <GhInput
                       class="formBox-block-item-optEventBox-item-input"
                       placeholder="选项重复数量"
-                      :value="item.optEventColor"
-                      @input="(text) => inputOptEventColor(index, text)"
+                      :value="item.maxRepeat"
+                      @input="(text) => inputMaxRepeat(index, text)"
                     />
                     <p
                       :class="[
                         'formBox-block-item-optEventBox-item-errTag',
                         optEventErrorIndex[index] &&
-                          optEventErrorIndex[index].optEventColor
+                          optEventErrorIndex[index].maxRepeat
                           ? 'formBox-block-item-optEventBox-item-errTag--show'
                           : '',
                       ]"
@@ -2025,6 +2025,15 @@ export default {
       optEventErrorIndex: [],
       optEventConditionsError: false,
       optEventConditionsErrorIndex: {},
+
+      multiOptOptionsError: [],
+      multiOptOptionsErrorIndex: [],
+      multiOptMixEventsError: [],
+      multiOptMixEventsErrorIndex: [],
+      multiOptEventConditionsError: false,
+      multiOptEventConditionsErrorIndex: {},
+      multiOptEventDisabledConditionsError: false,
+      multiOptEventDisabledConditionsErrorIndex: {},
 
       // 属性
       key: '',
