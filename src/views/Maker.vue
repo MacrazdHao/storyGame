@@ -553,6 +553,9 @@
               Tips3:
               【回合执行次数上限】、【总执行次数上限】、【持续回合数】均不可为空，任一为空则在生成事件时将忽略该受影响事件
             </p>
+            <p class="formBox-block-item-tips">
+              Tips4: 若填写当前事件本身为影响次数事件之一，则也会影响到当次次数结算
+            </p>
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
@@ -745,6 +748,9 @@
               Tips7:
               触发该概率事件结果事件的相关概率事件被执行时，该概率事件结果概率增益效果总有效次数即-1；持续回合数则以实际经过的回合数为准，与触不触发该概率事件结果的相关概率事件无关
             </p>
+            <p class="formBox-block-item-tips">
+              Tips8: 若当前事件为概率事件，同时填写当前事件本身为影响的概率事件之一，则也会影响到当次概率结算
+            </p>
           </div>
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
@@ -893,46 +899,47 @@
           </div>
         </div>
       </div>
-      <div class="formBox-block">
+      <div v-show="selectedFuncType.includes(0)" class="formBox-block">
         <p class="formBox-block-label">概率事件属性</p>
-        <div class="formBox-block-item-prEventBox">
+        <p
+          :class="[
+            'formBox-block-item-pretips',
+            effectEventError ? 'formBox-block-item-pretips--warning' : '',
+            'formBox-block-any--extraPadding'
+          ]"
+        >
+          概率权重、结果事件好坏程度、重复次数必须为数字（小数将只保留整数位）
+        </p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">概率结果数</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入概率结果数(≥0)"
+            :value="prNumber"
+            @input="inputPrNumber"
+          />
           <p
             :class="[
-              'formBox-block-item-pretips',
-              effectEventError ? 'formBox-block-item-pretips--warning' : '',
+              'formBox-block-item-prEventBox-item-errTag',
+              prNumberError
+                ? 'formBox-block-item-prEventBox-item-errTag--show'
+                : '',
             ]"
+            title="请输入正确的数字"
           >
-            概率权重、结果事件好坏程度、重复次数必须为数字（小数将只保留整数位）
+            ×
           </p>
-          <div class="formBox-block-item formBox-block-item--nopadding">
-            <p class="formBox-block-item-label">概率结果数</p>
-            <GhInput
-              class="formBox-block-item-input"
-              placeholder="请输入概率结果数(≥0)"
-              :value="prNumber"
-              @input="inputPrNumber"
-            />
-            <p
-              :class="[
-                'formBox-block-item-prEventBox-item-errTag',
-                prNumberError
-                  ? 'formBox-block-item-prEventBox-item-errTag--show'
-                  : '',
-              ]"
-              title="请输入正确的数字"
-            >
-              ×
-            </p>
-          </div>
-          <div class="formBox-block-item formBox-block-item--nopadding">
-            <p class="formBox-block-item-label">默认结果事件KEY</p>
-            <GhInput
-              class="formBox-block-item-input"
-              placeholder="请输入默认结果事件KEY"
-              :value="prDefault"
-              @input="inputPrDefault"
-            />
-          </div>
+        </div>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">默认结果事件KEY</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入默认结果事件KEY"
+            :value="prDefault"
+            @input="inputPrDefault"
+          />
+        </div>
+        <div class="formBox-block-item-prEventBox formBox-block-any--extraPadding">
           <div
             v-for="(item, index) in prEventsArr"
             :key="index"
@@ -1048,6 +1055,15 @@
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">绑定事件属性</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">默认结果事件KEY</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入默认结果事件KEY"
+            :value="prDefault"
+            @input="inputPrDefault"
+          />
+        </div>
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">单选事件属性</p>
@@ -1093,7 +1109,7 @@
 </template>
 
 // 不存在事件检测（关联的事件不存在） // 事件联想输入框（搜索text和key）
-
+// 概率结果事件、绑定事件不可填写自己，只能选择被动事件（做校验），但实际上是可行的，仅避免无限循环同一事件的情况发生
 <script>
 import GhInput from '@/components/GhInput'
 import GhTextarea from '@/components/GhTextarea'
@@ -2080,6 +2096,14 @@ export default {
           line-height: 36px;
         }
       }
+      &-any--extraPadding {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+      &-any--extraMargin {
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+      }
       &-item--nopadding {
         padding: 6px 0 !important;
       }
@@ -2100,6 +2124,14 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
+        &-any--extraPadding {
+          padding-left: 10px !important;
+          padding-right: 10px !important;
+        }
+        &-any--extraMargin {
+          margin-left: 10px !important;
+          margin-right: 10px !important;
+        }
         &-label {
           min-width: 120px;
           text-align: left;
@@ -2134,6 +2166,7 @@ export default {
           // padding: 4px 0;
           line-height: 36px;
           color: #999;
+          // padding: 0 10px;
         }
         &-pretips--warning,
         &-tips--warning {
@@ -2281,7 +2314,7 @@ export default {
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            padding: 12px 0;
+            padding: 12px 0px;
             .formBox-block-item-effectEventBox-item-input
               + .formBox-block-item-effectEventBox-item-input {
               margin-left: 12px;
@@ -2350,7 +2383,7 @@ export default {
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            padding: 12px 0;
+            padding: 12px 0px;
             .formBox-block-item-effectPrEventBox-item-input
               + .formBox-block-item-effectPrEventBox-item-input {
               margin-left: 12px;
@@ -2419,7 +2452,7 @@ export default {
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            padding: 12px 0;
+            padding: 12px 0px;
             .formBox-block-item-effectRandomEventBox-item-input
               + .formBox-block-item-effectRandomEventBox-item-input {
               margin-left: 12px;
@@ -2488,7 +2521,7 @@ export default {
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            padding: 12px 0;
+            padding: 12px 0px;
             .formBox-block-item-prEventBox-item-input
               + .formBox-block-item-prEventBox-item-input {
               margin-left: 12px;
