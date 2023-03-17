@@ -1432,8 +1432,8 @@
           <GhInput
             class="formBox-block-item-input"
             placeholder="请输入默认选项匹配事件KEY"
-            :value="optDefault"
-            @input="inputOptDefault"
+            :value="multiOptDefault"
+            @input="inputMultiOptDefault"
           />
         </div>
         <div class="formBox-block-item">
@@ -1441,8 +1441,8 @@
           <GhInput
             class="formBox-block-item-input"
             placeholder="最大选择选项数(≥0)"
-            :value="optDefault"
-            @input="inputOptDefault"
+            :value="multiOptMaxSelection"
+            @input="inputMultiOptMaxSelection"
           />
         </div>
         <div class="formBox-block-item">
@@ -1463,13 +1463,13 @@
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="可选最小数(含, ≥0)"
                 :value="multiOptRequireSelectNum[0]"
-                @input="(text) => inputConditionMinValue"
+                @input="(text) => inputOptRequireSelectMinNum"
               />
               <GhInput
                 class="formBox-block-item-conditionBox-item-input"
                 placeholder="可选最大数(不含, ≥0)"
                 :value="multiOptRequireSelectNum[1]"
-                @input="(text) => inputConditionMaxValue"
+                @input="(text) => inputOptRequireSelectMaxNum"
               />
               <p
                 :class="[
@@ -1496,7 +1496,7 @@
                   : '',
               ]"
               title="匹配多选结果时无需选择顺序"
-              @click="selectBaseType(index, false)"
+              @click="selectMultiOptOrderlySelections(index, false)"
             >
               <span class="formBox-block-item-radioBox-radio-dot" />
               关闭
@@ -1509,7 +1509,7 @@
                   : '',
               ]"
               title="匹配多选结果时需按照选择顺序"
-              @click="selectBaseType(index, true)"
+              @click="selectMultiOptOrderlySelections(index, true)"
             >
               <span class="formBox-block-item-radioBox-radio-dot" />
               开启
@@ -1520,7 +1520,7 @@
           <p class="formBox-block-item-label">可选选项</p>
           <div class="formBox-block-item-optEventBox">
             <div
-              v-for="(item, index) in optEventsArr"
+              v-for="(item, index) in multiOptEventsOptions"
               :key="index"
               class="formBox-block-item-optEventBox-item"
             >
@@ -2060,8 +2060,10 @@ export default {
       optEventConditions: {},
       optDefault: '', // 为空则kexuanmoren
       // 多选事件属性
+      multiOptMaxSelection: '',
       multiOptEventsOptions: [], // 选项配置
       multiOptEventConditions: {},
+      multiOptEventDisbledConditions: {},
       multiOptOrderlySelections: false,
       multiOptDefault: '', // 为空则duoxuanmoren
       multiOptRequireSelectNum: ['', ''],
