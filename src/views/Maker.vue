@@ -944,9 +944,7 @@
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">结果事件</p>
-          <div
-            class="formBox-block-item-prEventBox"
-          >
+          <div class="formBox-block-item-prEventBox">
             <div
               v-for="(item, index) in prEventsArr"
               :key="index"
@@ -954,7 +952,9 @@
             >
               <div class="formBox-block-item-prEventBox-item-row">
                 <div class="formBox-block-item formBox-block-item--nopadding">
-                  <p class="formBox-block-item-label">结果事件{{ index + 1 }}</p>
+                  <p class="formBox-block-item-label">
+                    结果事件{{ index + 1 }}
+                  </p>
                   <GhInput
                     class="formBox-block-item-input"
                     placeholder="事件Key"
@@ -980,7 +980,8 @@
                 <p
                   :class="[
                     'formBox-block-item-prEventBox-item-errTag',
-                    prEventErrorIndex[index] && prEventErrorIndex[index].prWeight
+                    prEventErrorIndex[index] &&
+                      prEventErrorIndex[index].prWeight
                       ? 'formBox-block-item-prEventBox-item-errTag--show'
                       : '',
                   ]"
@@ -1021,7 +1022,8 @@
                 <p
                   :class="[
                     'formBox-block-item-prEventBox-item-errTag',
-                    prEventErrorIndex[index] && prEventErrorIndex[index].prRepeat
+                    prEventErrorIndex[index] &&
+                      prEventErrorIndex[index].prRepeat
                       ? 'formBox-block-item-prEventBox-item-errTag--show'
                       : '',
                   ]"
@@ -1038,8 +1040,8 @@
               ++ 添加一项 ++
             </p>
             <p class="formBox-block-item-tips">
-              Tips1: 概率事件采用权重百分比计算方式，结果事件概率 = 结果事件权重 /
-              总权重
+              Tips1: 概率事件采用权重百分比计算方式，结果事件概率 = 结果事件权重
+              / 总权重
             </p>
             <p class="formBox-block-item-tips">Tips2: 概率权重必须 ≥ 0</p>
             <p class="formBox-block-item-tips">
@@ -1153,8 +1155,10 @@
                   </p>
                 </div>
               </div>
-              <div class="formBox-block-item-prEventBox-item-row">
-                <div class="formBox-block-item formBox-block-item--multi formBox-block-item--child">
+              <div class="formBox-block-item-bindEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
                   <p class="formBox-block-item-label">触发条件</p>
                   <div class="formBox-block-item-conditionBox">
                     <p
@@ -1237,7 +1241,7 @@
               </div>
             </div>
             <p
-              class="formBox-block-item-prEventBox-addBtn"
+              class="formBox-block-item-bindEventBox-addBtn"
               @click="addBindEventItem"
             >
               ++ 添加一项 ++
@@ -1247,6 +1251,179 @@
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">单选事件属性</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">默认结果事件KEY</p>
+          <GhInput
+            class="formBox-block-item-input"
+            placeholder="请输入默认选项事件KEY"
+            :value="optDefault"
+            @input="inputOptDefault"
+          />
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">选项事件</p>
+          <div class="formBox-block-item-optEventBox">
+            <div
+              v-for="(item, index) in optEventsArr"
+              :key="index"
+              class="formBox-block-item-optEventBox-item"
+            >
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div class="formBox-block-item formBox-block-item--child">
+                  <p class="formBox-block-item-label">
+                    结果事件{{ index + 1 }}
+                  </p>
+                  <GhInput
+                    class="formBox-block-item-input"
+                    placeholder="事件Key"
+                    :value="item.key"
+                    @input="(text) => inputOptEventKey(index, text)"
+                  />
+                  <p
+                    class="formBox-block-item-optEventBox-item-delBtn"
+                    @click="removeOptEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
+                  <p class="formBox-block-item-label">事件描述</p>
+                  <div class="formBox-block-item-textareaBox">
+                    <GhInput
+                      class="formBox-block-item-input"
+                      placeholder="选项标题"
+                      :value="item.optEventText"
+                      @input="(text) => inputOptEventText(index, text)"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <p class="formBox-block-item-label">字体颜色</p>
+                <div class="formBox-block-item-optEventBox">
+                  <div class="formBox-block-item formBox-block-item--child">
+                    <GhInput
+                      class="formBox-block-item-optEventBox-item-input"
+                      placeholder="字体颜色(默认:#000000)"
+                      :value="item.optEventColor"
+                      @input="(text) => inputOptEventColor(index, text)"
+                    />
+                    <p
+                      :class="[
+                        'formBox-block-item-optEventBox-item-errTag',
+                        optEventErrorIndex[index] &&
+                          optEventErrorIndex[index].optEventColor
+                          ? 'formBox-block-item-optEventBox-item-errTag--show'
+                          : '',
+                      ]"
+                      title="请输入正确的色号"
+                    >
+                      ×
+                    </p>
+                  </div>
+                  <p class="formBox-block-item-tips">
+                    Tips1: 色号示例 三位【#000】 六位【#000000】
+                    八位【#00000000】
+                  </p>
+                </div>
+              </div>
+              <div class="formBox-block-item-optEventBox-item-row">
+                <div
+                  class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
+                >
+                  <p class="formBox-block-item-label">触发条件</p>
+                  <div class="formBox-block-item-conditionBox">
+                    <p
+                      :class="[
+                        'formBox-block-item-pretips',
+                        optEventConditionsError
+                          ? 'formBox-block-item-pretips--warning'
+                          : '',
+                      ]"
+                    >
+                      最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
+                    </p>
+                    <div
+                      v-for="(citem, cindex) in optEventConditions[index]"
+                      :key="cindex"
+                      class="formBox-block-item-conditionBox-item"
+                    >
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性名"
+                        :value="citem.key"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionKey(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最小值(含)"
+                        :value="citem.min"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMinValue(index, cindex, text)
+                        "
+                      />
+                      <GhInput
+                        class="formBox-block-item-conditionBox-item-input"
+                        placeholder="角色属性最大值(不含)"
+                        :value="citem.max"
+                        @input="
+                          (text) =>
+                            inputOptEventConditionMaxValue(index, cindex, text)
+                        "
+                      />
+                      <p
+                        :class="[
+                          'formBox-block-item-conditionBox-item-errTag',
+                          optEventConditionsErrorIndex[index] &&
+                            optEventConditionsErrorIndex[index].includes(cindex)
+                            ? 'formBox-block-item-conditionBox-item-errTag--show'
+                            : '',
+                        ]"
+                        title="请输入正确的数字"
+                      >
+                        ×
+                      </p>
+                      <p
+                        class="formBox-block-item-conditionBox-item-delBtn"
+                        @click="removeOptEventConditionItem(index, cindex)"
+                      >
+                        -- 移除 --
+                      </p>
+                    </div>
+                    <p
+                      class="formBox-block-item-conditionBox-addBtn"
+                      @click="addOptEventConditionItem(index)"
+                    >
+                      ++ 添加一项 ++
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips1: 可填属性包含，角色信息, 角色状态, 角色Buff,
+                      回合信息(unitTimeInfo), 年份(year)
+                    </p>
+                    <p class="formBox-block-item-tips">
+                      Tips2: 指定某一数值时，如a属性需要完全等于10时，则需输入a
+                      10 11
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p
+              class="formBox-block-item-optEventBox-addBtn"
+              @click="addOptEventItem"
+            >
+              ++ 添加一项 ++
+            </p>
+          </div>
+        </div>
       </div>
       <div class="formBox-block">
         <p class="formBox-block-label">多选事件属性</p>
@@ -1292,7 +1469,13 @@
 
 // 不存在事件检测（关联的事件不存在） // 事件联想输入框（搜索text和key）
 // 概率结果事件、绑定事件不可填写自己，只能选择被动事件（做校验），但实际上是可行的，仅避免无限循环同一事件的情况发生
+// 色号标准：#000, #000000, #00000000, rgb(255,255,255), rgba(255,255,255,1)
 <script>
+const colorReg =
+  /^\#([a-zA-Z0-9]){3}$|^\#([a-zA-Z0-9]){6}$|^\#([a-zA-Z0-9]){8}$|^rgb\(\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\)$|^rgba\(\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,(([01])|(0\.\d+))\)$/
+function notColor(color) {
+  return !colorReg.test(color)
+}
 import GhInput from '@/components/GhInput'
 import GhTextarea from '@/components/GhTextarea'
 import StaticImagingInput from '@/components/StaticImagingInput'
@@ -1355,31 +1538,12 @@ export default {
         {
           text: '概率事件',
           value: 'pr',
-          desc: '拥有不同概率的结果事件，该事件执行时会随机触发设定数量的概率结果事件，概率结果事件数少于设定的应触发数量时，以默认概率结果事件补充；概率结果事件不存在、不满足条件、超出次数时，将执行默认概率结果事件',
-          obj: {
-            prNumber: 0,
-            prEvents: [],
-            prGoodOrBad: [],
-            prRepeat: [],
-            prDefault: ''
-          }
+          desc: '拥有不同概率的结果事件，该事件执行时会随机触发设定数量的概率结果事件，概率结果事件数少于设定的应触发数量时，以默认概率结果事件补充；概率结果事件不存在、不满足条件、超出次数时，将执行默认概率结果事件'
         },
         {
           text: '绑定事件',
           value: 'bind',
-          desc: '拥有绑定的结果事件，若绑定的结果事件，则会马上/延迟执行，不满足的则会执行默认结果事件(可设置为不执行)',
-          obj: {
-            bindEvents: {
-              demo: {
-                duration: 0, // Number, 延迟执行回合数
-                conditions: {
-                  // attr: [min, max]
-                },
-                donotMismatchToDefault: false // Boolean, 不要执行bindDefault
-              }
-            },
-            bindDefault: 'bangdingmoren'
-          }
+          desc: '拥有绑定的结果事件，若绑定的结果事件，则会马上/延迟执行，不满足的则会执行默认结果事件(可设置为不执行)'
         }
       ],
       // 单选(可选)
@@ -1387,20 +1551,7 @@ export default {
         {
           text: '选项事件',
           value: 'opt',
-          desc: '提供单项选择，每个选择对应一个反馈事件；选项前置条件不满足时，隐藏选项；反馈事件触发条件不满足时，选项置灰；没有选项可选时，提供“跳过”选项，执行默认反馈事件',
-          obj: {
-            optEvents: {
-              demo: {
-                text: '示例',
-                color: '#000',
-                conditions: {
-                  // attr: [min, max]
-                }
-              }
-            },
-            optDefault: 'kexuanmoren', // 无满足条件的选项时，返回的唯一选项对应的事件
-            multiOptions: null
-          }
+          desc: '提供单项选择，每个选择对应一个反馈事件；选项前置条件不满足时，隐藏选项；反馈事件触发条件不满足时，选项置灰；没有选项可选时，提供“跳过”选项，执行默认反馈事件'
         },
         {
           text: '多选事件',
@@ -1464,6 +1615,10 @@ export default {
       bindEventErrorIndex: [],
       bindEventConditionsError: false,
       bindEventConditionsErrorIndex: {},
+      optEventError: [],
+      optEventErrorIndex: [],
+      optEventConditionsError: false,
+      optEventConditionsErrorIndex: {},
 
       // 属性
       key: '',
@@ -1494,6 +1649,10 @@ export default {
       bindEventsArr: [],
       bindEventConditions: {},
       bindDefault: '', // 为空则bangdingmoren
+      // 单选事件属性
+      optEventsArr: [],
+      optEventConditions: {},
+      optDefault: '', // 为空则bangdingmoren
 
       // 生成模式
       createModes: [
@@ -1633,12 +1792,23 @@ export default {
           }
         }
       })
-      const prEventObj = this.selectedFuncType.includes(0) && this.prEventsArr.filter(item => !!item.key).length
-        ? { ...this.prEventObj }
-        : {}
-      const bindEventObj = this.selectedFuncType.includes(1) && this.bindEventsArr.filter(item => !!item.key).length
-        ? { ...this.bindEventObj }
-        : {}
+      const prEventObj =
+        this.selectedFuncType.includes(0) &&
+        this.prEventsArr.filter((item) => !!item.key).length
+          ? { ...this.prEventObj }
+          : {}
+      const bindEventObj =
+        this.selectedFuncType.includes(1) &&
+        this.bindEventsArr.filter((item) => !!item.key).length
+          ? { ...this.bindEventObj }
+          : {}
+      const optEventObj =
+        this.selectedOptType === 0 &&
+        this.optEventsArr.filter((item) => !!item.key).length
+          ? this.optEventObj
+          : {}
+      const multiOptEventObj =
+        this.selectedOptType === 1 ? this.multiOptEventObj : {}
       return {
         eventKey: this.key,
         textArr: `false||function(textArr=[...JSON.parse('${JSON.stringify(
@@ -1669,7 +1839,9 @@ export default {
         normalDefault: this.normalDefault || 'putongmoren',
         ...this.baseTypeObj,
         ...prEventObj,
-        ...bindEventObj
+        ...bindEventObj,
+        ...optEventObj
+        // ...multiOptEventObj
       }
     },
     baseTypeObj() {
@@ -1708,7 +1880,9 @@ export default {
         }
       })
       return {
-        prDefault: `false||function(eventKey='${this.prDefault || 'gailvmoren'}'){return eventKey}`,
+        prDefault: `false||function(eventKey='${
+          this.prDefault || 'gailvmoren'
+        }'){return eventKey}`,
         prNumber: `false||function(num=${rPrNumber}){return num}`,
         prEvents: `false||function(events={...JSON.parse('${JSON.stringify(
           prEventsObj
@@ -1733,7 +1907,7 @@ export default {
             : this.getScopeNum(bindEventDurationInt, [0, MAXNUM])
           bindEventsObj[key] = {
             duration: rBindEventDuration,
-            donotMismatchToDefau: bindEventDonotMismatchToDefault,
+            donotMismatchToDefaut: bindEventDonotMismatchToDefault,
             conditions: {}
           }
           this.bindEventConditions[index].forEach((citem, cindex) => {
@@ -1750,9 +1924,50 @@ export default {
         }
       })
       return {
-        bindDefault: `false||function(eventKey='${this.bindDefault || 'bangdingmoren'}'){return eventKey}`,
+        bindDefault: `false||function(eventKey='${
+          this.bindDefault || 'bangdingmoren'
+        }'){return eventKey}`,
         bindEvents: `false||function(events={...JSON.parse('${JSON.stringify(
           bindEventsObj
+        )}')}){return {...events}}`
+      }
+    },
+    optEventObj() {
+      const optEventsObj = {}
+      this.optEventsArr.forEach((item, index) => {
+        const { key, optEventColor, optEventText } = item
+        if (key) {
+          const optEventColorStr = (optEventColor || '#000').replaceAll(
+            ' ',
+            ''
+          )
+          const rOptEventColor = notColor(optEventColorStr)
+            ? '#000'
+            : optEventColorStr
+          optEventsObj[key] = {
+            color: rOptEventColor,
+            text: optEventText,
+            conditions: {}
+          }
+          this.optEventConditions[index].forEach((citem, cindex) => {
+            const bkey = citem.key
+            if (bkey) {
+              const max = parseInt(citem.max)
+              const min = parseInt(citem.min)
+              optEventsObj[key].conditions[bkey] = [
+                isNaN(min) ? MINNUM : this.getMinNum(min),
+                isNaN(max) ? MAXNUM : this.getMaxNum(max)
+              ]
+            }
+          })
+        }
+      })
+      return {
+        optDefault: `false||function(eventKey='${
+          this.optDefault || 'kexuanmoren'
+        }'){return eventKey}`,
+        optEvents: `false||function(events={...JSON.parse('${JSON.stringify(
+          optEventsObj
         )}')}){return {...events}}`
       }
     }
@@ -1962,6 +2177,50 @@ export default {
             }
           }
           this.$set(this.bindEventConditionsErrorIndex, key, errIndex)
+        }
+      },
+      deep: true
+    },
+    optEventsArr() {
+      this.optEventError = false
+      this.optEventErrorIndex = []
+      for (let i = 0; i < this.optEventsArr.length; i++) {
+        const item = this.optEventsArr[i]
+        let errItem = false
+        const optEventColor = (item.optEventColor || '#000').replaceAll(
+          ' ',
+          ''
+        )
+        errItem = notColor(optEventColor)
+        if (errItem) {
+          this.optEventError = this.optEventError || errItem
+          this.$set(this.optEventErrorIndex, i, {
+            optEventColor: notColor(optEventColor)
+          })
+        }
+      }
+    },
+    optEventConditions: {
+      handler() {
+        this.optEventConditionsError = false
+        this.optEventConditionsErrorIndex = {}
+        for (const key in this.optEventConditions) {
+          const errIndex = []
+          for (let i = 0; i < this.optEventConditions[key].length; i++) {
+            const item = this.optEventConditions[key][i]
+            if (item.key) {
+              let errItem = false
+              const min = item.min ? parseInt(item.min) : MINNUM
+              const max = item.max ? parseInt(item.max) : MAXNUM
+              errItem = isNaN(min) || isNaN(max)
+              if (errItem) {
+                this.optEventConditionsError =
+                  this.optEventConditionsError || errItem
+                errIndex.push(i)
+              }
+            }
+          }
+          this.$set(this.optEventConditionsErrorIndex, key, errIndex)
         }
       },
       deep: true
@@ -2406,7 +2665,78 @@ export default {
         bindEventDonotMismatchToDefault: false
       })
       this.$set(this.bindEventConditions, this.bindEventsArr.length - 1, [])
-      console.log(this.bindEventConditions)
+    },
+
+    inputOptDefault(text) {
+      this.optDefault = text
+    },
+    inputOptEventKey(index, text) {
+      this.$set(this.optEventsArr, index, {
+        ...this.optEventsArr[index],
+        key: text
+      })
+    },
+    removeOptEventItem(sindex) {
+      this.optEventsArr = this.optEventsArr.filter(
+        (item, index) => sindex !== index
+      )
+      this.$set(this.optEventConditions, sindex, [])
+      delete this.optEventConditions[sindex]
+    },
+    inputOptEventText(index, text) {
+      this.$set(this.optEventsArr, index, {
+        ...this.optEventsArr[index],
+        optEventText: text
+      })
+    },
+    inputOptEventColor(index, text) {
+      this.$set(this.optEventsArr, index, {
+        ...this.optEventsArr[index],
+        optEventColor: text
+      })
+    },
+    inputOptEventConditionKey(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.optEventConditions[index])
+      )
+      conditions[cindex].key = text
+      this.$set(this.optEventConditions, index, conditions)
+    },
+    inputOptEventConditionMinValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.optEventConditions[index])
+      )
+      conditions[cindex].min = text
+      this.$set(this.optEventConditions, index, conditions)
+    },
+    inputOptEventConditionMaxValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.optEventConditions[index])
+      )
+      conditions[cindex].max = text
+      this.$set(this.optEventConditions, index, conditions)
+    },
+    removeOptEventConditionItem(sindex, cindex) {
+      let conditions = JSON.parse(
+        JSON.stringify(this.optEventConditions[sindex])
+      )
+      conditions = conditions.filter((item, index) => cindex !== index)
+      this.$set(this.optEventConditions, sindex, conditions)
+    },
+    addOptEventConditionItem(sindex) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.optEventConditions[sindex])
+      )
+      conditions.push({ key: '', min: '', max: '' })
+      this.$set(this.optEventConditions, sindex, conditions)
+    },
+    addOptEventItem() {
+      this.optEventsArr.push({
+        key: '',
+        optEventText: '',
+        optEventColor: ''
+      })
+      this.$set(this.optEventConditions, this.optEventsArr.length - 1, [])
     }
   }
 }
@@ -2502,6 +2832,7 @@ export default {
           text-align: left;
           padding: 4px 0;
           color: #999;
+          transition: 0.2s all;
         }
         &-pretips {
           width: 100%;
@@ -2510,10 +2841,12 @@ export default {
           line-height: 36px;
           color: #999;
           // padding: 0 10px;
+          transition: 0.2s all;
         }
         &-pretips--warning,
         &-tips--warning {
           color: #a92228;
+          font-weight: bold;
         }
         &-styleBox {
           width: 100%;
@@ -2940,6 +3273,75 @@ export default {
             }
             .formBox-block-item-bindEventBox-item-row
               + .formBox-block-item-bindEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 100%;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
+          }
+        }
+        &-optEventBox {
+          width: 828px;
+          .formBox-block-item-optEventBox-item
+            + .formBox-block-item-optEventBox-item {
+            border-top: 1px solid #000;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 0px;
+            .formBox-block-item-optEventBox-item-input
+              + .formBox-block-item-optEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-optEventBox-item-row
+              + .formBox-block-item-optEventBox-item-row {
               margin-top: 12px;
             }
             &-row {
