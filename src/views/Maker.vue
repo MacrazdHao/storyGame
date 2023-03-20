@@ -1425,16 +1425,41 @@
           </div>
         </div>
       </div>
-      <div class="formBox-block">
+      <div v-show="selectedOptType === 1" class="formBox-block">
         <p class="formBox-block-label">多选事件属性</p>
         <div class="formBox-block-item">
-          <p class="formBox-block-item-label">默认选项匹配事件KEY</p>
+          <p class="formBox-block-item-label">多选默认事件KEY</p>
           <GhInput
             class="formBox-block-item-input"
-            placeholder="请输入默认选项匹配事件KEY"
+            placeholder="请输入默认匹配事件KEY"
             :value="multiOptDefault"
             @input="inputMultiOptDefault"
           />
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">默认选项匹配事件KEY</p>
+          <div
+            class="formBox-block-item formBox-block-item--column formBox-block-item--child"
+          >
+            <GhInput
+              class="formBox-block-item-input"
+              placeholder="请输入默认选项匹配事件KEY"
+              :value="multiOptMultiMixDefaultEvent"
+              @input="inputMultiOptMultiMixDefaultEvent"
+            />
+            <p class="formBox-block-item-tips">
+              Tips1:
+              在选项结果匹配中没有指定结果事件，则执行该事件，如：事件匹配事件只有【0_1:
+              resultEvent】，则0_2无匹配结果事件，则将执行该事件
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips2: 该事件执行条件不足时，将执行多选默认事件KEY
+            </p>
+            <p class="formBox-block-item-tips">
+              Tips3:
+              多选默认事件、默认选项匹配事件为空时，都将自动填充为【duoxuanmoren】
+            </p>
+          </div>
         </div>
         <div class="formBox-block-item">
           <p class="formBox-block-item-label">最大选择选项数</p>
@@ -1611,7 +1636,8 @@
                     </p>
                   </div>
                   <p class="formBox-block-item-tips">
-                    Tips: 为空则默认为1，n大于1时，玩家选择时会出现n个相同的该选项
+                    Tips:
+                    为空则默认为1，n大于1时，玩家选择时会出现n个相同的该选项
                   </p>
                 </div>
               </div>
@@ -1651,7 +1677,11 @@
                         :value="citem.min"
                         @input="
                           (text) =>
-                            inputMultiOptOptionConditionMinValue(index, cindex, text)
+                            inputMultiOptOptionConditionMinValue(
+                              index,
+                              cindex,
+                              text
+                            )
                         "
                       />
                       <GhInput
@@ -1660,14 +1690,20 @@
                         :value="citem.max"
                         @input="
                           (text) =>
-                            inputMultiOptOptionConditionMaxValue(index, cindex, text)
+                            inputMultiOptOptionConditionMaxValue(
+                              index,
+                              cindex,
+                              text
+                            )
                         "
                       />
                       <p
                         :class="[
                           'formBox-block-item-conditionBox-item-errTag',
                           multiOptOptionConditionsErrorIndex[index] &&
-                            multiOptOptionConditionsErrorIndex[index].includes(cindex)
+                            multiOptOptionConditionsErrorIndex[index].includes(
+                              cindex
+                            )
                             ? 'formBox-block-item-conditionBox-item-errTag--show'
                             : '',
                         ]"
@@ -1677,7 +1713,9 @@
                       </p>
                       <p
                         class="formBox-block-item-conditionBox-item-delBtn"
-                        @click="removeMultiOptOptionConditionItem(index, cindex)"
+                        @click="
+                          removeMultiOptOptionConditionItem(index, cindex)
+                        "
                       >
                         -- 移除 --
                       </p>
@@ -1726,7 +1764,11 @@
                         :value="citem.key"
                         @input="
                           (text) =>
-                            inputMultiOptOptionDisableConditionKey(index, cindex, text)
+                            inputMultiOptOptionDisableConditionKey(
+                              index,
+                              cindex,
+                              text
+                            )
                         "
                       />
                       <GhInput
@@ -1735,7 +1777,11 @@
                         :value="citem.min"
                         @input="
                           (text) =>
-                            inputMultiOptOptionDisableConditionMinValue(index, cindex, text)
+                            inputMultiOptOptionDisableConditionMinValue(
+                              index,
+                              cindex,
+                              text
+                            )
                         "
                       />
                       <GhInput
@@ -1744,14 +1790,20 @@
                         :value="citem.max"
                         @input="
                           (text) =>
-                            inputMultiOptOptionDisableConditionMaxValue(index, cindex, text)
+                            inputMultiOptOptionDisableConditionMaxValue(
+                              index,
+                              cindex,
+                              text
+                            )
                         "
                       />
                       <p
                         :class="[
                           'formBox-block-item-conditionBox-item-errTag',
                           multiOptOptiontDisableConditionsErrorIndex[index] &&
-                            multiOptOptiontDisableConditionsErrorIndex[index].includes(cindex)
+                            multiOptOptiontDisableConditionsErrorIndex[
+                              index
+                            ].includes(cindex)
                             ? 'formBox-block-item-conditionBox-item-errTag--show'
                             : '',
                         ]"
@@ -1761,7 +1813,12 @@
                       </p>
                       <p
                         class="formBox-block-item-conditionBox-item-delBtn"
-                        @click="removeMultiOptOptionDisableConditionItem(index, cindex)"
+                        @click="
+                          removeMultiOptOptionDisableConditionItem(
+                            index,
+                            cindex
+                          )
+                        "
                       >
                         -- 移除 --
                       </p>
@@ -1801,7 +1858,9 @@
             <p
               :class="[
                 'formBox-block-item-pretips',
-                multiOptMixEventsError ? 'formBox-block-item-pretips--warning' : '',
+                multiOptMixEventsError
+                  ? 'formBox-block-item-pretips--warning'
+                  : '',
               ]"
             >
               匹配选项按照选项序号填写，选项序号间用 下划线_ 间隔，例如: 1_2_5
@@ -1812,18 +1871,18 @@
               class="formBox-block-item-multiOptEventBox-item"
             >
               <div class="formBox-block-item-multiOptEventBox-item-row">
-                <div class="formBox-block-item formBox-block-item--nopadding">
+                <div class="formBox-block-item-conditionBox-item">
                   <p class="formBox-block-item-label">
                     匹配事件{{ index + 1 }}
                   </p>
                   <GhInput
-                    class="formBox-block-item-input"
+                    class="formBox-block-item-conditionBox-item-input"
                     placeholder="匹配选项序号"
                     :value="item.indexes"
                     @input="(text) => inputMultiOptMixEventIndexes(index, text)"
                   />
                   <GhInput
-                    class="formBox-block-item-input"
+                    class="formBox-block-item-conditionBox-item-input"
                     placeholder="匹配事件Key"
                     :value="item.key"
                     @input="(text) => inputMultiOptMixEventKey(index, text)"
@@ -1831,8 +1890,7 @@
                   <p
                     :class="[
                       'formBox-block-item-conditionBox-item-errTag',
-                      multiOptMixEventsErrorIndex[index] &&
-                        multiOptMixEventsErrorIndex[index].includes(cindex)
+                      multiOptMixEventsErrorIndex.includes(index)
                         ? 'formBox-block-item-conditionBox-item-errTag--show'
                         : '',
                     ]"
@@ -1898,7 +1956,7 @@
         </div>
       </div>
     </div>
-    <div class="previewBox" />
+    <div class="previewBox">{{ eventText }}</div>
   </div>
 </template>
 
@@ -2058,7 +2116,6 @@ export default {
       optEventErrorIndex: [],
       optEventConditionsError: false,
       optEventConditionsErrorIndex: {},
-
       multiOptMaxSelectionNumError: false,
       multiOptRequireSelectNumError: false,
       multiOptOptionsError: false,
@@ -2069,7 +2126,6 @@ export default {
       multiOptOptiontDisableConditionsErrorIndex: {},
       multiOptMixEventsError: false,
       multiOptMixEventsErrorIndex: [],
-
       // 属性
       key: '',
       text: '', // 可使用属性条件
@@ -2136,6 +2192,47 @@ export default {
       return `{
         text: (options) =>
       }`
+    },
+    eventJSON() {
+      return {
+        selectedBaseType: this.selectedBaseType,
+        selectedFuncType: this.selectedFuncType,
+        selectedOptType: this.selectedOptType,
+        key: this.key,
+        text: this.text,
+        textArr: this.textArr,
+        style: this.style,
+        times: this.times,
+        timesOfUnit: this.timesOfUnit,
+        triggerConditions: this.triggerConditions,
+        execNormalDefaultWhenMismatchConditions: this.execNormalDefaultWhenMismatchConditions,
+        effectAttr: this.effectAttr,
+        effectEvents: this.effectEvents,
+        prEventsExtraWeight: this.prEventsExtraWeight,
+        extraRandomEvents: this.extraRandomEvents,
+        normalDefault: this.normalDefault,
+        isDefault: this.isDefault,
+        isCertain: this.isCertain,
+        isPassive: this.isPassive,
+        prEventsArr: this.prEventsArr,
+        prNumber: this.prNumber,
+        prDefault: this.prDefault,
+        bindEventsArr: this.bindEventsArr,
+        bindEventConditions: this.bindEventConditions,
+        bindDefault: this.bindDefault,
+        optEventsArr: this.optEventsArr,
+        optEventConditions: this.optEventConditions,
+        optDefault: this.optDefault,
+        multiOptDefault: this.multiOptDefault,
+        multiOptMaxSelection: this.multiOptMaxSelection,
+        multiOptRequireSelectNum: this.multiOptRequireSelectNum,
+        multiOptOrderlySelections: this.multiOptOrderlySelections,
+        multiOptOptions: this.multiOptOptions,
+        multiOptConditions: this.multiOptConditions,
+        multiOptDisbleConditions: this.multiOptDisbleConditions,
+        multiOptMultiMixEvents: this.multiOptMultiMixEvents,
+        multiOptMultiMixDefaultEvent: this.multiOptMultiMixDefaultEvent
+      }
     },
     eventObj() {
       const textArr = this.getTextArr()
@@ -2277,7 +2374,7 @@ export default {
           styleArr
         )}')]){return [...styleArr]}`,
         text: "false||function(options){const textArr=this.textArr;let text='';for(let i=0;i<textArr.length;i++){const item=textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if(!isJur){text+=item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval(jurCmd);}catch(err){console.log(err);text+='';}}}return text;}",
-        style: `false||function(options){const styleArr=this.styleArr;const style = {};for (let i=0;i<this.styleArr.length;i++){const key=this.styleArr[i].key;let text = '';const textArr=this.styleArr[i].value;for(let i=0;i<textArr.length;i++){const item=textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if (!isJur) {text += item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval(jurCmd);}catch(err){console.log(err);text+='';}}}style[key]=text;}return style;}`,
+        style: `false||function(options){const styleArr=this.styleArr;const style = {};for (let i=0;i<styleArr.length;i++){const key=styleArr[i].key;let text = '';const textArr=styleArr[i].value;for(let i=0;i<textArr.length;i++){const item=textArr[i];const isJur=item.indexOf('[[')>-1&&item.indexOf(']]')>-1;if (!isJur) {text += item;continue;}const jurCmd=item.substring(2,item.length-2);if(jurCmd){try{text+=eval(jurCmd);}catch(err){console.log(err);text+='';}}}style[key]=text;}return style;}`,
         times: `false||function(initTimes=${rtimes}){return initTimes}`,
         timesOfUnit: `false||function(times=${rtimesOfUnit}){return times}`,
         triggerConditions: `false||function(attr={...JSON.parse('${JSON.stringify(
@@ -2295,13 +2392,27 @@ export default {
         extraRandomEvents: `false||function(events={...JSON.parse('${JSON.stringify(
           extraRandomEvents
         )}')}){return {...events}}`,
-        normalDefault: this.normalDefault || 'putongmoren',
+        normalDefault: `false||function(eventKey='${
+          this.normalDefault || 'putongmoren'
+        }'){return eventKey}`,
         ...this.baseTypeObj,
         ...prEventObj,
         ...bindEventObj,
-        ...optEventObj
-        // ...multiOptEventObj
+        ...optEventObj,
+        ...multiOptEventObj
       }
+    },
+    eventText() {
+      console.log(this.eventObj)
+      const json = {}
+      json.textArr = (eval(this.eventObj.textArr))()
+      json.styleArr = (eval(this.eventObj.styleArr))()
+      for (const key in this.eventObj) {
+        if (key === 'eventKey' || key === 'textArr' || key === 'styleArr') continue
+        json[key] = (eval(this.eventObj[key]))
+        json[key] = json[key]()
+      }
+      return JSON.stringify(json)
     },
     baseTypeObj() {
       return {
@@ -2429,36 +2540,100 @@ export default {
           optEventsObj
         )}')}){return {...events}}`
       }
+    },
+    multiOptEventObj() {
+      const maxSelection = parseInt(this.multiOptMaxSelection)
+      const rMaxSelection = isNaN(maxSelection)
+        ? 2
+        : this.getScopeNum(maxSelection, [2, MAXNUM])
+      const requireSelectMinNum = parseInt(this.multiOptRequireSelectNum[0])
+      const rRequireSelectMinNum = isNaN(requireSelectMinNum)
+        ? 2
+        : this.getScopeNum(requireSelectMinNum, [2, MAXNUM])
+      const requireSelectMaxNum = parseInt(this.multiOptRequireSelectNum[1])
+      const rRequireSelectMaxNum = isNaN(requireSelectMaxNum)
+        ? 3
+        : this.getScopeNum(requireSelectMaxNum, [
+          rRequireSelectMinNum + 1,
+          MAXNUM
+        ])
+      const multiMixEventsObj = {}
+      for (let i = 0; i < this.multiOptMultiMixEvents.length; i++) {
+        const { indexes, key } = this.multiOptMultiMixEvents[i]
+        if (indexes && key) {
+          if (!notMixEventIndex(indexes)) {
+            multiMixEventsObj[indexes] = key
+          }
+        }
+      }
+      const multiOptionsArr = []
+      this.multiOptOptions.forEach((item, index) => {
+        let multiOptionObj = {}
+        const { text, color, maxRepeat } = item
+        if (text) {
+          const optEventColorStr = (color || '#000').replaceAll(
+            ' ',
+            ''
+          )
+          const rOptEventColorStr = notColor(optEventColorStr)
+            ? '#000'
+            : optEventColorStr
+          const _maxRepeat = parseInt(maxRepeat)
+          const rMaxRepeat = isNaN(_maxRepeat)
+            ? 1
+            : this.getScopeNum(_maxRepeat, [1, MAXNUM])
+          multiOptionObj = {
+            color: rOptEventColorStr,
+            text,
+            maxRepeat: rMaxRepeat,
+            conditions: {},
+            disabledConditions: {}
+          }
+          this.multiOptConditions[index].forEach((citem, cindex) => {
+            const bkey = citem.key
+            if (bkey) {
+              const max = parseInt(citem.max)
+              const min = parseInt(citem.min)
+              multiOptionObj.conditions[bkey] = [
+                isNaN(min) ? MINNUM : this.getMinNum(min),
+                isNaN(max) ? MAXNUM : this.getMaxNum(max)
+              ]
+            }
+          })
+          this.multiOptDisbleConditions[index].forEach((citem, cindex) => {
+            const bkey = citem.key
+            if (bkey) {
+              const max = parseInt(citem.max)
+              const min = parseInt(citem.min)
+              multiOptionObj.disabledConditions[bkey] = [
+                isNaN(min) ? MINNUM : this.getMinNum(min),
+                isNaN(max) ? MAXNUM : this.getMaxNum(max)
+              ]
+            }
+          })
+          multiOptionsArr.push(multiOptionObj)
+        }
+      })
+      return {
+        maxSelection: `false||function(num=${rMaxSelection}){return num}`,
+        requireSelectNum: `false||function(nums=${JSON.stringify([
+          rRequireSelectMinNum,
+          rRequireSelectMaxNum
+        ])}){return nums}`,
+        orderlySelections: `false||function(enable=${this.multiOptOrderlySelections}){return enable}`,
+        multiOptDefault: `false||function(eventKey='${
+          this.multiOptDefault || 'duoxuanmoren'
+        }'){return eventKey}`,
+        multiMixEvents: `false||function(mixEvents={...(JSON.parse('${JSON.stringify(multiMixEventsObj)}')),any:'${
+          this.multiOptMultiMixDefaultEvent || 'duoxuanmoren'
+        }'}){return {...mixEvents}}`,
+        multiOptions: `false||function(options=${JSON.stringify(multiOptionsArr)}){return [...options]}`
+      }
     }
   },
   watch: {
-    // bindEventObj() {
-    //   console.log(this.bindEventObj)
-    // },
-    // prEventObj() {
-    //   console.log(this.prEventObj)
-    // },
     eventObj() {
-      console.log(this.eventObj)
-      // const obj = { ...this.eventObj }
-      // obj.textArr = eval(obj.textArr)
-      // obj.styleArr = eval(obj.styleArr)
-      // obj.textArr = obj.textArr()
-      // obj.styleArr = obj.styleArr()
-      // obj.text = eval(obj.text)
-      // obj.style = eval(obj.style)
-      // console.log('===>', obj.text({ a: 5 }), obj.style({ a: 7 }))
-      // const test1 = eval(this.eventObj.triggerConditions)
-      // const test1 = eval(this.eventObj.triggerConditions)
-      // const test2 = eval(this.eventObj.effectAttr)
-      // const test3 = eval(this.eventObj.effectEvents)
-      // const test4 = eval(this.eventObj.prEventsExtraWeight)
-      // const test5 = eval(this.eventObj.extraRandomEvents)
-      // console.log(test1())
-      // console.log(test2())
-      // console.log(test3())
-      // console.log(test4())
-      // console.log(test5())
+      // console.log(this.eventObj)
     },
     times() {
       this.timesNotNumber = isNaN(parseInt(this.times))
@@ -2685,10 +2860,14 @@ export default {
       deep: true
     },
     multiOptMaxSelection() {
-      this.multiOptMaxSelectionNumError = isNaN(parseInt(this.multiOptMaxSelection || 0))
+      this.multiOptMaxSelectionNumError = isNaN(
+        parseInt(this.multiOptMaxSelection || 0)
+      )
     },
     multiOptRequireSelectNum() {
-      this.multiOptRequireSelectNumError = isNaN(parseInt(this.multiOptRequireSelectNum[0] || 0)) || isNaN(parseInt(this.multiOptRequireSelectNum[1] || 0))
+      this.multiOptRequireSelectNumError =
+        isNaN(parseInt(this.multiOptRequireSelectNum[0] || 0)) ||
+        isNaN(parseInt(this.multiOptRequireSelectNum[1] || 0))
     },
     multiOptOptions() {
       this.multiOptOptionsError = false
@@ -2696,10 +2875,7 @@ export default {
       for (let i = 0; i < this.multiOptOptions.length; i++) {
         const item = this.multiOptOptions[i]
         let errItem = false
-        const color = (item.color || '#000').replaceAll(
-          ' ',
-          ''
-        )
+        const color = (item.color || '#000').replaceAll(' ', '')
         // maxRepeat最小为1，小于等于0时自动置1
         const maxRepeat = parseInt(item.maxRepeat || 1)
         errItem = notColor(color) || isNaN(maxRepeat)
@@ -2757,7 +2933,11 @@ export default {
               }
             }
           }
-          this.$set(this.multiOptOptiontDisableConditionsErrorIndex, key, errIndex)
+          this.$set(
+            this.multiOptOptiontDisableConditionsErrorIndex,
+            key,
+            errIndex
+          )
         }
       },
       deep: true
@@ -2767,10 +2947,11 @@ export default {
       this.multiOptMixEventsErrorIndex = []
       for (let i = 0; i < this.multiOptMultiMixEvents.length; i++) {
         const { indexes, key } = this.multiOptMultiMixEvents[i]
-        if (indexes && key) {
+        if (indexes) {
           const errItem = notMixEventIndex(indexes)
           if (errItem) {
-            this.multiOptMixEventsError = this.multiOptMixEventsError || errItem
+            this.multiOptMixEventsError =
+              this.multiOptMixEventsError || errItem
             this.multiOptMixEventsErrorIndex.push(i)
           }
         }
@@ -3291,6 +3472,9 @@ export default {
     inputMultiOptDefault(text) {
       this.multiOptDefault = text
     },
+    inputMultiOptMultiMixDefaultEvent(text) {
+      this.multiOptMultiMixDefaultEvent = text
+    },
     inputMultiOptMaxSelection(text) {
       this.multiOptMaxSelection = text
     },
@@ -3299,12 +3483,6 @@ export default {
     },
     selectMultiOptOrderlySelections(orderly) {
       this.multiOptOrderlySelections = orderly
-    },
-    inputMultiOptText(index, text) {
-      this.$set(this.multiOptOptions, index, {
-        ...this.multiOptOptions[index],
-        text
-      })
     },
     removeMultiOptEventItem(sindex) {
       this.multiOptOptions = this.multiOptOptions.filter(
@@ -3317,13 +3495,22 @@ export default {
     },
     addMultiOptEventItem() {
       this.multiOptOptions.push({
-        key: '',
         text: '',
         color: '',
         maxRepeat: ''
       })
       this.$set(this.multiOptConditions, this.multiOptOptions.length - 1, [])
-      this.$set(this.multiOptDisbleConditions, this.multiOptOptions.length - 1, [])
+      this.$set(
+        this.multiOptDisbleConditions,
+        this.multiOptOptions.length - 1,
+        []
+      )
+    },
+    inputMultiOptText(index, text) {
+      this.$set(this.multiOptOptions, index, {
+        ...this.multiOptOptions[index],
+        text
+      })
     },
     inputMultiOptColor(index, text) {
       this.$set(this.multiOptOptions, index, {
@@ -3484,7 +3671,7 @@ export default {
         }
       }
       &-item {
-        // width: 100%;
+        width: 100%;
         padding: 6px 10px;
         display: flex;
         flex-direction: row;
@@ -3498,7 +3685,7 @@ export default {
           margin-right: 10px !important;
         }
         &-label {
-          min-width: 120px;
+          min-width: 160px;
           text-align: left;
           padding-right: 12px;
         }
