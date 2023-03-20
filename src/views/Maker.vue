@@ -948,7 +948,7 @@
             <div
               v-for="(item, index) in prEventsArr"
               :key="index"
-              class="formBox-block-item-prEventBox-item formBox-block-item--child"
+              class="formBox-block-item-prEventBox-item"
             >
               <div class="formBox-block-item-prEventBox-item-row">
                 <div class="formBox-block-item formBox-block-item--nopadding">
@@ -1444,13 +1444,24 @@
             :value="multiOptMaxSelection"
             @input="inputMultiOptMaxSelection"
           />
+          <p
+            :class="[
+              'formBox-block-item-conditionBox-item-errTag',
+              multiOptMaxSelectionNumError
+                ? 'formBox-block-item-conditionBox-item-errTag--show'
+                : '',
+            ]"
+            title="请输入正确的数字"
+          >
+            ×
+          </p>
         </div>
         <div class="formBox-block-item">
           <div class="formBox-block-item-conditionBox">
             <p
               :class="[
                 'formBox-block-item-pretips',
-                triggerConditionsError
+                multiOptRequireSelectNumError
                   ? 'formBox-block-item-pretips--warning'
                   : '',
               ]"
@@ -1461,20 +1472,20 @@
               <p class="formBox-block-item-label">可选数量范围</p>
               <GhInput
                 class="formBox-block-item-conditionBox-item-input"
-                placeholder="可选最小数(含, ≥0)"
+                placeholder="最小选择数(含, ≥0)"
                 :value="multiOptRequireSelectNum[0]"
-                @input="(text) => inputOptRequireSelectMinNum"
+                @input="(text) => inputMultiOptRequireSelectNum(text, 0)"
               />
               <GhInput
                 class="formBox-block-item-conditionBox-item-input"
-                placeholder="可选最大数(不含, ≥0)"
+                placeholder="最大可选数(不含, ≥0)"
                 :value="multiOptRequireSelectNum[1]"
-                @input="(text) => inputOptRequireSelectMaxNum"
+                @input="(text) => inputMultiOptRequireSelectNum(text, 1)"
               />
               <p
                 :class="[
                   'formBox-block-item-conditionBox-item-errTag',
-                  triggerConditionsErrorIndex
+                  multiOptRequireSelectNumError
                     ? 'formBox-block-item-conditionBox-item-errTag--show'
                     : '',
                 ]"
@@ -1496,7 +1507,7 @@
                   : '',
               ]"
               title="匹配多选结果时无需选择顺序"
-              @click="selectMultiOptOrderlySelections(index, false)"
+              @click="selectMultiOptOrderlySelections(false)"
             >
               <span class="formBox-block-item-radioBox-radio-dot" />
               关闭
@@ -1509,7 +1520,7 @@
                   : '',
               ]"
               title="匹配多选结果时需按照选择顺序"
-              @click="selectMultiOptOrderlySelections(index, true)"
+              @click="selectMultiOptOrderlySelections(true)"
             >
               <span class="formBox-block-item-radioBox-radio-dot" />
               开启
@@ -1518,13 +1529,13 @@
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">可选选项</p>
-          <div class="formBox-block-item-optEventBox">
+          <div class="formBox-block-item-multiOptEventBox">
             <div
-              v-for="(item, index) in multiOptEventsOptions"
+              v-for="(item, index) in multiOptOptions"
               :key="index"
-              class="formBox-block-item-optEventBox-item"
+              class="formBox-block-item-multiOptEventBox-item"
             >
-              <div class="formBox-block-item-optEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <div
                   class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
                 >
@@ -1536,27 +1547,33 @@
                       class="formBox-block-item-input"
                       :placeholder="`选项 ${index + 1} 标题`"
                       :value="item.text"
-                      @input="(text) => inputMultiOptionsText(index, text)"
+                      @input="(text) => inputMultiOptText(index, text)"
                     />
                   </div>
+                  <p
+                    class="formBox-block-item-conditionBox-item-delBtn"
+                    @click="removeMultiOptEventItem(index)"
+                  >
+                    -- 移除 --
+                  </p>
                 </div>
               </div>
-              <div class="formBox-block-item-optEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <p class="formBox-block-item-label">字体颜色</p>
-                <div class="formBox-block-item-optEventBox">
+                <div class="formBox-block-item-multiOptEventBox">
                   <div class="formBox-block-item formBox-block-item--child">
                     <GhInput
-                      class="formBox-block-item-optEventBox-item-input"
+                      class="formBox-block-item-multiOptEventBox-item-input"
                       placeholder="字体颜色(默认:#000000)"
                       :value="item.color"
-                      @input="(text) => inputMultiOptinonsColor(index, text)"
+                      @input="(text) => inputMultiOptColor(index, text)"
                     />
                     <p
                       :class="[
-                        'formBox-block-item-optEventBox-item-errTag',
-                        optEventErrorIndex[index] &&
-                          optEventErrorIndex[index].color
-                          ? 'formBox-block-item-optEventBox-item-errTag--show'
+                        'formBox-block-item-multiOptEventBox-item-errTag',
+                        multiOptOptionsErrorIndex[index] &&
+                          multiOptOptionsErrorIndex[index].color
+                          ? 'formBox-block-item-multiOptEventBox-item-errTag--show'
                           : '',
                       ]"
                       title="请输入正确的色号"
@@ -1570,22 +1587,22 @@
                   </p>
                 </div>
               </div>
-              <div class="formBox-block-item-optEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <p class="formBox-block-item-label">选项重复数</p>
-                <div class="formBox-block-item-optEventBox">
+                <div class="formBox-block-item-multiOptEventBox">
                   <div class="formBox-block-item formBox-block-item--child">
                     <GhInput
-                      class="formBox-block-item-optEventBox-item-input"
-                      placeholder="选项重复数量"
+                      class="formBox-block-item-multiOptEventBox-item-input"
+                      placeholder="选项重复数量(≥1)"
                       :value="item.maxRepeat"
-                      @input="(text) => inputMaxRepeat(index, text)"
+                      @input="(text) => inputMultiOptMaxRepeat(index, text)"
                     />
                     <p
                       :class="[
-                        'formBox-block-item-optEventBox-item-errTag',
-                        optEventErrorIndex[index] &&
-                          optEventErrorIndex[index].maxRepeat
-                          ? 'formBox-block-item-optEventBox-item-errTag--show'
+                        'formBox-block-item-multiOptEventBox-item-errTag',
+                        multiOptOptionsErrorIndex[index] &&
+                          multiOptOptionsErrorIndex[index].maxRepeat
+                          ? 'formBox-block-item-multiOptEventBox-item-errTag--show'
                           : '',
                       ]"
                       title="请输入正确的数字"
@@ -1598,7 +1615,7 @@
                   </p>
                 </div>
               </div>
-              <div class="formBox-block-item-optEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <div
                   class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
                 >
@@ -1607,7 +1624,7 @@
                     <p
                       :class="[
                         'formBox-block-item-pretips',
-                        optEventConditionsError
+                        multiOptOptionConditionsError
                           ? 'formBox-block-item-pretips--warning'
                           : '',
                       ]"
@@ -1615,7 +1632,7 @@
                       最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
                     </p>
                     <div
-                      v-for="(citem, cindex) in optEventConditions[index]"
+                      v-for="(citem, cindex) in multiOptConditions[index]"
                       :key="cindex"
                       class="formBox-block-item-conditionBox-item"
                     >
@@ -1625,7 +1642,7 @@
                         :value="citem.key"
                         @input="
                           (text) =>
-                            inputOptEventConditionKey(index, cindex, text)
+                            inputMultiOptOptionConditionKey(index, cindex, text)
                         "
                       />
                       <GhInput
@@ -1634,7 +1651,7 @@
                         :value="citem.min"
                         @input="
                           (text) =>
-                            inputOptEventConditionMinValue(index, cindex, text)
+                            inputMultiOptOptionConditionMinValue(index, cindex, text)
                         "
                       />
                       <GhInput
@@ -1643,14 +1660,14 @@
                         :value="citem.max"
                         @input="
                           (text) =>
-                            inputOptEventConditionMaxValue(index, cindex, text)
+                            inputMultiOptOptionConditionMaxValue(index, cindex, text)
                         "
                       />
                       <p
                         :class="[
                           'formBox-block-item-conditionBox-item-errTag',
-                          optEventConditionsErrorIndex[index] &&
-                            optEventConditionsErrorIndex[index].includes(cindex)
+                          multiOptOptionConditionsErrorIndex[index] &&
+                            multiOptOptionConditionsErrorIndex[index].includes(cindex)
                             ? 'formBox-block-item-conditionBox-item-errTag--show'
                             : '',
                         ]"
@@ -1660,14 +1677,14 @@
                       </p>
                       <p
                         class="formBox-block-item-conditionBox-item-delBtn"
-                        @click="removeOptEventConditionItem(index, cindex)"
+                        @click="removeMultiOptOptionConditionItem(index, cindex)"
                       >
                         -- 移除 --
                       </p>
                     </div>
                     <p
                       class="formBox-block-item-conditionBox-addBtn"
-                      @click="addOptEventConditionItem(index)"
+                      @click="addMultiOptOptionConditionItem(index)"
                     >
                       ++ 添加一项 ++
                     </p>
@@ -1682,7 +1699,7 @@
                   </div>
                 </div>
               </div>
-              <div class="formBox-block-item-optEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <div
                   class="formBox-block-item formBox-block-item--multi formBox-block-item--child"
                 >
@@ -1691,7 +1708,7 @@
                     <p
                       :class="[
                         'formBox-block-item-pretips',
-                        optEventConditionsError
+                        multiOptOptionDisableConditionsError
                           ? 'formBox-block-item-pretips--warning'
                           : '',
                       ]"
@@ -1699,7 +1716,7 @@
                       最大值和最小值必须为数字（小数将只保留整数位），不输入则默认为无(上/下)限制
                     </p>
                     <div
-                      v-for="(citem, cindex) in optEventConditions[index]"
+                      v-for="(citem, cindex) in multiOptDisbleConditions[index]"
                       :key="cindex"
                       class="formBox-block-item-conditionBox-item"
                     >
@@ -1709,7 +1726,7 @@
                         :value="citem.key"
                         @input="
                           (text) =>
-                            inputOptEventConditionKey(index, cindex, text)
+                            inputMultiOptOptionDisableConditionKey(index, cindex, text)
                         "
                       />
                       <GhInput
@@ -1718,7 +1735,7 @@
                         :value="citem.min"
                         @input="
                           (text) =>
-                            inputOptEventConditionMinValue(index, cindex, text)
+                            inputMultiOptOptionDisableConditionMinValue(index, cindex, text)
                         "
                       />
                       <GhInput
@@ -1727,14 +1744,14 @@
                         :value="citem.max"
                         @input="
                           (text) =>
-                            inputOptEventConditionMaxValue(index, cindex, text)
+                            inputMultiOptOptionDisableConditionMaxValue(index, cindex, text)
                         "
                       />
                       <p
                         :class="[
                           'formBox-block-item-conditionBox-item-errTag',
-                          optEventConditionsErrorIndex[index] &&
-                            optEventConditionsErrorIndex[index].includes(cindex)
+                          multiOptOptiontDisableConditionsErrorIndex[index] &&
+                            multiOptOptiontDisableConditionsErrorIndex[index].includes(cindex)
                             ? 'formBox-block-item-conditionBox-item-errTag--show'
                             : '',
                         ]"
@@ -1744,14 +1761,14 @@
                       </p>
                       <p
                         class="formBox-block-item-conditionBox-item-delBtn"
-                        @click="removeOptEventConditionItem(index, cindex)"
+                        @click="removeMultiOptOptionDisableConditionItem(index, cindex)"
                       >
                         -- 移除 --
                       </p>
                     </div>
                     <p
                       class="formBox-block-item-conditionBox-addBtn"
-                      @click="addOptEventConditionItem(index)"
+                      @click="addMultiOptOptionDisableConditionItem(index)"
                     >
                       ++ 添加一项 ++
                     </p>
@@ -1771,8 +1788,8 @@
               </div>
             </div>
             <p
-              class="formBox-block-item-optEventBox-addBtn"
-              @click="addOptEventItem"
+              class="formBox-block-item-multiOptEventBox-addBtn"
+              @click="addMultiOptEventItem"
             >
               ++ 添加一项 ++
             </p>
@@ -1780,21 +1797,21 @@
         </div>
         <div class="formBox-block-item formBox-block-item--multi">
           <p class="formBox-block-item-label">选项匹配事件</p>
-          <div class="formBox-block-item-effectEventBox">
+          <div class="formBox-block-item-multiOptEventBox">
             <p
               :class="[
                 'formBox-block-item-pretips',
-                effectEventError ? 'formBox-block-item-pretips--warning' : '',
+                multiOptMixEventsError ? 'formBox-block-item-pretips--warning' : '',
               ]"
             >
               匹配选项按照选项序号填写，选项序号间用 下划线_ 间隔，例如: 1_2_5
             </p>
             <div
-              v-for="(item, index) in effectEvents"
+              v-for="(item, index) in multiOptMultiMixEvents"
               :key="index"
-              class="formBox-block-item-effectEventBox-item"
+              class="formBox-block-item-multiOptEventBox-item"
             >
-              <div class="formBox-block-item-effectEventBox-item-row">
+              <div class="formBox-block-item-multiOptEventBox-item-row">
                 <div class="formBox-block-item formBox-block-item--nopadding">
                   <p class="formBox-block-item-label">
                     匹配事件{{ index + 1 }}
@@ -1802,18 +1819,30 @@
                   <GhInput
                     class="formBox-block-item-input"
                     placeholder="匹配选项序号"
-                    :value="item.key"
-                    @input="(text) => inputEffectEventKey(index, text)"
+                    :value="item.indexes"
+                    @input="(text) => inputMultiOptMixEventIndexes(index, text)"
                   />
                   <GhInput
                     class="formBox-block-item-input"
                     placeholder="匹配事件Key"
                     :value="item.key"
-                    @input="(text) => inputEffectEventKey(index, text)"
+                    @input="(text) => inputMultiOptMixEventKey(index, text)"
                   />
                   <p
-                    class="formBox-block-item-effectEventBox-item-delBtn"
-                    @click="removeEffectEventItem(index)"
+                    :class="[
+                      'formBox-block-item-conditionBox-item-errTag',
+                      multiOptMixEventsErrorIndex[index] &&
+                        multiOptMixEventsErrorIndex[index].includes(cindex)
+                        ? 'formBox-block-item-conditionBox-item-errTag--show'
+                        : '',
+                    ]"
+                    title="请输入正确的选项序号"
+                  >
+                    ×
+                  </p>
+                  <p
+                    class="formBox-block-item-multiOptEventBox-item-delBtn"
+                    @click="removeMultiOptMixEventItem(index)"
                   >
                     -- 移除 --
                   </p>
@@ -1821,8 +1850,8 @@
               </div>
             </div>
             <p
-              class="formBox-block-item-effectEventBox-addBtn"
-              @click="addEffectEventItem"
+              class="formBox-block-item-multiOptEventBox-addBtn"
+              @click="addMultiOptMixEventItem"
             >
               ++ 添加一项 ++
             </p>
@@ -1881,6 +1910,10 @@ const colorReg =
   /^\#([a-zA-Z0-9]){3}$|^\#([a-zA-Z0-9]){6}$|^\#([a-zA-Z0-9]){8}$|^rgb\(\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\)$|^rgba\(\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,\b([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\,(([01])|(0\.\d+))\)$/
 function notColor(color) {
   return !colorReg.test(color)
+}
+const mixEventIndexReg = /^(\d|([1-9]\d*))(\_(\d|([1-9]\d*)))*$/
+function notMixEventIndex(color) {
+  return !mixEventIndexReg.test(color)
 }
 import GhInput from '@/components/GhInput'
 import GhTextarea from '@/components/GhTextarea'
@@ -2026,14 +2059,16 @@ export default {
       optEventConditionsError: false,
       optEventConditionsErrorIndex: {},
 
-      multiOptOptionsError: [],
+      multiOptMaxSelectionNumError: false,
+      multiOptRequireSelectNumError: false,
+      multiOptOptionsError: false,
       multiOptOptionsErrorIndex: [],
-      multiOptMixEventsError: [],
+      multiOptOptionConditionsError: false,
+      multiOptOptionConditionsErrorIndex: {},
+      multiOptOptionDisableConditionsError: false,
+      multiOptOptiontDisableConditionsErrorIndex: {},
+      multiOptMixEventsError: false,
       multiOptMixEventsErrorIndex: [],
-      multiOptEventConditionsError: false,
-      multiOptEventConditionsErrorIndex: {},
-      multiOptEventDisabledConditionsError: false,
-      multiOptEventDisabledConditionsErrorIndex: {},
 
       // 属性
       key: '',
@@ -2069,13 +2104,13 @@ export default {
       optEventConditions: {},
       optDefault: '', // 为空则kexuanmoren
       // 多选事件属性
-      multiOptMaxSelection: '',
-      multiOptEventsOptions: [], // 选项配置
-      multiOptEventConditions: {},
-      multiOptEventDisbledConditions: {},
-      multiOptOrderlySelections: false,
       multiOptDefault: '', // 为空则duoxuanmoren
+      multiOptMaxSelection: '',
       multiOptRequireSelectNum: ['', ''],
+      multiOptOrderlySelections: false,
+      multiOptOptions: [], // 选项配置
+      multiOptConditions: {},
+      multiOptDisbleConditions: {},
       multiOptMultiMixEvents: [],
       multiOptMultiMixDefaultEvent: '', // 可为空
       // 生成模式
@@ -2648,6 +2683,98 @@ export default {
         }
       },
       deep: true
+    },
+    multiOptMaxSelection() {
+      this.multiOptMaxSelectionNumError = isNaN(parseInt(this.multiOptMaxSelection || 0))
+    },
+    multiOptRequireSelectNum() {
+      this.multiOptRequireSelectNumError = isNaN(parseInt(this.multiOptRequireSelectNum[0] || 0)) || isNaN(parseInt(this.multiOptRequireSelectNum[1] || 0))
+    },
+    multiOptOptions() {
+      this.multiOptOptionsError = false
+      this.multiOptOptionsErrorIndex = []
+      for (let i = 0; i < this.multiOptOptions.length; i++) {
+        const item = this.multiOptOptions[i]
+        let errItem = false
+        const color = (item.color || '#000').replaceAll(
+          ' ',
+          ''
+        )
+        // maxRepeat最小为1，小于等于0时自动置1
+        const maxRepeat = parseInt(item.maxRepeat || 1)
+        errItem = notColor(color) || isNaN(maxRepeat)
+        if (errItem) {
+          this.multiOptOptionsError = this.multiOptOptionsError || errItem
+          this.$set(this.multiOptOptionsErrorIndex, i, {
+            color: notColor(color),
+            maxRepeat: isNaN(maxRepeat)
+          })
+        }
+      }
+    },
+    multiOptConditions: {
+      handler() {
+        this.multiOptOptionConditionsError = false
+        this.multiOptOptionConditionsErrorIndex = {}
+        for (const key in this.multiOptConditions) {
+          const errIndex = []
+          for (let i = 0; i < this.multiOptConditions[key].length; i++) {
+            const item = this.multiOptConditions[key][i]
+            if (item.key) {
+              let errItem = false
+              const min = item.min ? parseInt(item.min) : MINNUM
+              const max = item.max ? parseInt(item.max) : MAXNUM
+              errItem = isNaN(min) || isNaN(max)
+              if (errItem) {
+                this.multiOptOptionConditionsError =
+                  this.multiOptOptionConditionsError || errItem
+                errIndex.push(i)
+              }
+            }
+          }
+          this.$set(this.multiOptOptionConditionsErrorIndex, key, errIndex)
+        }
+      },
+      deep: true
+    },
+    multiOptDisbleConditions: {
+      handler() {
+        this.multiOptOptionDisableConditionsError = false
+        this.multiOptOptiontDisableConditionsErrorIndex = {}
+        for (const key in this.multiOptDisbleConditions) {
+          const errIndex = []
+          for (let i = 0; i < this.multiOptDisbleConditions[key].length; i++) {
+            const item = this.multiOptDisbleConditions[key][i]
+            if (item.key) {
+              let errItem = false
+              const min = item.min ? parseInt(item.min) : MINNUM
+              const max = item.max ? parseInt(item.max) : MAXNUM
+              errItem = isNaN(min) || isNaN(max)
+              if (errItem) {
+                this.multiOptOptionDisableConditionsError =
+                  this.multiOptOptionDisableConditionsError || errItem
+                errIndex.push(i)
+              }
+            }
+          }
+          this.$set(this.multiOptOptiontDisableConditionsErrorIndex, key, errIndex)
+        }
+      },
+      deep: true
+    },
+    multiOptMultiMixEvents() {
+      this.multiOptMixEventsError = false
+      this.multiOptMixEventsErrorIndex = []
+      for (let i = 0; i < this.multiOptMultiMixEvents.length; i++) {
+        const { indexes, key } = this.multiOptMultiMixEvents[i]
+        if (indexes && key) {
+          const errItem = notMixEventIndex(indexes)
+          if (errItem) {
+            this.multiOptMixEventsError = this.multiOptMixEventsError || errItem
+            this.multiOptMixEventsErrorIndex.push(i)
+          }
+        }
+      }
     }
   },
   mounted() {
@@ -3160,6 +3287,148 @@ export default {
         optEventColor: ''
       })
       this.$set(this.optEventConditions, this.optEventsArr.length - 1, [])
+    },
+    inputMultiOptDefault(text) {
+      this.multiOptDefault = text
+    },
+    inputMultiOptMaxSelection(text) {
+      this.multiOptMaxSelection = text
+    },
+    inputMultiOptRequireSelectNum(text, index) {
+      this.$set(this.multiOptRequireSelectNum, index, text)
+    },
+    selectMultiOptOrderlySelections(orderly) {
+      this.multiOptOrderlySelections = orderly
+    },
+    inputMultiOptText(index, text) {
+      this.$set(this.multiOptOptions, index, {
+        ...this.multiOptOptions[index],
+        text
+      })
+    },
+    removeMultiOptEventItem(sindex) {
+      this.multiOptOptions = this.multiOptOptions.filter(
+        (item, index) => sindex !== index
+      )
+      this.$set(this.multiOptConditions, sindex, [])
+      delete this.multiOptConditions[sindex]
+      this.$set(this.multiOptDisbleConditions, sindex, [])
+      delete this.multiOptDisbleConditions[sindex]
+    },
+    addMultiOptEventItem() {
+      this.multiOptOptions.push({
+        key: '',
+        text: '',
+        color: '',
+        maxRepeat: ''
+      })
+      this.$set(this.multiOptConditions, this.multiOptOptions.length - 1, [])
+      this.$set(this.multiOptDisbleConditions, this.multiOptOptions.length - 1, [])
+    },
+    inputMultiOptColor(index, text) {
+      this.$set(this.multiOptOptions, index, {
+        ...this.multiOptOptions[index],
+        color: text
+      })
+    },
+    inputMultiOptMaxRepeat(index, text) {
+      this.$set(this.multiOptOptions, index, {
+        ...this.multiOptOptions[index],
+        maxRepeat: text
+      })
+    },
+    inputMultiOptOptionConditionKey(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptConditions[index])
+      )
+      conditions[cindex].key = text
+      this.$set(this.multiOptConditions, index, conditions)
+    },
+    inputMultiOptOptionConditionMinValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptConditions[index])
+      )
+      conditions[cindex].min = text
+      this.$set(this.multiOptConditions, index, conditions)
+    },
+    inputMultiOptOptionConditionMaxValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptConditions[index])
+      )
+      conditions[cindex].max = text
+      this.$set(this.multiOptConditions, index, conditions)
+    },
+    removeMultiOptOptionConditionItem(sindex, cindex) {
+      let conditions = JSON.parse(
+        JSON.stringify(this.multiOptConditions[sindex])
+      )
+      conditions = conditions.filter((item, index) => cindex !== index)
+      this.$set(this.multiOptConditions, sindex, conditions)
+    },
+    addMultiOptOptionConditionItem(sindex) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptConditions[sindex])
+      )
+      conditions.push({ key: '', min: '', max: '' })
+      this.$set(this.multiOptConditions, sindex, conditions)
+    },
+    inputMultiOptOptionDisableConditionKey(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptDisbleConditions[index])
+      )
+      conditions[cindex].key = text
+      this.$set(this.multiOptDisbleConditions, index, conditions)
+    },
+    inputMultiOptOptionDisableConditionMinValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptDisbleConditions[index])
+      )
+      conditions[cindex].min = text
+      this.$set(this.multiOptDisbleConditions, index, conditions)
+    },
+    inputMultiOptOptionDisableConditionMaxValue(index, cindex, text) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptDisbleConditions[index])
+      )
+      conditions[cindex].max = text
+      this.$set(this.multiOptDisbleConditions, index, conditions)
+    },
+    removeMultiOptOptionDisableConditionItem(sindex, cindex) {
+      let conditions = JSON.parse(
+        JSON.stringify(this.multiOptDisbleConditions[sindex])
+      )
+      conditions = conditions.filter((item, index) => cindex !== index)
+      this.$set(this.multiOptDisbleConditions, sindex, conditions)
+    },
+    addMultiOptOptionDisableConditionItem(sindex) {
+      const conditions = JSON.parse(
+        JSON.stringify(this.multiOptDisbleConditions[sindex])
+      )
+      conditions.push({ key: '', min: '', max: '' })
+      this.$set(this.multiOptDisbleConditions, sindex, conditions)
+    },
+    inputMultiOptMixEventIndexes(index, text) {
+      this.$set(this.multiOptMultiMixEvents, index, {
+        ...this.multiOptMultiMixEvents[index],
+        indexes: text
+      })
+    },
+    inputMultiOptMixEventKey(index, text) {
+      this.$set(this.multiOptMultiMixEvents, index, {
+        ...this.multiOptMultiMixEvents[index],
+        key: text
+      })
+    },
+    removeMultiOptMixEventItem(sindex) {
+      this.multiOptMultiMixEvents = this.multiOptMultiMixEvents.filter(
+        (item, index) => sindex !== index
+      )
+    },
+    addMultiOptMixEventItem() {
+      this.multiOptMultiMixEvents.push({
+        indexes: '',
+        key: ''
+      })
     }
   }
 }
@@ -3408,6 +3677,7 @@ export default {
           .formBox-block-item-effectEventBox-item
             + .formBox-block-item-effectEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
@@ -3477,6 +3747,7 @@ export default {
           .formBox-block-item-effectPrEventBox-item
             + .formBox-block-item-effectPrEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
@@ -3546,6 +3817,7 @@ export default {
           .formBox-block-item-effectRandomEventBox-item
             + .formBox-block-item-effectRandomEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
@@ -3615,12 +3887,13 @@ export default {
           .formBox-block-item-prEventBox-item
             + .formBox-block-item-prEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            padding: 12px 0px;
+            padding: 0px;
             .formBox-block-item-prEventBox-item-input
               + .formBox-block-item-prEventBox-item-input {
               margin-left: 12px;
@@ -3684,6 +3957,7 @@ export default {
           .formBox-block-item-bindEventBox-item
             + .formBox-block-item-bindEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
@@ -3753,6 +4027,7 @@ export default {
           .formBox-block-item-optEventBox-item
             + .formBox-block-item-optEventBox-item {
             border-top: 1px solid #000;
+            padding-top: 12px;
           }
           &-item {
             margin-bottom: 12px;
@@ -3765,6 +4040,76 @@ export default {
             }
             .formBox-block-item-optEventBox-item-row
               + .formBox-block-item-optEventBox-item-row {
+              margin-top: 12px;
+            }
+            &-row {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+            }
+            &-input {
+              width: 100%;
+            }
+            &-errTag {
+              opacity: 0;
+              font-weight: bold;
+              line-height: 34px;
+              margin-left: 12px;
+              font-size: 24px;
+              color: #a92228;
+              // border: 1px solid #a92228;
+              border-radius: 34px;
+              transition: 0.2s all;
+            }
+            &-errTag--show {
+              opacity: 1;
+            }
+            &-trigBtn {
+              line-height: 34px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #000;
+              user-select: none;
+              cursor: pointer;
+            }
+            &-delBtn {
+              line-height: 34px;
+              // margin-top: 12px;
+              margin-left: 12px;
+              width: 120px;
+              border: 1px dashed #a92228;
+              color: #a92228;
+              user-select: none;
+              cursor: pointer;
+            }
+          }
+          &-addBtn {
+            user-select: none;
+            cursor: pointer;
+            padding: 6px 0;
+            border: 1px dashed #000;
+            max-width: 178px;
+            width: 100%;
+          }
+        }
+        &-multiOptEventBox {
+          width: 828px;
+          .formBox-block-item-multiOptEventBox-item
+            + .formBox-block-item-multiOptEventBox-item {
+            border-top: 1px solid #000;
+            padding-top: 12px;
+          }
+          &-item {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            padding: 0px;
+            .formBox-block-item-multiOptEventBox-item-input
+              + .formBox-block-item-multiOptEventBox-item-input {
+              margin-left: 12px;
+            }
+            .formBox-block-item-multiOptEventBox-item-row
+              + .formBox-block-item-multiOptEventBox-item-row {
               margin-top: 12px;
             }
             &-row {
