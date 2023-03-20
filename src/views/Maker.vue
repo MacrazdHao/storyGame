@@ -1921,6 +1921,43 @@
         </div>
       </div>
       <div class="formBox-block">
+        <p class="formBox-block-label">事件预览</p>
+        <div class="formBox-block-item">
+          <p class="formBox-block-item-label">预览模式</p>
+          <div class="formBox-block-item-radioBox">
+            <p
+              v-for="(item, index) in previewModes"
+              :key="index"
+              :class="[
+                'formBox-block-item-radioBox-radio',
+                index === selectedPreviewMode
+                  ? 'formBox-block-item-radioBox-radio--selected'
+                  : '',
+              ]"
+              @click="selectPreviewMode(index)"
+            >
+              <span class="formBox-block-item-radioBox-radio-dot" />
+              {{ item.text }}
+            </p>
+          </div>
+        </div>
+        <div class="formBox-block-item formBox-block-item--multi">
+          <p class="formBox-block-item-label">事件JSON预览</p>
+          <div class="formBox-block-item-textareaBox">
+            <GhTextarea
+              class="previewBox-json"
+              placeholder="事件JSON预览"
+              :value="eventText"
+              :readonly="true"
+            />
+            <p class="formBox-block-item-tips">
+              Tips1:
+              预览JSON数据中，由于缺少玩家状态信息，三目运算将被忽略，展示仅供参考
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="formBox-block">
         <p class="formBox-block-label">生成事件</p>
         <div class="formBox-block-item">
           <p class="formBox-block-item-label">输出模式</p>
@@ -1955,8 +1992,10 @@
           </p>
         </div>
       </div>
+      <div class="submitBox">
+        <p class="submitBox-btn" @click="submitEvent">提交</p>
+      </div>
     </div>
-    <div class="previewBox">{{ eventText }}</div>
   </div>
 </template>
 
@@ -2169,10 +2208,20 @@ export default {
       multiOptDisbleConditions: {},
       multiOptMultiMixEvents: [],
       multiOptMultiMixDefaultEvent: '', // 可为空
+      // 预览模式
+      previewModes: [
+        {
+          text: '生成函数'
+        },
+        {
+          text: '真实字段'
+        }
+      ],
+      selectedPreviewMode: 0,
       // 生成模式
       createModes: [
         {
-          text: '输出字符串'
+          text: '生成excel'
         },
         {
           text: '写入文件'
@@ -2205,7 +2254,8 @@ export default {
         times: this.times,
         timesOfUnit: this.timesOfUnit,
         triggerConditions: this.triggerConditions,
-        execNormalDefaultWhenMismatchConditions: this.execNormalDefaultWhenMismatchConditions,
+        execNormalDefaultWhenMismatchConditions:
+          this.execNormalDefaultWhenMismatchConditions,
         effectAttr: this.effectAttr,
         effectEvents: this.effectEvents,
         prEventsExtraWeight: this.prEventsExtraWeight,
@@ -2403,16 +2453,26 @@ export default {
       }
     },
     eventText() {
-      console.log(this.eventObj)
       const json = {}
-      json.textArr = (eval(this.eventObj.textArr))()
-      json.styleArr = (eval(this.eventObj.styleArr))()
+      json.textArr = eval(this.eventObj.textArr)()
+      json.styleArr = eval(this.eventObj.styleArr)()
       for (const key in this.eventObj) {
-        if (key === 'eventKey' || key === 'textArr' || key === 'styleArr') continue
-        json[key] = (eval(this.eventObj[key]))
+        if (key === 'eventKey' || key === 'textArr' || key === 'styleArr') {
+          continue
+        }
+        json[key] = eval(this.eventObj[key])
         json[key] = json[key]()
       }
-      return JSON.stringify(json)
+      const noEvalJSON = {}
+      for (const key in this.eventObj) {
+        if (key === 'eventKey') {
+          continue
+        }
+        noEvalJSON[key] = eval(this.eventObj[key]).toString()
+      }
+      return this.selectedPreviewMode === 0
+        ? this.object2String(noEvalJSON)
+        : this.object2String(json)
     },
     baseTypeObj() {
       return {
@@ -2571,10 +2631,7 @@ export default {
         let multiOptionObj = {}
         const { text, color, maxRepeat } = item
         if (text) {
-          const optEventColorStr = (color || '#000').replaceAll(
-            ' ',
-            ''
-          )
+          const optEventColorStr = (color || '#000').replaceAll(' ', '')
           const rOptEventColorStr = notColor(optEventColorStr)
             ? '#000'
             : optEventColorStr
@@ -2624,16 +2681,20 @@ export default {
         multiOptDefault: `false||function(eventKey='${
           this.multiOptDefault || 'duoxuanmoren'
         }'){return eventKey}`,
-        multiMixEvents: `false||function(mixEvents={...(JSON.parse('${JSON.stringify(multiMixEventsObj)}')),any:'${
+        multiMixEvents: `false||function(mixEvents={...(JSON.parse('${JSON.stringify(
+          multiMixEventsObj
+        )}')),any:'${
           this.multiOptMultiMixDefaultEvent || 'duoxuanmoren'
         }'}){return {...mixEvents}}`,
-        multiOptions: `false||function(options=${JSON.stringify(multiOptionsArr)}){return [...options]}`
+        multiOptions: `false||function(options=${JSON.stringify(
+          multiOptionsArr
+        )}){return [...options]}`
       }
     }
   },
   watch: {
     eventObj() {
-      // console.log(this.eventObj)
+      console.log(this.eventText)
     },
     times() {
       this.timesNotNumber = isNaN(parseInt(this.times))
@@ -2963,6 +3024,67 @@ export default {
     // console.log(this.getScopeNum(-111111111111))
   },
   methods: {
+    // object2String(json, options) {
+    //   var reg = null
+    //   var formatted = ''
+    //   var pad = 0
+    //   var PADDING = '    '
+    //   options = options || {}
+    //   options.newlineAfterColonIfBeforeBraceOrBracket = (options.newlineAfterColonIfBeforeBraceOrBracket === true)
+    //   options.spaceAfterColon = options.spaceAfterColon !== false
+    //   if (typeof json !== 'string') {
+    //     json = JSON.stringify(json)
+    //   } else {
+    //     json = JSON.parse(json)
+    //     json = JSON.stringify(json)
+    //   }
+    //   reg = /([\{\}])/g
+    //   json = json.replace(reg, '\r\n$1\r\n')
+    //   reg = /([\[\]])/g
+    //   json = json.replace(reg, '\r\n$1\r\n')
+    //   reg = /(\,)/g
+    //   json = json.replace(reg, '$1\r\n')
+    //   reg = /(\r\n\r\n)/g
+    //   json = json.replace(reg, '\r\n')
+    //   reg = /\r\n\,/g
+    //   json = json.replace(reg, ',')
+    //   if (!options.newlineAfterColonIfBeforeBraceOrBracket) {
+    //     reg = /\:\r\n\{/g
+    //     json = json.replace(reg, ':{')
+    //     reg = /\:\r\n\[/g
+    //     json = json.replace(reg, ':[')
+    //   }
+    //   if (options.spaceAfterColon) {
+    //     reg = /\:/g
+    //     json = json.replace(reg, ':')
+    //   }
+    //   (json.split('\r\n')).forEach(function(node, index) {
+    //     var i = 0
+    //     var indent = 0
+    //     var padding = ''
+
+    //     if (node.match(/\{$/) || node.match(/\[$/)) {
+    //       indent = 1
+    //     } else if (node.match(/\}/) || node.match(/\]/)) {
+    //       if (pad !== 0) {
+    //         pad -= 1
+    //       }
+    //     } else {
+    //       indent = 0
+    //     }
+
+    //     for (i = 0; i < pad; i++) {
+    //       padding += PADDING
+    //     }
+
+    //     formatted += padding + node + '\r\n'
+    //     pad += indent
+    //   })
+    //   return formatted
+    // },
+    object2String(json) {
+      return JSON.stringify(json, null, '\t')
+    },
     getMaxNum(num) {
       return num > MAXNUM ? MAXNUM : num
     },
@@ -3026,6 +3148,10 @@ export default {
     },
     selectOptType(sindex) {
       this.selectedOptType = this.selectedOptType === sindex ? -1 : sindex
+    },
+    selectPreviewMode(sindex) {
+      this.selectedPreviewMode =
+        this.selectedPreviewMode === sindex ? -1 : sindex
     },
     selectCreateMode(sindex) {
       this.selectedCreateMode =
@@ -3616,6 +3742,9 @@ export default {
         indexes: '',
         key: ''
       })
+    },
+    submitEvent() {
+
     }
   }
 }
@@ -4380,6 +4509,33 @@ export default {
           }
         }
       }
+    }
+  }
+  .previewBox {
+    width: 100%;
+    height: 600px;
+    &-json {
+      width: 100%;
+      height: 600px;
+      text-align: left;
+    }
+  }
+  .submitBox {
+    width: 100%;
+    border-top: 1px solid #d3d3d3;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    &-btn {
+      user-select: none;
+      cursor: pointer;
+      padding: 6px 0;
+      border: 1px solid #000;
+      background-color: #000;
+      color: #fff;
+      max-width: 178px;
+      width: 100%;
     }
   }
 }
