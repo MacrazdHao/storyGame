@@ -41,7 +41,7 @@ _Loading.install = (Vue) => {
   }
 
   const LoadingMain = {
-    show (options = {}) {
+    show(options = {}) {
       createLoading()
       const _options = {
         ...defaultOptions,
@@ -52,7 +52,7 @@ _Loading.install = (Vue) => {
       }
       instance.showLoading(_options)
     },
-    hide () {
+    hide() {
       instance.hideLoading()
     }
   }

@@ -19,25 +19,25 @@
 <script>
 export default {
   props: ['value', 'startPlaceholder', 'endPlaceholder'],
-  data () {
+  data() {
     return {
       timeScope: ['', '']
     }
   },
   watch: {
-    value (val) {
+    value(val) {
       if (this.value) {
         this.timeScope = [this.value[0] || '', this.value[1] || '']
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.value) {
       this.timeScope = [this.value[0] || '', this.value[1] || '']
     }
   },
   methods: {
-    handleChange (e) {
+    handleChange(e) {
       this.$emit('change', e)
     }
   }

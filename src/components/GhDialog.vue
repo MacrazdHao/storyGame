@@ -17,11 +17,7 @@
         </slot>
         <i
           v-if="showClose"
-          class="
-            grayManagement-iconfont
-            icon-a-icon_outline_icon_addto_24px
-            dialog-title-closeBtn
-          "
+          class="grayManagement-iconfont icon-a-icon_outline_icon_addto_24px dialog-title-closeBtn"
           @click="cancelHandler"
         />
       </div>
@@ -156,25 +152,25 @@ export default {
       default: 2000
     }
   },
-  data () {
+  data() {
     return {
       showBuffer: false
     }
   },
   computed: {
-    relCancelText () {
+    relCancelText() {
       return this.cancelText || this.$t('gray.cancelBtn')
     },
-    relConfirmText () {
+    relConfirmText() {
       return this.confirmText || this.$t('gray.confirmBtn')
     },
-    refPrefix () {
+    refPrefix() {
       return 'GhDialog-'
     },
-    refSuffix () {
+    refSuffix() {
       return new Date().getTime() + Math.random() * 1000
     },
-    dialogTitle () {
+    dialogTitle() {
       if (this.title) return this.title
       else {
         switch (this.type) {
@@ -193,7 +189,7 @@ export default {
         }
       }
     },
-    iconClass () {
+    iconClass() {
       switch (this.type) {
         case 'success':
           return 'icon-icon_filled-circle_success'
@@ -209,7 +205,7 @@ export default {
     }
   },
   watch: {
-    show () {
+    show() {
       if (this.show) {
         this.showBuffer = true
         setTimeout(() => {
@@ -220,7 +216,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.show) {
       this.showBuffer = true
       setTimeout(() => {
@@ -229,10 +225,10 @@ export default {
     }
   },
   methods: {
-    shadeHandler () {
+    shadeHandler() {
       if (this.enableShadeClose) this.cancelHandler()
     },
-    showMessage (options) {
+    showMessage(options) {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dWindow = this.$refs[`${this.refPrefix}-window-${this.refSuffix}`]
       setTimeout(() => {
@@ -248,7 +244,7 @@ export default {
         }
       }, 100)
     },
-    closeWindow () {
+    closeWindow() {
       const dShade = this.$refs[`${this.refPrefix}-shade-${this.refSuffix}`]
       const dWindow = this.$refs[`${this.refPrefix}-window-${this.refSuffix}`]
       dWindow.style.opacity = 0
@@ -265,12 +261,12 @@ export default {
         this.showBuffer = false
       }, 300)
     },
-    confirmHandler () {
+    confirmHandler() {
       if (this.disabledConfirm) return
       this.$emit('confirm')
       if (!this.dontHideWhenConfirm) this.closeWindow()
     },
-    cancelHandler () {
+    cancelHandler() {
       this.$emit('cancel')
       this.closeWindow()
     }
@@ -308,7 +304,8 @@ export default {
     transform: translate(-50%, -53%) scale(1.03);
     transform-origin: 50% 50%;
     z-index: 9999;
-    transition: 0.25s opacity ease-in-out, 0.2s transform ease-in-out, 0.25s filter ease-in-out;
+    transition: 0.25s opacity ease-in-out, 0.2s transform ease-in-out,
+      0.25s filter ease-in-out;
     filter: blur(2px);
     opacity: 0;
     max-width: calc(100% - 200px);

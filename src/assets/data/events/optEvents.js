@@ -24,7 +24,7 @@ export default {
     triggerConditions: (attr = { age: [4, MAXNUM] }) => ({ ...attr }),
     optEvents: (events = {}) => ({
       ...events,
-      jiemojirouchuan_jieguo1: { text: '点一串试试', color: '#2545C4', conditions: { jiajing: [1, MAXNUM] } },
+      jiemojirouchuan_jieguo1: { text: '点一串试试', color: '#2545C4', conditions: { jiajing: [1, MAXNUM] }},
       jiemojirouchuan_jieguo2: { text: '一串怎么够，东北爷们儿当然直接是来十打', color: '#2545C4' },
       jiemojirouchuan_jieguo3: { text: '算了，不点', color: '#2545C4' }
     })
@@ -77,7 +77,7 @@ export default {
           tianfu_mofa: [2, MAXNUM]
         }
       },
-      bbzhuazhou_jieguo9: { text: '???', color: '#2545C4', conditions: { tezhi_weizhi: [1, MAXNUM] } },
+      bbzhuazhou_jieguo9: { text: '???', color: '#2545C4', conditions: { tezhi_weizhi: [1, MAXNUM] }},
       bbzhuazhou_jieguo12: { text: '这么迷信干嘛？不选！', color: '#2545C4' }
     })
   },
@@ -88,8 +88,8 @@ export default {
     text: () => '【可选事件】',
     optEvents: (events = {}) => ({
       ...events,
-      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {} },
-      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
+      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {}},
+      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] }}
     })
   },
   beidong_kexuan: {
@@ -99,8 +99,8 @@ export default {
     text: () => '【被动可选事件】',
     optEvents: (events = {}) => ({
       ...events,
-      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {} },
-      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] } }
+      xuanxiangshijian1: { text: '选项1', color: '#2545C4', conditions: {}},
+      xuanxiangshijian2: { text: '选项2', color: '#2545C4', conditions: { age: [1, 5] }}
     })
   }
 }

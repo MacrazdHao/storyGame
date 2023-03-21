@@ -28,7 +28,7 @@ const getTestChildren = () => {
   })
 }
 const createCascadeData = (arr, lev = 0) => {
-  return arr.map(item => {
+  return arr.map((item) => {
     const hasCascade = lev < 4 ? Math.floor(Math.random() * 2) : 0
     const newItem = { ...item }
     if (hasCascade) {
@@ -42,30 +42,32 @@ export default {
   components: {
     GhInput
   },
-  data () {
+  data() {
     return {
       keyword: '',
       indexes: [],
-      selectionData: createCascadeData([{
-        text: 'option-1',
-        value: 1
-      }, {
-        text: 'option-2',
-        value: 2
-      }, {
-        text: 'option-3',
-        value: 3
-      }])
+      selectionData: createCascadeData([
+        {
+          text: 'option-1',
+          value: 1
+        },
+        {
+          text: 'option-2',
+          value: 2
+        },
+        {
+          text: 'option-3',
+          value: 3
+        }
+      ])
     }
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
-    initRuleSelectorData () {
+    initRuleSelectorData() {
       // do sth
     },
-    handleSelect (indexes, item) {
+    handleSelect(indexes, item) {
       console.log('TestInput ===> ', indexes)
       this.indexes = indexes
     }

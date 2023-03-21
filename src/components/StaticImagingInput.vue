@@ -21,17 +21,17 @@ export default {
   },
   // value必填，否则v-for该输入框时，当数组发生改变，输入框的内容会出现错误或错乱
   props: ['value', 'placeholder', 'optionsData', 'keywordToValue', 'disabled'],
-  data () {
+  data() {
     return {
       keyword: '',
       selectedOptionIndex: -1
     }
   },
   computed: {
-    indexOptions () {
+    indexOptions() {
       return this.optionsData.map((item, index) => ({ ...item, index }))
     },
-    relOptions () {
+    relOptions() {
       if (!this.keyword) return this.indexOptions
       return this.indexOptions.filter((item) => {
         if (item.text.indexOf(this.keyword) > -1) {
@@ -45,20 +45,20 @@ export default {
     }
   },
   watch: {
-    value () {
+    value() {
       this.keyword = this.value
     }
   },
-  mounted () {
+  mounted() {
     this.keyword = this.value
   },
   methods: {
-    selectOption (index, item) {
+    selectOption(index, item) {
       this.selectedOptionIndex = item.index
       this.keyword = item.text
       this.$emit('select', item.value)
     },
-    handleInput (text, fromSelect = false) {
+    handleInput(text, fromSelect = false) {
       if (!fromSelect) this.selectedOptionIndex = -1
       this.keyword = text
       if (!this.keywordToValue) this.$emit('select', '')

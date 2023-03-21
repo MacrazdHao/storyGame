@@ -450,19 +450,18 @@ export default {
       for (const key in userInfo) {
         this.$set(this.userBuffs, key, userInfo[key])
       }
-      updateLocalRecords(this.userInfo.userId,
-        {
-          userBasicInfoLabels: this.userBasicInfoLabels,
-          userStatusInfoLabels: this.userStatusInfoLabels,
-          userBuffInfoLabels: this.userBuffInfoLabels,
-          userInfo: this.userInfo,
-          userStatus: this.userStatus,
-          userBuffs: this.userBuffs,
-          unitTimeInfo: this.unitTimeInfo,
-          events: this.events,
-          newUnitTime: this.newUnitTime,
-          selectedMultipleOptionIndex: this.selectedMultipleOptionIndex
-        })
+      updateLocalRecords(this.userInfo.userId, {
+        userBasicInfoLabels: this.userBasicInfoLabels,
+        userStatusInfoLabels: this.userStatusInfoLabels,
+        userBuffInfoLabels: this.userBuffInfoLabels,
+        userInfo: this.userInfo,
+        userStatus: this.userStatus,
+        userBuffs: this.userBuffs,
+        unitTimeInfo: this.unitTimeInfo,
+        events: this.events,
+        newUnitTime: this.newUnitTime,
+        selectedMultipleOptionIndex: this.selectedMultipleOptionIndex
+      })
     }
   }
 }

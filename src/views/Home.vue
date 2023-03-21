@@ -9,33 +9,33 @@
       <div
         class="block-layer"
         style="z-index: 9; transform: translateZ(-0.5px)"
-      ></div>
+      />
       <div
         class="block-layer"
         style="z-index: 8; transform: translateZ(-1px)"
-      ></div>
+      />
       <div
         class="block-layer"
         style="z-index: 7; transform: translateZ(-1.5px)"
-      ></div>
+      />
       <div
         class="block-layer"
         style="z-index: 7; transform: translateZ(-2px)"
-      ></div>
+      />
       <div
         class="block-layer"
         style="z-index: 7; transform: translateZ(-2.5px)"
-      ></div>
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {}
   },
-  mounted () {
+  mounted() {
     // var ajax = new XMLHttpRequest()
     // // https://juejin.im/user/update/user_info/       //旧版掘金的域名地址
     // // https://juejin.cn/user/update/user_info/        //2022-06-23更新时废弃
@@ -52,10 +52,10 @@ export default {
     // }
   },
   methods: {
-    start () {
+    start() {
       this.$router.push({ path: 'sceen' })
     },
-    maker () {
+    maker() {
       this.$router.push({ path: 'maker' })
     }
   }

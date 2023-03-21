@@ -616,7 +616,9 @@ export default {
       if (this.onlySelector) this.preShowSelections()
     },
     handleFocus() {
-      if (!this.selectionData || this.selectionData.length === 0) { this.$emit('selectionInitData') }
+      if (!this.selectionData || this.selectionData.length === 0) {
+        this.$emit('selectionInitData')
+      }
       if (!this.onlySelector) {
         this.isFocus = true
         this.$emit('focus')
@@ -784,7 +786,7 @@ export default {
         this.$emit('input', item[this.relSelectionTextKey], true)
         if (!this.isCascade) this.$emit('select', index, item)
         else {
-        // 此处showCascade作用为：更新selectedCascadePath
+          // 此处showCascade作用为：更新selectedCascadePath
           this.showCascade(cascadeIndex, index)
           const indexes = [...this.cascadePath, index]
           this.$emit('select', indexes, item)

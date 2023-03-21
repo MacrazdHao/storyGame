@@ -1,6 +1,12 @@
 <template>
   <div class="Textarea">
-    <div :class="['textareaBox', focus ? 'textareaBox--focus' : '', disabled ? 'textareaBox--disabled' : '']">
+    <div
+      :class="[
+        'textareaBox',
+        focus ? 'textareaBox--focus' : '',
+        disabled ? 'textareaBox--disabled' : '',
+      ]"
+    >
       <p v-if="innerLabel">{{ innerLabel }}</p>
       <textarea
         :value="value"

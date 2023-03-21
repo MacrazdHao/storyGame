@@ -133,9 +133,7 @@
                   <div class="controlBar-options-box-voice-control-inBox">
                     <div
                       :id="voiceProgressId"
-                      class="
-                        controlBar-options-box-voice-control-inBox-progress
-                      "
+                      class="controlBar-options-box-voice-control-inBox-progress"
                       @mouseup.stop="changeVoiceProgressEnd"
                       @mousedown.stop="changeVoiceProgressStart"
                       @mousemove.stop="changingVoiceProgress"
@@ -148,14 +146,10 @@
                         :style="{
                           height: `${volume}%`,
                         }"
-                        class="
-                          controlBar-options-box-voice-control-inBox-progress-current
-                        "
+                        class="controlBar-options-box-voice-control-inBox-progress-current"
                       >
                         <div
-                          class="
-                            controlBar-options-box-voice-control-inBox-progress-current-block
-                          "
+                          class="controlBar-options-box-voice-control-inBox-progress-current-block"
                         />
                       </div>
                     </div>
@@ -188,7 +182,7 @@
 import dashjs from 'dashjs'
 export default {
   props: ['videoRefId', 'videoUrl', 'autoplay'],
-  data () {
+  data() {
     return {
       playing: false,
       paused: false,
@@ -224,31 +218,31 @@ export default {
     }
   },
   computed: {
-    videoId () {
+    videoId() {
       return `${this.videoRefId}-video`
     },
-    progressId () {
+    progressId() {
       return `${this.videoRefId}-progress`
     },
-    curProgressId () {
+    curProgressId() {
       return `${this.videoRefId}-progress-current`
     },
-    progressPersent () {
+    progressPersent() {
       return (100 * this.currentTime) / this.durationTime
     },
-    voiceProgressId () {
+    voiceProgressId() {
       return `${this.videoRefId}-voice-progress`
     },
-    curVoiceProgressId () {
+    curVoiceProgressId() {
       return `${this.videoRefId}-voice-progress-current`
     }
   },
   watch: {
-    videoUrl () {
+    videoUrl() {
       this.initVideo()
     }
   },
-  mounted () {
+  mounted() {
     this.progressDom = document.querySelector(`#${this.progressId}`)
     this.curProgressDom = document.querySelector(`#${this.curProgressId}`)
     this.voiceProgressDom = document.querySelector(`#${this.voiceProgressId}`)
@@ -258,24 +252,25 @@ export default {
     this.initVideo()
     window.addEventListener('resize', this.listenResize)
   },
-  beforeUnmount () {
+  beforeUnmount() {
     window.removeEventListener('resize', this.listenResize)
   },
   methods: {
-    listenResize () {
+    listenResize() {
       const isFullScreen =
         document.fullscreen ||
         document.mozFullScreen ||
         document.webkitIsFullScreen
-      const fullScreenStatus = isFullScreen === undefined ? false : isFullScreen
+      const fullScreenStatus =
+        isFullScreen === undefined ? false : isFullScreen
       if (!fullScreenStatus) this.fullscreenMode = false
     },
-    changePlaySpeed (speed) {
+    changePlaySpeed(speed) {
       this.playSpeed = speed
       this.videoDom.playbackRate = Number(speed)
       this.showSpeed = false
     },
-    movingMouse (e) {
+    movingMouse(e) {
       e.preventDefault()
       document.querySelector(`#${this.videoId}`).style.cursor = 'auto'
       if (this.cursorTimer) {
@@ -288,7 +283,7 @@ export default {
       }
       this.changingProgress(e)
     },
-    changeVoiceProgressStart (e) {
+    changeVoiceProgressStart(e) {
       e.preventDefault()
       this.videoDom.muted = false
       this.muted = false
@@ -303,7 +298,7 @@ export default {
       ).toFixed(0)
       this.dragging = true
     },
-    changingVoiceProgress (e) {
+    changingVoiceProgress(e) {
       e.preventDefault()
       if (!this.dragging) return
       const progress = (
@@ -317,17 +312,17 @@ export default {
       else this.volume = progress * 100
       this.videoDom.volume = this.volume / 100
     },
-    changeVoiceProgressEnd (e) {
+    changeVoiceProgressEnd(e) {
       e.preventDefault()
       if (!this.dragging) return
       this.dragging = false
       this.videoDom.volume = this.volume / 100
     },
-    muteVoice () {
+    muteVoice() {
       this.videoDom.muted = !this.muted
       this.muted = !this.muted
     },
-    progressing (e) {
+    progressing(e) {
       // this.videoDom.buffered.end()
       const bStart = this.videoDom.buffered.start(0)
       const bEnd = this.videoDom.buffered.end(0)
@@ -345,7 +340,7 @@ export default {
 
       // this.bufferdStartPersend = 0
     },
-    changeProgressStart (e) {
+    changeProgressStart(e) {
       e.preventDefault()
       this.videoDom.pause()
       this.currentTime =
@@ -357,7 +352,7 @@ export default {
         this.progressDom.offsetWidth
       this.dragging = true
     },
-    changingProgress (e) {
+    changingProgress(e) {
       e.preventDefault()
       if (!this.dragging) return
       this.bufferdPersend = 0
@@ -370,7 +365,7 @@ export default {
       else this.currentTime = progress * this.durationTime
       this.videoDom.currentTime = this.currentTime
     },
-    changeProgressEnd (e) {
+    changeProgressEnd(e) {
       e.preventDefault()
       document.querySelector(`#${this.videoId}`).style.cursor = 'auto'
       if (this.cursorTimer) {
@@ -389,31 +384,31 @@ export default {
       this.videoDom.play()
     },
 
-    playHandler () {
+    playHandler() {
       this.paused = false
       this.ended = false
       this.playing = true
     },
-    pauseHandler () {
+    pauseHandler() {
       this.paused = true
       this.ended = true
       this.playing = false
     },
-    endHandler () {
+    endHandler() {
       this.ended = true
       this.paused = true
       this.playing = false
     },
-    durationchange () {
+    durationchange() {
       this.durationTime = this.videoDom.duration
     },
-    timeupdate (e) {
+    timeupdate(e) {
       if (!this.dragging) {
         this.currentTime = this.videoDom.currentTime
         this.curProgressDom.style.width = `${this.progressPersent}%`
       }
     },
-    fullscreen () {
+    fullscreen() {
       if (document.webkitFullscreenElement) {
         // this.videoDom.webkitExitFullscreen()
         document.webkitExitFullscreen()
@@ -425,11 +420,11 @@ export default {
         this.fullscreenMode = true
       }
     },
-    playOrPause () {
+    playOrPause() {
       if (this.videoDom.paused || this.videoDom.ended) this.videoDom.play()
       else this.videoDom.pause()
     },
-    timeFormatter (seconds, maxUnit) {
+    timeFormatter(seconds, maxUnit) {
       if (maxUnit === 'min') {
         return `${this.preTimeZero(
           Math.floor(seconds / 60)
@@ -442,14 +437,14 @@ export default {
         )}:${this.preTimeZero(lastSec % 60)}`
       }
     },
-    preTimeZero (num, length = 2) {
+    preTimeZero(num, length = 2) {
       let numStr = `${Math.floor(num)}`
       const numLength = numStr.length
       if (length < numLength) return numStr
       for (let i = 0; i < length - numLength; i++) numStr = '0' + numStr
       return numStr
     },
-    initVideo () {
+    initVideo() {
       if (this.videoUrl) {
         this.cursorTimer = setTimeout(() => {
           document.querySelector(`#${this.videoId}`).style.cursor = 'none'

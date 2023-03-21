@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import FixedMenu from './GhFixedMenu.vue'
+import FixedMenu from "./GhFixedMenu.vue";
 /*
   optionsMenu: [{
     text: String
@@ -52,79 +52,79 @@ import FixedMenu from './GhFixedMenu.vue'
 */
 export default {
   props: [
-    'items',
-    'border',
-    'index',
-    'placeholder',
-    'singleItemHeight',
-    'showNum',
-    'inputHeight',
+    "items",
+    "border",
+    "index",
+    "placeholder",
+    "singleItemHeight",
+    "showNum",
+    "inputHeight",
     // "minWidth",
-    'iconUrl',
-    'disabled'
+    "iconUrl",
+    "disabled",
   ],
   components: {
-    FixedMenu
+    FixedMenu,
   },
-  data () {
+  data() {
     return {
       indexTmp: -1,
       optionsMenu: [],
       menuFocus: false,
-      minWidth: 120
-    }
+      minWidth: 120,
+    };
   },
   watch: {
-    index (val) {
+    index(val) {
       if (val !== this.indexTmp) {
-        this.indexTmp = val
+        this.indexTmp = val;
       }
     },
-    items (val) {
-      this.optionsMenu = []
-      this.indexTmp = this.index
+    items(val) {
+      this.optionsMenu = [];
+      this.indexTmp = this.index;
       for (let i = 0; i < this.items.length; i++) {
-        const tmp = { text: '', callback: this.handleSelect }
-        tmp.text = this.items[i].text
-        this.optionsMenu.push(tmp)
+        const tmp = { text: "", callback: this.handleSelect };
+        tmp.text = this.items[i].text;
+        this.optionsMenu.push(tmp);
       }
-    }
+    },
   },
   computed: {
-    listItemNum () {
-      return this.showNum || 4
+    listItemNum() {
+      return this.showNum || 4;
     },
-    itemHeight () {
-      return this.singleItemHeight || 34
-    }
+    itemHeight() {
+      return this.singleItemHeight || 34;
+    },
   },
-  mounted () {
-    this.indexTmp = this.index
+  mounted() {
+    this.indexTmp = this.index;
     for (let i = 0; i < this.items.length; i++) {
-      const tmp = { text: '', callback: this.handleSelect }
-      tmp.text = this.items[i].text
-      this.optionsMenu.push(tmp)
+      const tmp = { text: "", callback: this.handleSelect };
+      tmp.text = this.items[i].text;
+      this.optionsMenu.push(tmp);
     }
   },
   methods: {
-    getDynamicMinWidth () {
-      this.minWidth = this.$refs.selector.offsetWidth
+    getDynamicMinWidth() {
+      this.minWidth = this.$refs.selector.offsetWidth;
     },
-    handleSelect (info, index) {
-      this.indexTmp = index
-      this.$emit('handleSelect', index)
+    handleSelect(info, index) {
+      this.indexTmp = index;
+      this.$emit("handleSelect", index);
     },
-    handleFocus (e) {
-      this.menuFocus = true
+    handleFocus(e) {
+      this.menuFocus = true;
     },
-    handleBlur (e) {
-      this.menuFocus = false
+    handleBlur(e) {
+      this.menuFocus = false;
     },
-    scrollToBottom (e) {
-      this.$emit('scrollToBottom', e)
-    }
-  }
-}
+    scrollToBottom(e) {
+      this.$emit("scrollToBottom", e);
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -207,7 +207,7 @@ export default {
   flex-direction: row;
   justify-content: center;
   background-color: #fff;
-  transition: .2s all;
+  transition: 0.2s all;
   p {
     margin: 0;
   }

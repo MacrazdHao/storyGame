@@ -116,22 +116,22 @@ export default {
     }
   },
   computed: {
-    minWidthPX () {
+    minWidthPX() {
       return this.minWidth > 0 ? `${this.minWidth}px` : null
     },
-    propsStyle () {
+    propsStyle() {
       const style = { ...this.cusStyle }
       if (this.minWidthPX) style.minWidth = this.minWidthPX
       return style
     },
-    propsTextStyle () {
+    propsTextStyle() {
       const style = {}
       if (this.normalFontColor) style.color = this.normalFontColor
       return style
     }
   },
   methods: {
-    clickHandler () {
+    clickHandler() {
       if (this.disabled) return
       this.$emit('click')
     }

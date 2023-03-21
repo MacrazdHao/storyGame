@@ -13,8 +13,8 @@ let seed = 0
   nodeList.forEach(node => node[ctx].documentHandler(e, startClick))
 })
 
-function createDocumentHandler (el, binding, vnode) {
-  return function (mouseup = {}, mousedown = {}) {
+function createDocumentHandler(el, binding, vnode) {
+  return function(mouseup = {}, mousedown = {}) {
     if (!vnode ||
       !vnode.context ||
       !mouseup.target ||
@@ -23,8 +23,8 @@ function createDocumentHandler (el, binding, vnode) {
       el.contains(mousedown.target) ||
       el === mouseup.target ||
       (vnode.context.popperElm &&
-      (vnode.context.popperElm.contains(mouseup.target) ||
-      vnode.context.popperElm.contains(mousedown.target)))) return
+        (vnode.context.popperElm.contains(mouseup.target) ||
+          vnode.context.popperElm.contains(mousedown.target)))) return
 
     if (binding.expression &&
       el[ctx].methodName &&
@@ -45,7 +45,7 @@ function createDocumentHandler (el, binding, vnode) {
  * ```
  */
 export default {
-  bind (el, binding, vnode) {
+  bind(el, binding, vnode) {
     nodeList.push(el)
     const id = seed++
     el[ctx] = {
@@ -56,13 +56,13 @@ export default {
     }
   },
 
-  update (el, binding, vnode) {
+  update(el, binding, vnode) {
     el[ctx].documentHandler = createDocumentHandler(el, binding, vnode)
     el[ctx].methodName = binding.expression
     el[ctx].bindingFn = binding.value
   },
 
-  unbind (el) {
+  unbind(el) {
     const len = nodeList.length
 
     for (let i = 0; i < len; i++) {
