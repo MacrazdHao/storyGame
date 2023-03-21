@@ -3,9 +3,12 @@ const path = require('path')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const nodeExternals = require('webpack-node-externals')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+
+const TimeStamp = new Date().getTime()
 
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 const env = process.env
@@ -25,18 +28,6 @@ module.exports = {
       errors: true
     },
     proxy: {
-      // 配置跨域
-      '/[a-z_]+_login': {
-        target: 'http://127.0.0.1:8911', // 代理地址，这里设置的地址会代替axios中设置的baseURL
-        changeOrigin: true,
-        pathRewrite: {
-          '^/[a-z_]+_login': '/'
-        }
-        //,
-        // headers: {
-        //   referer: 'https://sit-user-chairside.heygears.com/'
-        // }
-      }
     },
     disableHostCheck: true
   },
@@ -70,15 +61,37 @@ module.exports = {
         allowlist: /\.css$/
       })
       : undefined,
-    optimization: { splitChunks: isServer ? false : undefined },
+    optimization: {
+      splitChunks: isServer ? false : undefined
+    },
     // 这是将服务器的整个输出
     // 构建为单个 JSON 文件的插件。
     // 服务端默认文件名为 `vue-ssr-server-bundle.json`
     // 客户端默认文件名为 `vue-ssr-client-manifest.json`
-    plugins: [isServer ? new VueSSRServerPlugin() : new VueSSRClientPlugin()]
+    plugins: [
+      isServer ? new VueSSRServerPlugin() : new VueSSRClientPlugin()
+    ]
   },
 
   chainWebpack(config) {
+    config.output.filename(`static/js/[hash].[name].${TimeStamp}.js`).end()
+    config.output.chunkFilename(`static/js/[hash].[name].${TimeStamp}.js`).end()
+    // const miniCssExtraPlugin = new MiniCssExtractPlugin({
+    //   filename: `static/css/[hash].[name].${TimeStamp}.css`,
+    //   chunkFilename: `static/css/[hash].[name].${TimeStamp}.css`
+    // })
+    // config.plugin('extract-css').use(miniCssExtraPlugin).end()
+    config.module.rule('images').use('url-loader').tap(options => {
+      options.name = `static/img/[hash].[name].${TimeStamp}.[ext]`
+      options.fallback = {
+        loader: 'file-loader',
+        options: {
+          name: `static/img/[hash].[name].${TimeStamp}.[ext]`
+        }
+      }
+      return options
+    })
+
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {

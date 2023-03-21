@@ -18,10 +18,8 @@
     "lodash.merge": "^4.6.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vue-server-renderer": "^2.7.10",
     "vuex": "^3.4.0",
-    "vuex-router-sync": "^5.0.0",
-    "webpack-node-externals": "^3.0.0"
+    "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.15",
@@ -37,9 +35,12 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
+    "mini-css-extract-plugin": "0.9.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-server-renderer": "2.7.10",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-node-externals": "^3.0.0"
   },
   "eslintConfig": {
     "root": true,
