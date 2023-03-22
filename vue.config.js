@@ -13,12 +13,13 @@ const TimeStamp = new Date().getTime()
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 const env = process.env
 const isServer = env.RUN_ENV === 'server'
-
-const isDevEnv = env.NODE_ENV === 'development'
+const isDevEnv = process.env.NODE_ENV === 'development'
+const outputDir = !process.env.NODE_ENV || isDevEnv ? 'dist' : `../cct/dist/${env.RUN_ENV}`
+console.log(process.env.NODE_ENV, env.RUN_ENV, outputDir)
 
 module.exports = {
   publicPath: './',
-  outputDir: isDevEnv ? 'dist' : `../cct/dist/${env.RUN_ENV}`,
+  outputDir,
   assetsDir: 'static',
   lintOnSave: isDevEnv,
   productionSourceMap: false,

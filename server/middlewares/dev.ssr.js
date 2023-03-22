@@ -12,9 +12,9 @@ serverCompiler.outputFileSystem = mfs
 
 const clientHost = 'localhost'
 const clientPort = 9529
-const clientPublicPath = '/client/'
+const clientPublicPath = '/'
 
-let serverBundle
+let serverBundle = null
 // 监听serverBundle
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
@@ -22,7 +22,7 @@ serverCompiler.watch({}, (err, stats) => {
   stats.errors.forEach(error => console.error('ERROR:', error))
   stats.warnings.forEach(warn => console.warn('WARN:', warn))
   try {
-    const bundlePath = path.join(webpackConfig.output.path, 'server/vue-ssr-server-bundle.json')
+    const bundlePath = path.join(webpackConfig.output.path, 'vue-ssr-server-bundle.json')
     serverBundle = JSON.parse(mfs.readFileSync(bundlePath, 'utf-8'))
     console.log('vue-ssr-server-bundle.json updated')
   } catch (err) {

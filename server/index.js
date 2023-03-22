@@ -12,12 +12,11 @@ router.get('/test', async ctx => {
   ctx.body = 'this is ssr-server'
 })
 
-const resolve = (file) => path.resolve(__dirname, file)
-// 开放dist目录
-app.use(koaStatic(resolve('../../cct/dist/client')))
-
 Consoler.global.info(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
+  const resolve = (file) => path.resolve(__dirname, file)
+  // 开放dist目录
+  app.use(koaStatic(resolve('../../cct/dist/client')))
   app.use(require('./middlewares/prod.ssr.js'))
 } else {
   app.use(require('./middlewares/static.ssr.js'))

@@ -7,11 +7,11 @@
     "build": "npm run build:server && npm run build:client",
     "build:client": "cross-env RUN_ENV=client vue-cli-service build --no-clean",
     "build:server": "cross-env RUN_ENV=server vue-cli-service build --no-clean --mode server",
-    "service": "node server\\index.js",
-    "serve": "vue-cli-service serve",
-    "service:prod": "cross-env NODE_ENV=production node server\\index.js",
-    "serve:prod": "cross-env NODE_ENV=production vue-cli-service serve",
-    "dev": "concurrently -r \"npm run serve \" \"npm run service\"",
+    "service": "cross-env RUN_ENV=server NODE_ENV=development node server\\index.js",
+    "serve": "cross-env RUN_ENV=client NODE_ENV=development vue-cli-service serve",
+    "service:prod": "cross-env RUN_ENV=server NODE_ENV=production node server\\index.js",
+    "serve:prod": "cross-env RUN_ENV=client NODE_ENV=production vue-cli-service serve",
+    "dev": "cross-env RUN_ENV=server NODE_ENV=development concurrently -r \"npm run serve \" \"npm run service\"",
     "prod": "concurrently -r \"npm run serve:prod \" \"npm run service:prod\""
   },
   "dependencies": {
