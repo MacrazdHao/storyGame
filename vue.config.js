@@ -16,7 +16,7 @@ const isServer = env.RUN_ENV === 'server'
 
 module.exports = {
   publicPath: './',
-  outputDir: `dist/${env.RUN_ENV}`,
+  outputDir: `../cct/dist/${env.RUN_ENV}`,
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -76,11 +76,11 @@ module.exports = {
   chainWebpack(config) {
     config.output.filename(`static/js/[hash].[name].${TimeStamp}.js`).end()
     config.output.chunkFilename(`static/js/[hash].[name].${TimeStamp}.js`).end()
-    // const miniCssExtraPlugin = new MiniCssExtractPlugin({
-    //   filename: `static/css/[hash].[name].${TimeStamp}.css`,
-    //   chunkFilename: `static/css/[hash].[name].${TimeStamp}.css`
-    // })
-    // config.plugin('extract-css').use(miniCssExtraPlugin).end()
+    const miniCssExtraPlugin = new MiniCssExtractPlugin({
+      filename: `static/css/[hash].[name].${TimeStamp}.css`,
+      chunkFilename: `static/css/[hash].[name].${TimeStamp}.css`
+    })
+    config.plugin('mini-css-extract-plugin').use(miniCssExtraPlugin).end()
     config.module.rule('images').use('url-loader').tap(options => {
       options.name = `static/img/[hash].[name].${TimeStamp}.[ext]`
       options.fallback = {
