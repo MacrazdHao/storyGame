@@ -7,7 +7,12 @@
     "build": "npm run build:server && npm run build:client",
     "build:client": "cross-env RUN_ENV=client vue-cli-service build --no-clean",
     "build:server": "cross-env RUN_ENV=server vue-cli-service build --no-clean --mode server",
-    "service": "node server\\index.js"
+    "service": "node server\\index.js",
+    "serve": "vue-cli-service serve",
+    "service:prod": "cross-env NODE_ENV=production node server\\index.js",
+    "serve:prod": "cross-env NODE_ENV=production vue-cli-service serve",
+    "dev": "concurrently -r \"npm run serve \" \"npm run service\"",
+    "prod": "concurrently -r \"npm run serve:prod \" \"npm run service:prod\""
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -34,6 +39,7 @@
     "@vue/cli-service": "~4.5.15",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
+    "concurrently": "^7.6.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",

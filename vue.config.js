@@ -14,11 +14,13 @@ const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 const env = process.env
 const isServer = env.RUN_ENV === 'server'
 
+const isDevEnv = env.NODE_ENV === 'development'
+
 module.exports = {
   publicPath: './',
-  outputDir: `../cct/dist/${env.RUN_ENV}`,
+  outputDir: isDevEnv ? 'dist' : `../cct/dist/${env.RUN_ENV}`,
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: isDevEnv,
   productionSourceMap: false,
   devServer: {
     port: port,
@@ -27,8 +29,8 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy: {
-    },
+    // proxy: {
+    // },
     disableHostCheck: true
   },
   configureWebpack: {
@@ -39,7 +41,7 @@ module.exports = {
     },
 
     // 将 entry 指向应用程序的 server / client 文件
-    entry: `./src/entry-${env.RUN_ENV}.js`,
+    entry: `./src/entry-${env.RUN_ENV || 'client'}.js`,
     devtool: 'eval',
     // 这允许 webpack 以 Node 适用方式(Node-appropriate fashion)处理动态导入(dynamic import)，
     // 并且还会在编译 Vue 组件时，
@@ -74,6 +76,10 @@ module.exports = {
   },
 
   chainWebpack(config) {
+    if (isDevEnv) {
+      config.devServer.headers({ 'Access-Control-Allow-Origin': '*' })
+    }
+
     config.output.filename(`static/js/[hash].[name].${TimeStamp}.js`).end()
     config.output.chunkFilename(`static/js/[hash].[name].${TimeStamp}.js`).end()
     const miniCssExtraPlugin = new MiniCssExtractPlugin({

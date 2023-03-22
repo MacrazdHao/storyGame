@@ -1,0 +1,463 @@
+[2023-03-22T11:05:48.271] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\undefined\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:08:21.182] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\undefined\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:10:28.490] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:11:03.698] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\dist\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:11:28.309] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\dist\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:12:50.448] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\dist\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:12:50.450] [INFO] global - path: D:\dist
+[2023-03-22T11:34:58.378] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\dist\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:34:58.380] [INFO] global - path: D:\dist
+[2023-03-22T11:39:03.527] [INFO] global - path: [object Object]
+[2023-03-22T11:39:06.235] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:28:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:39:06.238] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T11:39:30.251] [INFO] global - path: {"path":"D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client","filename":"static/js/[hash].[name].1679456368726.js","publicPath":"","chunkFilename":"static/js/[hash].[name].1679456368726.js"}
+[2023-03-22T11:39:33.082] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:28:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:39:33.084] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T11:40:15.535] [INFO] global - path: [object Object]
+[2023-03-22T11:40:18.280] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:28:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:40:18.281] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T11:42:29.007] [INFO] global - path: undefined
+[2023-03-22T11:42:31.664] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:28:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:42:31.666] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T11:42:42.134] [INFO] global - path: undefined
+[2023-03-22T11:42:45.034] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:114:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:28:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:42:45.036] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T11:48:32.678] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T11:48:32.680] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T12:02:32.568] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7
+    at done (D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:3522:9)
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:6:1) {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T12:02:32.571] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T12:02:36.554] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7
+    at done (D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:3522:9)
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:6:1) {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\client\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T12:02:36.555] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\client
+[2023-03-22T13:13:02.761] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\undefined\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T13:13:02.765] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\undefined
+[2023-03-22T13:15:50.195] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\undefined\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T13:15:50.198] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\undefined
+[2023-03-22T13:17:23.521] [INFO] global - undefined
+[2023-03-22T13:17:28.397] [INFO] global - Error: no such file or directory
+    at MemoryFileSystem.readFileSync (D:\文档\桌面\study\gam2-ssr\client\node_modules\memory-fs\lib\MemoryFileSystem.js:107:10)
+    at Watching.handler (D:\文档\桌面\study\gam2-ssr\client\server\middlewares\dev.ssr.js:27:35)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:99:9
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:24:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at Watching._done (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:98:28)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:73:19
+    at Compiler.emitRecords (D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:499:39)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Watching.js:54:20
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:485:14
+    at eval (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:11:1)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\copy-webpack-plugin\dist\index.js:115:7
+    at AsyncSeriesHook.eval [as callAsync] (eval at create (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\HookCodeFactory.js:33:10), <anonymous>:7:1)
+    at AsyncSeriesHook.lazyCompileHook (D:\文档\桌面\study\gam2-ssr\client\node_modules\tapable\lib\Hook.js:154:20)
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\webpack\lib\Compiler.js:482:27
+    at D:\文档\桌面\study\gam2-ssr\client\node_modules\neo-async\async.js:2818:7 {
+  code: 'ENOENT',
+  errno: 34,
+  message: 'no such file or directory',
+  path: 'D:\\文档\\桌面\\study\\gam2-ssr\\cct\\dist\\undefined\\server\\vue-ssr-server-bundle.json'
+}
+[2023-03-22T13:17:28.399] [INFO] global - path: D:\文档\桌面\study\gam2-ssr\cct\dist\undefined
+[2023-03-22T13:31:53.898] [INFO] global - production
+[2023-03-22T13:34:55.803] [INFO] global - production
+[2023-03-22T13:35:04.543] [INFO] global - production
+[2023-03-22T13:35:50.036] [INFO] global - production
+[2023-03-22T13:35:57.177] [INFO] global - http://192.168.203.45:3006：Request Error
+Error: connect ECONNREFUSED 192.168.203.45:3006
+[2023-03-22T13:35:57.524] [INFO] global - http://192.168.203.45:3006：Request Error
+Error: connect ECONNREFUSED 192.168.203.45:3006
+[2023-03-22T13:35:58.263] [INFO] global - http://192.168.203.45:3006：Request Error
+Error: connect ECONNREFUSED 192.168.203.45:3006
+[2023-03-22T13:36:18.063] [INFO] global - http://192.168.203.45:3006：Request Error
+AxiosError: Request failed with status code 500
+[2023-03-22T13:37:17.850] [INFO] global - http://192.168.203.45:3006：Request Error
+AxiosError: Request failed with status code 500
+[2023-03-22T13:37:33.547] [INFO] global - http://192.168.203.45:3006：Request Error
+AxiosError: Request failed with status code 500
+[2023-03-22T13:37:43.634] [INFO] global - http://192.168.203.45:3006：Request Error
+AxiosError: Request failed with status code 500
+[2023-03-22T13:37:52.059] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:52.065] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:53.008] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:53.013] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:53.465] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:53.468] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:54.177] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:37:54.180] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:38:18.566] [INFO] global - production
+[2023-03-22T13:38:27.366] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:38:27.378] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:38:27.382] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:38:27.385] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:39:34.488] [INFO] global - production
+[2023-03-22T13:39:37.831] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
+[2023-03-22T13:39:37.836] [INFO] global - http://192.168.203.45:3006：Request Success
+[object Object]
