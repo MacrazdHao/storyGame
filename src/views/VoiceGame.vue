@@ -87,14 +87,18 @@ export default {
       // 上下由音量控制
       const originDataY = new Float32Array(this.analyserNode.frequencyBinCount)
       let avgY = 0
+      let length = 0
       this.analyserNode.getFloatFrequencyData(originDataY)
       for (let i = 0; i < originDataY.length; i++) {
+        if (originDataY[i] === -Infinity) continue
         avgY += originDataY[i]
+        length++
       }
-      avgY = avgY / originDataY.length
-      console.log(avgX * 100 + 0.015, Math.pow(10, avgY / 85) * 20 - 1.2)
-      this.$refs.dot.style.left = this.getDotPos(avgX * 1000 + 0.15)
-      this.$refs.dot.style.top = this.getDotPos(Math.pow(10, avgY / 85) * 20 - 1.2, 1)
+      avgY = Math.pow(10, avgY / length / 85) * 100
+      // console.log(avgX * 10000, -(Math.pow(10, avgY / 85) * 20) * 10 + 10)
+      this.$refs.dot.style.left = this.getDotPos(avgX * 10000)
+      console.log(avgY)
+      this.$refs.dot.style.top = this.getDotPos(5 - avgY, 1)
     }
     // setDotY() {
     // }
