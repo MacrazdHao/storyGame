@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Sceen from '../views/Sceen.vue'
 import Maker from '../views/Maker.vue'
+import VoiceGame from '../views/VoiceGame.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/maker',
     name: 'Maker',
     component: Maker
+  },
+  {
+    path: '/voiceGame',
+    name: 'VoiceGame',
+    component: VoiceGame
   }
 ]
 
