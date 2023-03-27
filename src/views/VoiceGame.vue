@@ -3,6 +3,7 @@
     <div class="options">
       <button @click="startRecord">启动</button>
       <button @click="stopRecord">停止</button>
+      <p>{{ pinlv }}</p>
       <!-- <canvas ref="waver" /> -->
     </div>
     <div ref="playground" class="playground">
@@ -15,6 +16,8 @@
 export default {
   data() {
     return {
+      pinlv: 0,
+
       audioCtx: null,
       source: null,
       audioStream: null,
@@ -63,8 +66,12 @@ export default {
     },
     getDotPos(offset, dir = 0) {
       const playgroundRect = this.$refs.playground.getBoundingClientRect()
+      const rWinWidthRat = playgroundRect.width / 1440
+      const rWinHeightRat = playgroundRect.height / 1080
       const curPos = dir ? this.$refs.dot.offsetTop : this.$refs.dot.offsetLeft
-      const newPos = offset + curPos
+      const relOffset = offset * (dir ? rWinHeightRat : rWinWidthRat)
+      const newPos = relOffset + curPos
+      // (relOffset > 10 ? 10 : relOffset < -10 ? -10 : relOffset) + curPos
       if (!dir && newPos > playgroundRect.width - 10) {
         return playgroundRect.width - 10 + 'px'
       }
@@ -84,6 +91,7 @@ export default {
         avgX += originDataX[i]
       }
       avgX = avgX / originDataX.length
+      this.pinlv = avgX * 100
       // 上下由音量控制
       const originDataY = new Float32Array(this.analyserNode.frequencyBinCount)
       let avgY = 0
@@ -96,7 +104,7 @@ export default {
       }
       avgY = Math.pow(10, avgY / length / 85) * 100
       // console.log(avgX * 10000, -(Math.pow(10, avgY / 85) * 20) * 10 + 10)
-      this.$refs.dot.style.left = this.getDotPos(avgX * 10000)
+      this.$refs.dot.style.left = this.getDotPos(avgX * 100)
       console.log(avgY)
       this.$refs.dot.style.top = this.getDotPos(5 - avgY, 1)
     }
@@ -126,7 +134,7 @@ export default {
       height: 10px;
       width: 10px;
       background-color: red;
-      transition: .01s all;
+      transition: 0.01s all;
     }
   }
 }
