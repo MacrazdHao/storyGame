@@ -8,8 +8,9 @@
         <button @click="startRecord(true)">校准0值</button>
         <button @click="clearZero">清空0值</button>
         <p>
-          当前：{{ yinliang }} - {{ pinlv }}(校准：{{ yinliangZero }} -
-          {{ pinlvZero }}{{ checkProcess === 100 ? "" : ` - ${checkProcess}%` }})
+          当前：{{ relYinliang }} - {{ relPinlv }}(校准：{{ yinliangZero }} -
+          {{ pinlvZero
+          }}{{ checkProcess === 100 ? "" : ` - ${checkProcess}%` }})
         </p>
       </div>
       <div>
@@ -62,8 +63,10 @@
 
 <script>
 import { Oscilloscope } from '../utils/GRWJMrx'
-const originYinliangZero = 13
-const originPinlvZero = 42
+// const originYinliangZero = 13
+// const originPinlvZero = 42
+const originYinliangBound = 13
+const originPinlvBound = -43.5
 export default {
   data() {
     return {
@@ -101,6 +104,14 @@ export default {
   computed: {
     checkProcess() {
       return (this.checkYinliang.length / 10).toFixed(2)
+    },
+    relPinlv() {
+      return this.yinliang < 3
+        ? this.yinliang
+        : this.yinliang - originYinliangBound
+    },
+    relYinliang() {
+      return this.pinlv < 3 ? this.pinlv : this.pinlv - originPinlvBound
     }
   },
   mounted() {
@@ -273,7 +284,7 @@ export default {
       for (let i = 0; i < originDataX.length; i++) {
         if (originDataX[i] > maxX) maxX = originDataX[i]
       }
-      this.yinliang = +((maxX / 10 - this.yinliangZero).toFixed())
+      this.yinliang = +(maxX / 10 - this.yinliangZero).toFixed()
       // 上下由频率控制，低下高上
       const originDataY = new Uint8Array(this.analyserNode.frequencyBinCount)
       let maxY = -Infinity
@@ -288,17 +299,16 @@ export default {
           maxYIndex = i
         }
       }
-      this.pinlv = isNaN(maxY) ? 0 : (this.pinlvZero - maxYIndex)
-      console.log(this.pinlvZero, maxYIndex)
-      this.$refs.dot.style.left = this.getDotPos(this.yinliang)
-      this.$refs.dot.style.top = this.getDotPos(this.pinlv, 1)
+      this.pinlv = isNaN(maxY) ? 0 : this.pinlvZero - maxYIndex
+      this.$refs.dot.style.left = this.getDotPos(this.relYinliang)
+      this.$refs.dot.style.top = this.getDotPos(this.relPinlv, 1)
     },
     getAvgNum(arr) {
       let sum = 0
       for (let i = 0; i < arr.length; i++) {
         sum += +arr[i]
       }
-      return +((sum / arr.length).toFixed(2))
+      return +(sum / arr.length).toFixed(2)
     },
     checkZero() {
       if (!this.analyserNode) return
@@ -330,13 +340,13 @@ export default {
           maxYIndex = i
         }
       }
-      this.checkPinlv.push(isNaN(maxY) ? 0 : (this.pinlvZero - maxYIndex))
+      this.checkPinlv.push(isNaN(maxY) ? 0 : this.pinlvZero - maxYIndex)
     },
     clearZero() {
       this.checkPinlv = []
       this.checkYinliang = []
-      this.yinliangZero = originYinliangZero
-      this.pinlvZero = originPinlvZero
+      this.yinliangZero = 0
+      this.pinlvZero = 0
     }
   }
 }
