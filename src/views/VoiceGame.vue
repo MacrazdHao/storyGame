@@ -2,8 +2,15 @@
   <div class="VoiceGame">
     <div class="options">
       <div>
-        <button @click="startRecord">启动麦克风</button>
+        <button @click="resetDot">重置红点</button>
+        <button @click="startRecord(false)">启动麦克风</button>
         <button @click="stopRecord">关闭麦克风</button>
+        <button @click="startRecord(true)">校准0值</button>
+        <button @click="clearZero">清空0值</button>
+        <p>
+          当前：{{ yinliang }} - {{ pinlv }}(校准：{{ yinliangZero }} -
+          {{ pinlvZero }}{{ checkProcess === 100 ? "" : ` - ${checkProcess}%` }})
+        </p>
       </div>
       <div>
         <button @click="playVirtual">播放虚拟音</button>
@@ -23,10 +30,10 @@
           min="100"
           max="2000"
           step="10"
-          value="560"
+          value="1000"
           @input="handleFrequency"
         >
-        <span ref="showFrequency">Frequency: 560Hz</span>
+        <span ref="showFrequency">Frequency: {{ frequency }}Hz</span>
       </div>
       <div>
         <input
@@ -35,16 +42,15 @@
           min="0"
           max="100"
           step="1"
-          value="80"
+          value="10"
           @input="handleVolumn"
         >
-        <span ref="showVolume"> Volume: 80%</span>
+        <span ref="showVolume"> Volume: {{ volume }}%</span>
       </div>
-      <div>
-        <canvas ref="time-canvas" class="virtualCanvas" />
-        <canvas ref="frequency-canvas" class="virtualCanvas" />
+      <div style="display: flex; flex-direction: row; width: 100%">
+        <canvas v-show="true" ref="time-canvas" class="virtualCanvas" />
+        <canvas v-show="true" ref="frequency-canvas" class="virtualCanvas" />
       </div>
-      <p>{{ pinlv }}</p>
       <!-- <canvas ref="waver" /> -->
       <video ref="video" autoplay />
     </div>
@@ -56,9 +62,18 @@
 
 <script>
 import { Oscilloscope } from '../utils/GRWJMrx'
+const originYinliangZero = 13
+const originPinlvZero = 42
 export default {
   data() {
     return {
+      checkPinlv: [],
+      checkYinliang: [],
+      checkInterval: null,
+      yinliangZero: 0,
+      pinlvZero: 0,
+
+      yinliang: 0,
       pinlv: 0,
 
       audioCtx: null,
@@ -71,8 +86,9 @@ export default {
       oscillator: null,
       oscilloscope: null,
       waveType: 'sine',
-      frequency: 560,
-      volume: 80,
+      frequency: 1000,
+      volume: 10,
+      // virtualFilter: 0,
 
       source: null,
       originStream: null,
@@ -82,6 +98,11 @@ export default {
       // animationYFrame: null
     }
   },
+  computed: {
+    checkProcess() {
+      return (this.checkYinliang.length / 10).toFixed(2)
+    }
+  },
   mounted() {
     // this.startRecord()
     this.audioCtx = new AudioContext()
@@ -89,11 +110,9 @@ export default {
     this.gainNode.gain.value = this.volume / 100
   },
   methods: {
-    startVideo() {
-      const ac = new AudioContext()
-      const $audio = this.$refs.video
-      const sourceNode = ac.createMediaElementSource($audio)
-      sourceNode.connect(/* other audio node */)
+    resetDot() {
+      this.$refs.dot.style.left = 'calc(50% - 5px)'
+      this.$refs.dot.style.top = 'calc(50% - 5px)'
     },
     playVirtual() {
       if (this.oscillator) return
@@ -102,21 +121,16 @@ export default {
       this.oscillator.frequency.value = this.frequency
       this.oscillator.connect(this.gainNode)
       this.gainNode.connect(this.audioCtx.destination)
-
       this.oscillator.start()
       this.oscilloscope = new Oscilloscope({
         audioContext: this.audioCtx,
         sourceNode: this.oscillator,
         fftSize: 2048
       })
-      console.log(this.oscilloscope, this.oscillator)
       this.oscilloscope.addCanvas(this.$refs['time-canvas'], 'time')
       this.oscilloscope.addCanvas(this.$refs['frequency-canvas'], 'frequency')
-
-      // this.analyserNode = this.audioCtx.createAnalyser()
-      // this.analyserNode.connect(this.audioCtx.destination)
       this.analyserNode = this.oscilloscope.analyser
-      this.animationFrame = setInterval(this.setDotPos, 10)
+      this.animationFrame = setInterval(this.setDotPos, 60)
     },
     stopVirtual() {
       if (!this.oscillator) return
@@ -141,45 +155,39 @@ export default {
     },
     handleFrequency(event) {
       this.frequency = +event.target.value
-      if (this.oscillator) { this.oscillator.frequency.value = +event.target.value }
-      this.$refs.showFrequency.innerText = 'Frequency: ' + this.frequency + 'Hz'
+      if (this.oscillator) {
+        this.oscillator.frequency.value = +event.target.value
+      }
+      // this.$refs.showFrequency.innerText = 'Frequency: ' + this.frequency + 'Hz'
     },
     handleVolumn(event) {
       this.volume = +event.target.value
       this.gainNode.gain.value = this.volume / 100
-      this.$refs.showVolume.innerText = 'Volume: ' + this.volume + '%'
+      // this.$refs.showVolume.innerText = 'Volume: ' + this.volume + '%'
     },
-    moveDot(stream) {
-      // this.source = this.audioCtx.createMediaStreamSource(this.stream)
-      // this.analyserNode = this.audioCtx.createAnalyser()
-      // this.analyserNode.fftSize = 32
-      // this.source.connect(this.analyserNode)
-      // this.analyserNode.connect(this.audioCtx.destination)
-
-      // this.animationFrame = setInterval(this.setDotPos, 10)
-    },
-    startRecord() {
+    startRecord(check = false) {
+      if (this.source) return
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          // this.stream = stream
+          this.stream = stream
           this.originStream = stream
-          this.filterAudioCtx = new (window.AudioContext ||
-            window.webkitAudioContext)()
-          this.filterSource =
-            this.filterAudioCtx.createMediaStreamSource(stream)
 
-          // 创建滤波器
-          this.filter = this.filterAudioCtx.createBiquadFilter()
-          this.filter.type = 'lowpass'
-          this.filter.Q.value = 10
-          this.filter.frequency.value = 1500
-          // this.filter.gain.value = 5
-          const destination =
-            this.filterAudioCtx.createMediaStreamDestination()
-          this.filter.connect(destination)
-          this.filterSource.connect(this.filter)
-          this.stream = destination.stream
+          // this.filterAudioCtx = new (window.AudioContext ||
+          //   window.webkitAudioContext)()
+          // this.filterSource =
+          //   this.filterAudioCtx.createMediaStreamSource(stream)
+          // // 创建滤波器
+          // this.filter = this.filterAudioCtx.createBiquadFilter()
+          // this.filter.type = 'lowpass'
+          // this.filter.Q.value = 10
+          // this.filter.frequency.value = 1500
+          // // this.filter.gain.value = 5
+          // const destination =
+          //   this.filterAudioCtx.createMediaStreamDestination()
+          // this.filter.connect(destination)
+          // this.filterSource.connect(this.filter)
+          // this.stream = destination.stream
 
           this.source = this.audioCtx.createMediaStreamSource(this.stream)
           this.analyserNode = this.audioCtx.createAnalyser()
@@ -187,7 +195,24 @@ export default {
           this.source.connect(this.analyserNode)
           this.analyserNode.connect(this.audioCtx.destination)
 
-          this.animationFrame = setInterval(this.setDotPos, 10)
+          this.oscillator = this.audioCtx.createOscillator()
+          this.oscilloscope = new Oscilloscope({
+            audioContext: this.audioCtx,
+            sourceNode: this.source,
+            fftSize: 1024
+          })
+          this.oscillator.connect(this.gainNode)
+          this.gainNode.connect(this.audioCtx.destination)
+          this.oscillator.start()
+
+          this.oscilloscope.addCanvas(this.$refs['time-canvas'], 'time')
+          this.oscilloscope.addCanvas(
+            this.$refs['frequency-canvas'],
+            'frequency'
+          )
+          if (check) {
+            this.checkInterval = setInterval(this.checkZero, 10)
+          } else this.animationFrame = setInterval(this.setDotPos, 10)
           // this.animationYFrame = setInterval(this.setDotY, 100)
         })
         .catch((e) => {
@@ -195,22 +220,31 @@ export default {
         })
     },
     stopRecord() {
+      if (!this.source) return
+      if (this.oscillator) {
+        this.oscilloscope.destroy()
+        this.oscillator.stop()
+        this.oscillator.disconnect()
+        this.oscillator = null
+      }
       const tracks = this.originStream.getAudioTracks()
       for (let i = 0; i < tracks.length; i++) {
         tracks[i].stop()
       }
-      this.analyserNode.disconnect()
       this.source.disconnect()
+      if (this.checkInterval) {
+        clearInterval(this.checkInterval)
+        this.checkInterval = null
+      } else {
+        clearInterval(this.animationFrame)
+        this.animationFrame = null
+      }
       this.analyserNode = null
       this.source = null
-      this.filterSource.disconnect()
-      this.filter.disconnect()
-      this.filterSource = null
-      this.filter = null
-      clearInterval(this.animationFrame)
-      this.animationFrame = null
-      // clearInterval(this.animationYFrame)
-      // this.animationYFrame = null
+      // this.filterSource.disconnect()
+      // this.filter.disconnect()
+      // this.filterSource = null
+      // this.filter = null
     },
     getDotPos(offset, dir = 0) {
       const playgroundRect = this.$refs.playground.getBoundingClientRect()
@@ -231,46 +265,79 @@ export default {
       return newPos + 'px'
     },
     setDotPos() {
-      // 左右由频率控制
-      const originDataX = new Float32Array(this.analyserNode.fftSize)
-      this.analyserNode.getFloatTimeDomainData(originDataX)
-      let avgX = 0
+      if (!this.analyserNode) return
+      // 左右由音量控制，低左高右
+      const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
+      this.analyserNode.getByteTimeDomainData(originDataX)
       let maxX = -Infinity
-      let minX = Infinity
       for (let i = 0; i < originDataX.length; i++) {
         if (originDataX[i] > maxX) maxX = originDataX[i]
-        if (originDataX[i] < minX) minX = originDataX[i]
-        // avgX += originDataX[i]
       }
-      // console.log(maxX, ',', minX)
-      // avgX = avgX / originDataX.length
-      avgX = (maxX + minX) / 2
-      this.pinlv = avgX * 10000
-      // 上下由音量控制
-      const originDataY = new Float32Array(this.analyserNode.frequencyBinCount)
-      let avgY = 0
-      let length = 0
-      this.analyserNode.getFloatFrequencyData(originDataY)
+      this.yinliang = +((maxX / 10 - this.yinliangZero).toFixed())
+      // 上下由频率控制，低下高上
+      const originDataY = new Uint8Array(this.analyserNode.frequencyBinCount)
+      let maxY = -Infinity
+      let maxYIndex = 0
+      this.analyserNode.getByteFrequencyData(originDataY)
       for (let i = 0; i < originDataY.length; i++) {
-        if (originDataY[i] === -Infinity) continue
-        avgY += originDataY[i]
-        length++
+        if (originDataY[i] === -Infinity || originDataY[i] === Infinity) {
+          continue
+        }
+        if (maxY < originDataY[i]) {
+          maxY = originDataY[i]
+          maxYIndex = i
+        }
       }
-
-      // avgY = Math.pow(10, avgY / length / 85) * 100
-      avgY = -avgY / length / 100
-
-      // const originDataZ = new Uint8Array(this.analyserNode.frequencyBinCount)
-      // this.analyserNode.getByteFrequencyData(originDataZ)
-
-      console.log(avgY)
-      // console.log(avgX * 10000, -(Math.pow(10, avgY / 85) * 20) * 10 + 10)
-      this.$refs.dot.style.left = this.getDotPos(this.pinlv)
-      // console.log(this.pinlv)
-      this.$refs.dot.style.top = this.getDotPos(-avgY, 1)
+      this.pinlv = isNaN(maxY) ? 0 : (this.pinlvZero - maxYIndex)
+      console.log(this.pinlvZero, maxYIndex)
+      this.$refs.dot.style.left = this.getDotPos(this.yinliang)
+      this.$refs.dot.style.top = this.getDotPos(this.pinlv, 1)
+    },
+    getAvgNum(arr) {
+      let sum = 0
+      for (let i = 0; i < arr.length; i++) {
+        sum += +arr[i]
+      }
+      return +((sum / arr.length).toFixed(2))
+    },
+    checkZero() {
+      if (!this.analyserNode) return
+      if (this.checkYinliang.length === 100) {
+        this.pinlvZero = this.getAvgNum(this.checkPinlv)
+        this.yinliangZero = this.getAvgNum(this.checkYinliang)
+        this.stopRecord()
+        return
+      }
+      // 左右由音量控制
+      const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
+      this.analyserNode.getByteTimeDomainData(originDataX)
+      let maxX = -Infinity
+      for (let i = 0; i < originDataX.length; i++) {
+        if (originDataX[i] > maxX) maxX = originDataX[i]
+      }
+      this.checkYinliang.push((maxX / 10 - this.yinliangZero).toFixed())
+      // 上下由频率控制
+      const originDataY = new Uint8Array(this.analyserNode.frequencyBinCount)
+      let maxY = -Infinity
+      let maxYIndex = 0
+      this.analyserNode.getByteFrequencyData(originDataY)
+      for (let i = 0; i < originDataY.length; i++) {
+        if (originDataY[i] === -Infinity || originDataY[i] === Infinity) {
+          continue
+        }
+        if (maxY < originDataY[i]) {
+          maxY = originDataY[i]
+          maxYIndex = i
+        }
+      }
+      this.checkPinlv.push(isNaN(maxY) ? 0 : (this.pinlvZero - maxYIndex))
+    },
+    clearZero() {
+      this.checkPinlv = []
+      this.checkYinliang = []
+      this.yinliangZero = originYinliangZero
+      this.pinlvZero = originPinlvZero
     }
-    // setDotY() {
-    // }
   }
 }
 </script>
@@ -283,7 +350,8 @@ export default {
     width: 100%;
     height: 240px;
     .virtualCanvas {
-      width: 360px;
+      // width: 360px;
+      flex: 1;
       height: 120px;
     }
   }
