@@ -65,7 +65,7 @@
 import { Oscilloscope } from '../utils/GRWJMrx'
 // const originYinliangZero = 13
 // const originPinlvZero = 42
-const originYinliangBound = 0
+const originYinliangBound = 20
 const originPinlvBound = -23
 const checkItemNum = 100 // 校准采样数
 export default {
