@@ -68,6 +68,7 @@ import { Oscilloscope } from '../utils/GRWJMrx'
 const originYinliangBound = 20
 const originVirtualYinliangBound = 500
 const originPinlvBound = -23
+const originVirtualPinlvBound = -23
 const checkItemNum = 100 // 校准采样数
 const baseXPx = 1440
 const baseYPx = 1080
@@ -118,7 +119,7 @@ export default {
       return this.yinliang - (this.isVirtual ? originVirtualYinliangBound : originYinliangBound)
     },
     relPinlv() {
-      return this.pinlv - originPinlvBound
+      return this.pinlv - (this.isVirtual ? originVirtualPinlvBound : originPinlvBound)
     }
   },
   mounted() {
