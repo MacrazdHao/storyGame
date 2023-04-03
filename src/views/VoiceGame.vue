@@ -28,8 +28,8 @@
         <input
           id="frequency_input"
           type="range"
-          min="100"
-          max="2000"
+          min="20"
+          max="1100"
           step="10"
           value="1000"
           @input="handleFrequency"
@@ -65,8 +65,9 @@
 import { Oscilloscope } from '../utils/GRWJMrx'
 // const originYinliangZero = 13
 // const originPinlvZero = 42
-const originYinliangBound = 13
-const originPinlvBound = -43.5
+const originYinliangBound = 0
+const originPinlvBound = -23
+const checkItemNum = 100 // 校准采样数
 export default {
   data() {
     return {
@@ -93,6 +94,7 @@ export default {
       volume: 10,
       // virtualFilter: 0,
 
+      scriptProcessor: null,
       source: null,
       originStream: null,
       audioStream: null,
@@ -103,15 +105,15 @@ export default {
   },
   computed: {
     checkProcess() {
-      return (this.checkYinliang.length / 10).toFixed(2)
-    },
-    relPinlv() {
-      return this.yinliang < 3
-        ? this.yinliang
-        : this.yinliang - originYinliangBound
+      return (
+        Math.min(this.checkYinliang.length, this.checkPinlv.length) * 100 / checkItemNum
+      ).toFixed(2)
     },
     relYinliang() {
-      return this.pinlv < 3 ? this.pinlv : this.pinlv - originPinlvBound
+      return this.yinliang - originYinliangBound
+    },
+    relPinlv() {
+      return this.pinlv - originPinlvBound
     }
   },
   mounted() {
@@ -142,13 +144,23 @@ export default {
       this.oscilloscope.addCanvas(this.$refs['frequency-canvas'], 'frequency')
       this.analyserNode = this.oscilloscope.analyser
       this.animationFrame = setInterval(this.setDotPos, 60)
+
+      this.scriptProcessor = this.audioCtx.createScriptProcessor(4096, 1, 1)
+      this.oscillator.connect(this.scriptProcessor)
+      this.scriptProcessor.connect(this.audioCtx.destination)
+      this.scriptProcessor.onaudioprocess = (e) => {
+        const buffer = e.inputBuffer.getChannelData(0)
+        this.yinliang = (Math.max(...buffer) * 1000).toFixed(2)
+      }
     },
     stopVirtual() {
       if (!this.oscillator) return
       this.oscilloscope.destroy()
       this.oscillator.stop()
       this.oscillator.disconnect()
+      this.scriptProcessor.disconnect()
       this.oscillator = null
+      this.scriptProcessor = null
       clearInterval(this.animationFrame)
       this.animationFrame = null
     },
@@ -201,8 +213,24 @@ export default {
           // this.stream = destination.stream
 
           this.source = this.audioCtx.createMediaStreamSource(this.stream)
+
+          this.scriptProcessor = this.audioCtx.createScriptProcessor(
+            4096,
+            1,
+            1
+          )
+          this.source.connect(this.scriptProcessor)
+          this.scriptProcessor.connect(this.audioCtx.destination)
+          this.scriptProcessor.onaudioprocess = (e) => {
+            const buffer = e.inputBuffer.getChannelData(0)
+            this.yinliang = ((Math.max(...buffer) * 1000).toFixed(2) - this.yinliangZero).toFixed()
+            if (check) {
+              this.checkYinliang.push(this.yinliang)
+            }
+          }
+
           this.analyserNode = this.audioCtx.createAnalyser()
-          this.analyserNode.fftSize = 32
+          this.analyserNode.fftSize = 1024
           this.source.connect(this.analyserNode)
           this.analyserNode.connect(this.audioCtx.destination)
 
@@ -236,6 +264,8 @@ export default {
         this.oscilloscope.destroy()
         this.oscillator.stop()
         this.oscillator.disconnect()
+        this.scriptProcessor.disconnect()
+        this.scriptProcessor = null
         this.oscillator = null
       }
       const tracks = this.originStream.getAudioTracks()
@@ -278,19 +308,20 @@ export default {
     setDotPos() {
       if (!this.analyserNode) return
       // 左右由音量控制，低左高右
-      const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
-      this.analyserNode.getByteTimeDomainData(originDataX)
-      let maxX = -Infinity
-      for (let i = 0; i < originDataX.length; i++) {
-        if (originDataX[i] > maxX) maxX = originDataX[i]
-      }
-      this.yinliang = +(maxX / 10 - this.yinliangZero).toFixed()
-      // 上下由频率控制，低下高上
+      // const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
+      // this.analyserNode.getByteTimeDomainData(originDataX)
+      // let maxX = -Infinity
+      // for (let i = 0; i < originDataX.length; i++) {
+      //   if (originDataX[i] > maxX) maxX = originDataX[i]
+      // }
+      // this.yinliang = +(maxX / 10 - this.yinliangZero).toFixed()
+      // 上下由频率控制，低下高上（人声0-49）
       const originDataY = new Uint8Array(this.analyserNode.frequencyBinCount)
       let maxY = -Infinity
       let maxYIndex = 0
       this.analyserNode.getByteFrequencyData(originDataY)
-      for (let i = 0; i < originDataY.length; i++) {
+      // console.log(originDataY)
+      for (let i = 0; i < 49; i++) {
         if (originDataY[i] === -Infinity || originDataY[i] === Infinity) {
           continue
         }
@@ -299,7 +330,8 @@ export default {
           maxYIndex = i
         }
       }
-      this.pinlv = isNaN(maxY) ? 0 : this.pinlvZero - maxYIndex
+      this.pinlv = isNaN(maxY) ? 0 : (this.pinlvZero - maxYIndex).toFixed()
+      // console.log(this.pinlv, this.relPinlv)
       this.$refs.dot.style.left = this.getDotPos(this.relYinliang)
       this.$refs.dot.style.top = this.getDotPos(this.relPinlv, 1)
     },
@@ -312,26 +344,26 @@ export default {
     },
     checkZero() {
       if (!this.analyserNode) return
-      if (this.checkYinliang.length === 100) {
+      if (Math.min(this.checkYinliang.length, this.checkPinlv.length) >= checkItemNum) {
         this.pinlvZero = this.getAvgNum(this.checkPinlv)
         this.yinliangZero = this.getAvgNum(this.checkYinliang)
         this.stopRecord()
         return
       }
       // 左右由音量控制
-      const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
-      this.analyserNode.getByteTimeDomainData(originDataX)
-      let maxX = -Infinity
-      for (let i = 0; i < originDataX.length; i++) {
-        if (originDataX[i] > maxX) maxX = originDataX[i]
-      }
-      this.checkYinliang.push((maxX / 10 - this.yinliangZero).toFixed())
+      // const originDataX = new Uint8Array(this.analyserNode.frequencyBinCount)
+      // this.analyserNode.getByteTimeDomainData(originDataX)
+      // let maxX = -Infinity
+      // for (let i = 0; i < originDataX.length; i++) {
+      //   if (originDataX[i] > maxX) maxX = originDataX[i]
+      // }
+      // this.checkYinliang.push((maxX / 10 - this.yinliangZero).toFixed())
       // 上下由频率控制
       const originDataY = new Uint8Array(this.analyserNode.frequencyBinCount)
       let maxY = -Infinity
       let maxYIndex = 0
       this.analyserNode.getByteFrequencyData(originDataY)
-      for (let i = 0; i < originDataY.length; i++) {
+      for (let i = 0; i < 49; i++) {
         if (originDataY[i] === -Infinity || originDataY[i] === Infinity) {
           continue
         }
