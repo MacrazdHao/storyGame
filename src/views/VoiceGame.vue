@@ -66,11 +66,16 @@ import { Oscilloscope } from '../utils/GRWJMrx'
 // const originYinliangZero = 13
 // const originPinlvZero = 42
 const originYinliangBound = 20
+const originVirtualYinliangBound = 500
 const originPinlvBound = -23
 const checkItemNum = 100 // 校准采样数
+const baseXPx = 1440
+const baseYPx = 1080
 export default {
   data() {
     return {
+      isVirtual: false,
+
       checkPinlv: [],
       checkYinliang: [],
       checkInterval: null,
@@ -110,7 +115,7 @@ export default {
       ).toFixed(2)
     },
     relYinliang() {
-      return this.yinliang - originYinliangBound
+      return this.yinliang - (this.isVirtual ? originVirtualYinliangBound : originYinliangBound)
     },
     relPinlv() {
       return this.pinlv - originPinlvBound
@@ -129,6 +134,8 @@ export default {
     },
     playVirtual() {
       if (this.oscillator) return
+      this.isVirtual = true
+
       this.oscillator = this.audioCtx.createOscillator()
       this.oscillator.type = this.waveType
       this.oscillator.frequency.value = this.frequency
@@ -150,7 +157,8 @@ export default {
       this.scriptProcessor.connect(this.audioCtx.destination)
       this.scriptProcessor.onaudioprocess = (e) => {
         const buffer = e.inputBuffer.getChannelData(0)
-        this.yinliang = (Math.max(...buffer) * 1000).toFixed(2)
+        this.yinliang = ((Math.max(...buffer) * 1000).toFixed(2) - this.yinliangZero).toFixed()
+        console.log(this.yinliang)
       }
     },
     stopVirtual() {
@@ -163,6 +171,7 @@ export default {
       this.scriptProcessor = null
       clearInterval(this.animationFrame)
       this.animationFrame = null
+      this.isVirtual = false
     },
     setFrequency(e) {
       if (this.oscillator && event.target.dataset.type) {
@@ -289,8 +298,8 @@ export default {
     },
     getDotPos(offset, dir = 0) {
       const playgroundRect = this.$refs.playground.getBoundingClientRect()
-      const rWinWidthRat = playgroundRect.width / 1440
-      const rWinHeightRat = playgroundRect.height / 1080
+      const rWinWidthRat = playgroundRect.width / baseXPx
+      const rWinHeightRat = playgroundRect.height / baseYPx
       const curPos = dir ? this.$refs.dot.offsetTop : this.$refs.dot.offsetLeft
       const relOffset = offset * (dir ? rWinHeightRat : rWinWidthRat)
       const newPos = relOffset + curPos
