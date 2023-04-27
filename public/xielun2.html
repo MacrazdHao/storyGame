@@ -61,6 +61,7 @@
     background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
     box-shadow: 12px -4px 18px 0px #ff9696 inset;
     border: 1px solid rgba(0, 0, 0, 0.3);
+    overflow: hidden;
   }
 
   .yanzhu_zuozhu {
@@ -72,6 +73,7 @@
     background-color: #000;
     box-shadow: 12px -4px 18px 0px #000 inset;
     border: 1px solid rgba(0, 0, 0, 0.3);
+    overflow: hidden;
   }
 
   .hongmo {
@@ -318,7 +320,7 @@
   }
 
   #yuzhibozuozhu>.huawenItem:nth-child(3)::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 60px;
     top: -1px;
@@ -333,7 +335,7 @@
   }
 
   #yuzhibozuozhu>.huawenItem:nth-child(3)::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 60px;
     top: -1px;
@@ -375,73 +377,107 @@
     z-index: 3;
   }
 
-#yuzhibozuozhu>.wanhuatong:nth-child(5) {
-  position: absolute;
-  width: 20px;
-  top: 80px;
-  left: 70px;
-  height: 54px;
-  border-color: currentColor;
-  background-color: #000;
-  clip-path: ellipse(10px 40px at 50% 25%);
-  transform: rotate(300deg);
-  z-index: 3;
-}
+  #yuzhibozuozhu>.wanhuatong:nth-child(5) {
+    position: absolute;
+    width: 20px;
+    top: 80px;
+    left: 70px;
+    height: 54px;
+    border-color: currentColor;
+    background-color: #000;
+    clip-path: ellipse(10px 40px at 50% 25%);
+    transform: rotate(300deg);
+    z-index: 3;
+  }
 
-#yuzhibozuozhu>.wanhuatong:nth-child(6) {
-  position: absolute;
-  width: 20px;
-  top: 80px;
-  left: 70px;
-  height: 54px;
-  border-color: currentColor;
-  background-color: #000;
-  clip-path: ellipse(10px 40px at 50% 25%);
-  transform: rotate(420deg);
-  z-index: 3;
-}
+  #yuzhibozuozhu>.wanhuatong:nth-child(6) {
+    position: absolute;
+    width: 20px;
+    top: 80px;
+    left: 70px;
+    height: 54px;
+    border-color: currentColor;
+    background-color: #000;
+    clip-path: ellipse(10px 40px at 50% 25%);
+    transform: rotate(420deg);
+    z-index: 3;
+  }
 
-#yuzhibozhishui {
-  transform: rotate(0deg);
-}
-
-#yuzhibozhishui>.huawenItem {
-  transform-origin: 80px 80px;
-}
-
-.xuan {
-  position: absolute;
-  width: 38px;
-  top: 56px;
-  left: 80px;
-  height: 76px;
-  border-color: #000;
-  border-style: solid;
-  border-width: 34px 0px 0px 0px;
-  border-radius: 0% 400% 100% 0%;
-}
-
-#yuzhibozhishui>.huawenItem:nth-child(1){
+  #yuzhibozhishui {
     transform: rotate(0deg);
-}
-#yuzhibozhishui>.huawenItem:nth-child(2){
-    transform: rotate(90deg);
-}
-#yuzhibozhishui>.huawenItem:nth-child(3){
-    transform: rotate(180deg);
-}
-#yuzhibozhishui>.huawenItem:nth-child(4){
-    transform: rotate(270deg);
-}
+  }
 
-/* .fangkuai {
-  position: absolute;
-  background-color: #000;
-  width: 40px;
-  height: 40px;
-  top: 60px;
-  left: 60px;
-} */
+  #yuzhibozhishui>.huawenItem {
+    transform-origin: 80px 80px;
+  }
+
+  .xuan {
+    position: absolute;
+    width: 38px;
+    top: 56px;
+    left: 80px;
+    height: 76px;
+    border-color: #000;
+    border-style: solid;
+    border-width: 34px 0px 0px 0px;
+    border-radius: 0% 400% 100% 0%;
+  }
+
+  #yuzhibozhishui>.huawenItem:nth-child(1) {
+    transform: rotate(0deg);
+  }
+
+  #yuzhibozhishui>.huawenItem:nth-child(2) {
+    transform: rotate(90deg);
+  }
+
+  #yuzhibozhishui>.huawenItem:nth-child(3) {
+    transform: rotate(180deg);
+  }
+
+  #yuzhibozhishui>.huawenItem:nth-child(4) {
+    transform: rotate(270deg);
+  }
+
+  #yuzhiboquannai {
+    transform: rotate(0deg);
+  }
+
+  #yuzhiboquannai>.huawenItem {
+    transform-origin: 80px 80px;
+  }
+
+  .tiao {
+    background-color: #000;
+    position: absolute;
+    width: 28px;
+    height: 40px;
+    top: 120px;
+    left: 68px;
+  }
+
+  #yuzhiboquannai>.huawenItem:nth-child(1) {
+    transform: rotate(0deg);
+  }
+
+  #yuzhiboquannai>.huawenItem:nth-child(2) {
+    transform: rotate(120deg);
+  }
+
+  #yuzhiboquannai>.huawenItem:nth-child(3) {
+    transform: rotate(240deg);
+  }
+
+  .yuanhuan {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 28px solid #000;
+    border-radius: 60px;
+  }
 </style>
 
 <body>
@@ -455,8 +491,8 @@
           <div class="hongmo">
             <div id="hongmo_lines" class="hongmo_lines"></div>
           </div>
-          <!-- <div class="tongkong tongkong_zheng"></div> -->
-          <div class="tongkong tongkong_fan"></div>
+          <div class="tongkong tongkong_zheng"></div>
+          <!-- <div class="tongkong tongkong_fan"></div> -->
           <!-- 三勾玉 -->
           <!-- <div id="sangouyu" class="huawen">
               <div class="huawenItem">
@@ -525,6 +561,9 @@
           <!-- 止水 -->
           <!-- <div id="yuzhibozhishui" class="huawen">
             <div class="huawenItem">
+              <div class="xuan xuan1"></div>
+            </div>
+            <div class="huawenItem">
               <div class="xuan xuan2"></div>
             </div>
             <div class="huawenItem">
@@ -533,11 +572,20 @@
             <div class="huawenItem">
               <div class="xuan xuan4"></div>
             </div>
-            <div class="huawenItem">
-              <div class="xuan xuan1"></div>
-            </div>
-            <div class="fangkuai"></div>
           </div> -->
+          <!-- 泉奈 -->
+          <div id="yuzhiboquannai" class="huawen">
+            <div class="huawenItem">
+              <div class="tiao tiao1"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="tiao tiao2"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="tiao tiao3"></div>
+            </div>
+            <div class="yuanhuan"></div>
+          </div>
         </div>
       </div>
     </div>
