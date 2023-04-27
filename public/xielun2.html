@@ -487,6 +487,14 @@
     transform: rotate(240deg);
   }
 
+  #yuzhiboban {
+    transform: rotate(0deg);
+  }
+
+  #yuzhiboban>.huawenItem {
+    transform-origin: 80px 80px;
+  }
+
   .yuanhuan {
     position: absolute;
     top: 50%;
@@ -497,6 +505,119 @@
     border: 28px solid #000;
     border-radius: 60px;
   }
+
+  #yuzhiboban>.huawenItem>.tiao {
+    height: 30px;
+    top: 130px;
+  }
+  #yuzhiboban>.huawenItem:nth-child(1) {
+    transform: rotate(0deg);
+  }
+
+  #yuzhiboban>.huawenItem:nth-child(2) {
+    transform: rotate(120deg);
+  }
+
+  #yuzhiboban>.huawenItem:nth-child(3) {
+    transform: rotate(240deg);
+  }
+  #yuzhiboban>.huawenItem:nth-child(4) {
+    transform: rotate(0deg);
+  }
+
+  #yuzhiboban>.huawenItem:nth-child(5) {
+    transform: rotate(120deg);
+  }
+
+  #yuzhiboban>.huawenItem:nth-child(6) {
+    transform: rotate(240deg);
+  }
+  .weiba {
+    position: absolute;
+    width: 20px;
+    top: 80px;
+    left: 70px;
+    height: 54px;
+    border-color: currentColor;
+    /* background-color: #000; */
+    border-color: #000;
+    border-style: solid;
+    border-width: 34px 0px 0px 0px;
+    border-radius: 0% 400% 100% 0%;
+
+    transform: rotate(300deg);
+    z-index: 3;
+  }
+
+/* 360 */
+  /* position: absolute;
+    width: 32px;
+    top: 80px;
+    left: 63px;
+    height: 48px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 0px 0px 0px 20px;
+    border-radius: 9% 100% 0% 101%;
+    transform: rotate(300deg);
+    z-index: 3; */
+
+    /* 旋风三叶花 */
+    /* position: absolute;
+    width: 38px;
+    top: 60px;
+    left: 65px;
+    height: 41px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 4px 0px 14px 1px;
+    border-radius: 200% 200% 200% 200%;
+    transform: rotate(258deg);
+    z-index: 3; */
+
+    /* 玫瑰 */
+    /* position: absolute;
+    width: 38px;
+    top: 60px;
+    left: 65px;
+    height: 41px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 5px 1px 4px 1px;
+    border-radius: 200% 200% 200% 200%;
+    transform: rotate(258deg);
+    z-index: 3; */
+
+    /* 尖三叶花 */
+    /* position: absolute;
+    width: 38px;
+    top: 60px;
+    left: 65px;
+    height: 41px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 0px 7px 1px 2px;
+    border-radius: 200% 200% 200% 0%;
+    transform: rotate(258deg);
+    z-index: 3; */
+
+    /* 旋风花 */
+    /* position: absolute;
+    width: 56px;
+    top: 66px;
+    left: 34px;
+    height: 40px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 20px 0px 26px 4px;
+    border-radius: 00% 200% 00% 200%;
+    transform: rotate(258deg);
+    z-index: 3; */
 </style>
 
 <body>
@@ -595,7 +716,7 @@
             </div>
           </div> -->
           <!-- 泉奈 -->
-          <div id="yuzhiboquannai" class="huawen">
+          <!-- <div id="yuzhiboquannai" class="huawen">
             <div class="huawenItem">
               <div class="tiao tiao1"></div>
             </div>
@@ -606,6 +727,28 @@
               <div class="tiao tiao3"></div>
             </div>
             <div class="yuanhuan"></div>
+          </div> -->
+          <!-- 斑 -->
+          <div id="yuzhiboban" class="huawen">
+            <div class="huawenItem">
+              <div class="tiao tiao1"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="tiao tiao2"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="tiao tiao3"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="weiba weiba1"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="weiba weiba2"></div>
+            </div>
+            <div class="huawenItem">
+              <div class="weiba weiba3"></div>
+            </div>
+            <!-- <div class="yuanhuan"></div> -->
           </div>
         </div>
       </div>
