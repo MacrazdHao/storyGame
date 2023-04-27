@@ -50,7 +50,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* transform: translate(-50%, -50%) scale(0.6); */
   }
 
   .yanzhu {
@@ -59,9 +58,29 @@
     height: 160px;
     border-radius: 160px;
     background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
-    box-shadow: 12px -4px 18px 0px #ff9696 inset;
+    /* box-shadow: 12px -4px 18px 0px #ff9696 inset; */
     border: 1px solid rgba(0, 0, 0, 0.3);
     overflow: hidden;
+  }
+
+  .yanzhu_yinying {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 160px;
+    box-shadow: 12px -4px 18px 0px #ff9696 inset;
+    border-radius: 160px;
+    z-index: 3;
+  }
+
+  .yanzhu_yingying_zuozhu {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 160px;
+    box-shadow: 12px -4px 18px 0px #000 inset;
+    border-radius: 160px;
+    z-index: 3;
   }
 
   .yanzhu_zuozhu {
@@ -488,6 +507,8 @@
       <div class="yanqiu">
         <!-- <div class="yanzhu_zuozhu"> -->
         <div class="yanzhu">
+          <div class="yanzhu_yinying"></div>
+          <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
           <div class="hongmo">
             <div id="hongmo_lines" class="hongmo_lines"></div>
           </div>
