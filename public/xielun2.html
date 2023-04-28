@@ -11,20 +11,23 @@
     <title>写轮眼</title>
   </head>
   <style>
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
     .lianjia {
       width: 390px;
       height: 160px;
       display: flex;
       justify-content: center;
       align-items: center;
-      /* box-shadow: 0 0 0 #000 inset; */
       position: relative;
+      transform: scale(0.5);
     }
 
     .yanjing {
-      /* position: absolute; */
       width: 370px;
-      /* top: 6px; */
       height: 140px;
       z-index: 10;
       position: relative;
@@ -40,7 +43,6 @@
 
     .yanlian {
       position: absolute;
-      /* background-color: #000; */
       left: 0;
       width: 100%;
       height: 50%;
@@ -66,7 +68,6 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      /* z-index: 2; */
       border: 1px solid #000;
     }
 
@@ -90,7 +91,6 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      display: none;
     }
 
     .yanzhu {
@@ -98,10 +98,14 @@
       width: 160px;
       height: 160px;
       border-radius: 160px;
-
-      /* box-shadow: 12px -4px 18px 0px #ff9696 inset; */
-      border: 1px solid rgba(0, 0, 0, 1);
       overflow: hidden;
+    }
+    .yanzhu_lunhuiyan {
+      border: 1px solid rgba(0, 0, 0, 1);
+    }
+    .yanzhu_xielunyan {
+      background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
+      border: 1px solid rgba(0, 0, 0, 0.3);
     }
 
     .yanzhu_yinying {
@@ -139,7 +143,6 @@
       width: 160px;
       height: 160px;
       border-radius: 160px;
-      /* background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%); */
       background-color: #000;
       box-shadow: 12px -4px 18px 0px #000 inset;
       border: 1px solid rgba(0, 0, 0, 0.3);
@@ -161,14 +164,12 @@
       width: 100%;
       height: 100%;
       opacity: 0.6;
-      /* box-shadow: 0 0 10px 0px #000 inset; */
       border-radius: 110px;
     }
 
     .hongmo_lines > div {
       position: absolute;
       left: calc(50% - 0.5px);
-      /* transform: translate(-50%, -50%); */
       width: 1px;
       display: flex;
       background: linear-gradient(
@@ -276,7 +277,6 @@
       left: 50%;
       top: 50%;
       transform: rotate(120deg) rotateY(180deg);
-      /* transform-origin: 10px 0; */
     }
 
     #yuzhiboyou > .huawenItem:nth-child(2) {
@@ -307,7 +307,6 @@
       left: 50%;
       top: 50%;
       transform: rotate(120deg) rotateY(180deg);
-      /* transform-origin: 10px 0; */
     }
 
     #yuzhibodaitu > .huawenItem:nth-child(2) {
@@ -329,14 +328,10 @@
     .gunzi {
       position: absolute;
       width: 30px;
-      /* top: 6px; */
       left: -15px;
       height: 120px;
       border-color: currentColor;
-      /* border: 20px solid; */
       background-color: #000;
-      /* border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px; */
       clip-path: ellipse(15px 60px at 50% 25%);
     }
 
@@ -370,7 +365,6 @@
       border-style: solid;
       border-width: 1px 2px 1px 2px;
       border-radius: 50% 50% 50% 50%;
-      /* background-color: #ff0000; */
       background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
       z-index: 1;
     }
@@ -607,11 +601,6 @@
       left: 27px;
       transform: rotate(177deg);
       clip-path: ellipse(10px 14px at 50% 83%);
-
-      /* border-color: #000;
-    border-style: solid;
-    border-width: 0 0 0 6px;
-    border-radius: 0 0 0 100%; */
     }
 
     .weiba::before {
@@ -636,7 +625,6 @@
       width: 40px;
       height: 40px;
       background-color: #71627e;
-      /* box-shadow: 5px 4px 20px -12px #a295ae inset */
     }
 
     #lunhuiyan > .huawenItem:nth-child(2) {
@@ -644,54 +632,53 @@
       height: 90px;
     }
 
-    #lunhuiyan > .huawenItem:nth-child(1)>.lunhuigouyuGroup {
+    #lunhuiyan > .huawenItem:nth-child(1) > .lunhuigouyuGroup {
       width: 100%;
       height: 100%;
-
     }
 
-    #lunhuiyan > .huawenItem:nth-child(2)>.lunhuigouyuGroup {
+    #lunhuiyan > .huawenItem:nth-child(2) > .lunhuigouyuGroup {
       width: 100%;
       height: 100%;
       transform: rotate(90deg);
     }
-    
-  .lunhuigouyu {
-    position: absolute;
-    transform: rotateY(180deg);
-    width: 12px;
-    height: 18px;
-  }
-  #lunhuiyan > .huawenItem:nth-child(1)  .lunhuigouyu:nth-child(1) {
-    top: -6px;
-    left: 0px;
-    transform: rotate(120deg);
-  }
-  #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(2) {
-    top: 34px;
-    left: 8px;
-    transform: rotate(0deg);
-  }
-  #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(3) {
-    top: 8px;
-    left: 36px;
-    transform: rotate(-90deg);
-  }
-  #lunhuiyan > .huawenItem:nth-child(2)  .lunhuigouyu:nth-child(1) {
-    top: 14px;
-    left: -2px;
-    transform: rotate(100deg);
-  }
-  #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(2) {
-    top: 84px;
-    left: 46px;
-    transform: rotate(-20deg);
-  }
-  #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(3) {
-    top: 4px;
-    left: 74px;
-    transform: rotate(-150deg);
-  }
+
+    .lunhuigouyu {
+      position: absolute;
+      transform: rotateY(180deg);
+      width: 12px;
+      height: 18px;
+    }
+    #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(1) {
+      top: -6px;
+      left: 0px;
+      transform: rotate(120deg);
+    }
+    #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(2) {
+      top: 34px;
+      left: 8px;
+      transform: rotate(0deg);
+    }
+    #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(3) {
+      top: 8px;
+      left: 36px;
+      transform: rotate(-90deg);
+    }
+    #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(1) {
+      top: 14px;
+      left: -2px;
+      transform: rotate(100deg);
+    }
+    #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(2) {
+      top: 84px;
+      left: 46px;
+      transform: rotate(-20deg);
+    }
+    #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(3) {
+      top: 4px;
+      left: 74px;
+      transform: rotate(-150deg);
+    }
 
     /* 360 */
     /* position: absolute;
@@ -863,19 +850,17 @@
   </style>
 
   <body>
+    <!-- 轮回眼 -->
     <div class="lianjia">
       <div class="yanjing">
         <div class="yanlian"></div>
         <div class="yanlian"></div>
-
-        <!-- 轮回眼 -->
         <div class="yanqiu_lunhuiyan">
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
-          <div class="yanzhu">
-            <div class="yanzhu_yinying"></div>
-            <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
+          <div class="yanzhu yanzhu_lunhuiyan">
+            <div class="yanzhu yanzhu_yinying"></div>
             <div class="hongmo">
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
@@ -907,27 +892,24 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="huawenItem">
-            </div>
-            <div class="huawenItem">
-            </div>
-            <div class="huawenItem">
-            </div> -->
             </div>
           </div>
         </div>
-        <!-- 写轮眼 -->
+      </div>
+    </div>
+    <!-- 写轮眼 -->
+    <!-- 三勾玉 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
         <div class="yanqiu">
-          <!-- <div class="yanzhu_zuozhu"> -->
-          <div class="yanzhu">
+          <div class="yanzhu yanzhu_xielunyan">
             <div class="yanzhu_yinying"></div>
-            <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
             <div class="hongmo">
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <!-- <div class="tongkong tongkong_fan"></div> -->
-            <!-- 三勾玉 -->
             <div id="sangouyu" class="huawen">
               <div class="huawenItem">
                 <div class="gouyu gouyu1">
@@ -946,23 +928,53 @@
               </div>
               <div class="huawenItem quanquan"></div>
             </div>
-            <!-- 鼬 -->
-            <!-- <div id="yuzhiboyou" class="huawen">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 鼬 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <!-- <div class="yanzhu_zuozhu"> -->
+          <div class="yanzhu yanzhu_xielunyan">
+            <div class="yanzhu_yinying"></div>
+            <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
+            </div>
+            <!-- <div class="tongkong tongkong_zheng"></div> -->
+            <div class="tongkong tongkong_fan"></div>
+            <div id="yuzhiboyou" class="huawen">
               <div class="huawenItem">
-                <div class="shanwen shanwen1">
-                </div>
+                <div class="shanwen shanwen1"></div>
               </div>
               <div class="huawenItem">
-                <div class="shanwen shanwen1">
-                </div>
+                <div class="shanwen shanwen1"></div>
               </div>
               <div class="huawenItem">
-                <div class="shanwen shanwen1">
-                </div>
+                <div class="shanwen shanwen1"></div>
               </div>
-            </div> -->
-            <!-- 带土 -->
-            <!-- <div id="yuzhibodaitu" class="huawen">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 带土 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <div class="yanzhu yanzhu_xielunyan">
+            <div class="yanzhu_yinying"></div>
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
+            </div>
+            <div class="tongkong tongkong_fan"></div>
+            <div id="yuzhibodaitu" class="huawen">
               <div class="huawenItem">
                 <div class="gunzi gunzi1"></div>
                 <div class="fengwen fengwei1"></div>
@@ -975,75 +987,135 @@
                 <div class="gunzi gunzi3"></div>
                 <div class="fengwen fengwei3"></div>
               </div>
-            </div> -->
-            <!-- 佐助 -->
-            <!-- <div id="yuzhibozuozhu" class="huawen">
-            <div class="huawenItem">
-              <div class="huang huang1"></div>
             </div>
-            <div class="huawenItem">
-              <div class="huang huang2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 佐助 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <div class="yanzhu_zuozhu">
+            <div class="yanzhu_yingying_zuozhu"></div>
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
-            <div class="huawenItem">
-              <div class="huang huang3"></div>
+            <div class="tongkong tongkong_fan"></div>
+            <div id="yuzhibozuozhu" class="huawen">
+              <div class="huawenItem">
+                <div class="huang huang1"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="huang huang2"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="huang huang3"></div>
+              </div>
+              <div class="wanhuatong"></div>
+              <div class="wanhuatong"></div>
+              <div class="wanhuatong"></div>
+              <div class="yinying"></div>
             </div>
-            <div class="wanhuatong"></div>
-            <div class="wanhuatong"></div>
-            <div class="wanhuatong"></div>
-            <div class="yinying"></div>
-          </div> -->
-            <!-- 止水 -->
-            <!-- <div id="yuzhibozhishui" class="huawen">
-            <div class="huawenItem">
-              <div class="xuan xuan1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 止水 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <div class="yanzhu yanzhu_xielunyan">
+            <div class="yanzhu_yinying"></div>
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
-            <div class="huawenItem">
-              <div class="xuan xuan2"></div>
+            <div class="tongkong tongkong_fan"></div>
+            <div id="yuzhibozhishui" class="huawen">
+              <div class="huawenItem">
+                <div class="xuan xuan1"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="xuan xuan2"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="xuan xuan3"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="xuan xuan4"></div>
+              </div>
             </div>
-            <div class="huawenItem">
-              <div class="xuan xuan3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 泉奈 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <div class="yanzhu yanzhu_xielunyan">
+            <div class="yanzhu_yinying"></div>
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
-            <div class="huawenItem">
-              <div class="xuan xuan4"></div>
+            <div class="tongkong tongkong_zheng"></div>
+            <div id="yuzhiboquannai" class="huawen">
+              <div class="huawenItem">
+                <div class="tiao tiao1"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="tiao tiao2"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="tiao tiao3"></div>
+              </div>
+              <div class="yuanhuan"></div>
             </div>
-          </div> -->
-            <!-- 泉奈 -->
-            <!-- <div id="yuzhiboquannai" class="huawen">
-            <div class="huawenItem">
-              <div class="tiao tiao1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 斑 -->
+    <div class="lianjia">
+      <div class="yanjing">
+        <div class="yanlian"></div>
+        <div class="yanlian"></div>
+        <div class="yanqiu">
+          <div class="yanzhu yanzhu_xielunyan">
+            <div class="yanzhu_yinying"></div>
+            <div class="hongmo">
+              <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
-            <div class="huawenItem">
-              <div class="tiao tiao2"></div>
+            <div class="tongkong tongkong_zheng"></div>
+            <div id="yuzhiboban" class="huawen">
+              <div class="huawenItem">
+                <div class="tiao tiao1"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="tiao tiao2"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="tiao tiao3"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="weiba weiba1"></div>
+                <div class="tuowei"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="weiba weiba2"></div>
+                <div class="tuowei"></div>
+              </div>
+              <div class="huawenItem">
+                <div class="weiba weiba3"></div>
+                <div class="tuowei"></div>
+              </div>
             </div>
-            <div class="huawenItem">
-              <div class="tiao tiao3"></div>
-            </div>
-            <div class="yuanhuan"></div>
-          </div> -->
-            <!-- 斑 -->
-            <!-- <div id="yuzhiboban" class="huawen">
-            <div class="huawenItem">
-              <div class="tiao tiao1"></div>
-            </div>
-            <div class="huawenItem">
-              <div class="tiao tiao2"></div>
-            </div>
-            <div class="huawenItem">
-              <div class="tiao tiao3"></div>
-            </div>
-            <div class="huawenItem">
-              <div class="weiba weiba1"></div>
-              <div class="tuowei"></div>
-            </div>
-            <div class="huawenItem">
-              <div class="weiba weiba2"></div>
-              <div class="tuowei"></div>
-            </div>
-            <div class="huawenItem">
-              <div class="weiba weiba3"></div>
-              <div class="tuowei"></div>
-            </div>
-          </div> -->
           </div>
         </div>
       </div>
@@ -1058,14 +1130,17 @@
     //   }, 300);
     // }, 5000);
 
-    const hongmo = document.getElementById("hongmo_lines");
-    for (let i = 0; i < 100; i++) {
-      const hongmo_line = document.createElement("div");
-      const height = (Math.random() + 1) * 26;
-      hongmo_line.style.transform = `rotate(${((i + 1) * 360) / 100}deg)`;
-      hongmo_line.style.height = `${height}px`;
-      hongmo_line.style.top = `calc(50% + ${0}px)`;
-      hongmo.appendChild(hongmo_line);
+    const hongmo = document.getElementsByClassName("hongmo_lines");
+    for (let h = 0; h < hongmo.length; h++) {
+      const hongmoItem = hongmo[h];
+      for (let i = 0; i < 100; i++) {
+        const hongmo_line = document.createElement("div");
+        const height = (Math.random() + 1) * 26;
+        hongmo_line.style.transform = `rotate(${((i + 1) * 360) / 100}deg)`;
+        hongmo_line.style.height = `${height}px`;
+        hongmo_line.style.top = `calc(50% + ${0}px)`;
+        hongmoItem.appendChild(hongmo_line);
+      }
     }
   </script>
 </html>
