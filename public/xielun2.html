@@ -27,11 +27,11 @@
     z-index: 10;
     position: relative;
     background-color: #fff;
-    /* border-color: currentColor;
-      border-style: solid;
-      border-width: 26px 0px 0px 14px;
-      border-radius: 8% 100% 10% 94%;
-      overflow: hidden; */
+    border-color: currentColor;
+    border-style: solid;
+    border-width: 26px 0px 0px 14px;
+    border-radius: 8% 100% 10% 94%;
+    overflow: hidden;
 
     transition: 0.3s all;
   }
@@ -45,11 +45,50 @@
     z-index: 10;
   }
 
+  .yanqiu_lunhuiyan {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, #897c95 20%, #a295ae 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .lunhuiyan_waiyuan {
+    border-radius: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* z-index: 2; */
+    border: 1px solid #000;
+  }
+
+  .yanqiu_lunhuiyan>.lunhuiyan_waiyuan:nth-child(1) {
+    width: 220px;
+    height: 220px;
+  }
+
+  .yanqiu_lunhuiyan>.lunhuiyan_waiyuan:nth-child(2) {
+    width: 300px;
+    height: 300px;
+  }
+
+  .yanqiu_lunhuiyan>.lunhuiyan_waiyuan:nth-child(3) {
+    width: 380px;
+    height: 380px;
+  }
+
   .yanqiu {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: none;
   }
 
   .yanzhu {
@@ -57,9 +96,9 @@
     width: 160px;
     height: 160px;
     border-radius: 160px;
-    background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
+
     /* box-shadow: 12px -4px 18px 0px #ff9696 inset; */
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 1);
     overflow: hidden;
   }
 
@@ -69,6 +108,16 @@
     height: 160px;
     border-radius: 160px;
     box-shadow: 12px -4px 18px 0px #ff9696 inset;
+    border-radius: 160px;
+    z-index: 3;
+  }
+
+  .yanqiu_lunhuiyan .yanzhu_yinying {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 160px;
+    box-shadow: 5px 4px 20px -12px #fff inset;
     border-radius: 160px;
     z-index: 3;
   }
@@ -510,6 +559,7 @@
     height: 30px;
     top: 130px;
   }
+
   #yuzhiboban>.huawenItem:nth-child(1) {
     transform: rotate(0deg);
   }
@@ -521,6 +571,7 @@
   #yuzhiboban>.huawenItem:nth-child(3) {
     transform: rotate(240deg);
   }
+
   #yuzhiboban>.huawenItem:nth-child(4) {
     transform: rotate(0deg);
   }
@@ -532,24 +583,64 @@
   #yuzhiboban>.huawenItem:nth-child(6) {
     transform: rotate(240deg);
   }
-  .weiba {
+
+  .tuowei {
+    width: 58px;
+    height: 58px;
     position: absolute;
-    width: 20px;
-    top: 80px;
-    left: 70px;
-    height: 54px;
-    border-color: currentColor;
-    /* background-color: #000; */
+    top: 18px;
+    left: 28px;
     border-color: #000;
     border-style: solid;
-    border-width: 34px 0px 0px 0px;
-    border-radius: 0% 400% 100% 0%;
-
-    transform: rotate(300deg);
-    z-index: 3;
+    border-width: 20px 0px 0px 0px;
+    border-radius: 100% 0% 00% 00%;
+    transform: rotate(260deg) rotateY(180deg);
   }
 
-/* 360 */
+  .weiba {
+    position: absolute;
+    top: 91px;
+    left: 27px;
+    transform: rotate(177deg);
+    clip-path: ellipse(10px 14px at 50% 83%);
+
+    /* border-color: #000;
+    border-style: solid;
+    border-width: 0 0 0 6px;
+    border-radius: 0 0 0 100%; */
+  }
+
+  .weiba::before {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 100px;
+    box-shadow: -10px -32px 0px 36px #000;
+  }
+
+  #lunhuiyan>.huawenItem {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #000;
+    border-radius: 100%;
+  }
+
+  #lunhuiyan>.huawenItem:nth-child(1) {
+    width: 40px;
+    height: 40px;
+    background-color: #71627e;
+    /* box-shadow: 5px 4px 20px -12px #a295ae inset */
+  }
+
+  #lunhuiyan>.huawenItem:nth-child(2) {
+    width: 90px;
+    height: 90px;
+  }
+
+  /* 360 */
   /* position: absolute;
     width: 32px;
     top: 80px;
@@ -563,8 +654,8 @@
     transform: rotate(300deg);
     z-index: 3; */
 
-    /* 旋风三叶花 */
-    /* position: absolute;
+  /* 旋风三叶花 */
+  /* position: absolute;
     width: 38px;
     top: 60px;
     left: 65px;
@@ -577,8 +668,8 @@
     transform: rotate(258deg);
     z-index: 3; */
 
-    /* 玫瑰 */
-    /* position: absolute;
+  /* 玫瑰 */
+  /* position: absolute;
     width: 38px;
     top: 60px;
     left: 65px;
@@ -591,8 +682,8 @@
     transform: rotate(258deg);
     z-index: 3; */
 
-    /* 尖三叶花 */
-    /* position: absolute;
+  /* 尖三叶花 */
+  /* position: absolute;
     width: 38px;
     top: 60px;
     left: 65px;
@@ -605,8 +696,8 @@
     transform: rotate(258deg);
     z-index: 3; */
 
-    /* 旋风花 */
-    /* position: absolute;
+  /* 旋风花 */
+  /* position: absolute;
     width: 56px;
     top: 66px;
     left: 34px;
@@ -618,6 +709,104 @@
     border-radius: 00% 200% 00% 200%;
     transform: rotate(258deg);
     z-index: 3; */
+
+  /* 瓜子 */
+  /* position: absolute;
+    width: 6px;
+    top: 66px;
+    left: 34px;
+    height: 40px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 0px 2px 0px 9px;
+    border-radius: 200% 200% 200% 200%;
+    transform: rotate(258deg);
+    z-index: 3; */
+
+  /* 三角旋风 */
+  /* position: absolute;
+    width: 76px;
+    top: 66px;
+    left: 34px;
+    height: 50px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 0px 0px 5px 15px;
+    border-radius: 200% 200% 00% 200%;
+    transform: rotate(258deg);
+    z-index: 3; */
+
+  /* 三角裤 */
+  /* position: absolute;
+    width: 20px;
+    top: 80px;
+    left: 70px;
+    height: 11px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 63px 0px 0px 105px;
+    border-radius: 200% 200% 200% 200%;
+    transform: rotate(300deg);
+    z-index: 3; */
+
+  /* 弧三角 */
+  /* position: absolute;
+    width: 34px;
+    top: 50px;
+    left: 70px;
+    height: 48px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 6px 8px 0px 6px;
+    border-radius: 00% 200% 00% 200%;
+    transform: rotate(300deg);
+    z-index: 3; */
+
+  /* 粗细旋风 */
+  /* position: absolute;
+    width: 38px;
+    top: 50px;
+    left: 70px;
+    height: 53px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 6px 0px 0px 28px;
+    border-radius: 00% 200% 00% 200%;
+    transform: rotate(300deg);
+    z-index: 3; */
+
+  /* 风扇 */
+  /* position: absolute;
+    width: 59px;
+    top: 13px;
+    left: 84px;
+    height: 88px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 20px 0px 0px 0px;
+    border-radius: 200% 200% 200% 00%;
+    transform: rotate(300deg);
+    z-index: 3; */
+
+  /* 星号 */
+  /* position: absolute;
+    width: 7px;
+    top: 12px;
+    left: 79px;
+    height: 3px;
+    border-color: currentColor;
+    border-color: #000;
+    border-style: solid;
+    border-width: 60px 0px 76px 0px;
+    border-radius: 2000% 2000% 2000% 2000%;
+    transform: rotate(300deg);
+    z-index: 3; */
 </style>
 
 <body>
@@ -625,6 +814,31 @@
     <div class="yanjing">
       <div class="yanlian"></div>
       <div class="yanlian"></div>
+
+      <!-- 轮回眼 -->
+      <div class="yanqiu_lunhuiyan">
+        <div class="lunhuiyan_waiyuan"></div>
+        <div class="lunhuiyan_waiyuan"></div>
+        <div class="lunhuiyan_waiyuan"></div>
+        <div class="yanzhu">
+          <div class="yanzhu_yinying"></div>
+          <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
+          <div class="hongmo">
+            <div id="hongmo_lines" class="hongmo_lines"></div>
+          </div>
+          <div class="tongkong tongkong_zheng"></div>
+          <div id="lunhuiyan" class="huawen">
+            <div class="huawenItem"></div>
+            <div class="huawenItem"></div>
+            <!-- <div class="huawenItem">
+            </div>
+            <div class="huawenItem">
+            </div>
+            <div class="huawenItem">
+            </div> -->
+          </div>
+        </div>
+      </div>
       <div class="yanqiu">
         <!-- <div class="yanzhu_zuozhu"> -->
         <div class="yanzhu">
@@ -636,24 +850,24 @@
           <div class="tongkong tongkong_zheng"></div>
           <!-- <div class="tongkong tongkong_fan"></div> -->
           <!-- 三勾玉 -->
-          <!-- <div id="sangouyu" class="huawen">
-              <div class="huawenItem">
-                <div class="gouyu gouyu1">
-                  <div class="circle"></div>
-                </div>
+          <div id="sangouyu" class="huawen">
+            <div class="huawenItem">
+              <div class="gouyu gouyu1">
+                <div class="circle"></div>
               </div>
-              <div class="huawenItem">
-                <div class="gouyu gouyu2">
-                  <div class="circle"></div>
-                </div>
+            </div>
+            <div class="huawenItem">
+              <div class="gouyu gouyu2">
+                <div class="circle"></div>
               </div>
-              <div class="huawenItem">
-                <div class="gouyu gouyu3">
-                  <div class="circle"></div>
-                </div>
+            </div>
+            <div class="huawenItem">
+              <div class="gouyu gouyu3">
+                <div class="circle"></div>
               </div>
-              <div class="huawenItem quanquan"></div>
-            </div> -->
+            </div>
+            <div class="huawenItem quanquan"></div>
+          </div>
           <!-- 鼬 -->
           <!-- <div id="yuzhiboyou" class="huawen">
               <div class="huawenItem">
@@ -729,7 +943,7 @@
             <div class="yuanhuan"></div>
           </div> -->
           <!-- 斑 -->
-          <div id="yuzhiboban" class="huawen">
+          <!-- <div id="yuzhiboban" class="huawen">
             <div class="huawenItem">
               <div class="tiao tiao1"></div>
             </div>
@@ -741,15 +955,17 @@
             </div>
             <div class="huawenItem">
               <div class="weiba weiba1"></div>
+              <div class="tuowei"></div>
             </div>
             <div class="huawenItem">
               <div class="weiba weiba2"></div>
+              <div class="tuowei"></div>
             </div>
             <div class="huawenItem">
               <div class="weiba weiba3"></div>
+              <div class="tuowei"></div>
             </div>
-            <!-- <div class="yuanhuan"></div> -->
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
