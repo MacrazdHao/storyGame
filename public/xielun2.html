@@ -17,10 +17,11 @@
     }
 
     .lianjia {
-      width: 390px;
+      width: 900px;
       height: 160px;
       display: flex;
-      justify-content: center;
+      flex-direction: row;
+      justify-content: space-between;
       align-items: center;
       position: relative;
       transform: scale(0.5);
@@ -49,11 +50,14 @@
       z-index: 10;
     }
 
-    .yanqiu_lunhuiyan {
+    .yanqiu {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+
+    .yanqiu_lunhuiyan {
       width: 100%;
       height: 100%;
       background-image: radial-gradient(circle, #897c95 20%, #a295ae 100%);
@@ -84,13 +88,6 @@
     .yanqiu_lunhuiyan > .lunhuiyan_waiyuan:nth-child(3) {
       width: 380px;
       height: 380px;
-    }
-
-    .yanqiu {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
     }
 
     .yanzhu {
@@ -512,6 +509,17 @@
     #yuzhiboquannai > .huawenItem {
       transform-origin: 80px 80px;
     }
+    
+    .yuanhuan {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border: 28px solid #000;
+      border-radius: 60px;
+    }
 
     .tiao {
       background-color: #000;
@@ -540,17 +548,6 @@
 
     #yuzhiboban > .huawenItem {
       transform-origin: 80px 80px;
-    }
-
-    .yuanhuan {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
-      border: 28px solid #000;
-      border-radius: 60px;
     }
 
     #yuzhiboban > .huawenItem > .tiao {
@@ -855,7 +852,7 @@
       <div class="yanjing">
         <div class="yanlian"></div>
         <div class="yanlian"></div>
-        <div class="yanqiu_lunhuiyan">
+        <div class="yanqiu yanqiu_lunhuiyan">
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
@@ -1129,7 +1126,6 @@
     //     yanjing.style.height = "140px";
     //   }, 300);
     // }, 5000);
-
     const hongmo = document.getElementsByClassName("hongmo_lines");
     for (let h = 0; h < hongmo.length; h++) {
       const hongmoItem = hongmo[h];
@@ -1141,6 +1137,13 @@
         hongmo_line.style.top = `calc(50% + ${0}px)`;
         hongmoItem.appendChild(hongmo_line);
       }
+    }
+    const lianjia = document.getElementsByClassName('lianjia')
+    for (let i = 0; i < lianjia.length; i++) {
+      const rightEye = lianjia[i].getElementsByClassName('yanjing')[0].cloneNode(true)
+      rightEye.style.transform = "rotateY(180deg)"
+      rightEye.getElementsByClassName('yanqiu')[0].style.transform = "translate(-50%, -50%) rotateY(180deg)"
+      lianjia[i].appendChild(rightEye)
     }
   </script>
 </html>
