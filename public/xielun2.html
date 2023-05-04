@@ -14,6 +14,7 @@
     body {
       display: flex;
       flex-direction: column;
+      background-color: rgb(91, 91, 91);
     }
 
     .lianjia {
@@ -38,8 +39,47 @@
       border-width: 26px 0px 0px 14px;
       border-radius: 8% 100% 10% 94%;
       overflow: hidden;
-
+      background-image: radial-gradient(circle, #e8e8e8 20%, #c5c5c5 100%);
+      box-shadow: -2px -2px 16px 2px inset;
       transition: 0.3s all;
+    }
+
+    .yanjing_lunhuiyan::before {
+      /* content: '';
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      width: 20px;
+      height: 10px;
+      border-color: #fff;
+      border-style: solid;
+      border-width: 4px 4px 4px 24px;
+      border-radius: 100% 100% 100% 100%;
+      background-color: #fff; */
+      opacity: 0.5 !important;
+      filter: blur(10px) !important;
+      /* background-color: #fff; */
+    }
+
+    .yanjing_lunhuiyan {
+      background-image: radial-gradient(circle, #897c95 20%, #a295ae 100%);
+    }
+
+    .yanjing::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      width: 20px;
+      height: 10px;
+      border-color: #fff;
+      border-style: solid;
+      border-width: 4px 4px 4px 24px;
+      border-radius: 100% 100% 100% 100%;
+      background-color: #fff;
+      opacity: 1;
+      filter: blur(14px);
+      /* background-color: #fff; */
     }
 
     .yanlian {
@@ -53,14 +93,13 @@
     .yanqiu {
       position: absolute;
       top: 50%;
-      left: 50%;
+      left: calc(50% + 10px);
       transform: translate(-50%, -50%);
     }
 
     .yanqiu_lunhuiyan {
       width: 100%;
       height: 100%;
-      background-image: radial-gradient(circle, #897c95 20%, #a295ae 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -73,6 +112,19 @@
       left: 50%;
       transform: translate(-50%, -50%);
       border: 1px solid #000;
+      animation: rotate_lunhui 1s ease-in-out 1;
+    }
+
+    @keyframes rotate_lunhui {
+      0% {
+        transform: translate(-50%, -50%) rotate(0) scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
+        opacity: 1;
+      }
     }
 
     .yanqiu_lunhuiyan > .lunhuiyan_waiyuan:nth-child(1) {
@@ -90,6 +142,23 @@
       height: 380px;
     }
 
+    @keyframes rotate {
+      0% {
+        transform: rotate(0) scale(0);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    .xuanzhuanBox {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      animation: rotate 1s ease-in-out 1;
+    }
+
     .yanzhu {
       position: relative;
       width: 160px;
@@ -97,9 +166,11 @@
       border-radius: 160px;
       overflow: hidden;
     }
+
     .yanzhu_lunhuiyan {
       border: 1px solid rgba(0, 0, 0, 1);
     }
+
     .yanzhu_xielunyan {
       background-image: radial-gradient(circle, #5f0000 20%, #ff0000 100%);
       border: 1px solid rgba(0, 0, 0, 0.3);
@@ -189,6 +260,7 @@
       height: 20px;
       border-radius: 40px;
       z-index: 5;
+      transition: .2s all;
     }
 
     .tongkong_zheng {
@@ -646,31 +718,37 @@
       width: 12px;
       height: 18px;
     }
+
     #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(1) {
       top: -6px;
       left: 0px;
       transform: rotate(120deg);
     }
+
     #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(2) {
       top: 34px;
       left: 8px;
       transform: rotate(0deg);
     }
+
     #lunhuiyan > .huawenItem:nth-child(1) .lunhuigouyu:nth-child(3) {
       top: 8px;
       left: 36px;
       transform: rotate(-90deg);
     }
+
     #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(1) {
       top: 14px;
       left: -2px;
       transform: rotate(100deg);
     }
+
     #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(2) {
       top: 84px;
       left: 46px;
       transform: rotate(-20deg);
     }
+
     #lunhuiyan > .huawenItem:nth-child(2) .lunhuigouyu:nth-child(3) {
       top: 4px;
       left: 74px;
@@ -680,9 +758,11 @@
     #yuzhibo1 {
       transform: rotate(0deg) scale(1.2);
     }
+
     #yuzhibo1 > .huawenItem {
       transform-origin: 80px 80px;
     }
+
     #yuzhibo1 > .huawenItem > .other1 {
       position: absolute;
       width: 32px;
@@ -697,12 +777,15 @@
       transform: rotate(300deg);
       z-index: 3;
     }
+
     #yuzhibo1 > .huawenItem:nth-child(1) {
       transform: rotate(0deg);
     }
+
     #yuzhibo1 > .huawenItem:nth-child(2) {
       transform: rotate(120deg);
     }
+
     #yuzhibo1 > .huawenItem:nth-child(3) {
       transform: rotate(240deg);
     }
@@ -710,9 +793,11 @@
     #yuzhibo2 {
       transform: rotate(0deg) scale(1.8);
     }
+
     #yuzhibo2 > .huawenItem {
       transform-origin: 80px 80px;
     }
+
     #yuzhibo2 > .huawenItem > .other2 {
       position: absolute;
       width: 38px;
@@ -727,12 +812,15 @@
       transform: rotate(258deg);
       z-index: 3;
     }
+
     #yuzhibo2 > .huawenItem:nth-child(1) {
       transform: rotate(0deg);
     }
+
     #yuzhibo2 > .huawenItem:nth-child(2) {
       transform: rotate(120deg);
     }
+
     #yuzhibo2 > .huawenItem:nth-child(3) {
       transform: rotate(240deg);
     }
@@ -740,9 +828,11 @@
     #yuzhibo3 {
       transform: rotate(0deg) scale(1.8);
     }
+
     #yuzhibo3 > .huawenItem {
       transform-origin: 80px 80px;
     }
+
     #yuzhibo3 > .huawenItem > .other3 {
       position: absolute;
       width: 38px;
@@ -757,12 +847,15 @@
       transform: rotate(258deg);
       z-index: 3;
     }
+
     #yuzhibo3 > .huawenItem:nth-child(1) {
       transform: rotate(0deg);
     }
+
     #yuzhibo3 > .huawenItem:nth-child(2) {
       transform: rotate(120deg);
     }
+
     #yuzhibo3 > .huawenItem:nth-child(3) {
       transform: rotate(240deg);
     }
@@ -1087,7 +1180,7 @@
     <p>主要角色的写轮眼/轮回眼</p>
     <!-- 轮回眼 -->
     <div class="lianjia">
-      <div class="yanjing">
+      <div class="yanjing yanjing_lunhuiyan">
         <div class="yanlian"></div>
         <div class="yanlian"></div>
         <div class="yanqiu yanqiu_lunhuiyan">
@@ -1100,30 +1193,32 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="lunhuiyan" class="huawen">
-              <div class="huawenItem">
-                <div class="lunhuigouyuGroup">
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
+            <div class="xuanzhuanBox">
+              <div id="lunhuiyan" class="huawen">
+                <div class="huawenItem">
+                  <div class="lunhuigouyuGroup">
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="huawenItem">
-                <div class="lunhuigouyuGroup">
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
-                  </div>
-                  <div class="lunhuigouyu">
-                    <div class="circle"></div>
+                <div class="huawenItem">
+                  <div class="lunhuigouyuGroup">
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="lunhuigouyu">
+                      <div class="circle"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1145,23 +1240,25 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="sangouyu" class="huawen">
-              <div class="huawenItem">
-                <div class="gouyu gouyu1">
-                  <div class="circle"></div>
+            <div class="xuanzhuanBox">
+              <div id="sangouyu" class="huawen">
+                <div class="huawenItem">
+                  <div class="gouyu gouyu1">
+                    <div class="circle"></div>
+                  </div>
                 </div>
-              </div>
-              <div class="huawenItem">
-                <div class="gouyu gouyu2">
-                  <div class="circle"></div>
+                <div class="huawenItem">
+                  <div class="gouyu gouyu2">
+                    <div class="circle"></div>
+                  </div>
                 </div>
-              </div>
-              <div class="huawenItem">
-                <div class="gouyu gouyu3">
-                  <div class="circle"></div>
+                <div class="huawenItem">
+                  <div class="gouyu gouyu3">
+                    <div class="circle"></div>
+                  </div>
                 </div>
+                <div class="huawenItem quanquan"></div>
               </div>
-              <div class="huawenItem quanquan"></div>
             </div>
           </div>
         </div>
@@ -1173,24 +1270,23 @@
         <div class="yanlian"></div>
         <div class="yanlian"></div>
         <div class="yanqiu">
-          <!-- <div class="yanzhu_zuozhu"> -->
           <div class="yanzhu yanzhu_xielunyan">
             <div class="yanzhu_yinying"></div>
-            <!-- <div class="yanzhu_yingying_zuozhu"></div> -->
             <div class="hongmo">
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
-            <!-- <div class="tongkong tongkong_zheng"></div> -->
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhiboyou" class="huawen">
-              <div class="huawenItem">
-                <div class="shanwen shanwen1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="shanwen shanwen1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="shanwen shanwen1"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhiboyou" class="huawen">
+                <div class="huawenItem">
+                  <div class="shanwen shanwen1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="shanwen shanwen1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="shanwen shanwen1"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1209,18 +1305,20 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibodaitu" class="huawen">
-              <div class="huawenItem">
-                <div class="gunzi gunzi1"></div>
-                <div class="fengwen fengwei1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="gunzi gunzi2"></div>
-                <div class="fengwen fengwei2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="gunzi gunzi3"></div>
-                <div class="fengwen fengwei3"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibodaitu" class="huawen">
+                <div class="huawenItem">
+                  <div class="gunzi gunzi1"></div>
+                  <div class="fengwen fengwei1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="gunzi gunzi2"></div>
+                  <div class="fengwen fengwei2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="gunzi gunzi3"></div>
+                  <div class="fengwen fengwei3"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1239,20 +1337,22 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibozuozhu" class="huawen">
-              <div class="huawenItem">
-                <div class="huang huang1"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibozuozhu" class="huawen">
+                <div class="huawenItem">
+                  <div class="huang huang1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="huang huang2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="huang huang3"></div>
+                </div>
+                <div class="wanhuatong"></div>
+                <div class="wanhuatong"></div>
+                <div class="wanhuatong"></div>
+                <!-- <div class="yinying"></div> -->
               </div>
-              <div class="huawenItem">
-                <div class="huang huang2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="huang huang3"></div>
-              </div>
-              <div class="wanhuatong"></div>
-              <div class="wanhuatong"></div>
-              <div class="wanhuatong"></div>
-              <div class="yinying"></div>
             </div>
           </div>
         </div>
@@ -1270,18 +1370,20 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibozhishui" class="huawen">
-              <div class="huawenItem">
-                <div class="xuan xuan1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="xuan xuan2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="xuan xuan3"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="xuan xuan4"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibozhishui" class="huawen">
+                <div class="huawenItem">
+                  <div class="xuan xuan1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="xuan xuan2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="xuan xuan3"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="xuan xuan4"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1300,17 +1402,19 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhiboquannai" class="huawen">
-              <div class="huawenItem">
-                <div class="tiao tiao1"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhiboquannai" class="huawen">
+                <div class="huawenItem">
+                  <div class="tiao tiao1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="tiao tiao2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="tiao tiao3"></div>
+                </div>
+                <div class="yuanhuan"></div>
               </div>
-              <div class="huawenItem">
-                <div class="tiao tiao2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="tiao tiao3"></div>
-              </div>
-              <div class="yuanhuan"></div>
             </div>
           </div>
         </div>
@@ -1328,27 +1432,29 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhiboban" class="huawen">
-              <div class="huawenItem">
-                <div class="tiao tiao1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="tiao tiao2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="tiao tiao3"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="weiba weiba1"></div>
-                <div class="tuowei"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="weiba weiba2"></div>
-                <div class="tuowei"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="weiba weiba3"></div>
-                <div class="tuowei"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhiboban" class="huawen">
+                <div class="huawenItem">
+                  <div class="tiao tiao1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="tiao tiao2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="tiao tiao3"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="weiba weiba1"></div>
+                  <div class="tuowei"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="weiba weiba2"></div>
+                  <div class="tuowei"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="weiba weiba3"></div>
+                  <div class="tuowei"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1368,15 +1474,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo1" class="huawen">
-              <div class="huawenItem">
-                <div class="other1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other1"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other1"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo1" class="huawen">
+                <div class="huawenItem">
+                  <div class="other1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other1"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other1"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1395,15 +1503,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo2" class="huawen">
-              <div class="huawenItem">
-                <div class="other2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other2"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other2"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo2" class="huawen">
+                <div class="huawenItem">
+                  <div class="other2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other2"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other2"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1422,15 +1532,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo3" class="huawen">
-              <div class="huawenItem">
-                <div class="other3"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other3"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other3"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo3" class="huawen">
+                <div class="huawenItem">
+                  <div class="other3"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other3"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other3"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1449,15 +1561,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo4" class="huawen">
-              <div class="huawenItem">
-                <div class="other4"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other4"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other4"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo4" class="huawen">
+                <div class="huawenItem">
+                  <div class="other4"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other4"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other4"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1476,15 +1590,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibo5" class="huawen">
-              <div class="huawenItem">
-                <div class="other5"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other5"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other5"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo5" class="huawen">
+                <div class="huawenItem">
+                  <div class="other5"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other5"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other5"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1503,15 +1619,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo6" class="huawen">
-              <div class="huawenItem">
-                <div class="other6"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other6"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other6"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo6" class="huawen">
+                <div class="huawenItem">
+                  <div class="other6"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other6"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other6"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1530,15 +1648,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo7" class="huawen">
-              <div class="huawenItem">
-                <div class="other7"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other7"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other7"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo7" class="huawen">
+                <div class="huawenItem">
+                  <div class="other7"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other7"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other7"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1557,15 +1677,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo8" class="huawen">
-              <div class="huawenItem">
-                <div class="other8"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other8"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other8"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo8" class="huawen">
+                <div class="huawenItem">
+                  <div class="other8"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other8"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other8"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1584,15 +1706,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibo9" class="huawen">
-              <div class="huawenItem">
-                <div class="other9"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other9"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other9"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo9" class="huawen">
+                <div class="huawenItem">
+                  <div class="other9"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other9"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other9"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1611,15 +1735,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_fan"></div>
-            <div id="yuzhibo10" class="huawen">
-              <div class="huawenItem">
-                <div class="other10"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other10"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other10"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo10" class="huawen">
+                <div class="huawenItem">
+                  <div class="other10"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other10"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other10"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1638,15 +1764,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo11" class="huawen">
-              <div class="huawenItem">
-                <div class="other11"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other11"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other11"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo11" class="huawen">
+                <div class="huawenItem">
+                  <div class="other11"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other11"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other11"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1665,15 +1793,17 @@
               <div id="hongmo_lines" class="hongmo_lines"></div>
             </div>
             <div class="tongkong tongkong_zheng"></div>
-            <div id="yuzhibo12" class="huawen">
-              <div class="huawenItem">
-                <div class="other12"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other12"></div>
-              </div>
-              <div class="huawenItem">
-                <div class="other12"></div>
+            <div class="xuanzhuanBox">
+              <div id="yuzhibo12" class="huawen">
+                <div class="huawenItem">
+                  <div class="other12"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other12"></div>
+                </div>
+                <div class="huawenItem">
+                  <div class="other12"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1711,5 +1841,16 @@
         "translate(-50%, -50%) rotateY(180deg)";
       lianjia[i].appendChild(rightEye);
     }
+
+    document.addEventListener("mousemove", (e) => {
+      const yanjing = document.getElementsByClassName("yanjing");
+      for (let i = 0; i < yanjing.length; i++) {
+        if(i===yanjing.length-1)moveBall(e, yanjing[i]);
+      }
+    });
+
+    const moveBall = (e, view) => {
+      // const 
+    };
   </script>
 </html>
