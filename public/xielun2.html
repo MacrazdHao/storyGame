@@ -110,6 +110,8 @@
       width: 100%;
       height: 100%;
       display: flex;
+      left: calc(50% + 10px);
+      transform: translate(-50%, -50%);
       justify-content: center;
       align-items: center;
     }
@@ -1869,39 +1871,52 @@
       const leftEyeRect = eyes[0].getBoundingClientRect()
       const rightEyeRect = eyes[1].getBoundingClientRect()
       const eyesSpacing = rightEyeRect.x - leftEyeRect.x - eyeWidth
-      // console.log(eyesSpacing)
       // ---眼珠子---
       // 右眼是左眼的镜像，因此left和right会反转
+      // ---左右移动---
       const leftEyeBall = leftEye.getElementsByClassName('yanqiu')[0]
       const rightEyeBall = rightEye.getElementsByClassName('yanqiu')[0]
-      // console.log([leftEyeBall])
       const LeftEyeBall_MaxX = 200
       const LeftEyeBall_MinX = 30
       const LeftEyeBall_Center = 130
       const RightEyeBall_MinX = 120
       const RightEyeBall_MaxX = 280
       const RightEyeBall_Center = 210
-      // leftEyeBall.style.left = `${LeftEyeBall_Center}px`
-      // rightEyeBall.style.left = `${RightEyeBall_Center}px`
-      // const eyesCenterX = leftEyeRect.x + lianjia.offsetWidth / 2
       const seeLeft = leftEyeRect.x + eyeWidth
       const seeRight = seeLeft + eyesSpacing
       const seeCenter = seeLeft + (eyesSpacing/2)
       if (e.x < seeLeft) {
         const moveRatio = (e.x / seeLeft)
-        console.log(moveRatio)
+        // console.log(moveRatio)
         leftEyeBall.style.left = `${LeftEyeBall_MinX + moveRatio*(LeftEyeBall_Center - LeftEyeBall_MinX)}px`
         rightEyeBall.style.left = `${RightEyeBall_MaxX + (moveRatio)*(RightEyeBall_Center-RightEyeBall_MaxX)}px`
       } else if (e.x > seeRight) {
         const moveRatio = 1-((window.innerWidth - e.x) / (window.innerWidth - seeRight))
-        console.log(moveRatio)
+        // console.log(moveRatio)
         leftEyeBall.style.left = `${LeftEyeBall_Center+moveRatio*(LeftEyeBall_MaxX-LeftEyeBall_Center)}px`
         rightEyeBall.style.left = `${RightEyeBall_Center+moveRatio*(RightEyeBall_MinX-RightEyeBall_Center)}px`
       } else {
-        let moveRatio = 1-(Math.abs(e.x-seeCenter) / eyesSpacing)
-        console.log(moveRatio)
+        const moveRatio = 1-(Math.abs(e.x-seeCenter) / eyesSpacing)
+        // console.log(moveRatio)
         leftEyeBall.style.left = `${LeftEyeBall_Center+moveRatio*(LeftEyeBall_MaxX-LeftEyeBall_Center)}px`
         rightEyeBall.style.left = `${RightEyeBall_MaxX + (1-moveRatio)*(RightEyeBall_Center-RightEyeBall_MaxX)}px`
+      }
+      // 上下移动
+      const minY = 8  // 向上看
+      const maxY = 120  // 向下看
+      const midY = 90  // 平视
+      const eyeHeight = eyes[0].offsetHeight
+      const eyeMiddle = leftEyeRect.y + (eyeHeight/2)
+      if (e.y < eyeMiddle ) {
+        const moveRatio = (e.y / eyeMiddle)
+        console.log(moveRatio)
+        leftEyeBall.style.top = `${minY + moveRatio*(midY - minY)}px`
+        rightEyeBall.style.top = `${minY + moveRatio*(midY - minY)}px`
+      } else if (e.y > eyeMiddle) {
+        const moveRatio = 1-((window.innerHeight - e.y) / (window.innerHeight - eyeMiddle))
+        console.log(moveRatio)
+        leftEyeBall.style.top = `${midY + moveRatio*(maxY - midY)}px`
+        rightEyeBall.style.top = `${midY + moveRatio*(maxY - midY)}px`
       }
     };
   </script>
