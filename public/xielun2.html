@@ -14,29 +14,35 @@
     body {
       display: flex;
       flex-direction: column;
+      align-items: center;
       background-color: rgb(91, 91, 91);
     }
 
+    .lianjia + .lianjia {
+      margin-top: 60px;
+    }
+
     .lianjia {
-      width: 900px;
+      width: 1000px;
       height: 160px;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      transform: scale(0.5);
+      /* transform: scale(0.5); */
     }
 
     .yanjing {
-      width: 370px;
-      height: 140px;
+      box-sizing: border-box;
+      width: 400px;
+      height: 200px;
       z-index: 10;
       position: relative;
       background-color: #fff;
       border-color: currentColor;
       border-style: solid;
-      border-width: 26px 0px 0px 14px;
+      border-width: 30px 0px 0px 14px;
       border-radius: 8% 100% 10% 94%;
       overflow: hidden;
       background-image: radial-gradient(circle, #e8e8e8 20%, #c5c5c5 100%);
@@ -66,7 +72,7 @@
     }
 
     .yanjing::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 20px;
       left: 40px;
@@ -79,6 +85,7 @@
       background-color: #fff;
       opacity: 1;
       filter: blur(14px);
+      z-index: 4;
       /* background-color: #fff; */
     }
 
@@ -93,8 +100,10 @@
     .yanqiu {
       position: absolute;
       top: 50%;
-      left: calc(50% + 10px);
-      transform: translate(-50%, -50%);
+      /* left: calc(50% + 10px); */
+      /* transform: translate(-50%, -50%); */
+      transform: translate(0%, -50%);
+      transition: .1s all;
     }
 
     .yanqiu_lunhuiyan {
@@ -260,7 +269,7 @@
       height: 20px;
       border-radius: 40px;
       z-index: 5;
-      transition: .2s all;
+      transition: 0.2s all;
     }
 
     .tongkong_zheng {
@@ -1843,14 +1852,57 @@
     }
 
     document.addEventListener("mousemove", (e) => {
-      const yanjing = document.getElementsByClassName("yanjing");
-      for (let i = 0; i < yanjing.length; i++) {
-        if(i===yanjing.length-1)moveBall(e, yanjing[i]);
+      const lianjia = document.getElementsByClassName("lianjia");
+      for (let i = 0; i < lianjia.length; i++) {
+        if (i >= 1) {
+          moveBall(e, lianjia[i]);
+        }
       }
     });
 
-    const moveBall = (e, view) => {
-      // const 
+    const moveBall = (e, lianjia = document.createElement('div')) => {
+      const eyes = lianjia.getElementsByClassName("yanjing")
+      // ---眼球---
+      const eyeWidth = eyes[0].offsetWidth
+      const leftEye = eyes[0]
+      const rightEye = eyes[1]
+      const leftEyeRect = eyes[0].getBoundingClientRect()
+      const rightEyeRect = eyes[1].getBoundingClientRect()
+      const eyesSpacing = rightEyeRect.x - leftEyeRect.x - eyeWidth
+      // console.log(eyesSpacing)
+      // ---眼珠子---
+      // 右眼是左眼的镜像，因此left和right会反转
+      const leftEyeBall = leftEye.getElementsByClassName('yanqiu')[0]
+      const rightEyeBall = rightEye.getElementsByClassName('yanqiu')[0]
+      // console.log([leftEyeBall])
+      const LeftEyeBall_MaxX = 200
+      const LeftEyeBall_MinX = 30
+      const LeftEyeBall_Center = 130
+      const RightEyeBall_MinX = 120
+      const RightEyeBall_MaxX = 280
+      const RightEyeBall_Center = 210
+      // leftEyeBall.style.left = `${LeftEyeBall_Center}px`
+      // rightEyeBall.style.left = `${RightEyeBall_Center}px`
+      // const eyesCenterX = leftEyeRect.x + lianjia.offsetWidth / 2
+      const seeLeft = leftEyeRect.x + eyeWidth
+      const seeRight = seeLeft + eyesSpacing
+      const seeCenter = seeLeft + (eyesSpacing/2)
+      if (e.x < seeLeft) {
+        const moveRatio = (e.x / seeLeft)
+        console.log(moveRatio)
+        leftEyeBall.style.left = `${LeftEyeBall_MinX + moveRatio*(LeftEyeBall_Center - LeftEyeBall_MinX)}px`
+        rightEyeBall.style.left = `${RightEyeBall_MaxX + (moveRatio)*(RightEyeBall_Center-RightEyeBall_MaxX)}px`
+      } else if (e.x > seeRight) {
+        const moveRatio = 1-((window.innerWidth - e.x) / (window.innerWidth - seeRight))
+        console.log(moveRatio)
+        leftEyeBall.style.left = `${LeftEyeBall_Center+moveRatio*(LeftEyeBall_MaxX-LeftEyeBall_Center)}px`
+        rightEyeBall.style.left = `${RightEyeBall_Center+moveRatio*(RightEyeBall_MinX-RightEyeBall_Center)}px`
+      } else {
+        let moveRatio = 1-(Math.abs(e.x-seeCenter) / eyesSpacing)
+        console.log(moveRatio)
+        leftEyeBall.style.left = `${LeftEyeBall_Center+moveRatio*(LeftEyeBall_MaxX-LeftEyeBall_Center)}px`
+        rightEyeBall.style.left = `${RightEyeBall_MaxX + (1-moveRatio)*(RightEyeBall_Center-RightEyeBall_MaxX)}px`
+      }
     };
   </script>
 </html>
