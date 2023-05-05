@@ -12,7 +12,9 @@
   </head>
   <style>
     html {
-      scale: 0.5;
+      /* scale: 0.5; */
+      width: 100%;
+      height: 100%;
     }
 
     body {
@@ -20,6 +22,23 @@
       flex-direction: column;
       align-items: center;
       background-color: rgb(91, 91, 91);
+      position: relative;
+      width: 100%;
+      height: fit-content;
+    }
+
+    @keyframes magic {
+      0% {
+        transform: rotate(0) scale(0);
+        opacity: 0.1;
+        filter: blur(0px);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(8);
+        opacity: 0;
+        filter: blur(2px);
+      }
     }
 
     .lianjia + .lianjia {
@@ -130,7 +149,7 @@
     }
 
     .lunhuiyan_waiyuan {
-      border-radius: 200px;
+      border-radius: 1000px;
       position: absolute;
       top: 50%;
       left: 50%;
@@ -1848,13 +1867,33 @@
     </div>
   </body>
   <script>
-    // setInterval(() => {
-    //   const yanjing = document.getElementsByClassName("yanjing")[0];
-    //   yanjing.style.height = 0;
-    //   setTimeout(() => {
-    //     yanjing.style.height = "140px";
-    //   }, 300);
-    // }, 5000);
+    // 点击释放幻术
+    window.addEventListener("click", (e) => {
+      const lianjia = document.getElementsByClassName("lianjia");
+      for (let i = 0; i < lianjia.length; i++) {
+        showMagic(e, lianjia[i], i);
+      }
+    });
+    const showMagic = (e, lianjia = document.createElement("div"), index) => {
+      const eyeBall = lianjia.getElementsByClassName("yanqiu");
+      for (let i = 0; i < eyeBall.length; i++) {
+        const ball = eyeBall[i].cloneNode(true);
+        const ballRect = eyeBall[i].getBoundingClientRect();
+        ball.style.width = `${ballRect.width}px`;
+        ball.style.height =`${ballRect.height}px`;
+        ball.style.position = "fixed";
+        ball.style.left = `${ballRect.left}px`;
+        ball.style.top = `${ballRect.top}px`;
+        ball.style.zIndex = "10";
+        ball.style.transform = "none";
+        ball.style.animation = "magic 2s ease-in-out 1";
+        document.body.appendChild(ball);
+        setTimeout(() => {
+          document.body.removeChild(ball);
+        }, 2000);
+      }
+    };
+    // 生成虹膜
     const hongmo = document.getElementsByClassName("hongmo_lines");
     for (let h = 0; h < hongmo.length; h++) {
       const hongmoItem = hongmo[h];
@@ -1867,6 +1906,7 @@
         hongmoItem.appendChild(hongmo_line);
       }
     }
+    // 纹路旋转出场
     const lianjia = document.getElementsByClassName("lianjia");
     for (let i = 0; i < lianjia.length; i++) {
       const rightEye = lianjia[i]
@@ -1877,16 +1917,13 @@
         "translate(-50%, -50%) rotateY(180deg)";
       lianjia[i].appendChild(rightEye);
     }
-
+    // 眼球追踪
     document.addEventListener("mousemove", (e) => {
       const lianjia = document.getElementsByClassName("lianjia");
       for (let i = 0; i < lianjia.length; i++) {
-        if (i >= 0) {
-          moveBall(e, lianjia[i]);
-        }
+        moveBall(e, lianjia[i]);
       }
     });
-
     const moveBall = (e, lianjia = document.createElement("div")) => {
       const eyes = lianjia.getElementsByClassName("yanjing");
       // ---眼球---
