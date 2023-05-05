@@ -1972,10 +1972,10 @@
     // 眼球追踪
     document.addEventListener("mousemove", (e) => {
       for (let i = 0; i < lianjia.length; i++) {
-        moveBall(e, lianjia[i]);
+        moveBall(e, lianjia[i], i);
       }
     });
-    const moveBall = (e, face = document.createElement("div")) => {
+    const moveBall = (e, face = document.createElement("div"), index) => {
       const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
       const eyeWidth = eyes[0].offsetWidth;
@@ -1989,8 +1989,8 @@
       // ---左右移动---
       const leftEyeBall = leftEye.getElementsByClassName("yanqiu")[0];
       const rightEyeBall = rightEye.getElementsByClassName("yanqiu")[0];
-      const LeftEyeBall_MaxX = 200;
-      const LeftEyeBall_MinX = 30;
+      const LeftEyeBall_MaxX = index === 0 ? 280 : 200;
+      const LeftEyeBall_MinX = index === 0 ? 110 : 30;
       const LeftEyeBall_Center = 130;
       const RightEyeBall_MinX = 120;
       const RightEyeBall_MaxX = 280;
