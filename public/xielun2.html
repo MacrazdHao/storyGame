@@ -166,6 +166,16 @@
       height: 380px;
     }
 
+    .yanqiu_lunhuiyan > .lunhuiyan_waiyuan:nth-child(4) {
+      width: 470px;
+      height: 470px;
+    }
+
+    .yanqiu_lunhuiyan > .lunhuiyan_waiyuan:nth-child(5) {
+      width: 550px;
+      height: 550px;
+    }
+
     @keyframes rotate {
       0% {
         transform: rotate(0) scale(0);
@@ -1211,6 +1221,8 @@
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
           <div class="lunhuiyan_waiyuan"></div>
+          <div class="lunhuiyan_waiyuan"></div>
+          <div class="lunhuiyan_waiyuan"></div>
           <div class="yanzhu yanzhu_lunhuiyan">
             <div class="yanzhu yanzhu_yinying"></div>
             <div class="hongmo">
@@ -1869,7 +1881,7 @@
     document.addEventListener("mousemove", (e) => {
       const lianjia = document.getElementsByClassName("lianjia");
       for (let i = 0; i < lianjia.length; i++) {
-        if (i >= 1) {
+        if (i >= 0) {
           moveBall(e, lianjia[i]);
         }
       }
