@@ -70,7 +70,7 @@
       overflow: hidden;
       background-image: radial-gradient(circle, #e8e8e8 20%, #c5c5c5 100%);
       box-shadow: -2px -2px 16px 2px inset;
-      transition: 0.3s all;
+      transition: 0.3s all ease-out;
     }
 
     .yanjing_lunhuiyan::before,
@@ -1867,31 +1867,60 @@
     </div>
   </body>
   <script>
+    const lianjia = document.getElementsByClassName("lianjia");
+    // 定时眨眼
+    const blink = (face, cb = () => {}) => {
+      const eyes = face.getElementsByClassName("yanjing");
+      for (let i = 0; i < eyes.length; i++) {
+        eyes[i].style.borderWidth = "150px 0px 40px 14px";
+        eyes[i].style.height = "120px";
+      }
+      setTimeout(() => {
+        for (let i = 0; i < eyes.length; i++) {
+          eyes[i].style.borderWidth = "30px 0px 0px 14px";
+          eyes[i].style.height = "200px";
+        }
+        setTimeout(() => {
+          cb();
+        }, 300);
+      }, 300);
+    };
+    const randomBlink = (face = document.createElement("div")) => {
+      blink(face);
+      setTimeout(() => {
+        randomBlink(face)
+      }, 3000 + Math.random() * 3000);
+    };
+    for (let i = 0; i < lianjia.length; i++) {
+      randomBlink(lianjia[i])
+    }
     // 点击释放幻术
     window.addEventListener("click", (e) => {
-      const lianjia = document.getElementsByClassName("lianjia");
       for (let i = 0; i < lianjia.length; i++) {
         showMagic(e, lianjia[i], i);
       }
     });
-    const showMagic = (e, lianjia = document.createElement("div"), index) => {
-      const eyeBall = lianjia.getElementsByClassName("yanqiu");
-      for (let i = 0; i < eyeBall.length; i++) {
-        const ball = eyeBall[i].cloneNode(true);
-        const ballRect = eyeBall[i].getBoundingClientRect();
-        ball.style.width = `${ballRect.width}px`;
-        ball.style.height =`${ballRect.height}px`;
-        ball.style.position = "fixed";
-        ball.style.left = `${ballRect.left}px`;
-        ball.style.top = `${ballRect.top}px`;
-        ball.style.zIndex = "10";
-        ball.style.transform = "none";
-        ball.style.animation = "magic 2s ease-in-out 1";
-        document.body.appendChild(ball);
-        setTimeout(() => {
-          document.body.removeChild(ball);
-        }, 2000);
-      }
+    const showMagic = (e, face = document.createElement("div"), index) => {
+      const magic = () => {
+        const eyeBall = face.getElementsByClassName("yanqiu");
+        for (let i = 0; i < eyeBall.length; i++) {
+          const ball = eyeBall[i].cloneNode(true);
+          const ballRect = eyeBall[i].getBoundingClientRect();
+          ball.style.width = `${ballRect.width}px`;
+          ball.style.height = `${ballRect.height}px`;
+          ball.style.position = "fixed";
+          ball.style.left = `${ballRect.left}px`;
+          ball.style.top = `${ballRect.top}px`;
+          ball.style.zIndex = "10";
+          ball.style.transform = "none";
+          ball.style.animation = "magic 2s ease-in-out 1";
+          document.body.appendChild(ball);
+          setTimeout(() => {
+            document.body.removeChild(ball);
+          }, 2000);
+        }
+      };
+      blink(face, magic);
     };
     // 生成虹膜
     const hongmo = document.getElementsByClassName("hongmo_lines");
@@ -1907,7 +1936,6 @@
       }
     }
     // 纹路旋转出场
-    const lianjia = document.getElementsByClassName("lianjia");
     for (let i = 0; i < lianjia.length; i++) {
       const rightEye = lianjia[i]
         .getElementsByClassName("yanjing")[0]
@@ -1919,13 +1947,12 @@
     }
     // 眼球追踪
     document.addEventListener("mousemove", (e) => {
-      const lianjia = document.getElementsByClassName("lianjia");
       for (let i = 0; i < lianjia.length; i++) {
         moveBall(e, lianjia[i]);
       }
     });
-    const moveBall = (e, lianjia = document.createElement("div")) => {
-      const eyes = lianjia.getElementsByClassName("yanjing");
+    const moveBall = (e, face = document.createElement("div")) => {
+      const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
       const eyeWidth = eyes[0].offsetWidth;
       const leftEye = eyes[0];
@@ -2028,7 +2055,7 @@
       const realDist = Math.min(leftDist, rightDist);
       const sizeRatio = 1 - realDist / MaxDist;
       // console.log("sizeRatio", sizeRatio)
-      const tongkongs = lianjia.getElementsByClassName("tongkong");
+      const tongkongs = face.getElementsByClassName("tongkong");
       for (let i = 0; i < tongkongs.length; i++) {
         tongkongs[i].style.width = `${MinSize + 20 * sizeRatio}px`;
         tongkongs[i].style.height = `${MinSize + 20 * sizeRatio}px`;
