@@ -77,7 +77,7 @@
     .yanjing_lunhuiyan::before,
     .yanjing_lunhuiyan::after {
       opacity: 0.5 !important;
-      filter: blur(10px) !important;
+      filter: blur(16px) !important;
     }
 
     .yanjing_lunhuiyan {
@@ -97,7 +97,7 @@
       border-radius: 100% 100% 100% 100%;
       background-color: #fff;
       opacity: 1;
-      filter: blur(14px);
+      filter: blur(16px);
       transform: rotate(30deg);
       z-index: 6;
       /* background-color: #fff; */
@@ -106,8 +106,8 @@
     .yanjing::after {
       content: "";
       position: absolute;
-      top: 116px;
-      left: 280px;
+      top: 130px;
+      left: 296px;
       width: 26px;
       height: 16px;
       border-color: #fff;
@@ -116,7 +116,7 @@
       border-radius: 100% 100% 100% 100%;
       background-color: #fff;
       opacity: 1;
-      filter: blur(14px);
+      filter: blur(16px);
       z-index: 6;
       transform: rotate(30deg);
       /* background-color: #fff; */
@@ -146,9 +146,9 @@
     .yanqiu {
       position: absolute;
       top: 50%;
-      /* left: calc(50% + 10px); */
-      /* transform: translate(-50%, -50%); */
-      transform: translate(0%, -50%);
+      left: calc(50% + 0px);
+      transform: translate(-50%, -50%);
+      /* transform: translate(0%, -50%); */
       transition: 0.1s all;
       filter: drop-shadow(0px 0px 140px);
       box-shadow: 0px 0px 24px 4px #ff0000;
@@ -184,7 +184,7 @@
       width: 100%;
       height: 100%;
       display: flex;
-      left: calc(50% + 10px);
+      left: calc(50% + 0px);
       transform: translate(-50%, -50%);
       justify-content: center;
       align-items: center;
@@ -238,9 +238,19 @@
       height: 550px;
     }
 
-    @keyframes rotate {
+    @keyframes rotateOut {
       0% {
         transform: rotate(0) scale(0);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0) scale(1);
       }
 
       100% {
@@ -252,7 +262,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      animation: rotate 1s ease-in-out 1;
+      animation: rotateOut 1s ease-in-out 1;
     }
 
     .yanzhu {
@@ -1957,14 +1967,16 @@
       randomBlink(lianjia[i]);
     }
     // 点击释放幻术
-    window.addEventListener("click", (e) => {
-      for (let i = 0; i < lianjia.length; i++) {
-        showMagic(e, lianjia[i], i);
-      }
-    });
     let showingMagic = false;
     const magic = (face) => {
       showingMagic = true;
+      const xuanzhuanBoxes = face.getElementsByClassName("xuanzhuanBox");
+      for (let i = 0; i < xuanzhuanBoxes.length; i++) {
+        xuanzhuanBoxes[i].style.animation = "none";
+        setTimeout(() => {
+          xuanzhuanBoxes[i].style.animation = "rotate 0.8s ease-out 1";
+        });
+      }
       const eyeBall = face.getElementsByClassName("yanqiu");
       for (let i = 0; i < eyeBall.length; i++) {
         const ball = eyeBall[i].cloneNode(true);
@@ -1987,6 +1999,11 @@
     const showMagic = (e, face = document.createElement("div"), index) => {
       if (!showingMagic) blink(face, () => magic(face));
     };
+    window.addEventListener("click", (e) => {
+      for (let i = 0; i < lianjia.length; i++) {
+        showMagic(e, lianjia[i], i);
+      }
+    });
     // 生成虹膜
     const hongmo = document.getElementsByClassName("hongmo_lines");
     for (let h = 0; h < hongmo.length; h++) {
@@ -2001,12 +2018,7 @@
       }
     }
     // 眼球追踪
-    document.addEventListener("mousemove", (e) => {
-      for (let i = 0; i < lianjia.length; i++) {
-        moveBall(e, lianjia[i], i);
-      }
-    });
-    const moveBall = (e, face = document.createElement("div"), index) => {
+    const moveBall = (e, face = document.createElement("div")) => {
       const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
       const eyeWidth = eyes[0].offsetWidth;
@@ -2020,9 +2032,9 @@
       // ---左右移动---
       const leftEyeBall = leftEye.getElementsByClassName("yanqiu")[0];
       const rightEyeBall = rightEye.getElementsByClassName("yanqiu")[0];
-      const LeftEyeBall_MaxX = index === 0 ? 280 : 200;
-      const LeftEyeBall_MinX = index === 0 ? 110 : 30;
-      const LeftEyeBall_Center = 130;
+      const LeftEyeBall_MaxX = 280;
+      const LeftEyeBall_MinX = 120;
+      const LeftEyeBall_Center = 200;
       const RightEyeBall_MinX = 120;
       const RightEyeBall_MaxX = 280;
       const RightEyeBall_Center = 210;
@@ -2084,7 +2096,7 @@
       // 瞳孔
       const MinSize = 10;
       const MaxSize = 30;
-      const MaxDist = eyeWidth * 3; // 控制瞳孔聚焦最远距离的阈值
+      const MaxDist = Math.min(window.innerWidth, window.innerHeight, eyeWidth * 3); // 控制瞳孔聚焦最远距离的阈值
       const LeftEyeBallRect = leftEyeBall.getBoundingClientRect();
       const RightEyeBallRect = rightEyeBall.getBoundingClientRect();
       const leftDistX = Math.abs(
@@ -2116,5 +2128,16 @@
         tongkongs[i].style.height = `${MinSize + 20 * sizeRatio}px`;
       }
     };
+    document.addEventListener("mouseenter", (e) => {
+      for (let i = 0; i < lianjia.length; i++) {
+        moveBall(e, lianjia[i]);
+      }
+    });
+    document.addEventListener("mousemove", (e) => {
+      for (let i = 0; i < lianjia.length; i++) {
+        moveBall(e, lianjia[i]);
+      }
+    });
+    moveBall();
   </script>
 </html>
