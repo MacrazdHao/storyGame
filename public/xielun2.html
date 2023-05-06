@@ -149,7 +149,7 @@
       left: calc(50% + 0px);
       transform: translate(-50%, -50%);
       /* transform: translate(0%, -50%); */
-      transition: 0.1s all;
+      transition: 0.1s all ease-in-out;
       filter: drop-shadow(0px 0px 140px);
       box-shadow: 0px 0px 24px 4px #ff0000;
       border-radius: 100%;
@@ -2018,7 +2018,13 @@
       }
     }
     // 眼球追踪
-    const moveBall = (e, face = document.createElement("div")) => {
+    let movingBall = Array.from(lianjia).map(()=>false)
+    const moveBall = (e, face = document.createElement("div"), index) => {
+      if (movingBall[index]) return
+      movingBall[index] = true
+      setTimeout(()=>{
+        movingBall[index] = false
+      }, 60)
       const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
       const eyeWidth = eyes[0].offsetWidth;
@@ -2130,12 +2136,12 @@
     };
     document.addEventListener("mouseenter", (e) => {
       for (let i = 0; i < lianjia.length; i++) {
-        moveBall(e, lianjia[i]);
+        moveBall(e, lianjia[i], i);
       }
     });
     document.addEventListener("mousemove", (e) => {
       for (let i = 0; i < lianjia.length; i++) {
-        moveBall(e, lianjia[i]);
+        moveBall(e, lianjia[i], i);
       }
     });
     moveBall();
