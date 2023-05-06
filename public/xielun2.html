@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
     <title>写轮眼</title>
   </head>
   <style>
@@ -29,7 +29,7 @@
 
     @keyframes magic {
       0% {
-        transform: rotate(0) scale(0);
+        transform: rotate(0) scale(1);
         opacity: 0.1;
         filter: blur(0px);
       }
@@ -47,13 +47,13 @@
 
     .lianjia {
       width: 1000px;
-      height: 160px;
+      height: 200px;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      /* transform: scale(0.5); */
+      transform: scale(0.3);
     }
 
     .yanjing {
@@ -146,14 +146,20 @@
     .yanqiu {
       position: absolute;
       top: 50%;
-      left: calc(50% + 0px);
+      left: 50%;
       transform: translate(-50%, -50%);
-      /* transform: translate(0%, -50%); */
       transition: 0.1s all ease-in-out;
       filter: drop-shadow(0px 0px 140px);
       box-shadow: 0px 0px 24px 4px #ff0000;
       border-radius: 100%;
       z-index: 5;
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+      box-shadow: none;
+      width: 100%;
+      height: 100%;
     }
 
     .yanqiu::after {
@@ -181,14 +187,6 @@
     }
 
     .yanqiu_lunhuiyan {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      left: calc(50% + 0px);
-      transform: translate(-50%, -50%);
-      justify-content: center;
-      align-items: center;
-      box-shadow: none;
     }
 
     .lunhuiyan_waiyuan {
@@ -313,14 +311,9 @@
     }
 
     .yanzhu_zuozhu {
-      position: relative;
-      width: 160px;
-      height: 160px;
-      border-radius: 160px;
       background-color: #000;
       box-shadow: 12px -4px 18px 0px #000 inset;
       border: 1px solid rgba(0, 0, 0, 0.3);
-      overflow: hidden;
     }
 
     .hongmo {
@@ -1439,7 +1432,7 @@
         <div class="yanlian"></div>
         <div class="yanlian"></div>
         <div class="yanqiu">
-          <div class="yanzhu_zuozhu">
+          <div class="yanzhu yanzhu_zuozhu">
             <div class="yanzhu_yingying_zuozhu"></div>
             <div class="hongmo">
               <div id="hongmo_lines" class="hongmo_lines"></div>
@@ -1920,6 +1913,7 @@
     </div>
   </body>
   <script>
+    const scale = 0.3; // 缩放大小，值等同 style -> .lianjia -> transform: scale(0.3)
     const lianjia = document.getElementsByClassName("lianjia");
     // 生成右眼
     for (let i = 0; i < lianjia.length; i++) {
@@ -1968,7 +1962,7 @@
     }
     // 点击释放幻术
     let showingMagic = false;
-    const magic = (face) => {
+    const magic = (face = document.createElement("div")) => {
       showingMagic = true;
       const xuanzhuanBoxes = face.getElementsByClassName("xuanzhuanBox");
       for (let i = 0; i < xuanzhuanBoxes.length; i++) {
@@ -1979,16 +1973,29 @@
       }
       const eyeBall = face.getElementsByClassName("yanqiu");
       for (let i = 0; i < eyeBall.length; i++) {
+        const yanzhu = eyeBall[i].getElementsByClassName("yanzhu")[0];
         const ball = eyeBall[i].cloneNode(true);
-        const ballRect = eyeBall[i].getBoundingClientRect();
-        ball.style.width = `${ballRect.width}px`;
-        ball.style.height = `${ballRect.height}px`;
+        const ballRect = yanzhu.getBoundingClientRect();
+        ball.style.width = `fit-content`;
+        ball.style.height = `fit-content`;
         ball.style.position = "fixed";
         ball.style.left = `${ballRect.left}px`;
         ball.style.top = `${ballRect.top}px`;
         ball.style.zIndex = "10";
-        ball.style.transform = "none";
-        ball.style.animation = "magic 2s ease-out 1";
+        ball.style.transform = `translate(-${50 * (1 - scale)}%, -${
+          50 * (1 - scale)
+        }%) scale(${scale}) rotate(0)`;
+        ball.style.opacity = "0.1";
+        ball.style.filter = "blur(0px)";
+        // ball.style.animation = "magic 2s ease-out 1";
+        ball.style.transition = "1.8s all ease-out";
+        setTimeout(() => {
+          ball.style.transform = `translate(-${50 * (1 - scale)}%, -${
+            50 * (1 - scale)
+          }%) scale(${scale * 8}) rotate(360deg)`;
+          ball.style.opacity = "0";
+          ball.style.filter = "blur(2px)";
+        }, 0);
         document.body.appendChild(ball);
         setTimeout(() => {
           document.body.removeChild(ball);
@@ -2018,13 +2025,13 @@
       }
     }
     // 眼球追踪
-    let movingBall = Array.from(lianjia).map(()=>false)
+    let movingBall = Array.from(lianjia).map(() => false);
     const moveBall = (e, face = document.createElement("div"), index) => {
-      if (movingBall[index]) return
-      movingBall[index] = true
-      setTimeout(()=>{
-        movingBall[index] = false
-      }, 60)
+      if (movingBall[index]) return;
+      movingBall[index] = true;
+      setTimeout(() => {
+        movingBall[index] = false;
+      }, 60);
       const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
       const eyeWidth = eyes[0].offsetWidth;
@@ -2032,7 +2039,7 @@
       const rightEye = eyes[1];
       const leftEyeRect = eyes[0].getBoundingClientRect();
       const rightEyeRect = eyes[1].getBoundingClientRect();
-      const eyesSpacing = rightEyeRect.x - leftEyeRect.x - eyeWidth;
+      const eyesSpacing = rightEyeRect.x - leftEyeRect.x - eyeWidth - 20;
       // ---眼珠子---
       // 右眼是左眼的镜像，因此left和right会反转
       // ---左右移动---
@@ -2102,7 +2109,11 @@
       // 瞳孔
       const MinSize = 16;
       const MaxSize = 30;
-      const MaxDist = Math.min(window.innerWidth, window.innerHeight, eyeWidth * 3); // 控制瞳孔聚焦最远距离的阈值
+      const MaxDist = Math.min(
+        window.innerWidth,
+        window.innerHeight,
+        eyeWidth * 3
+      ); // 控制瞳孔聚焦最远距离的阈值
       const LeftEyeBallRect = leftEyeBall.getBoundingClientRect();
       const RightEyeBallRect = rightEyeBall.getBoundingClientRect();
       const leftDistX = Math.abs(
@@ -2144,6 +2155,6 @@
         moveBall(e, lianjia[i], i);
       }
     });
-    moveBall();
+    // moveBall();
   </script>
 </html>
