@@ -2094,7 +2094,7 @@
         rightEyeBall.style.top = `${midY + moveRatio * (maxY - midY)}px`;
       }
       // 瞳孔
-      const MinSize = 10;
+      const MinSize = 16;
       const MaxSize = 30;
       const MaxDist = Math.min(window.innerWidth, window.innerHeight, eyeWidth * 3); // 控制瞳孔聚焦最远距离的阈值
       const LeftEyeBallRect = leftEyeBall.getBoundingClientRect();
