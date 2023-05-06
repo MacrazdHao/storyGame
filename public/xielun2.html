@@ -2021,7 +2021,7 @@
       }, 60);
       const eyes = face.getElementsByClassName("yanjing");
       // ---眼球---
-      const eyeWidth = eyes[0].offsetWidth;
+      const eyeWidth = eyes[0].offsetWidth * scale;
       const leftEye = eyes[0];
       const rightEye = eyes[1];
       const leftEyeRect = eyes[0].getBoundingClientRect();
@@ -2079,7 +2079,7 @@
       const minY = 8; // 向上看
       const maxY = 120; // 向下看
       const midY = 90; // 平视
-      const eyeHeight = eyes[0].offsetHeight;
+      const eyeHeight = eyes[0].offsetHeight * scale;
       const eyeMiddle = leftEyeRect.y + eyeHeight / 2;
       if (e.y < eyeMiddle) {
         const moveRatio = e.y / eyeMiddle;
