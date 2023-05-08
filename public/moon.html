@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+    <title>月亮</title>
+  </head>
+  <style>
+    html {
+      /* scale: 0.5; */
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgb(0, 0, 0);
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .starBox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: 0.1s all;
+    }
+
+    .star,
+    .star::before {
+      width: 2px;
+      height: 2px;
+      background-color: #fff;
+      border-radius: 100% 100% 100% 100%;
+      border-width: 6px 0px 6px 0px;
+      border-color: rgb(255, 255, 255);
+      border-style: solid;
+      /* box-shadow: 0 0 2px 0px #fff; */
+    }
+
+    .star {
+      position: relative;
+      transform: scale(0.6);
+    }
+
+    .star::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+      animation: inherit;
+    }
+
+    @keyframes shining {
+      0%,
+      100% {
+        box-shadow: 0 0 3px 1px #fff;
+      }
+      50% {
+        box-shadow: 0 0 6px 1px #fff;
+      }
+    }
+
+    .moonBox {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      /* transform: translate(100px, 100px); */
+      border-radius: 100px;
+      background-color: #000;
+      transition: 0s all;
+      box-shadow: 0 0 20px 20px #fff;
+      z-index: 10;
+    }
+  </style>
+  <body>
+    <div class="starBox" style="display: none">
+      <div class="star"></div>
+    </div>
+    <div class="moonBox"></div>
+  </body>
+  <script>
+    const StarNum = 100;
+    const star = document.getElementsByClassName("starBox")[0];
+    const Moon = document.getElementsByClassName("moonBox")[0];
+    const MoonD = 200;
+    const MoonR = MoonD / 2;
+    const MoonX = Moon.offsetLeft + MoonR;
+    const MoonY = Moon.offsetTop + MoonR;
+    const MoonShadow = 20;
+    const StarScale = 0.6;
+    const StarWidth = 10;
+    const StarHeight = 10;
+    for (let i = 0; i < StarNum; i++) {
+      const newStar = star.cloneNode(true);
+      const randomShining = `shining ${
+        0.5 + Math.random() * 0.7
+      }s linear infinite`;
+      let left = Math.random() * document.body.offsetWidth;
+      let top = Math.random() * document.body.offsetHeight;
+      const moonDist = Math.abs(
+        Math.sqrt(Math.pow(MoonX - left, 2) + Math.pow(MoonY - top, 2))
+      );
+      if (moonDist < MoonR) {
+        const ratio = MoonR / moonDist;
+        const leftDist = left - MoonX;
+        const topDist = top - MoonY;
+        left = MoonX + leftDist * ratio;
+        top = MoonY + topDist * ratio;
+      }
+      newStar.style.transform = `translate(${
+        left + (left < MoonX ? -1 : 1) * (StarWidth + MoonShadow)
+      }px, ${top + (top < MoonY ? -1 : 1) * (StarHeight + MoonShadow)}px)`;
+      newStar.style.display = "block";
+      const starCore = newStar.getElementsByClassName("star")[0];
+      starCore.style.animation = randomShining;
+      document.body.appendChild(newStar);
+    }
+    star.remove();
+
+    const movingMoon = (e) => {
+      const MoonX = e.x;
+      const MoonY = e.y;
+      const moon = document.getElementsByClassName("moonBox")[0];
+      moon.style.transform = `translate(${MoonX - MoonD / 2}px, ${
+        MoonY - MoonD / 2
+      }px)`;
+      const stars = document.getElementsByClassName("starBox");
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        const starTransform = window
+          .getComputedStyle(star)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        let left = starTransform.at(-2);
+        let top = starTransform.at(-1);
+        const moonDist = Math.abs(
+          Math.sqrt(Math.pow(MoonX - left, 2) + Math.pow(MoonY - top, 2))
+        );
+        if (moonDist < MoonR) {
+          const ratio = MoonR / moonDist;
+          const leftDist = left - MoonX;
+          const topDist = top - MoonY;
+          left = MoonX + leftDist * ratio;
+          top = MoonY + topDist * ratio;
+          star.style.transform = `translate(${
+            left + (left < MoonX ? -1 : 1) * (StarWidth + MoonShadow)
+          }px, ${top + (top < MoonY ? -1 : 1) * (StarHeight + MoonShadow)}px)`;
+        }
+      }
+    };
+    document.body.addEventListener("mousemove", movingMoon);
+  </script>
+</html>
