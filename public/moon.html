@@ -25,6 +25,7 @@
       position: relative;
       width: 100%;
       height: 100%;
+      overflow: hidden;
     }
 
     .starBox {
@@ -102,6 +103,8 @@
     const StarScale = 0.6;
     const StarWidth = 10;
     const StarHeight = 10;
+    const otherXDist = StarWidth + MoonShadow;
+    const otherYDist = StarHeight + MoonShadow;
     for (let i = 0; i < StarNum; i++) {
       const newStar = star.cloneNode(true);
       const randomShining = `shining ${
@@ -120,8 +123,8 @@
         top = MoonY + topDist * ratio;
       }
       newStar.style.transform = `translate(${
-        left + (left < MoonX ? -1 : 1) * (StarWidth + MoonShadow)
-      }px, ${top + (top < MoonY ? -1 : 1) * (StarHeight + MoonShadow)}px)`;
+        left + (left < MoonX ? -1 : 1) * otherXDist
+      }px, ${top + (top < MoonY ? -1 : 1) * otherYDist}px)`;
       newStar.style.display = "block";
       const starCore = newStar.getElementsByClassName("star")[0];
       starCore.style.animation = randomShining;
@@ -138,6 +141,9 @@
       }px)`;
       const stars = document.getElementsByClassName("starBox");
       for (let i = 0; i < stars.length; i++) {
+        const randomRun = Math.random() * 30;
+        const totalOtherXDist = otherXDist + randomRun;
+        const totalOtherYDist = otherYDist + randomRun;
         const star = stars[i];
         const starTransform = window
           .getComputedStyle(star)
@@ -155,9 +161,13 @@
           const topDist = top - MoonY;
           left = MoonX + leftDist * ratio;
           top = MoonY + topDist * ratio;
-          star.style.transform = `translate(${
-            left + (left < MoonX ? -1 : 1) * (StarWidth + MoonShadow)
-          }px, ${top + (top < MoonY ? -1 : 1) * (StarHeight + MoonShadow)}px)`;
+          let moveX = left;
+          let moveY = top;
+          if (moveX < 0) moveX = moveX + MoonD;
+          if (moveX > document.body.offsetWidth) moveX = moveX - MoonD;
+          if (moveY < 0) moveY = MoonY + MoonD;
+          if (moveY > document.body.offsetHeight) moveY = MoonY - MoonD;
+          star.style.transform = `translate(${moveX + (left < MoonX ? -1 : 1) * totalOtherXDist}px, ${moveY + (top < MoonY ? -1 : 1) * totalOtherYDist}px)`;
         }
       }
     };
