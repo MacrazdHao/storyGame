@@ -33,7 +33,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      transition: 0.1s all;
+      transition: 0.3s all linear;
     }
 
     .star,
@@ -77,7 +77,7 @@
         box-shadow: 0 0 20px 14px #fff, 0 0 10px 10px #fff inset;
       }
       50% {
-        box-shadow: 0 0 20px 20px #fff, 0 0 10px 0px #fff inset;
+        box-shadow: 0 0 20px 20px #fff, 0 0 10px 6px #fff inset;
       }
     }
 
@@ -121,14 +121,15 @@
     const Moon = document.getElementsByClassName("moonBox")[0];
     const MoonD = 100;
     const MoonR = MoonD / 2;
-    const MoonX = Moon.offsetLeft + MoonR;
-    const MoonY = Moon.offsetTop + MoonR;
+    const InitMoonX = Moon.offsetLeft + MoonR;
+    const InitMoonY = Moon.offsetTop + MoonR;
     const MoonShadow = 20;
     const StarScale = 0.6;
     const StarWidth = 10;
     const StarHeight = 10;
     const otherXDist = StarWidth + MoonShadow;
     const otherYDist = StarHeight + MoonShadow;
+    const starArr = [];
     for (let i = 0; i < StarNum; i++) {
       const newStar = star.cloneNode(true);
       const randomShining = `shining ${
@@ -136,6 +137,51 @@
       }s linear infinite`;
       let left = Math.random() * document.body.offsetWidth;
       let top = Math.random() * document.body.offsetHeight;
+      const moonDist = Math.abs(
+        Math.sqrt(Math.pow(InitMoonX - left, 2) + Math.pow(InitMoonY - top, 2))
+      );
+      if (moonDist < MoonR) {
+        const ratio = MoonR / moonDist;
+        const leftDist = left - InitMoonX;
+        const topDist = top - InitMoonY;
+        left = InitMoonX + leftDist * ratio;
+        top = InitMoonY + topDist * ratio;
+      }
+      newStar.style.transform = `translate(${
+        left + (left < InitMoonX ? -1 : 1) * otherXDist
+      }px, ${top + (top < InitMoonY ? -1 : 1) * otherYDist}px)`;
+      newStar.style.display = "block";
+      const starCore = newStar.getElementsByClassName("star")[0];
+      starCore.style.animation = randomShining;
+      starArr.push(newStar);
+      document.body.appendChild(newStar);
+    }
+    star.remove();
+
+    const moveStar = (star, MX, MY) => {
+      let MoonX = MX;
+      let MoonY = MY;
+      if (!MX || !MY) {
+        const moon = document.getElementsByClassName("moonBox")[0];
+        const moonTransform = window
+          .getComputedStyle(moon)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        MoonX = parseInt(moonTransform.at(-2).trim());
+        MoonY = parseInt(moonTransform.at(-1).trim());
+      }
+      const randomRun = Math.random() * 30;
+      const totalOtherXDist = otherXDist + randomRun;
+      const totalOtherYDist = otherYDist + randomRun;
+      // const star = starArr[i];
+      const starTransform = window
+        .getComputedStyle(star)
+        .transform.replace("matrix(", "")
+        .replace(")", "")
+        .split(",");
+      let left = parseInt(starTransform.at(-2).trim());
+      let top = parseInt(starTransform.at(-1).trim());
       const moonDist = Math.abs(
         Math.sqrt(Math.pow(MoonX - left, 2) + Math.pow(MoonY - top, 2))
       );
@@ -145,17 +191,34 @@
         const topDist = top - MoonY;
         left = MoonX + leftDist * ratio;
         top = MoonY + topDist * ratio;
+        let moveX = left;
+        let moveY = top;
+        if (moveX < 0) moveX = moveX + MoonD;
+        if (moveX > document.body.offsetWidth) moveX = moveX - MoonD;
+        if (moveY < 0) moveY = MoonY + MoonD;
+        if (moveY > document.body.offsetHeight) moveY = MoonY - MoonD;
+        star.style.transform = `translate(${
+          moveX + (left < MoonX ? -1 : 1) * totalOtherXDist
+        }px, ${moveY + (top < MoonY ? -1 : 1) * totalOtherYDist}px)`;
       }
-      newStar.style.transform = `translate(${
-        left + (left < MoonX ? -1 : 1) * otherXDist
-      }px, ${top + (top < MoonY ? -1 : 1) * otherYDist}px)`;
-      newStar.style.display = "block";
-      const starCore = newStar.getElementsByClassName("star")[0];
-      starCore.style.animation = randomShining;
-      document.body.appendChild(newStar);
-    }
-    star.remove();
+    };
 
+    const reboundStar = (MX, MY) => {
+      let MoonX = MX;
+      let MoonY = MY;
+      if (!MX || !MY) {
+        const moon = document.getElementsByClassName("moonBox")[0];
+        const moonTransform = window
+          .getComputedStyle(moon)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        MoonX = parseInt(moonTransform.at(-2).trim());
+        MoonY = parseInt(moonTransform.at(-1).trim());
+      }
+      for (let i = 0; i < starArr.length; i++) moveStar(starArr[i], MoonX, MoonY)
+    };
+    let movingTimeout = null;
     const movingMoon = (e) => {
       const MoonX = e.x;
       const MoonY = e.y;
@@ -163,40 +226,29 @@
       moon.style.transform = `translate(${MoonX - MoonD / 2}px, ${
         MoonY - MoonD / 2
       }px)`;
-      const stars = document.getElementsByClassName("starBox");
-      for (let i = 0; i < stars.length; i++) {
-        const randomRun = Math.random() * 30;
-        const totalOtherXDist = otherXDist + randomRun;
-        const totalOtherYDist = otherYDist + randomRun;
-        const star = stars[i];
-        const starTransform = window
-          .getComputedStyle(star)
-          .transform.replace("matrix(", "")
-          .replace(")", "")
-          .split(",");
-        let left = starTransform.at(-2);
-        let top = starTransform.at(-1);
-        const moonDist = Math.abs(
-          Math.sqrt(Math.pow(MoonX - left, 2) + Math.pow(MoonY - top, 2))
-        );
-        if (moonDist < MoonR) {
-          const ratio = MoonR / moonDist;
-          const leftDist = left - MoonX;
-          const topDist = top - MoonY;
-          left = MoonX + leftDist * ratio;
-          top = MoonY + topDist * ratio;
-          let moveX = left;
-          let moveY = top;
-          if (moveX < 0) moveX = moveX + MoonD;
-          if (moveX > document.body.offsetWidth) moveX = moveX - MoonD;
-          if (moveY < 0) moveY = MoonY + MoonD;
-          if (moveY > document.body.offsetHeight) moveY = MoonY - MoonD;
-          star.style.transform = `translate(${
-            moveX + (left < MoonX ? -1 : 1) * totalOtherXDist
-          }px, ${moveY + (top < MoonY ? -1 : 1) * totalOtherYDist}px)`;
-        }
-      }
+      reboundStar(MoonX, MoonY);
     };
     document.body.addEventListener("mousemove", movingMoon);
+
+    // setInterval(() => {
+    //   starArr.forEach((star) => {
+    //     const starTransform = window
+    //       .getComputedStyle(star)
+    //       .transform.replace("matrix(", "")
+    //       .replace(")", "")
+    //       .split(",");
+    //     const left = parseInt(starTransform.at(-2).trim());
+    //     const top = parseInt(starTransform.at(-1).trim());
+    //     let moveX = left + Math.random() * 60 - 30;
+    //     let moveY = top + Math.random() * 60 - 30;
+    //     if (left < 0) moveX = 0;
+    //     if (left > document.body.offsetWidth) document.body.offsetWidth;
+    //     if (top < 0) moveY = 0;
+    //     if (top > document.body.offsetHeight)
+    //       moveY = document.body.offsetHeight;
+    //     star.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    //     moveStar(star)
+    //   });
+    // }, 200);
   </script>
 </html>
