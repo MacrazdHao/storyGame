@@ -44,7 +44,7 @@
       border-style: solid;
       /* box-shadow: 0 0 2px 0px #fff; */
       will-change: box-shadow, background-color;
-      transition: .3s all ease-in-out;
+      transition: 0.3s all ease-in-out;
     }
 
     .star {
@@ -108,6 +108,7 @@
       cursor: none;
       will-change: box-shadow, transform;
     }
+    .moonPhantom,
     .moonBox::before {
       content: "";
       width: 10px;
@@ -116,14 +117,27 @@
       /* background-color: #fff; */
       box-shadow: 0px 0px 10px 10px #fff;
     }
+    .moonPhantom {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9;
+      box-shadow: 0px 0px 4px 4px #fff;
+      opacity: 1;
+      will-change: box-shadow, transform, opacity, width, height;
+    }
   </style>
   <body>
+    <div class="moonPhantom" style="display: none"></div>
     <div class="starBox" style="display: none">
       <div class="star"></div>
     </div>
     <div class="moonBox"></div>
   </body>
   <script>
+    const moonPhantomNum = 100;
+    const moonPhantomD = 10;
+    const moonPhantomR = 5;
     const StarNum = 100;
     const star = document.getElementsByClassName("starBox")[0];
     const Moon = document.getElementsByClassName("moonBox")[0];
@@ -216,9 +230,52 @@
           // const starCore = star.getElementsByClassName("star")[0];
           // starCore.style.borderColor = "#fff";
           starCore.style.backgroundColor = "#fff";
-        starCore.style.transform = "scale(0.6)";
+          starCore.style.transform = "scale(0.6)";
         }, 500);
       }
+    };
+
+    const PhantomArr = [];
+
+    const createPhantom = (MX, MY) => {
+      if (PhantomArr.length >= moonPhantomNum) {
+        return;
+      }
+      let MoonX = MX;
+      let MoonY = MY;
+      if (!MX || !MY) {
+        const moon = document.getElementsByClassName("moonBox")[0];
+        const moonTransform = window
+          .getComputedStyle(moon)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        MoonX = parseInt(moonTransform.at(-2).trim());
+        MoonY = parseInt(moonTransform.at(-1).trim());
+      }
+      const phantom = document
+        .getElementsByClassName("moonPhantom")[0]
+        .cloneNode(true);
+      const initPhontomX = MoonX - moonPhantomR + MoonR;
+      const initPhontomY = MoonY - moonPhantomR + MoonR;
+      phantom.style.transform = `translate(${initPhontomX}px, ${initPhontomY}px)`;
+      phantom.style.display = "block";
+      phantom.style.transition = "2s all";
+      document.body.appendChild(phantom);
+      PhantomArr.push(phantom);
+      setTimeout(() => {
+        phantom.style.transform = `translate(${initPhontomX}px, ${
+          initPhontomY - 18
+        }px)`;
+        phantom.style.boxShadow = "0px 0px 0px 0px #fff";
+        phantom.style.opacity = "0";
+        phantom.style.width = "0";
+        phantom.style.height = "0";
+        setTimeout(() => {
+          phantom.remove();
+          PhantomArr.shift();
+        }, 2000);
+      });
     };
 
     const reboundStar = (MX, MY) => {
@@ -237,14 +294,20 @@
       for (let i = 0; i < starArr.length; i++)
         moveStar(starArr[i], MoonX, MoonY);
     };
+
     let movingTimeout = null;
+
+    setInterval(() => {
+      createPhantom();
+    }, 2000 / moonPhantomNum);
+
     const movingMoon = (e) => {
       const MoonX = e.x;
       const MoonY = e.y;
       const moon = document.getElementsByClassName("moonBox")[0];
-      moon.style.transform = `translate(${MoonX - MoonD / 2}px, ${
-        MoonY - MoonD / 2
-      }px)`;
+      const MoonDistX = MoonX - MoonR;
+      const MoonDistY = MoonY - MoonR;
+      moon.style.transform = `translate(${MoonDistX}px, ${MoonDistY}px)`;
       reboundStar(MoonX, MoonY);
     };
     document.body.addEventListener("mousemove", movingMoon);
