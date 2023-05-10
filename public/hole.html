@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+    <title>月亮</title>
+  </head>
+  <style>
+    html {
+      /* scale: 0.5; */
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgb(0, 0, 0);
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .starBox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: 0.5s all ease-in-out;
+      will-change: box-shadow, transform;
+    }
+
+    .star,
+    .star::before {
+      border-radius: 100% 100% 100% 100%;
+      border-width: 6px 0px 6px 0px;
+      border-style: solid;
+      /* box-shadow: 0 0 2px 0px #fff; */
+      will-change: box-shadow, background-color;
+      transition: 0.3s all ease-in-out;
+    }
+
+    .star {
+      position: relative;
+      transform: scale(0.6);
+      background-color: #fff;
+      border-color: #fff;
+      width: 2px;
+      height: 2px;
+    }
+
+    .star::before {
+      content: "";
+      width: 2px;
+      height: 2px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+      animation: inherit;
+      background-color: inherit;
+      border-color: inherit;
+    }
+
+    @keyframes shining {
+      0%,
+      100% {
+        box-shadow: 0 0 3px 1px #fff;
+      }
+      50% {
+        box-shadow: 0 0 6px 1px #fff;
+      }
+    }
+    @keyframes holeShining {
+      0%,
+      100% {
+        box-shadow: 0 0 20px 14px #fff;
+      }
+      50% {
+        box-shadow: 0 0 20px 20px #fff;
+      }
+    }
+
+    .holeBox {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 0;
+      /* transform: translate(100px, 100px); */
+      border: 1px solid #fff;
+      border-radius: 100%;
+      background-color: #000;
+      transition: 0s all;
+      /* box-shadow: 0 0 20px 20px #fff; */
+      z-index: 10;
+      animation: holeShining 2s ease-in-out infinite;
+      cursor: none;
+      will-change: box-shadow, transform;
+    }
+    .holePhantom,
+    .holeBox::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      /* background-color: #fff; */
+      box-shadow: 0px 0px 10px 10px #fff;
+    }
+    .holePhantom {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9;
+      box-shadow: 0px 0px 4px 4px #fff;
+      opacity: 1;
+      will-change: box-shadow, transform, opacity, width, height;
+    }
+  </style>
+  <body>
+    <!-- Hole幻影拖尾原型 -->
+    <div class="holePhantom" style="display: none"></div>
+    <!-- 星星原型 -->
+    <div class="starBox" style="display: none">
+      <div class="star"></div>
+    </div>
+    <div class="holeBox"></div>
+  </body>
+  <script>
+    const holePhantomNum = 100; // Hole的幻影拖尾数量
+    const holePhantomD = 10; // Hole幻影直径
+    const holePhantomR = 5; // Hole幻影半径
+    const StarNum = 100; // 星星数量
+    const star = document.getElementsByClassName("starBox")[0];
+    const Hole = document.getElementsByClassName("holeBox")[0];
+    const HoleD = 100; // Hole直径
+    const HoleR = HoleD / 2; // Hole半径
+    const InitHoleX = Hole.offsetLeft + HoleR; // 初始Hole位置 X坐标
+    const InitHoleY = Hole.offsetTop + HoleR; // 初始Hole位置 Y坐标
+    const HoleShadow = 20; // Hole的阴影宽度
+    const StarScale = 0.6; // 星星的缩放大小，同 .star 保持一致
+    const StarWidth = 10; // 星星的宽度
+    const StarHeight = 10; // 星星的高度
+    const otherXDist = StarWidth + HoleShadow; // 除星星与Hole的坐标距离外，额外的X轴距离
+    const otherYDist = StarHeight + HoleShadow; // 除星星与Hole的坐标距离外，额外的Y轴距离
+    const starArr = []; // 存储星星Dom的数组
+    // 生成星星
+    for (let i = 0; i < StarNum; i++) {
+      const newStar = star.cloneNode(true); // 从星星原型拷贝新节点作为星星
+      const randomShining = `shining ${
+        0.5 + Math.random() * 0.7
+      }s linear infinite`;
+      // 随机生成星星的坐标
+      let left = Math.random() * document.body.offsetWidth;
+      let top = Math.random() * document.body.offsetHeight;
+      // 计算当前星星与Hole的距离：√((HoleX - StarX)^2 + (HoleY - StarY)^2)
+      const holeDist = Math.abs(
+        Math.sqrt(Math.pow(InitHoleX - left, 2) + Math.pow(InitHoleY - top, 2))
+      );
+      // 星星与Hole重叠，则根据将生成的坐标进行计算定位于Hole外
+      if (holeDist < HoleR) {
+        // 计算公式：
+        // NewX = (HoleR / Dist) * HoleX + (StarX - HoleX)
+        // NewY = (HoleR / Dist) * HoleY + (StarY - HoleY)
+        const ratio = HoleR / holeDist;
+        const leftDist = left - InitHoleX;
+        const topDist = top - InitHoleY;
+        left = InitHoleX + leftDist * ratio;
+        top = InitHoleY + topDist * ratio;
+      }
+      // 利用translate移动，因为transform比单纯的left和right性能更佳
+      newStar.style.transform = `translate(${
+        left + (left < InitHoleX ? -1 : 1) * otherXDist
+      }px, ${top + (top < InitHoleY ? -1 : 1) * otherYDist}px)`;
+      newStar.style.display = "block";
+      const starCore = newStar.getElementsByClassName("star")[0];
+      starCore.style.animation = randomShining;
+      starArr.push(newStar);
+      document.body.appendChild(newStar);
+    }
+    // 移除星星原型
+    star.remove();
+
+    // 星星移动函数
+    const moveStar = (star, MX, MY) => {
+      let HoleX = MX;
+      let HoleY = MY;
+      // 没有传入MX和MY时，直接获取Hole的Dom来获取坐标
+      if (!MX || !MY) {
+        const hole = document.getElementsByClassName("holeBox")[0];
+        const holeTransform = window
+          .getComputedStyle(hole)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        HoleX = parseInt(holeTransform.at(-2).trim());
+        HoleY = parseInt(holeTransform.at(-1).trim());
+      }
+      const randomRun = Math.random() * 30; // 额外的随机移动距离，提高随机性（可有可无
+      const totalOtherXDist = otherXDist + randomRun;
+      const totalOtherYDist = otherYDist + randomRun;
+      // 获取Star的坐标
+      const starTransform = window
+        .getComputedStyle(star)
+        .transform.replace("matrix(", "")
+        .replace(")", "")
+        .split(",");
+      let left = parseInt(starTransform.at(-2).trim());
+      let top = parseInt(starTransform.at(-1).trim());
+      // 计算当前星星与Hole的距离：√((HoleX - StarX)^2 + (HoleY - StarY)^2)
+      const holeDist = Math.abs(
+        Math.sqrt(Math.pow(HoleX - left, 2) + Math.pow(HoleY - top, 2))
+      );
+      // 星星与Hole重叠，则根据将生成的坐标进行计算定位于Hole外
+      if (holeDist < HoleR) {
+        // 计算公式：
+        // NewX = (HoleR / Dist) * HoleX + (StarX - HoleX)
+        // NewY = (HoleR / Dist) * HoleY + (StarY - HoleY)
+        const ratio = HoleR / holeDist;
+        const leftDist = left - HoleX;
+        const topDist = top - HoleY;
+        left = HoleX + leftDist * ratio;
+        top = HoleY + topDist * ratio;
+        let moveX = left;
+        let moveY = top;
+        if (moveX < 0) moveX = moveX + HoleD;
+        if (moveX > document.body.offsetWidth) moveX = moveX - HoleD;
+        if (moveY < 0) moveY = HoleY + HoleD;
+        if (moveY > document.body.offsetHeight) moveY = HoleY - HoleD;
+        const starCore = star.getElementsByClassName("star")[0];
+        starCore.style.backgroundColor = "#f00"; // 星星被Hole移动时的变色效果
+        starCore.style.transform = "scale(1.2)"; // 星星被Hole移动时的放大效果
+        // 利用translate移动，因为transform比单纯的left和right性能更佳
+        star.style.transform = `translate(${
+          moveX + (left < HoleX ? -1 : 1) * totalOtherXDist
+        }px, ${moveY + (top < HoleY ? -1 : 1) * totalOtherYDist}px)`;
+        setTimeout(() => {
+          // 动画结束后，恢复原始颜色和尺寸
+          starCore.style.backgroundColor = "#fff";
+          starCore.style.transform = "scale(0.6)";
+        }, 500);
+      }
+    };
+
+    // 弹射星星
+    const reboundStar = (MX, MY) => {
+      let HoleX = MX;
+      let HoleY = MY;
+      // 没有传入MX和MY时，直接获取Hole的Dom来获取坐标
+      if (!MX || !MY) {
+        const hole = document.getElementsByClassName("holeBox")[0];
+        const holeTransform = window
+          .getComputedStyle(hole)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        HoleX = parseInt(holeTransform.at(-2).trim());
+        HoleY = parseInt(holeTransform.at(-1).trim());
+      }
+      // 对每个星星进行判断并进行移动
+      starArr.forEach((star) => {
+        moveStar(star, HoleX, HoleY);
+      });
+    };
+    // 移动Hole（*跟随鼠标）
+    const movingHole = (e) => {
+      const HoleX = e.x;
+      const HoleY = e.y;
+      const hole = document.getElementsByClassName("holeBox")[0];
+      const HoleDistX = HoleX - HoleR;
+      const HoleDistY = HoleY - HoleR;
+      hole.style.transform = `translate(${HoleDistX}px, ${HoleDistY}px)`;
+      // 弹射星星
+      reboundStar(HoleX, HoleY);
+    };
+    // 开始监听鼠标移动坐标
+    document.body.addEventListener("mousemove", movingHole);
+
+    const PhantomArr = [];
+    const PhantomPeriod = 2000; // 幻影周期（holePhantomNum / PhantomPeriod - n个/n秒）
+    // Hole幻影拖尾创建函数
+    const createPhantom = (MX, MY) => {
+      // 控制幻影数量
+      if (PhantomArr.length >= holePhantomNum) {
+        return;
+      }
+      let HoleX = MX;
+      let HoleY = MY;
+      // 没有传入MX和MY时，直接获取Hole的Dom来获取坐标
+      if (!MX || !MY) {
+        const hole = document.getElementsByClassName("holeBox")[0];
+        const holeTransform = window
+          .getComputedStyle(hole)
+          .transform.replace("matrix(", "")
+          .replace(")", "")
+          .split(",");
+        HoleX = parseInt(holeTransform.at(-2).trim());
+        HoleY = parseInt(holeTransform.at(-1).trim());
+      }
+      const phantom = document
+        .getElementsByClassName("holePhantom")[0]
+        .cloneNode(true); // 从幻影原型拷贝新节点作为幻影
+      const initPhontomX = HoleX - holePhantomR + HoleR; // 幻影初始位置：HoleX - PhantomR + HoleR
+      const initPhontomY = HoleY - holePhantomR + HoleR; // 幻影初始位置：HoleY - PhantomR + HoleR
+      phantom.style.transform = `translate(${initPhontomX}px, ${initPhontomY}px)`;
+      phantom.style.display = "block";
+      phantom.style.transition = "2s all";
+      document.body.appendChild(phantom);
+      PhantomArr.push(phantom);
+      // requestAnimationFrame是为了触发transition动画，移除requestAnimationFrame则无法触发动效，可用setTimeout替代
+      requestAnimationFrame(() => {
+        phantom.style.transform = `translate(${initPhontomX}px, ${
+          initPhontomY - 18
+        }px)`;
+        phantom.style.boxShadow = "0px 0px 0px 0px #000";
+        phantom.style.opacity = "0";
+        phantom.style.width = "0";
+        phantom.style.height = "0";
+        setTimeout(() => {
+          // 动画结束，移除幻影Dom，并从PhantomArr中移除该幻影（即排在数组第一个的幻影）
+          phantom.remove();
+          PhantomArr.shift();
+        }, 2000);
+      });
+    };
+    // 开始创建幻影拖尾
+    setInterval(() => {
+      createPhantom();
+    }, PhantomPeriod / holePhantomNum);
+  </script>
+</html>
