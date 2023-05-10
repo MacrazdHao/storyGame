@@ -234,6 +234,7 @@
         top = HoleY + topDist * ratio;
         let moveX = left;
         let moveY = top;
+        // 边界判断，超出时，往反方向移动
         if (moveX < 0) moveX = moveX + HoleD;
         if (moveX > document.body.offsetWidth) moveX = moveX - HoleD;
         if (moveY < 0) moveY = HoleY + HoleD;
