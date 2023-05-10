@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+    <title>飞机</title>
+  </head>
+  <style>
+    /* transform-style: preserve-3d; 及 will-change能够提长动画性能 */
+    html {
+      /* scale: 0.5; */
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgb(0, 0, 0);
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .statusBar {
+      position: fixed;
+      width: 100%;
+      height: 30px;
+      padding: 0 12px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      z-index: 100;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .statusBar-item {
+      display: flex;
+      flex-direction: row;
+    }
+    .statusBar-item > p {
+      color: #fff;
+      padding: 0 6px;
+    }
+    .statusBar-item + .statusBar-item {
+      margin-left: 30px;
+    }
+    #ClipHot {
+      color: #0f0;
+    }
+
+    .tips {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      will-change: transform, opactiy;
+      opacity: 0;
+    }
+    .tips-text {
+      font-size: 20px;
+    }
+
+    @keyframes showTips {
+      0% {
+        opacity: 0;
+        transform: translate(calc(50vw - 50%), calc(56vh - 50%));
+      }
+      30%,
+      70% {
+        opacity: 1;
+        transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(50vw - 50%), calc(44vh - 50%));
+      }
+    }
+
+    .plane {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: 0.1s all ease-out;
+      will-change: transform;
+    }
+
+    .plane::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(calc(-50% + 10px), calc(-50% + 50px));
+      width: 20px;
+      height: 20px;
+      border-radius: 100%;
+      background-color: #00f;
+      z-index: 10;
+    }
+
+    .plane-cabin {
+      border-radius: 100% 100% 100% 100%;
+      border-width: 6px 0px 6px 0px;
+      border-style: solid;
+      /* box-shadow: 0 0 2px 0px #fff; */
+      /* will-change: background-color; */
+      transition: 0.3s all ease-in-out;
+      z-index: 5;
+    }
+    .plane-cabin {
+      position: relative;
+      transform: scale(0.6);
+      background-color: #fff;
+      border-color: #fff;
+      width: 20px;
+      height: 100px;
+    }
+
+    .plane-wing {
+      border-radius: 100% 100% 100% 100%;
+      /* border-width: 6px 0px 6px 0px; */
+      /* border-style: solid; */
+      z-index: 6;
+    }
+
+    .plane-wing--front {
+      content: "";
+      width: 120px;
+      height: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-color: #ff0;
+      transform: translate(calc(-50% + 10px), 40px);
+      background-color: #ff0;
+    }
+
+    .plane-wing--before {
+      content: "";
+      width: 40px;
+      height: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(calc(-50% + 10px), 76px);
+      animation: inherit;
+      background-color: inherit;
+      border-color: inherit;
+      background-color: #ff0;
+    }
+
+    .plane-gun {
+      display: block;
+      width: 10px;
+      height: 20px;
+      background-color: #fff;
+      position: absolute;
+      z-index: 4;
+    }
+
+    .plane-gun--left {
+      transform: translate(-25px, -80px);
+    }
+
+    .plane-gun--right {
+      transform: translate(35px, -80px);
+    }
+
+    .bullet {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      will-change: box-shadow, background-color, transform;
+    }
+    .bullet--type1 {
+      background-color: rgb(255, 81, 0);
+      box-shadow: 0 2px 6px 0px rgb(255 130 71);
+      transition: 1s all ease-in;
+    }
+  </style>
+  <body>
+    <div class="statusBar">
+      <div class="statusBar-item life">
+        <p>生命值:</p>
+        <p>100</p>
+      </div>
+      <div class="statusBar-item bulletNum">
+        <p>子弹数:</p>
+        <p id="BulletNum">0</p>
+      </div>
+      <div class="statusBar-item gunStatus">
+        <p>机枪过热进度:</p>
+        <p id="ClipHot">0</p>
+      </div>
+    </div>
+    <div class="bullet bullet--type1" style="display: none"></div>
+    <div class="plane">
+      <div class="plane-cabin"></div>
+      <div class="plane-wing plane-wing--front"></div>
+      <div class="plane-wing plane-wing--before"></div>
+      <div class="plane-gun plane-gun--left"></div>
+      <div class="plane-gun plane-gun--right"></div>
+    </div>
+    <div class="tips" style="display: none"><p class="tips-text"></p></div>
+  </body>
+  <script>
+    let WindowWidth = document.body.offsetWidth; // 屏幕宽度
+    let WindowHeight = document.body.offsetHeight; // 屏幕长度
+    window.addEventListener("resize", () => {
+      WindowWidth = document.body.offsetWidth; // 屏幕宽度
+      WindowHeight = document.body.offsetHeight; // 屏幕长度
+    });
+    const BulletClipLimit = 100; // 弹夹内的最大子弹数
+    let CurBulletClip = BulletClipLimit; // 当前弹夹内的子弹数
+    const ReloadTime = 1000; // 子弹装填时长
+    let Reloading = false; // 子弹是否装填中
+    const BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime
+    const BulletD = 10; // 子弹的直径
+    const BulletR = BulletD / 2; // 子弹的半径
+    const Plane = document.getElementsByClassName("plane")[0];
+    const PlaneCoreD = 20; // Plane核心直径
+    const PlaneCoreR = PlaneCoreD / 2; // Plane核心半径
+    const PlaneWidth = 180; // Plane宽度
+    const PlaneHeight = 100; // Plane长度
+    const InitPlaneX = WindowWidth / 2 - PlaneCoreR; // 初始Plane位置 X坐标
+    const InitPlaneY = WindowHeight - PlaneHeight; // 初始Plane位置 Y坐标
+    const MyBullet = []; // 我的子弹Dom数组
+    const OtherBullet = []; // 其他子弹Dom数组
+    let MyBulletType = 1; // 我的当前子弹类型
+    let fireInterval = null;
+
+    Plane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
+
+    const TipsCodes = {
+      Reloading: {
+        code: "NeedReload",
+        text: "!!!子弹装填中!!!",
+        duration: 2000,
+        curNum: 0,
+        color: "#fff",
+      },
+      Reloaded: {
+        code: "NeedReload",
+        text: "装填完成",
+        duration: 2000,
+        curNum: 0,
+        color: "#fff",
+      },
+      NeedReload: {
+        code: "NeedReload",
+        text: "!!!需要填装子弹!!!",
+        duration: 2000,
+        curNum: 0,
+        color: "#ff0",
+      },
+      TooHot: {
+        code: "TooHot",
+        text: "!!!机枪过热警告!!!",
+        duration: 2000,
+        curNum: 0,
+        color: "#f00",
+      },
+    };
+
+    const showTips = ({ code, text, duration, curNum, color }) => {
+      if (curNum > 0) return;
+      const TipsDom = document.getElementsByClassName("tips")[0];
+      const TipsTextDom = document.getElementById("TipsText");
+      const Tips = TipsDom.cloneNode(true);
+      const TipsText = Tips.getElementsByClassName("tips-text")[0];
+      Tips.style.display = "block";
+      Tips.style.animation = `${duration / 1000}s showTips linear 1`;
+      TipsText.innerHTML = text;
+      TipsText.style.color = color;
+      document.body.appendChild(Tips);
+      TipsCodes[code].curNum++;
+      setTimeout(() => {
+        Tips.remove();
+        TipsCodes[code].curNum--;
+      }, duration);
+    };
+
+    // 更换子弹类型
+    const changeBulletType = (type) => {
+      MyBulletType = type;
+    };
+
+    // 获取子弹对象
+    const getBulletObject = ({
+      type = 1,
+      originPos = { x, y },
+      isMine = true,
+    }) => {
+      const bullet = document
+        .getElementsByClassName(`bullet--type${type}`)[0]
+        .cloneNode(true);
+      let target = { x: 0, y: 0 };
+      switch (type) {
+        case 1:
+          target = {
+            x: originPos.x,
+            y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
+          };
+          break;
+        default:
+          target = {
+            x: originPos.x,
+            y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
+          };
+          break;
+      }
+      bullet.style.display = "block";
+      return { bullet, target };
+    };
+
+    // 获取子弹类型对应的发射频率(ms/unit)
+    const getBulletFreqency = (type = 1) => {
+      switch (type) {
+        case 1:
+          return 100;
+        default:
+          return 100;
+      }
+    };
+
+    // 获取Dom对象的Translate坐标
+    const getTranslatePos = (dom) => {
+      const transform = window
+        .getComputedStyle(dom)
+        .transform.replace("matrix(", "")
+        .replace(")", "")
+        .split(",");
+      return {
+        x: parseInt(transform.at(-2).trim()),
+        y: parseInt(transform.at(-1).trim()),
+      };
+    };
+
+    // 当前Plane的坐标
+    let curPlaneX = InitPlaneX;
+    let curPlaneY = InitPlaneY;
+    // 枪支坐标数据
+    const GunsDom = document.getElementsByClassName("plane-gun");
+    const GunNum = GunsDom.length;
+    const GunsPos = [];
+    for (let i = 0; i < GunNum; i++) {
+      const gunTranslate = getTranslatePos(GunsDom[i]);
+      GunsPos.push({
+        x: curPlaneX + gunTranslate.x,
+        y: curPlaneY + gunTranslate.y + PlaneHeight,
+      });
+    }
+
+    const updateGunPos = () => {
+      GunsPos.length = 0;
+      for (let i = 0; i < GunNum; i++) {
+        const gunTranslate = getTranslatePos(GunsDom[i]);
+        GunsPos.push({
+          x: curPlaneX + gunTranslate.x,
+          y: curPlaneY + gunTranslate.y + PlaneHeight,
+        });
+      }
+    };
+
+    // 移动Plane（*跟随鼠标）
+    const movingPlane = (e) => {
+      const plane = document.getElementsByClassName("plane")[0];
+      curPlaneX = e.x - PlaneCoreR;
+      curPlaneY = e.y - PlaneHeight / 2;
+      plane.style.transform = `translate(${curPlaneX}px, ${curPlaneY}px)`;
+      updateGunPos(); // 同步更新枪支的坐标
+      // 检测子弹是否击中Plane
+      // checkAttack();
+    };
+
+    // 更新机枪过热百分比
+    const ClipHotDom = document.getElementById("ClipHot");
+    const updateClipHot = () => {
+      const HotPersent = ((MyBullet.length * 100) / BulletHotNum).toFixed(2);
+      ClipHotDom.innerHTML = HotPersent;
+      ClipHotDom.style.color = `rgb(${(255 * HotPersent) / 100},${
+        255 * (1 - HotPersent / 100)
+      },0)`;
+    };
+    const BulletNumDom = document.getElementById("BulletNum");
+    const updateBulletNum = (num) => {
+      CurBulletClip = num;
+      BulletNumDom.innerHTML = CurBulletClip;
+    };
+    const reloadBullet = (num) => {
+      Reloading = true;
+      // 松开鼠标才能装填
+      if (fireInterval) {
+        showTips(TipsCodes.NeedReload);
+        return;
+      }
+      showTips(TipsCodes.Reloading);
+      setTimeout(() => {
+        updateBulletNum(BulletClipLimit);
+        Reloading = false;
+        showTips(TipsCodes.Reloaded);
+      }, ReloadTime);
+    };
+
+    // 单发开火（射出子弹）
+    const fire = () => {
+      if (CurBulletClip <= 0) {
+        reloadBullet();
+      }
+      if (Reloading) return;
+      // 机枪过热
+      if (MyBullet.length >= BulletHotNum) {
+        showTips(TipsCodes.TooHot);
+        return;
+      }
+      const newBullets = [];
+      const newBulletsTarget = [];
+      GunsPos.forEach((GunPos) => {
+        const bulletPos = { x: GunPos.x, y: GunPos.y };
+        const bulletObject = getBulletObject({
+          type: MyBulletType,
+          originPos: bulletPos,
+        });
+        const bullet = bulletObject.bullet;
+        newBulletsTarget.push(bulletObject.target);
+        bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
+        newBullets.push(bullet);
+        document.body.appendChild(bullet);
+      });
+      MyBullet.push(...newBullets);
+      updateClipHot();
+      updateBulletNum(CurBulletClip - GunNum);
+      requestAnimationFrame(() => {
+        newBullets.forEach((bullet, index) => {
+          bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
+        });
+        setTimeout(() => {
+          newBullets.forEach((bullet) => {
+            bullet.remove();
+            MyBullet.shift();
+          });
+          updateClipHot();
+        }, 1000);
+      });
+    };
+
+    // 持续发射子弹
+    const keepFire = () => {
+      if (fireInterval) return;
+      fireInterval = setInterval(fire, getBulletFreqency(MyBulletType));
+    };
+    // 停止发射子弹
+    const stopFire = () => {
+      if (fireInterval) {
+        clearInterval(fireInterval);
+        fireInterval = null;
+      }
+      if (CurBulletClip <= 0) {
+        reloadBullet();
+      }
+    };
+
+    // 开始监听鼠标移动坐标
+    document.body.addEventListener("mousemove", movingPlane);
+    // 鼠标按下开始持续射击
+    document.body.addEventListener("mousedown", keepFire);
+    // 鼠标松开停止射击
+    document.body.addEventListener("mouseup", stopFire);
+  </script>
+</html>
