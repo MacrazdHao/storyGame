@@ -88,7 +88,8 @@
       }
     }
 
-    .plane {
+    .plane,
+    .badPlane {
       position: absolute;
       top: 0;
       left: 0;
@@ -96,7 +97,8 @@
       will-change: transform;
     }
 
-    .plane::before {
+    .plane::before,
+    .badPlane::before {
       content: "";
       display: block;
       position: absolute;
@@ -178,6 +180,13 @@
       transform: translate(35px, -80px);
     }
 
+    .badPlane {
+      transform: rotateX(180deg) scale(0.5);
+    }
+    .badPlane::before {
+      background-color: #f00;
+    }
+
     .bullet {
       position: absolute;
       top: 0;
@@ -204,13 +213,20 @@
         <p id="BulletNum">0</p>
       </div>
       <div class="statusBar-item gunStatus">
-        <p>机枪过热进度:</p>
+        <p>机枪过热:</p>
         <p id="ClipHot">0</p>
       </div>
     </div>
     <div class="bullet bullet--type1" style="display: none"></div>
-    <div class="plane">
+    <div class="plane myPlane">
       <div class="plane-cabin"></div>
+      <div class="plane-wing plane-wing--front"></div>
+      <div class="plane-wing plane-wing--before"></div>
+      <div class="plane-gun plane-gun--left"></div>
+      <div class="plane-gun plane-gun--right"></div>
+    </div>
+    <div class="plane badPlane badPlane--type1" style="display: none">
+      <div class="plane plane-cabin"></div>
       <div class="plane-wing plane-wing--front"></div>
       <div class="plane-wing plane-wing--before"></div>
       <div class="plane-gun plane-gun--left"></div>
@@ -225,14 +241,14 @@
       WindowWidth = document.body.offsetWidth; // 屏幕宽度
       WindowHeight = document.body.offsetHeight; // 屏幕长度
     });
-    const BulletClipLimit = 100; // 弹夹内的最大子弹数
+    const MyPlane = document.getElementsByClassName("myPlane")[0];
+    const BulletClipLimit = 20; // 弹夹内的最大子弹数
     let CurBulletClip = BulletClipLimit; // 当前弹夹内的子弹数
     const ReloadTime = 1000; // 子弹装填时长
     let Reloading = false; // 子弹是否装填中
-    const BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime
+    const BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime，当MaxBulletNum < BulletHotNum时，则可以一直发射，永不过热。过热机制不止可以提供一个玩法机制，还可以很好地控制性能消耗上限
     const BulletD = 10; // 子弹的直径
     const BulletR = BulletD / 2; // 子弹的半径
-    const Plane = document.getElementsByClassName("plane")[0];
     const PlaneCoreD = 20; // Plane核心直径
     const PlaneCoreR = PlaneCoreD / 2; // Plane核心半径
     const PlaneWidth = 180; // Plane宽度
@@ -244,7 +260,7 @@
     let MyBulletType = 1; // 我的当前子弹类型
     let fireInterval = null;
 
-    Plane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
+    MyPlane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
 
     const TipsCodes = {
       Reloading: {
@@ -355,7 +371,7 @@
     let curPlaneX = InitPlaneX;
     let curPlaneY = InitPlaneY;
     // 枪支坐标数据
-    const GunsDom = document.getElementsByClassName("plane-gun");
+    const GunsDom = MyPlane.getElementsByClassName("plane-gun");
     const GunNum = GunsDom.length;
     const GunsPos = [];
     for (let i = 0; i < GunNum; i++) {
@@ -379,10 +395,9 @@
 
     // 移动Plane（*跟随鼠标）
     const movingPlane = (e) => {
-      const plane = document.getElementsByClassName("plane")[0];
       curPlaneX = e.x - PlaneCoreR;
       curPlaneY = e.y - PlaneHeight / 2;
-      plane.style.transform = `translate(${curPlaneX}px, ${curPlaneY}px)`;
+      MyPlane.style.transform = `translate(${curPlaneX}px, ${curPlaneY}px)`;
       updateGunPos(); // 同步更新枪支的坐标
       // 检测子弹是否击中Plane
       // checkAttack();
@@ -403,12 +418,8 @@
       BulletNumDom.innerHTML = CurBulletClip;
     };
     const reloadBullet = (num) => {
+      // if (Reloading) return;
       Reloading = true;
-      // 松开鼠标才能装填
-      if (fireInterval) {
-        showTips(TipsCodes.NeedReload);
-        return;
-      }
       showTips(TipsCodes.Reloading);
       setTimeout(() => {
         updateBulletNum(BulletClipLimit);
@@ -419,8 +430,10 @@
 
     // 单发开火（射出子弹）
     const fire = () => {
-      if (CurBulletClip <= 0) {
-        reloadBullet();
+      // 松开鼠标才能填装
+      if (CurBulletClip <= 0 && fireInterval) {
+        showTips(TipsCodes.NeedReload);
+        return;
       }
       if (Reloading) return;
       // 机枪过热
@@ -473,6 +486,18 @@
       if (CurBulletClip <= 0) {
         reloadBullet();
       }
+    };
+
+    // 获取敌机对象
+    const getBadPlaneObject = ({
+      type = 1,
+      originPos = { x, y },
+      stayTime = 5000,
+    }) => {
+      const badPlane = document
+        .getElementsByClassName(`badPlane--type${type}`)[0]
+        .cloneNode(true);
+      badPlane.display = "none";
     };
 
     // 开始监听鼠标移动坐标
