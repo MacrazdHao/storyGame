@@ -175,15 +175,18 @@ const getTranslatePos = (dom) => {
 
 // 敌机专用
 
+// 待修改，还没有纠正敌机动线坐标的边界值
+
 const BadPlaneMaxMoveDistY = WindowHeight - 200 // 动线Y轴的最大值
 
 let MaxBadPlaneNum = 5;
 const DefaultBadPlaneType = 0;
+const BadBullet = []
 
 const BadPlaneTypesInfo = [
   {
-    planeProto: document.getElementsByClassName(`bullet--type0`)[0],
-    planeGuns: document.getElementsByClassName(`bullet--type0`)[0].getElementsByClassName("badPlane-gun"),
+    planeProto: document.getElementsByClassName(`badPlane--type0`)[0],
+    planeGuns: document.getElementsByClassName(`badPlane--type0`)[0].getElementsByClassName("badPlane-gun"),
     planeCoreD: 12,
     planeWidth: 72,
     planeHeight: 60,
@@ -194,7 +197,7 @@ const BadPlaneTypesInfo = [
 const BadBulletTypesInfo = [
   {
     bulletType: 0,
-    bulletProto: document.getElementsByClassName(`badPlane--type0`)[0],
+    bulletProto: document.getElementsByClassName(`badBullet--type0`)[0],
     bulletClipLimit: 20,
     reloadTime: 1000,
     bulletHotNum: 50,
@@ -204,15 +207,13 @@ const BadBulletTypesInfo = [
   },
 ];
 
-// {planeType, planeDom, pos, gunTranslate, fireInterval, movePos, fireInfo}
-const BadPlanes = [];
 // 获取子弹对象
 const getBulletObject = ({
   type = PlaneDefaultBulletType,
   originPos = { x, y },
   isMine = true,
 }) => {
-  const { bulletProto } = BulletTypesInfo[type];
+  const { bulletProto } = (isMine ? BulletTypesInfo : BadBulletTypesInfo)[type];
   const bullet = bulletProto.cloneNode(true);
   let target = { x: 0, y: 0 };
   switch (type) {
@@ -233,20 +234,16 @@ const getBulletObject = ({
   return { bullet, target };
 };
 
-const updateBadGunPos = () => {
-  // const GunNum =
-  //   BadGunsPos.length = 0;
-  // for (let i = 0; i < GunNum; i++) {
-  //   const gunTranslate = getTranslatePos(BadGunsDom[i]);
-  //   BadGunsPos.push({
-  //     x: curPlaneX + gunTranslate.x,
-  //     y: curPlaneY + gunTranslate.y + PlaneHeight,
-  //   });
-  // }
-};
+// {planeType, planeDom, pos, gunTranslate, fireInterval, movePos, fireInfo}
+const BadPlanes = [];
 
-const badPlaneStopFire = (badPlaneIndex, fireIndex) => { }
-const badPlaneFire = (badPlaneIndex) => {
+const badPlaneStopFire = (badPlaneIndex) => {
+  if (BadPlanes[badPlaneIndex].fireInterval) {
+    clearInterval(BadPlanes[badPlaneIndex].fireInterval);
+    BadPlanes[badPlaneIndex].fireInterval = null;
+  }
+}
+const badPlaneFire = (badPlaneIndex, fireIndex) => {
   const { planeDom, gunsTranslate, planeHeight, gunNum } = BadPlanes[badPlaneIndex]
   const planePos = getTranslatePos(planeDom)
   BadPlanes.pos = planePos
@@ -259,8 +256,36 @@ const badPlaneFire = (badPlaneIndex) => {
       y: planePos.y + gunTranslate.y + planeHeight,
     });
   }
+  // 发射子弹
+  const { bulletType } = BadPlanes[badPlaneIndex].fireInfo[fireIndex]
+  const newBullets = [];
+  const newBulletsTarget = [];
+  GunsPos.forEach((GunPos) => {
+    const bulletPos = { x: GunPos.x, y: GunPos.y };
+    const bulletObject = getBulletObject({
+      type: bulletType,
+      originPos: bulletPos,
+      isMine: false
+    });
+    const bullet = bulletObject.bullet;
+    newBulletsTarget.push(bulletObject.target);
+    bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
+    newBullets.push(bullet);
+    document.body.appendChild(bullet);
+  });
+  BadBullet.push(...newBullets);
   BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum -= gunNum
-  document.body.append()
+  requestAnimationFrame(() => {
+    newBullets.forEach((bullet, index) => {
+      bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
+    });
+    setTimeout(() => {
+      newBullets.forEach((bullet) => {
+        bullet.remove();
+        BadBullet.shift();
+      });
+    }, 1000);
+  });
 }
 
 const badPlaneKeepFire = (badPlaneIndex) => {
@@ -269,9 +294,9 @@ const badPlaneKeepFire = (badPlaneIndex) => {
   fireInfo.forEach(({ bulletType, delay }, fireIndex) => {
     setTimeout(() => {
       BadPlanes[badPlaneIndex].fireInterval = setInterval(() => {
-        badPlaneFire(badPlaneIndex)
+        badPlaneFire(badPlaneIndex, fireIndex)
         if (BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum <= 0) {
-          badPlaneStopFire(badPlaneIndex, fireIndex)
+          badPlaneStopFire(badPlaneIndex)
         }
       }, BadBulletTypesInfo[bulletType].frequency)
     }, delay)
@@ -319,8 +344,8 @@ const createBadPlanes = ({
   // front, left, right, custom(originPos)
   // movePosItem - {x, y, stayDuration}  xy不超过可视界面
   // fireInfoItem - {bulletNum, bulletType, delay}
-  const { planeDom, flyDuration, planeGuns } = BadPlaneTypesInfo[planeType]
-  const badPlane = planeDom.cloneNode(true);
+  const { planeProto, flyDuration, planeGuns } = BadPlaneTypesInfo[planeType]
+  const badPlane = planeProto.cloneNode(true);
   badPlane.style.display = "block";
   badPlane.style.transitionDuration = `${flyDuration / 1000}s`;
   const oPos = originPos;
@@ -367,7 +392,7 @@ const createBadPlanes = ({
     planeType,
     planeDom: badPlane,
     gunNum: planeGuns.length,
-    gunsTranslate: planeGuns.map(gunDom => getTranslatePos(gunDom)),
+    gunsTranslate: [...planeGuns].map(gunDom => { console.log([gunDom]);return getTranslatePos(gunDom)}),
     pos: oPos,
     fireInterval: null,
     movePos: [...movePos, dPos],
@@ -376,5 +401,14 @@ const createBadPlanes = ({
   document.body.append(badPlane);
   moveBadPlane(badPlaneIndex);
 };
+createBadPlanes({
+  planeType: DefaultBadPlaneType,
+  originSide: "front",
+  originPos: { x: -40, y: 0 },
+  movePos: [{ x: 50, y: 100, stayDuration: 5000 }, { x: 100, y: 100, stayDuration: 5000 }],
+  distSide: "back",
+  distPos: { x: 60, y: 0 },
+  fireInfo: [{ bulletNum: 3, bulletType: 0, delay: 2000 }, { bulletNum: 10, bulletType: 0, delay: 1000 }]
+})
   </script>
 </html>
