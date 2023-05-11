@@ -88,8 +88,7 @@
       }
     }
 
-    .plane,
-    .badPlane {
+    .plane {
       position: absolute;
       top: 0;
       left: 0;
@@ -97,8 +96,7 @@
       will-change: transform;
     }
 
-    .plane::before,
-    .badPlane::before {
+    .plane::before {
       content: "";
       display: block;
       position: absolute;
@@ -113,27 +111,21 @@
     }
 
     .plane-cabin {
-      border-radius: 100% 100% 100% 100%;
-      border-width: 6px 0px 6px 0px;
-      border-style: solid;
-      /* box-shadow: 0 0 2px 0px #fff; */
-      /* will-change: background-color; */
-      transition: 0.3s all ease-in-out;
-      z-index: 5;
-    }
-    .plane-cabin {
       position: relative;
       transform: scale(0.6);
       background-color: #fff;
       border-color: #fff;
       width: 20px;
       height: 100px;
+      border-radius: 100% 100% 100% 100%;
+      border-width: 6px 0px 6px 0px;
+      border-style: solid;
+      transition: 0.3s all ease-in-out;
+      z-index: 5;
     }
 
     .plane-wing {
       border-radius: 100% 100% 100% 100%;
-      /* border-width: 6px 0px 6px 0px; */
-      /* border-style: solid; */
       z-index: 6;
     }
 
@@ -172,19 +164,12 @@
       z-index: 4;
     }
 
-    .plane-gun--left {
+    .plane-gun[data-type="1"] {
       transform: translate(-25px, -80px);
     }
 
-    .plane-gun--right {
+    .plane-gun[data-type="2"] {
       transform: translate(35px, -80px);
-    }
-
-    .badPlane {
-      transform: rotateX(180deg) scale(0.5);
-    }
-    .badPlane::before {
-      background-color: #f00;
     }
 
     .bullet {
@@ -196,8 +181,13 @@
       border-radius: 100%;
       will-change: box-shadow, background-color, transform;
     }
-    .bullet--type1 {
+    .bullet--type0 {
       background-color: rgb(255, 81, 0);
+      box-shadow: 0 2px 6px 0px rgb(255 130 71);
+      transition: 1s all ease-in;
+    }
+    .bullet--type1 {
+      background-color: rgb(166, 0, 255);
       box-shadow: 0 2px 6px 0px rgb(255 130 71);
       transition: 1s all ease-in;
     }
@@ -217,48 +207,54 @@
         <p id="ClipHot">0</p>
       </div>
     </div>
+    <!--  -->
+    <div class="bullet bullet--type0" style="display: none"></div>
     <div class="bullet bullet--type1" style="display: none"></div>
     <div class="plane myPlane">
       <div class="plane-cabin"></div>
       <div class="plane-wing plane-wing--front"></div>
       <div class="plane-wing plane-wing--before"></div>
-      <div class="plane-gun plane-gun--left"></div>
-      <div class="plane-gun plane-gun--right"></div>
-    </div>
-    <div class="plane badPlane badPlane--type1" style="display: none">
-      <div class="plane plane-cabin"></div>
-      <div class="plane-wing plane-wing--front"></div>
-      <div class="plane-wing plane-wing--before"></div>
-      <div class="plane-gun plane-gun--left"></div>
-      <div class="plane-gun plane-gun--right"></div>
+      <div class="plane-gun" data-type="1"></div>
+      <div class="plane-gun" data-type="2"></div>
     </div>
     <div class="tips" style="display: none"><p class="tips-text"></p></div>
   </body>
   <script>
+    const MAXNUM = 999999;
     let WindowWidth = document.body.offsetWidth; // 屏幕宽度
     let WindowHeight = document.body.offsetHeight; // 屏幕长度
     window.addEventListener("resize", () => {
       WindowWidth = document.body.offsetWidth; // 屏幕宽度
       WindowHeight = document.body.offsetHeight; // 屏幕长度
     });
+    // 玩家属性
     const MyPlane = document.getElementsByClassName("myPlane")[0];
-    const BulletClipLimit = 20; // 弹夹内的最大子弹数
+    let BulletClipLimit = 20; // 弹夹内的最大子弹数
     let CurBulletClip = BulletClipLimit; // 当前弹夹内的子弹数
-    const ReloadTime = 1000; // 子弹装填时长
+    let ReloadTime = 1000; // 子弹装填时长
     let Reloading = false; // 子弹是否装填中
-    const BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime，当MaxBulletNum < BulletHotNum时，则可以一直发射，永不过热。过热机制不止可以提供一个玩法机制，还可以很好地控制性能消耗上限
-    const BulletD = 10; // 子弹的直径
-    const BulletR = BulletD / 2; // 子弹的半径
+    let BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime，当MaxBulletNum < BulletHotNum时，则可以一直发射，永不过热。过热机制不止可以提供一个玩法机制，还可以很好地控制性能消耗上限
+    let TempBulletClipNum = MAXNUM; // 剩余弹夹数（当前子弹类型的可填装次数）
+    let BulletD = 10; // 子弹的直径
+    let BulletR = BulletD / 2; // 子弹的半径
+    const MyBullet = []; // 我的子弹Dom数组
+
+    // 玩家飞机属性
+    const PlaneDefaultBulletType = 0; // 当前飞机默认的子弹类型
+    let MyBulletType = PlaneDefaultBulletType; // 我的当前子弹类型
     const PlaneCoreD = 20; // Plane核心直径
     const PlaneCoreR = PlaneCoreD / 2; // Plane核心半径
     const PlaneWidth = 180; // Plane宽度
     const PlaneHeight = 100; // Plane长度
     const InitPlaneX = WindowWidth / 2 - PlaneCoreR; // 初始Plane位置 X坐标
     const InitPlaneY = WindowHeight - PlaneHeight; // 初始Plane位置 Y坐标
-    const MyBullet = []; // 我的子弹Dom数组
-    const OtherBullet = []; // 其他子弹Dom数组
-    let MyBulletType = 1; // 我的当前子弹类型
     let fireInterval = null;
+    let curPlaneX = InitPlaneX; // 当前Plane的X坐标
+    let curPlaneY = InitPlaneY; // 当前Plane的Y坐标
+    const MyGunsDom = MyPlane.getElementsByClassName("plane-gun"); // 机枪位置
+    const MyGunNum = MyGunsDom.length; // 机枪数量
+    const ClipHotDom = document.getElementById("ClipHot"); // 过热Status
+    const BulletNumDom = document.getElementById("BulletNum"); // 子弹Status
 
     MyPlane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
 
@@ -311,23 +307,80 @@
       }, duration);
     };
 
+    const BulletTypesInfo = [
+      {
+        bulletType: 0,
+        bulletProto: document.getElementsByClassName(`bullet--type0`)[0],
+        bulletClipLimit: 20,
+        reloadTime: 1000,
+        bulletHotNum: 50,
+        bulletD: 10,
+        tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
+        frequency: 100,
+      },
+      {
+        bulletType: 1,
+        bulletProto: document.getElementsByClassName(`bullet--type1`)[0],
+        bulletClipLimit: 20,
+        reloadTime: 1000,
+        bulletHotNum: 50,
+        bulletD: 10,
+        tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
+        frequency: 100,
+      },
+    ];
+
+    const updateBulletNum = (num) => {
+      CurBulletClip = num;
+      BulletNumDom.innerHTML = CurBulletClip;
+    };
+    const reloadBullet = (num) => {
+      // if (Reloading) return;
+      Reloading = true;
+      showTips(TipsCodes.Reloading);
+      // 弹夹用完，则更换为默认子弹类型
+      if (TempBulletClipNum <= 0) {
+        changeBulletType();
+      }
+      // 弹夹数-1
+      TempBulletClipNum--;
+      setTimeout(() => {
+        updateBulletNum(BulletClipLimit);
+        Reloading = false;
+        showTips(TipsCodes.Reloaded);
+      }, ReloadTime);
+    };
+
     // 更换子弹类型
-    const changeBulletType = (type) => {
+    const changeBulletType = (type = PlaneDefaultBulletType) => {
+      const {
+        bulletClipLimit,
+        reloadTime,
+        bulletHotNum,
+        bulletD,
+        tempBulletClipNum,
+      } = BulletTypesInfo[type];
       MyBulletType = type;
+      BulletClipLimit = bulletClipLimit;
+      ReloadTime = reloadTime;
+      BulletHotNum = bulletHotNum;
+      BulletD = bulletD;
+      BulletR = bulletD / 2;
+      TempBulletClipNum = tempBulletClipNum;
+      reloadBullet();
     };
 
     // 获取子弹对象
     const getBulletObject = ({
-      type = 1,
+      type = PlaneDefaultBulletType,
       originPos = { x, y },
       isMine = true,
     }) => {
-      const bullet = document
-        .getElementsByClassName(`bullet--type${type}`)[0]
-        .cloneNode(true);
+      const { bulletProto } = BulletTypesInfo[type];
+      const bullet = bulletProto.cloneNode(true);
       let target = { x: 0, y: 0 };
       switch (type) {
-        case 1:
+        case 0:
           target = {
             x: originPos.x,
             y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
@@ -344,16 +397,6 @@
       return { bullet, target };
     };
 
-    // 获取子弹类型对应的发射频率(ms/unit)
-    const getBulletFreqency = (type = 1) => {
-      switch (type) {
-        case 1:
-          return 100;
-        default:
-          return 100;
-      }
-    };
-
     // 获取Dom对象的Translate坐标
     const getTranslatePos = (dom) => {
       const transform = window
@@ -367,26 +410,21 @@
       };
     };
 
-    // 当前Plane的坐标
-    let curPlaneX = InitPlaneX;
-    let curPlaneY = InitPlaneY;
     // 枪支坐标数据
-    const GunsDom = MyPlane.getElementsByClassName("plane-gun");
-    const GunNum = GunsDom.length;
-    const GunsPos = [];
-    for (let i = 0; i < GunNum; i++) {
-      const gunTranslate = getTranslatePos(GunsDom[i]);
-      GunsPos.push({
+    const MyGunsPos = [];
+    for (let i = 0; i < MyGunNum; i++) {
+      const gunTranslate = getTranslatePos(MyGunsDom[i]);
+      MyGunsPos.push({
         x: curPlaneX + gunTranslate.x,
         y: curPlaneY + gunTranslate.y + PlaneHeight,
       });
     }
 
     const updateGunPos = () => {
-      GunsPos.length = 0;
-      for (let i = 0; i < GunNum; i++) {
-        const gunTranslate = getTranslatePos(GunsDom[i]);
-        GunsPos.push({
+      MyGunsPos.length = 0;
+      for (let i = 0; i < MyGunNum; i++) {
+        const gunTranslate = getTranslatePos(MyGunsDom[i]);
+        MyGunsPos.push({
           x: curPlaneX + gunTranslate.x,
           y: curPlaneY + gunTranslate.y + PlaneHeight,
         });
@@ -404,28 +442,12 @@
     };
 
     // 更新机枪过热百分比
-    const ClipHotDom = document.getElementById("ClipHot");
     const updateClipHot = () => {
       const HotPersent = ((MyBullet.length * 100) / BulletHotNum).toFixed(2);
       ClipHotDom.innerHTML = HotPersent;
       ClipHotDom.style.color = `rgb(${(255 * HotPersent) / 100},${
         255 * (1 - HotPersent / 100)
       },0)`;
-    };
-    const BulletNumDom = document.getElementById("BulletNum");
-    const updateBulletNum = (num) => {
-      CurBulletClip = num;
-      BulletNumDom.innerHTML = CurBulletClip;
-    };
-    const reloadBullet = (num) => {
-      // if (Reloading) return;
-      Reloading = true;
-      showTips(TipsCodes.Reloading);
-      setTimeout(() => {
-        updateBulletNum(BulletClipLimit);
-        Reloading = false;
-        showTips(TipsCodes.Reloaded);
-      }, ReloadTime);
     };
 
     // 单发开火（射出子弹）
@@ -443,7 +465,7 @@
       }
       const newBullets = [];
       const newBulletsTarget = [];
-      GunsPos.forEach((GunPos) => {
+      MyGunsPos.forEach((GunPos) => {
         const bulletPos = { x: GunPos.x, y: GunPos.y };
         const bulletObject = getBulletObject({
           type: MyBulletType,
@@ -457,7 +479,7 @@
       });
       MyBullet.push(...newBullets);
       updateClipHot();
-      updateBulletNum(CurBulletClip - GunNum);
+      updateBulletNum(CurBulletClip - MyGunNum);
       requestAnimationFrame(() => {
         newBullets.forEach((bullet, index) => {
           bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
@@ -475,29 +497,17 @@
     // 持续发射子弹
     const keepFire = () => {
       if (fireInterval) return;
-      fireInterval = setInterval(fire, getBulletFreqency(MyBulletType));
+      fireInterval = setInterval(fire, BulletTypesInfo[MyBulletType].frequency);
     };
     // 停止发射子弹
     const stopFire = () => {
+      if (CurBulletClip <= 0 && !Reloading) {
+        reloadBullet();
+      }
       if (fireInterval) {
         clearInterval(fireInterval);
         fireInterval = null;
       }
-      if (CurBulletClip <= 0) {
-        reloadBullet();
-      }
-    };
-
-    // 获取敌机对象
-    const getBadPlaneObject = ({
-      type = 1,
-      originPos = { x, y },
-      stayTime = 5000,
-    }) => {
-      const badPlane = document
-        .getElementsByClassName(`badPlane--type${type}`)[0]
-        .cloneNode(true);
-      badPlane.display = "none";
     };
 
     // 开始监听鼠标移动坐标
