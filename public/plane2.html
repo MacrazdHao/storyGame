@@ -1,162 +1,148 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
-    <title>飞机</title>
-  </head>
-  <style>
-    /* transform-style: preserve-3d; 及 will-change能够提长动画性能 */
-    html {
-      /* scale: 0.5; */
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: rgb(0, 0, 0);
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-    }
-
-    .plane {
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition-property: all;
-      transition-timing-function: ease-out;
-      will-change: transform;
-    }
-
-    .badPlane::before {
-      content: "";
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: translate(calc(-50% + 6px), calc(-50% + 38px));
-      width: 12px;
-      height: 12px;
-      border-radius: 100%;
-      background-color: #ff0;
-      z-index: 10;
-    }
-
-    .badPlane-cabin {
-      position: relative;
-      transform: scale(0.6);
-      background-color: #fff;
-      border-color: #fff;
-      width: 12px;
-      height: 60px;
-      border-radius: 100% 100% 100% 100%;
-      border-width: 3.6px 0px 3.6px 0px;
-      border-style: solid;
-      /* box-shadow: 0 0 2px 0px #fff; */
+<!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+<title>飞机</title>
+</head>
+<style>
+/* transform-style: preserve-3d; 及 will-change能够提长动画性能 */
+html {
+	/* scale: 0.5; */
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+}
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: rgb(0, 0, 0);
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+* {
+	margin: 0;
+	padding: 0;
+}
+.plane {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition-property: all;
+	transition-timing-function: ease-out;
+	will-change: transform;
+}
+.badPlane::before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(calc(-50% + 6px), calc(-50% + 38px));
+	width: 12px;
+	height: 12px;
+	border-radius: 100%;
+	background-color: #ff0;
+	z-index: 10;
+}
+.badPlane-cabin {
+	position: relative;
+	transform: scale(0.6);
+	background-color: #fff;
+	border-color: #fff;
+	width: 12px;
+	height: 60px;
+	border-radius: 100% 100% 100% 100%;
+	border-width: 3.6px 0px 3.6px 0px;
+	border-style: solid;
+	/* box-shadow: 0 0 2px 0px #fff; */
       /* will-change: background-color; */
-      transition: 0.3s all ease-in-out;
-      z-index: 5;
-    }
+	transition: 0.3s all ease-in-out;
+	z-index: 5;
+}
+.badPlane-wing {
+	border-radius: 100% 100% 100% 100%;
+	z-index: 6;
+}
+.badPlane-wing--front {
+	content: "";
+	width: 72px;
+	height: 12px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-color: #00f;
+	transform: translate(calc(-50% + 6px), 32px);
+	background-color: #00f;
+}
+.badPlane-wing--before {
+	content: "";
+	width: 24px;
+	height: 6px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translate(calc(-50% + 6px), 16.4px);
+	animation: inherit;
+	background-color: inherit;
+	border-color: inherit;
+	background-color: #00f;
+}
+.badPlane-gun {
+	display: block;
+	width: 6px;
+	height: 12px;
+	background-color: rgb(100, 100, 100);
+	position: absolute;
+	z-index: 4;
+}
+.badPlane-gun[data-type="1"] {
+	transform: translate(-15px, -32px);
+}
+.badPlane-gun[data-type="2"] {
+	transform: translate(21px, -32px);
+}
+.bullet {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 10px;
+	height: 10px;
+	border-radius: 100%;
+	will-change: box-shadow, background-color, transform;
+}
+.badBullet {
+	width: 6px;
+	height: 6px;
+	z-index: 10;
+}
+.badBullet--type1 {
+	background-color: rgb(255, 81, 0);
+	box-shadow: 0 2px 6px 0px rgb(255 130 71);
+	transition: 1s all ease-in;
+}
+</style>
 
-    .badPlane-wing {
-      border-radius: 100% 100% 100% 100%;
-      z-index: 6;
-    }
-
-    .badPlane-wing--front {
-      content: "";
-      width: 72px;
-      height: 12px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-color: #00f;
-      transform: translate(calc(-50% + 6px), 32px);
-      background-color: #00f;
-    }
-
-    .badPlane-wing--before {
-      content: "";
-      width: 24px;
-      height: 6px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: translate(calc(-50% + 6px), 16.4px);
-      animation: inherit;
-      background-color: inherit;
-      border-color: inherit;
-      background-color: #00f;
-    }
-
-    .badPlane-gun {
-      display: block;
-      width: 6px;
-      height: 12px;
-      background-color: rgb(100, 100, 100);
-      position: absolute;
-      z-index: 4;
-    }
-
-    .badPlane-gun[data-type="1"] {
-      transform: translate(-15px, -32px);
-    }
-
-    .badPlane-gun[data-type="2"] {
-      transform: translate(21px, -32px);
-    }
-
-    .bullet {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 10px;
-      height: 10px;
-      border-radius: 100%;
-      will-change: box-shadow, background-color, transform;
-    }
-
-    .badBullet {
-      width: 6px;
-      height: 6px;
-      z-index: 10;
-    }
-
-    .badBullet--type1 {
-      background-color: rgb(255, 81, 0);
-      box-shadow: 0 2px 6px 0px rgb(255 130 71);
-      transition: 1s all ease-in;
-    }
-  </style>
-
-  <body>
-    <div class="bullet badBullet badBullet--type1" style="display: none"></div>
-    <div class="plane badPlane badPlane--type1" style="display: none">
-      <div class="badPlane-cabin"></div>
-      <div class="badPlane-wing badPlane-wing--front"></div>
-      <div class="badPlane-wing badPlane-wing--before"></div>
-      <!-- 机枪标签用li，方便CSS用nth-of-type筛选 -->
-      <div class="badPlane-gun" data-type="1"></div>
-      <div class="badPlane-gun" data-type="2"></div>
-    </div>
-  </body>
-  <script>
+<body>
+<div class="bullet badBullet badBullet--type1" style="display: none"></div>
+<div class="plane badPlane badPlane--type1" style="display: none">
+  <div class="badPlane-cabin"></div>
+  <div class="badPlane-wing badPlane-wing--front"></div>
+  <div class="badPlane-wing badPlane-wing--before"></div>
+  <!-- 机枪标签用li，方便CSS用nth-of-type筛选 -->
+  <div class="badPlane-gun" data-type="1"></div>
+  <div class="badPlane-gun" data-type="2"></div>
+</div>
+</body>
+<script>
 // 通用数据/函数
 const MAXNUM = 999999;
 let WindowWidth = document.body.offsetWidth; // 屏幕宽度
@@ -181,10 +167,10 @@ const getTranslatePos = (dom) => {
 };
 
 // 敌机专用
-
-// 待修改，还没有纠正敌机动线坐标的边界值
-
-const BadPlaneMaxMoveDistY = WindowHeight - 200; // 动线Y轴的最大值
+const BadPlaneMaxMoveDistY = WindowHeight * 0.8; // 动线Y轴的最大值
+const BadPlaneMinMoveDistY = 100; // 动线Y轴的最大值
+const BadPlaneMaxMoveDistX = WindowWidth; // 动线Y轴的最大值
+const BadPlaneMinMoveDistX = 0; // 动线Y轴的最大值
 
 let MaxBadPlaneNum = 5;
 const DefaultBadPlaneType = 0;
@@ -212,7 +198,7 @@ const BadBulletTypesInfo = [
     bulletHotNum: 50,
     bulletD: 10,
     tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
-    frequency: 1000,
+    frequency: 100,
   },
 ];
 
@@ -287,7 +273,7 @@ const badPlaneFire = (badPlaneIndex, fireIndex) => {
   });
   BadBullet.push(...newBullets);
   BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum -= gunNum;
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     newBullets.forEach((bullet, index) => {
       bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
     });
@@ -297,7 +283,7 @@ const badPlaneFire = (badPlaneIndex, fireIndex) => {
         BadBullet.shift();
       });
     }, 1000);
-  });
+  }, 20);
 };
 
 const badPlaneKeepFire = (badPlaneIndex) => {
@@ -422,35 +408,35 @@ const createBadPlanes = ({
       break;
   }
   // 计算动线终点
-  const dPos = { ...distPos, stayDuration: 0 };
+  let dPos = { ...distPos, stayDuration: 0 };
   switch (distSide) {
     case "back":
-      oPos.x =
-        typeof oPos.x === "number"
-          ? getCorrectX(oPos.x)
+      dPos.x =
+        typeof dPos.x === "number"
+          ? getCorrectX(dPos.x)
           : (WindowWidth + 100) * Math.random() - 50;
-      oPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
+      dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
       break;
     case "left":
-      oPos.x = -50;
+      dPos.x = -50;
       dPos.y =
         typeof dPos.y === "number"
           ? getCorrectY(dPos.y)
           : (WindowHeight + 100) * Math.random() - 50;
       break;
     case "right":
-      oPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
+      dPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
       dPos.y =
         typeof dPos.y === "number"
           ? getCorrectY(dPos.y)
           : (WindowHeight + 100) * Math.random() - 50;
       break;
     default:
-      oPos.x =
-        typeof oPos.x === "number"
-          ? getCorrectX(oPos.x)
+      dPos.x =
+        typeof dPos.x === "number"
+          ? getCorrectX(dPos.x)
           : (WindowWidth + 100) * Math.random() - 50;
-      oPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
+      dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
       break;
   }
   const badPlaneIndex = BadPlanes.length;
@@ -466,7 +452,14 @@ const createBadPlanes = ({
     pos: oPos,
     fireInterval: null,
     moveTimer: null,
-    movePos: [...movePos, dPos],
+    movePos: [...movePos.map(item=>{
+		const {x, y} = item
+		return {
+			...item,
+			x: Math.max(Math.min(BadPlaneMaxMoveDistX, x), BadPlaneMinMoveDistX),
+			y: Math.max(Math.min(BadPlaneMaxMoveDistY, y), BadPlaneMinMoveDistY)
+		}
+	}), dPos],
     fireInfo,
   });
   moveBadPlane(badPlaneIndex);
@@ -476,14 +469,33 @@ createBadPlanes({
   originSide: "front",
   originPos: { x: -40, y: 0 },
   movePos: [
-    { x: 50, y: 100, stayDuration: 5000 },
-    { x: 100, y: 100, stayDuration: 5000 },
+    { x: 50, y: 100, stayDuration: 2000 },
+    { x: 100, y: 100, stayDuration: 2000 },
+    { x: 1200, y: 1200, stayDuration: 2000 },
+    { x: 300, y: 200, stayDuration: 2000 },
   ],
   distSide: "back",
   distPos: { x: 60, y: 0 },
   fireInfo: [
-    { bulletNum: 4, bulletType: 0, delay: 2000 },
-    { bulletNum: 10, bulletType: 0, delay: 1000 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
+    { bulletNum: 10, bulletType: 0, delay: 500 },
   ],
 });
   </script>
