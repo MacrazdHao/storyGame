@@ -66,7 +66,7 @@
   const BlockProto = document.getElementsByClassName("block")[0]
   // {id, blockDom, originColor, objectsId, objectColors}
   let Blocks = {}
-  const BlockNum = 3000 // 只是大概，若有剩余则会向下取整
+  const BlockNum = 10000 // 只是大概，若有剩余则会向下取整
   let PosProportion = Math.sqrt(BlockNum / WindowArea)
   let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
   let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
@@ -79,7 +79,7 @@
   let WindowForScreenMaxX = ScreenRect.left + BlockWidth * ScreenRowBlockNum
   let WindowForScreenMaxY = ScreenRect.top + BlockHeight * ScreenColumnBlockNum
 
-  const BlackColor = '#000'
+  const BlackColor = '#fff'
   const WhiteColor = '#fff'
   const MouseObjectKey = 'mouse'
   const Objects = {
@@ -156,6 +156,7 @@
           crashTipsDom.innerHTML = ""
         }, 1000)
         hasCrash = true
+        break
       }
     }
     return hasCrash
