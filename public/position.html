@@ -1,0 +1,110 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+  <title>飞机</title>
+</head>
+<style>
+  html {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    width: calc(100% - 20px);
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 50px;
+    margin-top: 20px;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .block {
+    /* box-sizing: border-box; */
+    /* border: 1px solid #000; */
+    /* background-color: #fff; */
+  }
+</style>
+
+<body>
+  <div class="block" style="display: none" />
+</body>
+<script>
+  const WindowWidth = document.body.offsetWidth
+  const WindowHeight = document.body.offsetHeight
+  const WindowArea = WindowWidth * WindowHeight
+  const WindowProportion = WindowWidth / WindowHeight
+  const ScreenDom = document.getElementsByTagName("body")[0]
+  const ScreenRect = ScreenDom.getBoundingClientRect()
+  const BlockProto = document.getElementsByClassName("block")[0]
+  const Blocks = {}
+  const BlockNum = 100 // 只是大概，若有剩余则会向下取整
+  const PosProportion = Math.sqrt(BlockNum / WindowArea)
+  let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
+  let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
+  const RealPosProportion = Math.sqrt(ScreenRowBlockNum * ScreenColumnBlockNum / WindowArea)
+  const BlockWidth = Math.floor(WindowWidth / ScreenRowBlockNum)
+  const BlockHeight = Math.floor(WindowHeight / ScreenColumnBlockNum)
+  console.log(WindowWidth, WindowHeight)
+  console.log(ScreenRowBlockNum, ScreenColumnBlockNum)
+  console.log(BlockWidth, BlockHeight)
+  console.log(BlockWidth * ScreenRowBlockNum, BlockHeight * ScreenColumnBlockNum)
+
+  const BlackColor = '#000'
+  const WhiteColor = '#fff'
+
+  for (let c = 0; c < ScreenColumnBlockNum; c++) {
+    for (let r = 0; r < ScreenRowBlockNum; r++) {
+      const BlockItem = BlockProto.cloneNode(true)
+      BlockItem.style.width = `${BlockWidth}px`
+      BlockItem.style.height = `${BlockHeight}px`
+      BlockItem.style.display = `block`
+      if (r % 2) {
+        if (c % 2) BlockItem.style.backgroundColor = BlackColor
+        else BlockItem.style.backgroundColor = WhiteColor
+      } else {
+        if (c % 2) BlockItem.style.backgroundColor = WhiteColor
+        else BlockItem.style.backgroundColor = BlackColor
+      }
+      document.body.appendChild(BlockItem)
+      const id = `${r}-${c}`
+      Blocks[id] = {
+        id,
+        blockDom: BlockItem,
+        objectsId: []
+      }
+    }
+  }
+
+  // screen相对Windows的位置
+  const getRelativePos = (pos) => {
+    return { x: pos.x - ScreenRect.left, y: pos.y - ScreenRect.top }
+  }
+
+  const translatePos = (pos) => {
+    const { x, y } = getRelativePos(pos)
+    console.log(pos.x, pos.y)
+    console.log(x, y)
+    return { x: Math.ceil(x / BlockWidth) - 1, y: Math.ceil(y / BlockHeight) - 1 }
+  }
+
+  const lightBlock = (e) => {
+    const { x, y } = translatePos(e)
+    const block = Blocks[`${x}-${y}`]
+    if (!block) return
+    block.blockDom.style.backgroundColor = 'red'
+  }
+
+  window.addEventListener('mousemove', lightBlock)</script>
+
+</html>
