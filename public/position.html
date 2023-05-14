@@ -101,7 +101,7 @@
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
       color: '#f00',
       crashCallback: function (crashObjKey) {
-        console.log(`${this.id}和${crashObjKey}碰撞了`)
+        console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
       },
     },
     test1: {
@@ -110,7 +110,7 @@
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
       color: '#00f',
       crashCallback: function (crashObjKey) {
-        console.log(`${this.id}和${crashObjKey}碰撞了`)
+        console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
       },
     }
   }
@@ -221,7 +221,9 @@
     const { crashObjects, crashCallback } = Objects[objKey]
     crashObjectsKey.forEach(okey => {
       if (!crashObjects[okey]) {
+        const _crashCallback = Objects[okey].crashCallback
         crashCallback(okey)
+        _crashCallback(objKey)
       }
       Objects[objKey].crashObjects[okey] = true
     })
