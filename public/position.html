@@ -92,36 +92,46 @@
 
   const BlackColor = '#000'
   const WhiteColor = '#fff'
-  const MouseObjectKey = 'mouse'
-  const Objects = {
+  const MouseObjectName = 'mouse'
+  let MouseObjectId = ''
+  const ObjectsProto = {
     mouse: {
-      id: 'mouse',
       zIndex: 100,
-      currentCenterPosKey: '',
       centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
-      lightingPos: [], // ["x-y", ...]
       color: '#f00',
-      crashObjects: {},
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}和${crashObjKey}碰撞了`)
-      }
+      },
     },
     test1: {
-      id: 'test1',
       zIndex: 99,
-      currentCenterPosKey: '',
       centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
-      lightingPos: [], // ["x-y", ...]
       color: '#00f',
-      crashObjects: {}
-    },
+      crashCallback: function (crashObjKey) {
+        console.log(`${this.id}和${crashObjKey}碰撞了`)
+      },
+    }
   }
+  const Objects = {}
   let ObjectsLightMap = {}
-  Object.keys(Objects).forEach(okey => {
-    ObjectsLightMap[okey] = false
-  })
+
+  const createObject = (objName) => {
+    const id = `${objName}-${Math.random().toString(36).slice(2)}`
+    Objects[id] = {
+      ...JSON.parse(JSON.stringify(ObjectsProto[objName])),
+      id,
+      currentCenterPosKey: '',
+      lightingPos: [], // ["x-y", ...]
+      crashObjects: {},
+    }
+    crashCallback = (crashObjKey) => {
+      ObjectsProto[objName].crashCallback.call(Objects[id], crashObjKey)
+    }
+    Objects[id].crashCallback = crashCallback
+    return id
+  }
 
   const getObjectRelativePos = (objId) => {
     const { centerRelativePos, coverRelativeRowPosStr } = Objects[objId]
@@ -158,7 +168,7 @@
   }
 
   const clearObjectLightingPos = (objKey) => {
-    Objects[MouseObjectKey].lightingPos = Objects[objKey].lightingPos.filter(pos => {
+    Objects[objKey].lightingPos = Objects[objKey].lightingPos.filter(pos => {
       let { blockDom, originColor, objectColors } = Blocks[pos]
       Blocks[pos].objectsId[objKey] = false
       blockDom.style.backgroundColor = getBlockColor(pos)
@@ -168,7 +178,7 @@
 
   const crashCheck = (objKey, pos) => {
     const { objectsId } = Blocks[pos]
-    let hasCrash = false
+    const crashObjectsKey = []
     // 遍历占有当前像素格的物体标记
     for (let okey in objectsId) {
       // 跳过自身
@@ -177,18 +187,13 @@
       if (objectsId[okey]) {
         // hasCrash为true，表示拥有碰撞物体
         hasCrash = true
-        // 当前碰撞物体为首次碰撞
-        if (!Objects[objKey].crashObjects[okey]) {
-          // 触发触碰回调
-          // Objects[objKey].crashCallback(okey)
-          Objects[objKey].crashObjects[okey] = true
-        }
+        crashObjectsKey.push(okey)
         continue
       }
       // 当前物体未碰撞
-      Objects[objKey].crashObjects[okey] = false
+      // Objects[objKey].crashObjects[okey] = false
     }
-    return hasCrash
+    return crashObjectsKey
   }
 
   const lightObjectBlock = (objKey, pos) => {
@@ -198,8 +203,9 @@
     if (currentCenterPosKey === centerPosKey) return
     Objects[objKey].currentCenterPosKey = centerPosKey
     clearObjectLightingPos(objKey)
-    let crashChecked = false
-    const crashObjectsTmp = JSON.parse(JSON.stringify(Objects[objKey].crashObjects))
+    // let crashChecked = false
+    const crashObjectsKey = new Set()
+    // 点亮像素块，遍历每个像素块的碰撞情况
     lightPos.forEach(rpos => {
       const lightX = pos.x + rpos.x
       const lightY = pos.y + rpos.y
@@ -209,17 +215,19 @@
         Blocks[blockPos].objectsId[objKey] = true
         blockDom.style.backgroundColor = getBlockColor(blockPos)
         Objects[objKey].lightingPos.push(blockPos)
-        if (!crashChecked) {
-          crashChecked = crashCheck(objKey, blockPos)
-          const { crashObjects, crashCallback } = Objects[objKey]
-          for (let okey in crashObjectsTmp) {
-            if (crashObjects[okey] && crashObjectsTmp[okey] !== crashObjects[okey]) {
-              crashCallback(okey)
-            }
-          }
-        }
+        crashCheck(objKey, blockPos).forEach(item => crashObjectsKey.add(item))
       }
     })
+    const { crashObjects, crashCallback } = Objects[objKey]
+    crashObjectsKey.forEach(okey => {
+      if (!crashObjects[okey]) {
+        crashCallback(okey)
+      }
+      Objects[objKey].crashObjects[okey] = true
+    })
+    for (let okey in Objects[objKey].crashObjects) {
+      Objects[objKey].crashObjects[okey] = crashObjectsKey.has(okey)
+    }
   }
 
   const clearScreen = () => {
@@ -301,7 +309,7 @@
     const pos = `${x}-${y}`
     const block = Blocks[pos]
     if (!block) return
-    const { id, centerRelativePos, coverRelativeRowPosStr, color } = Objects[MouseObjectKey]
+    const { id, centerRelativePos, coverRelativeRowPosStr, color } = Objects[MouseObjectId]
     lightObjectBlock(objectKey, { x, y })
   }
 
@@ -314,9 +322,10 @@
   }
 
   createScreen()
-  drawBlock('test1', getRandomPos())
+  MouseObjectId = createObject(MouseObjectName)
+  drawBlock(createObject('test1'), getRandomPos())
   window.addEventListener('resize', createScreen)
-  window.addEventListener('mousemove', (e) => drawBlock(MouseObjectKey, e))
+  window.addEventListener('mousemove', (e) => drawBlock(MouseObjectId, e))
 </script>
 
 </html>
