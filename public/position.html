@@ -77,7 +77,7 @@
   const BlockProto = document.getElementsByClassName("block")[0]
   // {id, blockDom, originColor, objectsId, objectColors}
   let Blocks = {}
-  const BlockNum = 1000 // 只是大概，若有剩余则会向下取整
+  const BlockNum = 10000 // 只是大概，若有剩余则会向下取整
   let PosProportion = Math.sqrt(BlockNum / WindowArea)
   let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
   let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
@@ -101,7 +101,11 @@
       centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
       lightingPos: [], // ["x-y", ...]
-      color: '#f00'
+      color: '#f00',
+      crashObjects: {},
+      crashCallback: function (crashObjKey) {
+        console.log(`${this.id}和${crashObjKey}碰撞了`)
+      }
     },
     test1: {
       id: 'test1',
@@ -110,7 +114,8 @@
       centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
       coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
       lightingPos: [], // ["x-y", ...]
-      color: '#00f'
+      color: '#00f',
+      crashObjects: {}
     },
   }
   let ObjectsLightMap = {}
@@ -164,17 +169,24 @@
   const crashCheck = (objKey, pos) => {
     const { objectsId } = Blocks[pos]
     let hasCrash = false
+    // 遍历占有当前像素格的物体标记
     for (let okey in objectsId) {
+      // 跳过自身
       if (okey === objKey) continue
+      // 当前像素格内的该物体标记为true
       if (objectsId[okey]) {
-        // crashTipsDom.innerHTML = `${objKey}和${okey}碰撞了`
-        // setTimeout(() => {
-        //   crashTipsDom.innerHTML = ""
-        // }, 1000)
-        console.log(`${objKey}和${okey}碰撞了`)
+        // hasCrash为true，表示拥有碰撞物体
         hasCrash = true
-        break
+        // 当前碰撞物体为首次碰撞
+        if (!Objects[objKey].crashObjects[okey]) {
+          // 触发触碰回调
+          // Objects[objKey].crashCallback(okey)
+          Objects[objKey].crashObjects[okey] = true
+        }
+        continue
       }
+      // 当前物体未碰撞
+      Objects[objKey].crashObjects[okey] = false
     }
     return hasCrash
   }
@@ -183,10 +195,11 @@
     const { color, zIndex, currentCenterPosKey, centerRelativePos } = Objects[objKey]
     const lightPos = getObjectRelativePos(objKey)
     const centerPosKey = `${pos.x - centerRelativePos.x}-${pos.y - centerRelativePos.y}`
-    if(currentCenterPosKey === centerPosKey) return
+    if (currentCenterPosKey === centerPosKey) return
     Objects[objKey].currentCenterPosKey = centerPosKey
     clearObjectLightingPos(objKey)
     let crashChecked = false
+    const crashObjectsTmp = JSON.parse(JSON.stringify(Objects[objKey].crashObjects))
     lightPos.forEach(rpos => {
       const lightX = pos.x + rpos.x
       const lightY = pos.y + rpos.y
@@ -196,7 +209,15 @@
         Blocks[blockPos].objectsId[objKey] = true
         blockDom.style.backgroundColor = getBlockColor(blockPos)
         Objects[objKey].lightingPos.push(blockPos)
-        if (!crashChecked) crashChecked = crashCheck(objKey, blockPos)
+        if (!crashChecked) {
+          crashChecked = crashCheck(objKey, blockPos)
+          const { crashObjects, crashCallback } = Objects[objKey]
+          for (let okey in crashObjectsTmp) {
+            if (crashObjects[okey] && crashObjectsTmp[okey] !== crashObjects[okey]) {
+              crashCallback(okey)
+            }
+          }
+        }
       }
     })
   }
