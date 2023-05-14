@@ -14,12 +14,12 @@
   }
 
   body {
-    width: calc(100vw - 20px);
+    width: calc(100vw - 0px);
     height: 100vh;
-    transform: scale(0.6);
+    transform: scale(1);
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     /* margin-left: 50px;
     margin-top: 20px; */
   }
@@ -48,9 +48,16 @@
     font-weight: bold;
     white-space: nowrap;
   }
+  .blockRow {
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+  }
 </style>
 
 <body>
+  <div class="blockRow" style="display: none;"></div>
   <div class="block" style="display: none"></div>
   <p class="crashTips"></p>
 </body>
@@ -60,13 +67,14 @@
   let WindowHeight = document.body.offsetHeight
   let WindowArea = WindowWidth * WindowHeight
   let WindowProportion = WindowWidth / WindowHeight
-  const ScreenScale = 0.6
+  const ScreenScale = 1
+  const BlockRowProto = document.getElementsByClassName("blockRow")[0]
   const ScreenDom = document.getElementsByTagName("body")[0]
   const ScreenRect = ScreenDom.getBoundingClientRect()
   const BlockProto = document.getElementsByClassName("block")[0]
   // {id, blockDom, originColor, objectsId, objectColors}
   let Blocks = {}
-  const BlockNum = 10000 // 只是大概，若有剩余则会向下取整
+  const BlockNum = 100000 // 只是大概，若有剩余则会向下取整
   let PosProportion = Math.sqrt(BlockNum / WindowArea)
   let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
   let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
@@ -151,10 +159,11 @@
     for (let okey in objectsId) {
       if (okey === objKey) continue
       if (objectsId[okey]) {
-        crashTipsDom.innerHTML = `${objKey}和${okey}碰撞了`
-        setTimeout(() => {
-          crashTipsDom.innerHTML = ""
-        }, 1000)
+        // crashTipsDom.innerHTML = `${objKey}和${okey}碰撞了`
+        // setTimeout(() => {
+        //   crashTipsDom.innerHTML = ""
+        // }, 1000)
+        console.log(`${objKey}和${okey}碰撞了`)
         hasCrash = true
         break
       }
@@ -197,24 +206,30 @@
     ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
     ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
     RealPosProportion = Math.sqrt(ScreenRowBlockNum * ScreenColumnBlockNum / WindowArea)
-    BlockWidth = Math.floor(WindowWidth / ScreenRowBlockNum)
-    BlockHeight = Math.floor(WindowHeight / ScreenColumnBlockNum)
-    for (let c = 0; c < ScreenColumnBlockNum; c++) {
-      for (let r = 0; r < ScreenRowBlockNum; r++) {
+    BlockWidth = (WindowWidth / ScreenRowBlockNum)
+    BlockHeight = (WindowHeight / ScreenColumnBlockNum)
+    console.log(WindowWidth, WindowHeight)
+    console.log(ScreenColumnBlockNum, ScreenRowBlockNum)
+    console.log(BlockWidth, BlockHeight)
+    console.log(BlockWidth*ScreenRowBlockNum, BlockHeight*ScreenColumnBlockNum)
+    for (let r = 0; r < ScreenRowBlockNum; r++) {
+      const colDom = BlockRowProto.cloneNode(true)
+      colDom.style.display = "flex"
+      for (let c = 0; c < ScreenColumnBlockNum; c++) {
         const BlockItem = BlockProto.cloneNode(true)
         BlockItem.style.width = `${BlockWidth}px`
         BlockItem.style.height = `${BlockHeight}px`
         BlockItem.style.display = `block`
         let originColor = ''
-        if (r % 2) {
-          if (c % 2) originColor = BlackColor
+        if (c % 2) {
+          if (r % 2) originColor = BlackColor
           else originColor = WhiteColor
         } else {
-          if (c % 2) originColor = WhiteColor
+          if (r % 2) originColor = WhiteColor
           else originColor = BlackColor
         }
         BlockItem.style.backgroundColor = originColor
-        document.body.appendChild(BlockItem)
+        colDom.appendChild(BlockItem)
         const id = `${r}-${c}`
         Blocks[id] = {
           id,
@@ -223,6 +238,7 @@
           objectsId: { ...ObjectsLightMap }
         }
       }
+      document.body.appendChild(colDom)
     }
     WindowForScreenMinX = ScreenRect.left
     WindowForScreenMinY = ScreenRect.top
