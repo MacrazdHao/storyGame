@@ -142,7 +142,7 @@
       // 物体碰撞回调
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
-        showTips({text: `${this.id}: ${crashObjKey}和我碰撞了`})
+        showTips({ text: `${this.id}: ${crashObjKey}和我碰撞了` })
       },
     },
     test1: {
@@ -157,6 +157,69 @@
     }
   }
   const Objects = {} // 物体实例Map
+
+  // 清空Screen
+  const clearScreen = () => {
+    // 移除所有像素块Dom
+    for (let key in Blocks) {
+      Blocks[key].blockDom.remove()
+    }
+    // 清空像素块实例对象
+    Blocks = {}
+  }
+  // 创建screen
+  const createScreen = () => {
+    // 清除原来的screen
+    clearScreen()
+    // 重新获取基础数据
+    WindowWidth = window.innerWidth
+    WindowHeight = window.innerHeight
+    WindowArea = WindowWidth * WindowHeight
+    PosProportion = Math.sqrt(BlockNum / WindowArea)
+    ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
+    ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
+    BlockWidth = (WindowWidth / ScreenRowBlockNum)
+    BlockHeight = (WindowHeight / ScreenColumnBlockNum)
+    // console.log(WindowWidth, WindowHeight)
+    // console.log(ScreenColumnBlockNum, ScreenRowBlockNum)
+    // console.log(BlockWidth, BlockHeight)
+    // console.log(BlockWidth*ScreenRowBlockNum, BlockHeight*ScreenColumnBlockNum)
+    // 构建像素块实例对象
+    for (let r = 0; r < ScreenRowBlockNum; r++) {
+      const colDom = BlockColProto.cloneNode(true)
+      colDom.style.display = "flex"
+      for (let c = 0; c < ScreenColumnBlockNum; c++) {
+        const BlockItem = BlockProto.cloneNode(true)
+        BlockItem.style.width = `${BlockWidth}px`
+        BlockItem.style.height = `${BlockHeight}px`
+        BlockItem.style.display = `block`
+        let originColor = ''
+        // 为方便观测，为像素块交错渲染黑白两色
+        if (c % 2) {
+          if (r % 2) originColor = BlackColor
+          else originColor = WhiteColor
+        } else {
+          if (r % 2) originColor = WhiteColor
+          else originColor = BlackColor
+        }
+        BlockItem.style.backgroundColor = originColor
+        const id = `${r}_${c}`
+        BlockItem.setAttribute("id", id)
+        Blocks[id] = {
+          id,
+          blockDom: BlockItem,
+          originColor,
+          objectsId: {}
+        }
+        colDom.appendChild(BlockItem)
+      }
+      document.body.appendChild(colDom)
+    }
+    WindowForScreenMinX = ScreenRect.left
+    WindowForScreenMinY = ScreenRect.top
+    WindowForScreenMaxX = ScreenRect.left + BlockWidth * ScreenRowBlockNum
+    WindowForScreenMaxY = ScreenRect.top + BlockHeight * ScreenColumnBlockNum
+  }
 
   // 构建物体实例对象
   const createObject = (objName, crashCb) => {
@@ -308,69 +371,6 @@
       }
     }
   }
-  // 清空Screen
-  const clearScreen = () => {
-    // 移除所有像素块Dom
-    for (let key in Blocks) {
-      Blocks[key].blockDom.remove()
-    }
-    // 清空像素块实例对象
-    Blocks = {}
-  }
-  // 创建screen
-  const createScreen = () => {
-    // 清除原来的screen
-    clearScreen()
-    // 重新获取基础数据
-    WindowWidth = window.innerWidth
-    WindowHeight = window.innerHeight
-    WindowArea = WindowWidth * WindowHeight
-    PosProportion = Math.sqrt(BlockNum / WindowArea)
-    ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
-    ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
-    BlockWidth = (WindowWidth / ScreenRowBlockNum)
-    BlockHeight = (WindowHeight / ScreenColumnBlockNum)
-    // console.log(WindowWidth, WindowHeight)
-    // console.log(ScreenColumnBlockNum, ScreenRowBlockNum)
-    // console.log(BlockWidth, BlockHeight)
-    // console.log(BlockWidth*ScreenRowBlockNum, BlockHeight*ScreenColumnBlockNum)
-    // 构建像素块实例对象
-    for (let r = 0; r < ScreenRowBlockNum; r++) {
-      const colDom = BlockColProto.cloneNode(true)
-      colDom.style.display = "flex"
-      for (let c = 0; c < ScreenColumnBlockNum; c++) {
-        const BlockItem = BlockProto.cloneNode(true)
-        BlockItem.style.width = `${BlockWidth}px`
-        BlockItem.style.height = `${BlockHeight}px`
-        BlockItem.style.display = `block`
-        let originColor = ''
-        // 为方便观测，为像素块交错渲染黑白两色
-        if (c % 2) {
-          if (r % 2) originColor = BlackColor
-          else originColor = WhiteColor
-        } else {
-          if (r % 2) originColor = WhiteColor
-          else originColor = BlackColor
-        }
-        BlockItem.style.backgroundColor = originColor
-        const id = `${r}_${c}`
-        BlockItem.setAttribute("id", id)
-        Blocks[id] = {
-          id,
-          blockDom: BlockItem,
-          originColor,
-          objectsId: {}
-        }
-        colDom.appendChild(BlockItem)
-      }
-      document.body.appendChild(colDom)
-    }
-    WindowForScreenMinX = ScreenRect.left
-    WindowForScreenMinY = ScreenRect.top
-    WindowForScreenMaxX = ScreenRect.left + BlockWidth * ScreenRowBlockNum
-    WindowForScreenMaxY = ScreenRect.top + BlockHeight * ScreenColumnBlockNum
-  }
-
   // window坐标与screen坐标的相互转换
   const translatePos = (pos, reverse = false) => {
     // screen => window (由于小数误差问题，暂时并未能准确计算)
@@ -390,13 +390,12 @@
       // 渲染物体实例
       lightObjectBlock(objectKey, { x, y })
     }
-
   }
+  
   // 获取一个Screen范围内的相对Screen的随机坐标
   const getRandomPos = () => {
     return { x: WindowForScreenMinX + Math.random() * (WindowForScreenMaxX - WindowForScreenMinX), y: WindowForScreenMinY + Math.random() * (WindowForScreenMaxY - WindowForScreenMinY) }
   }
-
   // 将坐标Key转换为坐标 "x_y" => {x, y}
   const getPosFromPosKey = (posKey = '') => {
     const arr = posKey.split('_')
@@ -406,7 +405,6 @@
   const getObjectCenterPos = (objKey) => {
     return getPosFromPosKey(Objects[objKey].currentCenterPosKey)
   }
-
   // 八个方向的相对移动单位坐标 (由于小数误差问题，暂时并未能准确设置)
   // ↖ ↑ ↗ ← → ↙ ↓ ↘
   const moveSides = [{ x: -0.5, y: 0.5 }, { x: 0.5, y: 0.5 }, { x: 1.5, y: 0.5 }, { x: -0.5, y: 1.5 }, { x: 1.5, y: 1.5 }, { x: -0.5, y: 2.5 }, { x: 0.5, y: 2.5 }, { x: 2, y: 2.5 }]

@@ -1,506 +1,541 @@
 <!DOCTYPE html>
 <html lang="">
+
 <head>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
-<!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
-<title>飞机</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" /> -->
+  <title>飞机</title>
 </head>
 <style>
-/* transform-style: preserve-3d; 及 will-change能够提长动画性能 */
-html {
-	/* scale: 0.5; */
-	width: 100%;
-	height: 100%;
-	transform-style: preserve-3d;
-}
-body {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background-color: rgb(0, 0, 0);
-	position: relative;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-}
-* {
-	margin: 0;
-	padding: 0;
-}
-.statusBar {
-	position: fixed;
-	width: 100%;
-	height: 30px;
-	padding: 0 12px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	z-index: 100;
-	background-color: rgba(255, 255, 255, 0.5);
-}
-.statusBar-item {
-	display: flex;
-	flex-direction: row;
-}
-.statusBar-item > p {
-	color: #fff;
-	padding: 0 6px;
-}
-.statusBar-item + .statusBar-item {
-	margin-left: 30px;
-}
-#ClipHot {
-	color: #0f0;
-}
-.tips {
-	position: absolute;
-	top: 0;
-	left: 0;
-	pointer-events: none;
-	will-change: transform, opactiy;
-	opacity: 0;
-}
-.tips-text {
-	font-size: 20px;
-}
- @keyframes showTips {
- 0% {
- opacity: 0;
- transform: translate(calc(50vw - 50%), calc(56vh - 50%));
-}
- 30%,  70% {
- opacity: 1;
- transform: translate(calc(50vw - 50%), calc(50vh - 50%));
-}
- 100% {
- opacity: 0;
- transform: translate(calc(50vw - 50%), calc(44vh - 50%));
-}
-}
-.plane {
-	position: absolute;
-	top: 0;
-	left: 0;
-	transition: 0.1s all ease-out;
-	will-change: transform;
-}
-.plane::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: translate(calc(-50% + 10px), calc(-50% + 50px));
-	width: 20px;
-	height: 20px;
-	border-radius: 100%;
-	background-color: #00f;
-	z-index: 10;
-}
-.plane-cabin {
-	position: relative;
-	transform: scale(0.6);
-	background-color: #fff;
-	border-color: #fff;
-	width: 20px;
-	height: 100px;
-	border-radius: 100% 100% 100% 100%;
-	border-width: 6px 0px 6px 0px;
-	border-style: solid;
-	transition: 0.3s all ease-in-out;
-	z-index: 5;
-}
-.plane-wing {
-	border-radius: 100% 100% 100% 100%;
-	z-index: 6;
-}
-.plane-wing--front {
-	content: "";
-	width: 120px;
-	height: 20px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	border-color: #ff0;
-	transform: translate(calc(-50% + 10px), 40px);
-	background-color: #ff0;
-}
-.plane-wing--before {
-	content: "";
-	width: 40px;
-	height: 10px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: translate(calc(-50% + 10px), 76px);
-	animation: inherit;
-	background-color: inherit;
-	border-color: inherit;
-	background-color: #ff0;
-}
-.plane-gun {
-	display: block;
-	width: 10px;
-	height: 20px;
-	background-color: #fff;
-	position: absolute;
-	z-index: 4;
-}
-.plane-gun[data-type="1"] {
-	transform: translate(-25px, -80px);
-}
-.plane-gun[data-type="2"] {
-	transform: translate(35px, -80px);
-}
-.bullet {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 10px;
-	height: 10px;
-	border-radius: 100%;
-	will-change: box-shadow, background-color, transform;
-}
-.bullet--type0 {
-	background-color: rgb(255, 81, 0);
-	box-shadow: 0 2px 6px 0px rgb(255 130 71);
-	transition: 1s all ease-in;
-}
-.bullet--type1 {
-	background-color: rgb(166, 0, 255);
-	box-shadow: 0 2px 6px 0px rgb(255 130 71);
-	transition: 1s all ease-in;
-}
-.badBullet {
-	width: 6px;
-	height: 6px;
-	z-index: 10;
-}
-.badBullet--type1 {
-	background-color: rgb(255, 81, 0);
-	box-shadow: 0 2px 6px 0px rgb(255 130 71);
-	transition: 1s all ease-in;
-}
-.badPlane::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: translate(calc(-50% + 6px), calc(-50% + 38px));
-	width: 12px;
-	height: 12px;
-	border-radius: 100%;
-	background-color: #ff0;
-	z-index: 10;
-}
-.badPlane-cabin {
-	position: relative;
-	transform: scale(0.6);
-	background-color: #fff;
-	border-color: #fff;
-	width: 12px;
-	height: 60px;
-	border-radius: 100% 100% 100% 100%;
-	border-width: 3.6px 0px 3.6px 0px;
-	border-style: solid;
-	/* box-shadow: 0 0 2px 0px #fff; */
-      /* will-change: background-color; */
-	transition: 0.3s all ease-in-out;
-	z-index: 5;
-}
-.badPlane-wing {
-	border-radius: 100% 100% 100% 100%;
-	z-index: 6;
-}
-.badPlane-wing--front {
-	content: "";
-	width: 72px;
-	height: 12px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	border-color: #00f;
-	transform: translate(calc(-50% + 6px), 32px);
-	background-color: #00f;
-}
-.badPlane-wing--before {
-	content: "";
-	width: 24px;
-	height: 6px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: translate(calc(-50% + 6px), 16.4px);
-	animation: inherit;
-	background-color: inherit;
-	border-color: inherit;
-	background-color: #00f;
-}
-.badPlane-gun {
-	display: block;
-	width: 6px;
-	height: 12px;
-	background-color: rgb(100, 100, 100);
-	position: absolute;
-	z-index: 4;
-}
-.badPlane-gun[data-type="1"] {
-	transform: translate(-15px, -32px);
-}
-.badPlane-gun[data-type="2"] {
-	transform: translate(21px, -32px);
-}
+  /* transform-style: preserve-3d; 及 will-change能够提长动画性能 */
+  html {
+    /* scale: 0.5; */
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(0, 0, 0);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  .statusBar {
+    position: fixed;
+    width: 100%;
+    height: 30px;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .statusBar-item {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .statusBar-item>p {
+    color: #fff;
+    padding: 0 6px;
+  }
+
+  .statusBar-item+.statusBar-item {
+    margin-left: 30px;
+  }
+
+  #ClipHot {
+    color: #0f0;
+  }
+
+  .tips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform, opactiy;
+    opacity: 0;
+  }
+
+  .tips-text {
+    font-size: 20px;
+  }
+
+  @keyframes showTips {
+    0% {
+      opacity: 0;
+      transform: translate(calc(50vw - 50%), calc(56vh - 50%));
+    }
+
+    30%,
+    70% {
+      opacity: 1;
+      transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(calc(50vw - 50%), calc(44vh - 50%));
+    }
+  }
+
+  .plane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: 0.1s all ease-out;
+    will-change: transform;
+  }
+
+  .plane::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(calc(-50% + 10px), calc(-50% + 50px));
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: #00f;
+    z-index: 10;
+  }
+
+  .plane-cabin {
+    position: relative;
+    transform: scale(0.6);
+    background-color: #fff;
+    border-color: #fff;
+    width: 20px;
+    height: 100px;
+    border-radius: 100% 100% 100% 100%;
+    border-width: 6px 0px 6px 0px;
+    border-style: solid;
+    transition: 0.3s all ease-in-out;
+    z-index: 5;
+  }
+
+  .plane-wing {
+    border-radius: 100% 100% 100% 100%;
+    z-index: 6;
+  }
+
+  .plane-wing--front {
+    content: "";
+    width: 120px;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-color: #ff0;
+    transform: translate(calc(-50% + 10px), 40px);
+    background-color: #ff0;
+  }
+
+  .plane-wing--before {
+    content: "";
+    width: 40px;
+    height: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(calc(-50% + 10px), 76px);
+    animation: inherit;
+    background-color: inherit;
+    border-color: inherit;
+    background-color: #ff0;
+  }
+
+  .plane-gun {
+    display: block;
+    width: 10px;
+    height: 20px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 4;
+  }
+
+  .plane-gun[data-type="1"] {
+    transform: translate(-25px, -80px);
+  }
+
+  .plane-gun[data-type="2"] {
+    transform: translate(35px, -80px);
+  }
+
+  .bullet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    will-change: box-shadow, background-color, transform;
+  }
+
+  .bullet--type0 {
+    background-color: rgb(255, 81, 0);
+    box-shadow: 0 2px 6px 0px rgb(255 130 71);
+    transition: 1s all ease-in;
+  }
+
+  .bullet--type1 {
+    background-color: rgb(166, 0, 255);
+    box-shadow: 0 2px 6px 0px rgb(255 130 71);
+    transition: 1s all ease-in;
+  }
+
+  .badBullet {
+    width: 6px;
+    height: 6px;
+    z-index: 10;
+  }
+
+  .badBullet--type1 {
+    background-color: rgb(255, 81, 0);
+    box-shadow: 0 2px 6px 0px rgb(255 130 71);
+    transition: 1s all ease-in;
+  }
+
+  .badPlane::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(calc(-50% + 6px), calc(-50% + 38px));
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    background-color: #ff0;
+    z-index: 10;
+  }
+
+  .badPlane-cabin {
+    position: relative;
+    transform: scale(0.6);
+    background-color: #fff;
+    border-color: #fff;
+    width: 12px;
+    height: 60px;
+    border-radius: 100% 100% 100% 100%;
+    border-width: 3.6px 0px 3.6px 0px;
+    border-style: solid;
+    /* box-shadow: 0 0 2px 0px #fff; */
+    /* will-change: background-color; */
+    transition: 0.3s all ease-in-out;
+    z-index: 5;
+  }
+
+  .badPlane-wing {
+    border-radius: 100% 100% 100% 100%;
+    z-index: 6;
+  }
+
+  .badPlane-wing--front {
+    content: "";
+    width: 72px;
+    height: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-color: #00f;
+    transform: translate(calc(-50% + 6px), 32px);
+    background-color: #00f;
+  }
+
+  .badPlane-wing--before {
+    content: "";
+    width: 24px;
+    height: 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(calc(-50% + 6px), 16.4px);
+    animation: inherit;
+    background-color: inherit;
+    border-color: inherit;
+    background-color: #00f;
+  }
+
+  .badPlane-gun {
+    display: block;
+    width: 6px;
+    height: 12px;
+    background-color: rgb(100, 100, 100);
+    position: absolute;
+    z-index: 4;
+  }
+
+  .badPlane-gun[data-type="1"] {
+    transform: translate(-15px, -32px);
+  }
+
+  .badPlane-gun[data-type="2"] {
+    transform: translate(21px, -32px);
+  }
 </style>
+
 <body>
-<div class="statusBar">
-  <div class="statusBar-item life">
-    <p>生命值:</p>
-    <p>100</p>
+  <div class="statusBar">
+    <div class="statusBar-item health">
+      <p>生命值:</p>
+      <p id="HealthNum">100</p>
+    </div>
+    <div class="statusBar-item bulletNum">
+      <p>子弹数:</p>
+      <p id="BulletNum">0</p>
+    </div>
+    <div class="statusBar-item gunStatus">
+      <p>机枪过热:</p>
+      <p id="ClipHot">0</p>
+    </div>
   </div>
-  <div class="statusBar-item bulletNum">
-    <p>子弹数:</p>
-    <p id="BulletNum">0</p>
+  <!--  -->
+  <div class="bullet bullet--type0" style="display: none"></div>
+  <div class="bullet bullet--type1" style="display: none"></div>
+  <div class="plane myPlane">
+    <div class="plane-cabin"></div>
+    <div class="plane-wing plane-wing--front"></div>
+    <div class="plane-wing plane-wing--before"></div>
+    <div class="plane-gun" data-type="1"></div>
+    <div class="plane-gun" data-type="2"></div>
   </div>
-  <div class="statusBar-item gunStatus">
-    <p>机枪过热:</p>
-    <p id="ClipHot">0</p>
+  <div class="tips" style="display: none">
+    <p class="tips-text"></p>
   </div>
-</div>
-<!--  -->
-<div class="bullet bullet--type0" style="display: none"></div>
-<div class="bullet bullet--type1" style="display: none"></div>
-<div class="plane myPlane">
-  <div class="plane-cabin"></div>
-  <div class="plane-wing plane-wing--front"></div>
-  <div class="plane-wing plane-wing--before"></div>
-  <div class="plane-gun" data-type="1"></div>
-  <div class="plane-gun" data-type="2"></div>
-</div>
-<div class="tips" style="display: none">
-  <p class="tips-text"></p>
-</div>
-<div class="bullet badBullet badBullet--type1" style="display: none"></div>
-<div class="plane badPlane badPlane--type1" style="display: none">
-  <div class="badPlane-cabin"></div>
-  <div class="badPlane-wing badPlane-wing--front"></div>
-  <div class="badPlane-wing badPlane-wing--before"></div>
-  <!-- 机枪标签用li，方便CSS用nth-of-type筛选 -->
-  <div class="badPlane-gun" data-type="1"></div>
-  <div class="badPlane-gun" data-type="2"></div>
-</div>
+  <div class="bullet badBullet badBullet--type1" style="display: none"></div>
+  <div class="plane badPlane badPlane--type1" style="display: none">
+    <div class="badPlane-cabin"></div>
+    <div class="badPlane-wing badPlane-wing--front"></div>
+    <div class="badPlane-wing badPlane-wing--before"></div>
+    <!-- 机枪标签用li，方便CSS用nth-of-type筛选 -->
+    <div class="badPlane-gun" data-type="1"></div>
+    <div class="badPlane-gun" data-type="2"></div>
+  </div>
 </body>
 <script>
-	const MAXNUM = 999999;
-let WindowWidth = document.body.offsetWidth; // 屏幕宽度
-let WindowHeight = document.body.offsetHeight; // 屏幕长度
-window.addEventListener("resize", () => {
-  WindowWidth = document.body.offsetWidth; // 屏幕宽度
-  WindowHeight = document.body.offsetHeight; // 屏幕长度
-});
-// 玩家属性
-const MyPlane = document.getElementsByClassName("myPlane")[0];
-let BulletClipLimit = 100; // 弹夹内的最大子弹数
-let CurBulletClip = BulletClipLimit; // 当前弹夹内的子弹数
-let ReloadTime = 1000; // 子弹装填时长
-let Reloading = false; // 子弹是否装填中
-let BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime，当MaxBulletNum < BulletHotNum时，则可以一直发射，永不过热。过热机制不止可以提供一个玩法机制，还可以很好地控制性能消耗上限
-let TempBulletClipNum = MAXNUM; // 剩余弹夹数（当前子弹类型的可填装次数）
-let BulletD = 10; // 子弹的直径
-let BulletR = BulletD / 2; // 子弹的半径
-const MyBullet = []; // 我的子弹Dom数组
+  const MAXNUM = 999999;
+  let WindowWidth = document.body.offsetWidth; // 屏幕宽度
+  let WindowHeight = document.body.offsetHeight; // 屏幕长度
+  window.addEventListener("resize", () => {
+    WindowWidth = document.body.offsetWidth; // 屏幕宽度
+    WindowHeight = document.body.offsetHeight; // 屏幕长度
+  });
+  // 玩家属性
+  const MyPlane = document.getElementsByClassName("myPlane")[0];
+  let PlaneHealth = 100; // 弹夹内的最大子弹数
+  let BulletClipLimit = 100; // 弹夹内的最大子弹数
+  let CurBulletClip = BulletClipLimit; // 当前弹夹内的子弹数
+  let ReloadTime = 1000; // 子弹装填时长
+  let Reloading = false; // 子弹是否装填中
+  let BulletHotNum = 50; // 发射过热子弹数量上限 HotPersent = (CurBulletNum / BulletHotNum) * 100，子弹存在时长及发射频率决定了CurBulletNum的峰值 MaxBulletNum = frequency/bulletLiveTime，当MaxBulletNum < BulletHotNum时，则可以一直发射，永不过热。过热机制不止可以提供一个玩法机制，还可以很好地控制性能消耗上限
+  let TempBulletClipNum = MAXNUM; // 剩余弹夹数（当前子弹类型的可填装次数）
+  let BulletD = 10; // 子弹的直径
+  let BulletR = BulletD / 2; // 子弹的半径
+  const MyBullet = []; // 我的子弹Dom数组
 
-// 玩家飞机属性
-const PlaneDefaultBulletType = 0; // 当前飞机默认的子弹类型
-let MyBulletType = PlaneDefaultBulletType; // 我的当前子弹类型
-const PlaneCoreD = 20; // Plane核心直径
-const PlaneCoreR = PlaneCoreD / 2; // Plane核心半径
-const PlaneWidth = 180; // Plane宽度
-const PlaneHeight = 100; // Plane长度
-const InitPlaneX = WindowWidth / 2 - PlaneCoreR; // 初始Plane位置 X坐标
-const InitPlaneY = WindowHeight - PlaneHeight; // 初始Plane位置 Y坐标
-let fireInterval = null;
-let curPlaneX = InitPlaneX; // 当前Plane的X坐标
-let curPlaneY = InitPlaneY; // 当前Plane的Y坐标
-const MyGunsDom = MyPlane.getElementsByClassName("plane-gun"); // 机枪位置
-const MyGunNum = MyGunsDom.length; // 机枪数量
-const ClipHotDom = document.getElementById("ClipHot"); // 过热Status
-const BulletNumDom = document.getElementById("BulletNum"); // 子弹Status
+  // 玩家飞机属性
+  const PlaneDefaultBulletType = 0; // 当前飞机默认的子弹类型
+  let MyBulletType = PlaneDefaultBulletType; // 我的当前子弹类型
+  const PlaneCoreD = 20; // Plane核心直径
+  const PlaneCoreR = PlaneCoreD / 2; // Plane核心半径
+  const PlaneWidth = 180; // Plane宽度
+  const PlaneHeight = 100; // Plane长度
+  const InitPlaneX = WindowWidth / 2 - PlaneCoreR; // 初始Plane位置 X坐标
+  const InitPlaneY = WindowHeight - PlaneHeight; // 初始Plane位置 Y坐标
+  let fireInterval = null;
+  let curPlaneX = InitPlaneX; // 当前Plane的X坐标
+  let curPlaneY = InitPlaneY; // 当前Plane的Y坐标
+  const MyGunsDom = MyPlane.getElementsByClassName("plane-gun"); // 机枪位置
+  const MyGunNum = MyGunsDom.length; // 机枪数量
+  const ClipHotDom = document.getElementById("ClipHot"); // 过热Status
+  const BulletNumDom = document.getElementById("BulletNum"); // 子弹Status
+  const HealthNumDom = document.getElementById("HealthNum"); // 子弹Status
 
-MyPlane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
+  MyPlane.style.transform = `translate(${InitPlaneX}px, ${InitPlaneY}px)`;
 
-const TipsCodes = {
-  Reloading: {
-    code: "NeedReload",
-    text: "!!!子弹装填中!!!",
-    duration: 2000,
-    curNum: 0,
-    color: "#fff",
-  },
-  Reloaded: {
-    code: "NeedReload",
-    text: "装填完成",
-    duration: 2000,
-    curNum: 0,
-    color: "#fff",
-  },
-  NeedReload: {
-    code: "NeedReload",
-    text: "!!!需要填装子弹!!!",
-    duration: 2000,
-    curNum: 0,
-    color: "#ff0",
-  },
-  TooHot: {
-    code: "TooHot",
-    text: "!!!机枪过热警告!!!",
-    duration: 2000,
-    curNum: 0,
-    color: "#f00",
-  },
-};
+  const TipsCodes = {
+    Reloading: {
+      code: "NeedReload",
+      text: "!!!子弹装填中!!!",
+      duration: 2000,
+      curNum: 0,
+      color: "#fff",
+    },
+    Reloaded: {
+      code: "NeedReload",
+      text: "装填完成",
+      duration: 2000,
+      curNum: 0,
+      color: "#fff",
+    },
+    NeedReload: {
+      code: "NeedReload",
+      text: "!!!需要填装子弹!!!",
+      duration: 2000,
+      curNum: 0,
+      color: "#ff0",
+    },
+    TooHot: {
+      code: "TooHot",
+      text: "!!!机枪过热警告!!!",
+      duration: 2000,
+      curNum: 0,
+      color: "#f00",
+    },
+    BeHit: {
+      code: "BeHit",
+      text: "!!!你被击中了!!!",
+      duration: 500,
+      curNum: 0,
+      color: "#f00",
+    },
+  };
 
   const TipsDom = document.getElementsByClassName("tips")[0];
-const showTips = ({ code, text, duration, curNum, color }) => {
-  if (curNum > 0) return;
-  const Tips = TipsDom.cloneNode(true);
-  const TipsText = Tips.getElementsByClassName("tips-text")[0];
-  Tips.style.display = "block";
-  Tips.style.animation = `${duration / 1000}s showTips linear 1`;
-  TipsText.innerHTML = text;
-  TipsText.style.color = color;
-  document.body.appendChild(Tips);
-  TipsCodes[code].curNum++;
-  setTimeout(() => {
-    Tips.remove();
-    TipsCodes[code].curNum--;
-  }, duration);
-};
-
-const BulletTypesInfo = [
-  {
-    bulletType: 0,
-    bulletProto: document.getElementsByClassName(`bullet--type0`)[0],
-    bulletClipLimit: 20,
-    reloadTime: 1000,
-    bulletHotNum: 50,
-    bulletD: 10,
-    tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
-    frequency: 100,
-  },
-  {
-    bulletType: 1,
-    bulletProto: document.getElementsByClassName(`bullet--type1`)[0],
-    bulletClipLimit: 20,
-    reloadTime: 1000,
-    bulletHotNum: 50,
-    bulletD: 10,
-    tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
-    frequency: 100,
-  },
-];
-
-const updateBulletNum = (num) => {
-  CurBulletClip = num;
-  BulletNumDom.innerHTML = CurBulletClip;
-};
-const reloadBullet = (num) => {
-  // if (Reloading) return;
-  Reloading = true;
-  showTips(TipsCodes.Reloading);
-  // 弹夹用完，则更换为默认子弹类型
-  if (TempBulletClipNum <= 0) {
-    changeBulletType();
-  }
-  // 弹夹数-1
-  TempBulletClipNum--;
-  setTimeout(() => {
-    updateBulletNum(BulletClipLimit);
-    Reloading = false;
-    showTips(TipsCodes.Reloaded);
-  }, ReloadTime);
-};
-
-// 更换子弹类型
-const changeBulletType = (type = PlaneDefaultBulletType) => {
-  const {
-    bulletClipLimit,
-    reloadTime,
-    bulletHotNum,
-    bulletD,
-    tempBulletClipNum,
-  } = BulletTypesInfo[type];
-  MyBulletType = type;
-  BulletClipLimit = bulletClipLimit;
-  ReloadTime = reloadTime;
-  BulletHotNum = bulletHotNum;
-  BulletD = bulletD;
-  BulletR = bulletD / 2;
-  TempBulletClipNum = tempBulletClipNum;
-  reloadBullet();
-};
-
-// 获取子弹对象
-const getBulletObject = ({
-  type = PlaneDefaultBulletType,
-  originPos = { x, y },
-  isMine = true,
-}) => {
-  const { bulletProto } = (isMine ? BulletTypesInfo : BadBulletTypesInfo)[
-    type
-  ];
-  const bullet = bulletProto.cloneNode(true);
-  let target = { x: 0, y: 0 };
-  switch (type) {
-    case 0:
-      target = {
-        x: originPos.x,
-        y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
-      };
-      break;
-    default:
-      target = {
-        x: originPos.x,
-        y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
-      };
-      break;
-  }
-  bullet.style.display = "block";
-  return { bullet, target };
-};
-
-// 获取Dom对象的Translate坐标
-const getTranslatePos = (dom) => {
-  const transform = window
-    .getComputedStyle(dom)
-    .transform.replace("matrix(", "")
-    .replace(")", "")
-    .split(",");
-  return {
-    width: dom.offsetWidth,
-    height: dom.offsetHeight,
-    x: parseInt(transform.at(-2).trim()),
-    y: parseInt(transform.at(-1).trim()),
+  const showTips = ({ code, text, duration, curNum, color }) => {
+    if (curNum > 0) return;
+    const Tips = TipsDom.cloneNode(true);
+    const TipsText = Tips.getElementsByClassName("tips-text")[0];
+    Tips.style.display = "block";
+    Tips.style.animation = `${duration / 1000}s showTips linear 1`;
+    TipsText.innerHTML = text;
+    TipsText.style.color = color;
+    document.body.appendChild(Tips);
+    TipsCodes[code].curNum++;
+    setTimeout(() => {
+      Tips.remove();
+      TipsCodes[code].curNum--;
+    }, duration);
   };
-};
 
-// 枪支坐标数据
-const MyGunsPos = [];
-for (let i = 0; i < MyGunNum; i++) {
-  const gunTranslate = getTranslatePos(MyGunsDom[i]);
-  MyGunsPos.push({
-    x: curPlaneX + gunTranslate.x,
-    y: curPlaneY + gunTranslate.y + PlaneHeight,
-  });
-}
+  const BulletTypesInfo = [
+    {
+      bulletType: 0,
+      bulletProto: document.getElementsByClassName(`bullet--type0`)[0],
+      bulletClipLimit: 20,
+      reloadTime: 1000,
+      bulletHotNum: 50,
+      bulletD: 10,
+      tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
+      frequency: 100,
+      attack: 1
+    },
+    {
+      bulletType: 1,
+      bulletProto: document.getElementsByClassName(`bullet--type1`)[0],
+      bulletClipLimit: 20,
+      reloadTime: 1000,
+      bulletHotNum: 50,
+      bulletD: 10,
+      tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
+      frequency: 100,
+      attack: 1
+    },
+  ];
 
-const updateGunPos = () => {
-  MyGunsPos.length = 0;
+  const updateBulletNum = (num) => {
+    CurBulletClip = num;
+    BulletNumDom.innerHTML = CurBulletClip;
+  };
+  const reloadBullet = (num) => {
+    // if (Reloading) return;
+    Reloading = true;
+    showTips(TipsCodes.Reloading);
+    // 弹夹用完，则更换为默认子弹类型
+    if (TempBulletClipNum <= 0) {
+      changeBulletType();
+    }
+    // 弹夹数-1
+    TempBulletClipNum--;
+    setTimeout(() => {
+      updateBulletNum(BulletClipLimit);
+      Reloading = false;
+      showTips(TipsCodes.Reloaded);
+    }, ReloadTime);
+  };
+
+  // 更换子弹类型
+  const changeBulletType = (type = PlaneDefaultBulletType) => {
+    const {
+      bulletClipLimit,
+      reloadTime,
+      bulletHotNum,
+      bulletD,
+      tempBulletClipNum,
+    } = BulletTypesInfo[type];
+    MyBulletType = type;
+    BulletClipLimit = bulletClipLimit;
+    ReloadTime = reloadTime;
+    BulletHotNum = bulletHotNum;
+    BulletD = bulletD;
+    BulletR = bulletD / 2;
+    TempBulletClipNum = tempBulletClipNum;
+    reloadBullet();
+  };
+
+  // 获取子弹对象
+  const getBulletObject = ({
+    type = PlaneDefaultBulletType,
+    originPos = { x, y },
+    isMine = true,
+  }) => {
+    const { bulletProto } = (isMine ? BulletTypesInfo : BadBulletTypesInfo)[
+      type
+    ];
+    const bullet = bulletProto.cloneNode(true);
+    let target = { x: 0, y: 0 };
+    switch (type) {
+      case 0:
+        target = {
+          x: originPos.x,
+          y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
+        };
+        break;
+      default:
+        target = {
+          x: originPos.x,
+          y: isMine ? -(WindowHeight + 20) : originPos.y + WindowHeight + 20,
+        };
+        break;
+    }
+    bullet.style.display = "block";
+    return { bullet, target, type, isMine };
+  };
+
+  // 获取Dom对象的Translate坐标
+  const getTranslatePos = (dom) => {
+    const transform = window
+      .getComputedStyle(dom)
+      .transform.replace("matrix(", "")
+      .replace(")", "")
+      .split(",");
+    return {
+      width: dom.offsetWidth,
+      height: dom.offsetHeight,
+      x: parseInt(transform.at(-2).trim()),
+      y: parseInt(transform.at(-1).trim()),
+    };
+  };
+
+  // 枪支坐标数据
+  const MyGunsPos = [];
   for (let i = 0; i < MyGunNum; i++) {
     const gunTranslate = getTranslatePos(MyGunsDom[i]);
     MyGunsPos.push({
@@ -508,397 +543,441 @@ const updateGunPos = () => {
       y: curPlaneY + gunTranslate.y + PlaneHeight,
     });
   }
-};
 
-// 移动Plane（*跟随鼠标）
-const movingPlane = (e) => {
-  curPlaneX = e.x - PlaneCoreR;
-  curPlaneY = e.y - PlaneHeight / 2;
-  MyPlane.style.transform = `translate(${curPlaneX}px, ${curPlaneY}px)`;
-  updateGunPos(); // 同步更新枪支的坐标
-  // 检测子弹是否击中Plane
-  // checkAttack();
-};
-
-// 更新机枪过热百分比
-const updateClipHot = () => {
-  const HotPersent = ((MyBullet.length * 100) / BulletHotNum).toFixed(2);
-  ClipHotDom.innerHTML = HotPersent;
-  ClipHotDom.style.color = `rgb(${(255 * HotPersent) / 100},${255 * (1 - HotPersent / 100)
-    },0)`;
-};
-
-// 单发开火（射出子弹）
-const fire = () => {
-  // 松开鼠标才能填装
-  if (CurBulletClip <= 0 && fireInterval) {
-    showTips(TipsCodes.NeedReload);
-    return;
-  }
-  if (Reloading) return;
-  // 机枪过热
-  if (MyBullet.length >= BulletHotNum) {
-    showTips(TipsCodes.TooHot);
-    return;
-  }
-  const newBullets = [];
-  const newBulletsTarget = [];
-  MyGunsPos.forEach((GunPos) => {
-    const bulletPos = { x: GunPos.x, y: GunPos.y };
-    const bulletObject = getBulletObject({
-      type: MyBulletType,
-      originPos: bulletPos,
-    });
-    const bullet = bulletObject.bullet;
-    newBulletsTarget.push(bulletObject.target);
-    bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
-    newBullets.push(bullet);
-    document.body.appendChild(bullet);
-  });
-  MyBullet.push(...newBullets);
-  updateClipHot();
-  updateBulletNum(CurBulletClip - MyGunNum);
-  requestAnimationFrame(() => {
-    newBullets.forEach((bullet, index) => {
-      bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
-    });
-    setTimeout(() => {
-      newBullets.forEach((bullet) => {
-        bullet.remove();
-        MyBullet.shift();
+  const updateGunPos = () => {
+    MyGunsPos.length = 0;
+    for (let i = 0; i < MyGunNum; i++) {
+      const gunTranslate = getTranslatePos(MyGunsDom[i]);
+      MyGunsPos.push({
+        x: curPlaneX + gunTranslate.x,
+        y: curPlaneY + gunTranslate.y + PlaneHeight,
       });
-      updateClipHot();
-    }, 1000);
-  });
-};
+    }
+  };
 
-// 持续发射子弹
-const keepFire = () => {
-  if (fireInterval) return;
-  fireInterval = setInterval(fire, BulletTypesInfo[MyBulletType].frequency);
-};
-// 停止发射子弹
-const stopFire = () => {
-  if (CurBulletClip <= 0 && !Reloading) {
-    reloadBullet();
-  }
-  if (fireInterval) {
-    clearInterval(fireInterval);
-    fireInterval = null;
-  }
-};
+  // 移动Plane（*跟随鼠标）
+  const movingPlane = (e) => {
+    curPlaneX = e.x - PlaneCoreR;
+    curPlaneY = e.y - PlaneHeight / 2;
+    MyPlane.style.transform = `translate(${curPlaneX}px, ${curPlaneY}px)`;
+    updateGunPos(); // 同步更新枪支的坐标
+    // 检测子弹是否击中Plane
+    planeBeHit();
+  };
 
+  // 更新机枪过热百分比
+  const updateClipHot = () => {
+    const HotPersent = ((MyBullet.length * 100) / BulletHotNum).toFixed(2);
+    ClipHotDom.innerHTML = HotPersent;
+    ClipHotDom.style.color = `rgb(${(255 * HotPersent) / 100},${255 * (1 - HotPersent / 100)
+      },0)`;
+  };
 
-
-// 敌机专用
-const BadPlaneMaxMoveDistY = WindowHeight * 0.8; // 动线Y轴的最大值
-const BadPlaneMinMoveDistY = 100; // 动线Y轴的最大值
-const BadPlaneMaxMoveDistX = WindowWidth; // 动线Y轴的最大值
-const BadPlaneMinMoveDistX = 0; // 动线Y轴的最大值
-
-let MaxBadPlaneNum = 5;
-const DefaultBadPlaneType = 0;
-const BadBullet = [];
-
-const BadPlaneTypesInfo = [
-  {
-    planeProto: document.getElementsByClassName(`badPlane--type1`)[0],
-    planeGuns: document
-      .getElementsByClassName(`badPlane--type1`)[0]
-      .getElementsByClassName("badPlane-gun"),
-    planeCoreD: 12,
-    planeWidth: 72,
-    planeHeight: 60,
-    flyDuration: 1000,
-  },
-];
-
-const BadBulletTypesInfo = [
-  {
-    bulletType: 0,
-    bulletProto: document.getElementsByClassName(`badBullet--type1`)[0],
-    bulletClipLimit: 20,
-    reloadTime: 1000,
-    bulletHotNum: 50,
-    bulletD: 10,
-    tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
-    frequency: 100,
-  },
-];
-
-// {planeType, planeDom, pos, gunTranslate, fireInterval, movePos, fireInfo, moveTimer}
-const BadPlanes = [];
-
-const badPlaneStopFire = (badPlaneIndex) => {
-  if (BadPlanes[badPlaneIndex].fireInterval) {
-    clearInterval(BadPlanes[badPlaneIndex].fireInterval);
-    BadPlanes[badPlaneIndex].fireInterval = null;
-  }
-};
-const badPlaneFire = (badPlaneIndex, fireIndex) => {
-  const { planeType, planeDom, gunsTranslate, gunNum } =
-    BadPlanes[badPlaneIndex];
-  const { planeHeight } = BadPlaneTypesInfo[planeType];
-  const planePos = getTranslatePos(planeDom);
-  BadPlanes.pos = planePos;
-  // 获取机枪位置
-  const GunsPos = [];
-  for (let i = 0; i < gunNum; i++) {
-    const gunTranslate = gunsTranslate[i];
-    GunsPos.push({
-      x: planePos.x + gunTranslate.x,
-      y: planePos.y + gunTranslate.y + planeHeight + gunTranslate.height,
-    });
-  }
-  // 发射子弹
-  const { bulletType } = BadPlanes[badPlaneIndex].fireInfo[fireIndex];
-  const newBullets = [];
-  const newBulletsTarget = [];
-  GunsPos.forEach((GunPos) => {
-    const bulletPos = { x: GunPos.x, y: GunPos.y };
-    const { bullet, target } = getBulletObject({
-      type: bulletType,
-      originPos: bulletPos,
-      isMine: false,
-    });
-    newBulletsTarget.push(target);
-    bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
-    newBullets.push(bullet);
-    document.body.appendChild(bullet);
-  });
-  BadBullet.push(...newBullets);
-  BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum -= gunNum;
-  setTimeout(() => {
-    newBullets.forEach((bullet, index) => {
-      bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
-    });
-    setTimeout(() => {
-      newBullets.forEach((bullet) => {
-        bullet.remove();
-        BadBullet.shift();
-      });
-    }, 1000);
-  }, 20);
-};
-
-const badPlaneKeepFire = (badPlaneIndex) => {
-  // 按频率发射子弹
-  const { fireInfo } = BadPlanes[badPlaneIndex];
-  let fireIndex = 0
-  const setFireTimer = () => {
-    const { bulletType, delay } = fireInfo[fireIndex]
-    setTimeout(() => {
-      BadPlanes[badPlaneIndex].fireInterval = setInterval(() => {
-        badPlaneFire(badPlaneIndex, fireIndex);
-        if (BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum <= 0) {
-          fireIndex++;
-          if (fireIndex < fireInfo.length) setFireTimer()
-          badPlaneStopFire(badPlaneIndex);
-        }
-      }, BadBulletTypesInfo[bulletType].frequency);
-    }, delay);
-  }
-  setFireTimer()
-};
-const moveBadPlane = (badPlaneIndex) => {
-  // movePosItem - {x, y, stayDuration}  xy不超过可视界面
-  // fireInfoItem - {bulletNum, bulletType, delay}
-  const { planeType, planeDom, movePos, fireInfo } =
-    BadPlanes[badPlaneIndex];
-  const { planeHeight, planeCoreD, flyDuration } =
-    BadPlaneTypesInfo[planeType];
-  const planeCoreR = planeCoreD / 2;
-  // 敌机移动的动线
-  let moveTimerDelay = 0;
-  let lastStayDuration = 0;
-  const _movePos = movePos.map((item) => {
-    const res = {
-      ...item,
-      moveTimerDelay: lastStayDuration + flyDuration,
-    };
-    lastStayDuration = item.stayDuration;
-    return res;
-  });
-  let movePosIndex = -1;
-  const setMoverTimer = () => {
-    movePosIndex++;
-    if (movePosIndex >= _movePos.length) {
-      clearTimeout(BadPlanes[badPlaneIndex].moveTimer);
-      BadPlanes[badPlaneIndex].moveTimer = null;
+  // 单发开火（射出子弹）
+  const fire = () => {
+    // 松开鼠标才能填装
+    if (CurBulletClip <= 0 && fireInterval) {
+      showTips(TipsCodes.NeedReload);
       return;
     }
-    const { x, y, moveTimerDelay } = _movePos[movePosIndex];
-    return setTimeout(() => {
-      planeDom.style.transform = `translate(${x - planeCoreR}px, ${y - planeHeight
-        }px)`;
-      setMoverTimer();
-    }, moveTimerDelay);
+    if (Reloading) return;
+    // 机枪过热
+    if (MyBullet.length >= BulletHotNum) {
+      showTips(TipsCodes.TooHot);
+      return;
+    }
+    const newBullets = [];
+    const newBulletsTarget = [];
+    MyGunsPos.forEach((GunPos) => {
+      const bulletPos = { x: GunPos.x, y: GunPos.y };
+      const bulletObject = getBulletObject({
+        type: MyBulletType,
+        originPos: bulletPos,
+      });
+      const bullet = bulletObject.bullet;
+      newBulletsTarget.push(bulletObject.target);
+      bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
+      newBullets.push(bullet);
+      document.body.appendChild(bullet);
+    });
+    MyBullet.push(...newBullets);
+    updateClipHot();
+    updateBulletNum(CurBulletClip - MyGunNum);
+    requestAnimationFrame(() => {
+      newBullets.forEach((bullet, index) => {
+        bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
+      });
+      setTimeout(() => {
+        newBullets.forEach((bullet) => {
+          bullet.remove();
+          MyBullet.shift();
+        });
+        updateClipHot();
+      }, 1000);
+    });
   };
-  // 经过时常为flyDuration的入场移动后，开始射击
-  BadPlanes[badPlaneIndex].moveTimer = setMoverTimer();
-  setTimeout(() => {
-    badPlaneKeepFire(badPlaneIndex);
-  }, flyDuration);
-};
-// 获取视界内的X坐标
-const getCorrectX = (x) => {
-  if (x < 0) return 0;
-  if (x > WindowWidth) return WindowWidth;
-  return x;
-};
-// 获取视界内的Y坐标
-const getCorrectY = (y) => {
-  if (y < 0) return 0;
-  if (y > WindowWidth) return WindowWidth;
-  return y;
-};
-const createBadPlanes = ({
-  planeType = DefaultBadPlaneType,
-  originSide = "front",
-  originPos = { x: 0, y: 0 },
-  movePos = [],
-  distSide = "back",
-  distPos = { x: 0, y: 0 },
-  fireInfo = [],
-}) => {
-  // front, left, right, custom(originPos)
-  // movePosItem - {x, y, stayDuration}  xy不超过可视界面
-  // fireInfoItem - {bulletNum, bulletType, delay}
-  const { planeProto, flyDuration } = BadPlaneTypesInfo[planeType];
-  const badPlane = planeProto.cloneNode(true);
-  const id = Math.random().toString(36).slice(2);
-  const planeGuns = badPlane.getElementsByClassName("badPlane-gun");
-  badPlane.setAttribute("id", id);
-  badPlane.style.display = "block";
-  badPlane.style.transitionDuration = `${flyDuration / 1000}s`;
-  const oPos = originPos;
-  switch (originSide) {
-    case "front":
-      oPos.y = -50;
-      oPos.x =
-        typeof oPos.x === "number"
-          ? getCorrectX(oPos.x)
-          : (WindowWidth + 100) * Math.random() - 50;
-      break;
-    case "left":
-      oPos.x = -50;
-      oPos.y =
-        typeof oPos.y === "number"
-          ? getCorrectY(oPos.y)
-          : (WindowHeight + 100) * Math.random() - 50;
-      break;
-    case "right":
-      oPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
-      oPos.y =
-        typeof oPos.y === "number"
-          ? getCorrectY(oPos.y)
-          : (WindowHeight + 100) * Math.random() - 50;
-      break;
-    default:
-      oPos.y = -50;
-      oPos.x =
-        typeof oPos.x === "number"
-          ? getCorrectX(oPos.x)
-          : (WindowWidth + 100) * Math.random() - 50;
-      break;
-  }
-  // 计算动线终点
-  let dPos = { ...distPos, stayDuration: 0 };
-  switch (distSide) {
-    case "back":
-      dPos.x =
-        typeof dPos.x === "number"
-          ? getCorrectX(dPos.x)
-          : (WindowWidth + 100) * Math.random() - 50;
-      dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
-      break;
-    case "left":
-      dPos.x = -50;
-      dPos.y =
-        typeof dPos.y === "number"
-          ? getCorrectY(dPos.y)
-          : (WindowHeight + 100) * Math.random() - 50;
-      break;
-    case "right":
-      dPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
-      dPos.y =
-        typeof dPos.y === "number"
-          ? getCorrectY(dPos.y)
-          : (WindowHeight + 100) * Math.random() - 50;
-      break;
-    default:
-      dPos.x =
-        typeof dPos.x === "number"
-          ? getCorrectX(dPos.x)
-          : (WindowWidth + 100) * Math.random() - 50;
-      dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
-      break;
-  }
-  const badPlaneIndex = BadPlanes.length;
-  document.body.append(badPlane);
-  BadPlanes.push({
-    id,
-    planeType,
-    planeDom: badPlane,
-    gunNum: planeGuns.length,
-    gunsTranslate: Array.from(planeGuns).map((gunDom) =>
-      getTranslatePos(gunDom)
-    ),
-    pos: oPos,
-    fireInterval: null,
-    moveTimer: null,
-    movePos: [...movePos.map(item => {
-      const { x, y } = item
-      return {
-        ...item,
-        x: Math.max(Math.min(BadPlaneMaxMoveDistX, x), BadPlaneMinMoveDistX),
-        y: Math.max(Math.min(BadPlaneMaxMoveDistY, y), BadPlaneMinMoveDistY)
-      }
-    }), dPos],
-    fireInfo,
-  });
-  moveBadPlane(badPlaneIndex);
-};
-createBadPlanes({
-  planeType: DefaultBadPlaneType,
-  originSide: "front",
-  originPos: { x: -40, y: 0 },
-  movePos: [
-    { x: 50, y: 100, stayDuration: 2000 },
-    { x: 100, y: 100, stayDuration: 2000 },
-    { x: 1200, y: 1200, stayDuration: 2000 },
-    { x: 300, y: 200, stayDuration: 2000 },
-  ],
-  distSide: "back",
-  distPos: { x: 60, y: 0 },
-  fireInfo: [
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-    { bulletNum: 10, bulletType: 0, delay: 500 },
-  ],
-});
 
-// 开始监听鼠标移动坐标
-document.body.addEventListener("mousemove", movingPlane);
-// 鼠标按下开始持续射击
-document.body.addEventListener("mousedown", keepFire);
-// 鼠标松开停止射击
-document.body.addEventListener("mouseup", stopFire);
-  </script>
+  // 持续发射子弹
+  const keepFire = () => {
+    if (fireInterval) return;
+    fireInterval = setInterval(fire, BulletTypesInfo[MyBulletType].frequency);
+  };
+  // 停止发射子弹
+  const stopFire = () => {
+    if (CurBulletClip <= 0 && !Reloading) {
+      reloadBullet();
+    }
+    if (fireInterval) {
+      clearInterval(fireInterval);
+      fireInterval = null;
+    }
+  };
+
+  // 敌机专用
+  const BadPlaneMaxMoveDistY = WindowHeight * 0.8; // 动线Y轴的最大值
+  const BadPlaneMinMoveDistY = 100; // 动线Y轴的最大值
+  const BadPlaneMaxMoveDistX = WindowWidth; // 动线Y轴的最大值
+  const BadPlaneMinMoveDistX = 0; // 动线Y轴的最大值
+
+  let MaxBadPlaneNum = 5;
+  const DefaultBadPlaneType = 0;
+  const BadBullet = [];
+
+  const BadPlaneTypesInfo = [
+    {
+      planeProto: document.getElementsByClassName(`badPlane--type1`)[0],
+      planeGuns: document
+        .getElementsByClassName(`badPlane--type1`)[0]
+        .getElementsByClassName("badPlane-gun"),
+      planeCoreD: 12,
+      planeWidth: 72,
+      planeHeight: 60,
+      flyDuration: 1000,
+      maxHealth: 10
+    },
+  ];
+
+  const BadBulletTypesInfo = [
+    {
+      bulletType: 0,
+      bulletProto: document.getElementsByClassName(`badBullet--type1`)[0],
+      bulletClipLimit: 20,
+      reloadTime: 1000,
+      bulletHotNum: 50,
+      bulletD: 10,
+      tempBulletClipNum: MAXNUM, // 可用弹夹数，用完即弃
+      frequency: 100,
+      attack: 1,
+      crashType: 'across' // rebound, disapear, across
+    },
+  ];
+
+  // {planeType, planeDom, pos, gunTranslate, fireInterval, movePos, fireInfo, moveTimer}
+  const BadPlanes = [];
+
+  const badPlaneStopFire = (badPlaneIndex) => {
+    if (BadPlanes[badPlaneIndex].fireInterval) {
+      clearInterval(BadPlanes[badPlaneIndex].fireInterval);
+      BadPlanes[badPlaneIndex].fireInterval = null;
+    }
+  };
+  const badPlaneFire = (badPlaneIndex, fireIndex) => {
+    const { planeType, planeDom, gunsTranslate, gunNum } =
+      BadPlanes[badPlaneIndex];
+    const { planeHeight } = BadPlaneTypesInfo[planeType];
+    const planePos = getTranslatePos(planeDom);
+    BadPlanes.pos = planePos;
+    // 获取机枪位置
+    const GunsPos = [];
+    for (let i = 0; i < gunNum; i++) {
+      const gunTranslate = gunsTranslate[i];
+      GunsPos.push({
+        x: planePos.x + gunTranslate.x,
+        y: planePos.y + gunTranslate.y + planeHeight + gunTranslate.height,
+      });
+    }
+    // 发射子弹
+    const { bulletType } = BadPlanes[badPlaneIndex].fireInfo[fireIndex];
+    const newBullets = [];
+    const newBulletsTarget = [];
+    GunsPos.forEach((GunPos) => {
+      const bulletPos = { x: GunPos.x, y: GunPos.y };
+      const bulletObject = getBulletObject({
+        type: bulletType,
+        originPos: bulletPos,
+        isMine: false,
+      });
+      const { bullet, target } = bulletObject
+      newBulletsTarget.push(target);
+      bullet.style.transform = `translate(${bulletPos.x}px, ${bulletPos.y}px)`;
+      newBullets.push({ ...bulletObject });
+      document.body.appendChild(bullet);
+    });
+    BadBullet.push(...newBullets);
+    BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum -= gunNum;
+    setTimeout(() => {
+      newBullets.forEach(({bullet}, index) => {
+        bullet.style.transform = `translate(${newBulletsTarget[index].x}px, ${newBulletsTarget[index].y}px)`;
+      });
+      setTimeout(() => {
+        newBullets.forEach(({bullet}) => {
+          bullet.remove();
+          BadBullet.shift();
+        });
+      }, 1000);
+    }, 20);
+  };
+
+  const badPlaneKeepFire = (badPlaneIndex) => {
+    // 按频率发射子弹
+    const { fireInfo } = BadPlanes[badPlaneIndex];
+    let fireIndex = 0
+    const setFireTimer = () => {
+      const { bulletType, delay } = fireInfo[fireIndex]
+      setTimeout(() => {
+        BadPlanes[badPlaneIndex].fireInterval = setInterval(() => {
+          badPlaneFire(badPlaneIndex, fireIndex);
+          if (BadPlanes[badPlaneIndex].fireInfo[fireIndex].bulletNum <= 0) {
+            fireIndex++;
+            if (fireIndex < fireInfo.length) setFireTimer()
+            badPlaneStopFire(badPlaneIndex);
+          }
+        }, BadBulletTypesInfo[bulletType].frequency);
+      }, delay);
+    }
+    setFireTimer()
+  };
+  const moveBadPlane = (badPlaneIndex) => {
+    // movePosItem - {x, y, stayDuration}  xy不超过可视界面
+    // fireInfoItem - {bulletNum, bulletType, delay}
+    const { planeType, planeDom, movePos, fireInfo } =
+      BadPlanes[badPlaneIndex];
+    const { planeHeight, planeCoreD, flyDuration } =
+      BadPlaneTypesInfo[planeType];
+    const planeCoreR = planeCoreD / 2;
+    // 敌机移动的动线
+    let moveTimerDelay = 0;
+    let lastStayDuration = 0;
+    const _movePos = movePos.map((item) => {
+      const res = {
+        ...item,
+        moveTimerDelay: lastStayDuration + flyDuration,
+      };
+      lastStayDuration = item.stayDuration;
+      return res;
+    });
+    let movePosIndex = -1;
+    const setMoverTimer = () => {
+      movePosIndex++;
+      if (movePosIndex >= _movePos.length) {
+        clearTimeout(BadPlanes[badPlaneIndex].moveTimer);
+        BadPlanes[badPlaneIndex].moveTimer = null;
+        return;
+      }
+      const { x, y, moveTimerDelay } = _movePos[movePosIndex];
+      return setTimeout(() => {
+        planeDom.style.transform = `translate(${x - planeCoreR}px, ${y - planeHeight
+          }px)`;
+        setMoverTimer();
+      }, moveTimerDelay);
+    };
+    // 经过时常为flyDuration的入场移动后，开始射击
+    BadPlanes[badPlaneIndex].moveTimer = setMoverTimer();
+    setTimeout(() => {
+      badPlaneKeepFire(badPlaneIndex);
+    }, flyDuration);
+  };
+  // 获取视界内的X坐标
+  const getCorrectX = (x) => {
+    if (x < 0) return 0;
+    if (x > WindowWidth) return WindowWidth;
+    return x;
+  };
+  // 获取视界内的Y坐标
+  const getCorrectY = (y) => {
+    if (y < 0) return 0;
+    if (y > WindowWidth) return WindowWidth;
+    return y;
+  };
+  const createBadPlanes = ({
+    planeType = DefaultBadPlaneType,
+    originSide = "front",
+    originPos = { x: 0, y: 0 },
+    movePos = [],
+    distSide = "back",
+    distPos = { x: 0, y: 0 },
+    fireInfo = [],
+  }) => {
+    // front, left, right, custom(originPos)
+    // movePosItem - {x, y, stayDuration}  xy不超过可视界面
+    // fireInfoItem - {bulletNum, bulletType, delay}
+    const { planeProto, flyDuration, maxHealth } = BadPlaneTypesInfo[planeType];
+    const badPlane = planeProto.cloneNode(true);
+    const id = Math.random().toString(36).slice(2);
+    const planeGuns = badPlane.getElementsByClassName("badPlane-gun");
+    badPlane.setAttribute("id", id);
+    badPlane.style.display = "block";
+    badPlane.style.transitionDuration = `${flyDuration / 1000}s`;
+    const oPos = originPos;
+    switch (originSide) {
+      case "front":
+        oPos.y = -50;
+        oPos.x =
+          typeof oPos.x === "number"
+            ? getCorrectX(oPos.x)
+            : (WindowWidth + 100) * Math.random() - 50;
+        break;
+      case "left":
+        oPos.x = -50;
+        oPos.y =
+          typeof oPos.y === "number"
+            ? getCorrectY(oPos.y)
+            : (WindowHeight + 100) * Math.random() - 50;
+        break;
+      case "right":
+        oPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
+        oPos.y =
+          typeof oPos.y === "number"
+            ? getCorrectY(oPos.y)
+            : (WindowHeight + 100) * Math.random() - 50;
+        break;
+      default:
+        oPos.y = -50;
+        oPos.x =
+          typeof oPos.x === "number"
+            ? getCorrectX(oPos.x)
+            : (WindowWidth + 100) * Math.random() - 50;
+        break;
+    }
+    // 计算动线终点
+    let dPos = { ...distPos, stayDuration: 0 };
+    switch (distSide) {
+      case "back":
+        dPos.x =
+          typeof dPos.x === "number"
+            ? getCorrectX(dPos.x)
+            : (WindowWidth + 100) * Math.random() - 50;
+        dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
+        break;
+      case "left":
+        dPos.x = -50;
+        dPos.y =
+          typeof dPos.y === "number"
+            ? getCorrectY(dPos.y)
+            : (WindowHeight + 100) * Math.random() - 50;
+        break;
+      case "right":
+        dPos.x = WindowWidth + BadPlaneTypesInfo[planeType].planeWidth + 50;
+        dPos.y =
+          typeof dPos.y === "number"
+            ? getCorrectY(dPos.y)
+            : (WindowHeight + 100) * Math.random() - 50;
+        break;
+      default:
+        dPos.x =
+          typeof dPos.x === "number"
+            ? getCorrectX(dPos.x)
+            : (WindowWidth + 100) * Math.random() - 50;
+        dPos.y = WindowHeight + BadPlaneTypesInfo[planeType].planeHeight + 50;
+        break;
+    }
+    const badPlaneIndex = BadPlanes.length;
+    document.body.append(badPlane);
+    BadPlanes.push({
+      id,
+      planeType,
+      planeDom: badPlane,
+      gunNum: planeGuns.length,
+      gunsTranslate: Array.from(planeGuns).map((gunDom) =>
+        getTranslatePos(gunDom)
+      ),
+      pos: oPos,
+      fireInterval: null,
+      moveTimer: null,
+      movePos: [...movePos.map(item => {
+        const { x, y } = item
+        return {
+          ...item,
+          x: Math.max(Math.min(BadPlaneMaxMoveDistX, x), BadPlaneMinMoveDistX),
+          y: Math.max(Math.min(BadPlaneMaxMoveDistY, y), BadPlaneMinMoveDistY)
+        }
+      }), dPos],
+      fireInfo,
+      health: maxHealth
+    });
+    moveBadPlane(badPlaneIndex);
+  };
+
+  // 碰撞检测
+  // 扣血
+  const planeLoseHeath = (val) => {
+    PlaneHealth -= val
+    HealthNum.innerHTML = PlaneHealth;
+  }
+  // Plane被击中
+  const planeBeHit = () => {
+    BadBullet.forEach(bulletInfo => {
+      const { bullet, type, isMine } = bulletInfo
+      const { attack } = BadBulletTypesInfo[type]
+      const starTransform = window
+        .getComputedStyle(bullet)
+        .transform.replace("matrix(", "")
+        .replace(")", "")
+        .split(",");
+      let left = parseInt(starTransform.at(-2).trim());
+      let top = parseInt(starTransform.at(-1).trim());
+      const dist = Math.abs(
+        Math.sqrt(Math.pow(curPlaneX - left, 2) + Math.pow(curPlaneY - top, 2))
+      );
+      if (dist < PlaneCoreR) {
+        showTips(TipsCodes.BeHit)
+        console.log(attack)
+        planeLoseHeath(attack)
+      }
+    })
+  }
+
+  createBadPlanes({
+    planeType: DefaultBadPlaneType,
+    originSide: "front",
+    originPos: { x: -40, y: 0 },
+    movePos: [
+      { x: 50, y: 100, stayDuration: 2000 },
+      { x: 100, y: 100, stayDuration: 2000 },
+      { x: 1200, y: 1200, stayDuration: 2000 },
+      { x: 300, y: 200, stayDuration: 2000 },
+    ],
+    distSide: "back",
+    distPos: { x: 60, y: 0 },
+    fireInfo: [
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+      { bulletNum: 10, bulletType: 0, delay: 500 },
+    ],
+  });
+
+  // 开始监听鼠标移动坐标
+  document.body.addEventListener("mousemove", movingPlane);
+  // 鼠标按下开始持续射击
+  document.body.addEventListener("mousedown", keepFire);
+  // 鼠标松开停止射击
+  document.body.addEventListener("mouseup", stopFire);
+</script>
+
 </html>
