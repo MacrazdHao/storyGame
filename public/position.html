@@ -39,20 +39,38 @@
     transition: 0.3s all;
   }
 
-  .crashTips {
-    color: #f00;
-    position: fixed;
-    top: -60px;
-    left: 50%;
-    width: fit-content;
-    height: fit-content;
-    /* translate: calc(-50%, -50%); */
-    font-size: 30px;
-    font-weight: bold;
-    white-space: nowrap;
+  .tips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: transform, opactiy;
+    opacity: 0;
   }
 
-  .blockRow {
+  .tips-text {
+    font-size: 20px;
+  }
+
+  @keyframes showTips {
+    0% {
+      opacity: 0;
+      transform: translate(calc(50vw - 50%), calc(56vh - 50%));
+    }
+
+    30%,
+    70% {
+      opacity: 1;
+      transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(calc(50vw - 50%), calc(44vh - 50%));
+    }
+  }
+
+  .blockColumn {
     height: 100%;
     width: fit-content;
     display: flex;
@@ -61,74 +79,83 @@
 </style>
 
 <body>
-  <div class="blockRow" style="display: none;"></div>
+  <div class="blockColumn" style="display: none;"></div>
   <div class="block" style="display: none"></div>
   <p class="crashTips"></p>
 </body>
 <script>
-  const crashTipsDom = document.getElementsByClassName('crashTips')[0]
-  let WindowWidth = document.body.offsetWidth
-  let WindowHeight = document.body.offsetHeight
-  let WindowArea = WindowWidth * WindowHeight
-  let WindowProportion = WindowWidth / WindowHeight
-  const ScreenScale = 1
-  const BlockRowProto = document.getElementsByClassName("blockRow")[0]
-  const ScreenDom = document.getElementsByTagName("body")[0]
-  const ScreenRect = ScreenDom.getBoundingClientRect()
-  const BlockProto = document.getElementsByClassName("block")[0]
+  let WindowWidth = window.innerWidth // 屏幕宽度
+  let WindowHeight = window.innerHeight // 屏幕高度
+  let WindowArea = WindowWidth * WindowHeight // 屏幕面积
+  const ScreenScale = 1 // 屏幕缩放比
+  const BlockColProto = document.getElementsByClassName("blockColumn")[0] // 像素列原型Dom
+  const ScreenDom = document.getElementsByTagName("body")[0] // 容器Dom
+  const ScreenRect = ScreenDom.getBoundingClientRect() // 容器rect数据
+  const BlockProto = document.getElementsByClassName("block")[0] // 像素块原型Dom
   // {id, blockDom, originColor, objectsId, objectColors}
-  let Blocks = {}
-  const BlockNum = 10000 // 只是大概，若有剩余则会向下取整
-  let PosProportion = Math.sqrt(BlockNum / WindowArea)
-  let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
-  let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
-  let RealPosProportion = Math.sqrt(ScreenRowBlockNum * ScreenColumnBlockNum / WindowArea)
-  let BlockWidth = Math.floor(WindowWidth / ScreenRowBlockNum)
-  let BlockHeight = Math.floor(WindowHeight / ScreenColumnBlockNum)
-
+  let Blocks = {} // 像素块实例Map
+  const BlockNum = 10000 // 像素块大致数量（只是大概，根据该值转换出的容器宽高比而得出的横向纵向的像素块数量，不一定为整数，此时会向下取整，保证像素块数量为整数，而多出来不足一个像素块的小数位，则会将其多余的宽高平均到其余每一个像素块中，便于恰好完整覆盖整个容器，因此 最终像素块数量 ≤ BlcokNum）
+  let PosProportion = Math.sqrt(BlockNum / WindowArea) // 容器宽高转换比例
+  let ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth) // 容器横向像素块数量
+  let ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight) // 容器纵向像素块数量
+  let BlockWidth = Math.floor(WindowWidth / ScreenRowBlockNum) // 像素块宽度
+  let BlockHeight = Math.floor(WindowHeight / ScreenColumnBlockNum) // 像素块高度
+  // 相对window的容器内最大和最小X和Y坐标值
   let WindowForScreenMinX = ScreenRect.left
   let WindowForScreenMinY = ScreenRect.top
   let WindowForScreenMaxX = ScreenRect.left + BlockWidth * ScreenRowBlockNum
   let WindowForScreenMaxY = ScreenRect.top + BlockHeight * ScreenColumnBlockNum
-
-  const BlackColor = '#fff'
-  const WhiteColor = '#fff'
-  const MouseObjectName = 'mouse'
-  let MouseObjectId = ''
+  // 为了方便观测设置像素块的颜色
+  const BlackColor = 'rgb(0, 0, 0)'
+  const WhiteColor = 'rgb(255, 255, 255)'
+  const MouseObjectName = 'mouse' // 匹配鼠标的物体对象名
+  let MouseObjectId = '' // 匹配鼠标的物体实例Id
+  // 物体原型
   const ObjectsProto = {
     mouse: {
-      zIndex: 100,
-      centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
-      coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
-      color: '#f00',
+      zIndex: 100, // 物体层级
+      centerRelativePos: { x: 2, y: 2 }, // 坐标从0起数，相对物体本身的宫格内的坐标
+      coverRelativeRowPosStr: [
+        '01010',
+        '11111',
+        '11111',
+        '01110',
+        '00100'],  // 该物体的宫格二进制表示，1表示在占据的该宫格的像素块，0表示未占据
+      color: 'rgb(255, 0, 0)', // 为方便和突出算法机制展示，暂时仅支持单色
+      // 物体碰撞回调
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
       },
     },
     test1: {
       zIndex: 99,
-      centerRelativePos: { x: 1, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
-      coverRelativeRowPosStr: ['01010', '11111', '01110', '00100'],  // 5*5宫格
-      color: '#00f',
+      centerRelativePos: { x: 2, y: 2 }, // 坐标从0起数，相对图形本身的宫格内的坐标
+      coverRelativeRowPosStr: ['01010', '11111', '11111', '01110', '00100'],  // 5*5宫格
+      color: 'rgb(0, 0, 255)',
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
       },
     }
   }
-  const Objects = {}
-  let ObjectsLightMap = {}
+  const Objects = {} // 物体实例Map
 
-  // 构建物体对象
-  const createObject = (objName) => {
+  // 构建物体实例对象
+  const createObject = (objName, crashCb) => {
+    // 生成物体实例唯一ID
     const id = `${objName}_${Math.random().toString(36).slice(2)}`
     Objects[id] = {
       ...JSON.parse(JSON.stringify(ObjectsProto[objName])),
       id,
-      currentCenterPosKey: '',
+      currentCenterPosKey: '', // 
       lightingPos: [], // ["x_y", ...]
       crashObjects: {},
     }
+    // 碰撞回调函数( Function.call用于将this指向变更，此处变为物体实例对象本身 )
     crashCallback = (crashObjKey) => {
+      if (crashCb) {
+        crashCb.call(Objects[id], crashObjKey)
+        return
+      }
       ObjectsProto[objName].crashCallback.call(Objects[id], crashObjKey)
     }
     Objects[id].crashCallback = crashCallback
@@ -137,10 +164,11 @@
   // 从coverRelativeRowPosStr获取相对图形中心centerRelativePos的相对坐标
   const getObjectRelativePos = (objId) => {
     const { centerRelativePos, coverRelativeRowPosStr } = Objects[objId]
-    const centerX = centerRelativePos.x
-    const centerY = centerRelativePos.y
-    const lightPos = []
-    const centerPos = { x: 0, y: 0 }
+    const centerX = centerRelativePos.x // 相对物体宫格内的X坐标
+    const centerY = centerRelativePos.y // 相对物体宫格内的Y坐标
+    const lightPos = [] // 用于存储该物体所占的像素块相对screen的坐标
+    const centerPos = { x: 0, y: 0 }  // 用于存储该物体中心点所占的像素块相对screen的坐标
+    // 计算获取lightPos的所有坐标值
     for (let r = 0; r < coverRelativeRowPosStr.length; r++) {
       const col = coverRelativeRowPosStr[r].split('')
       for (let c = 0; c < col.length; c++) {
@@ -157,6 +185,7 @@
     const { originColor, objectsId } = Blocks[pos]
     let bcolor = originColor
     let zi = 0
+    // 像素块使用哪个物体的渲染颜色，取决于占有该像素块的物体的最大层级
     for (let okey in objectsId) {
       if (objectsId[okey]) {
         const { zIndex, color } = Objects[okey]
@@ -171,10 +200,13 @@
   // 清除物体移动后已失去的像素块的颜色
   const clearObjectLightingPos = (objKey, ignorePos = {}) => {
     // ignorePos为可忽略的点集合，减少需要处理的像素块，提高像素块处理的精确度
+    // 遍历当前物体实例已占有的像素块，并过滤掉已经不再占有的像素块坐标key
     Objects[objKey].lightingPos = Objects[objKey].lightingPos.filter(pos => {
       if (ignorePos[pos]) return true
       let { blockDom, originColor, objectColors } = Blocks[pos]
+      // 在像素块的占有者列表中，将该物体实例置false
       Blocks[pos].objectsId[objKey] = false
+      // 重新渲染像素块颜色
       blockDom.style.backgroundColor = getBlockColor(pos)
       return false
     })
@@ -182,86 +214,110 @@
   // 基于单个像素块的碰撞检测
   const crashCheck = (objKey, pos) => {
     const { objectsId } = Blocks[pos]
-    const crashObjectsKey = []
+    const crashObjectsKey = [] // 用于记录被当前物体实例碰撞的物体实例列表
     // 遍历占有当前像素格的物体标记
     for (let okey in objectsId) {
       // 跳过自身
       if (okey === objKey) continue
-      // 当前像素格内的该物体标记为true
+      // 当前像素格内的该物体标记同为true，则表示当前物体与该物体发生了碰撞
       if (objectsId[okey]) {
-        // hasCrash为true，表示拥有碰撞物体
-        hasCrash = true
         crashObjectsKey.push(okey)
         continue
       }
-      // 当前物体未碰撞
-      // Objects[objKey].crashObjects[okey] = false
     }
     return crashObjectsKey
   }
   // 渲染物体所占的像素块
   const lightObjectBlock = (objKey, pos) => {
-    const { color, zIndex, currentCenterPosKey, centerRelativePos } = Objects[objKey]
+    const { color, zIndex, currentCenterPosKey, centerRelativePos, crashObjects, crashCallback } = Objects[objKey]
+    // 转化当前物体的宫格二位数据
     const lightPos = getObjectRelativePos(objKey)
+    // 当前物体实例中心点相对screen的坐标Key
     const centerPosKey = `${pos.x - centerRelativePos.x}_${pos.y - centerRelativePos.y}`
+    // 中心点未变化，忽略本次处理
     if (currentCenterPosKey === centerPosKey) return
+    // 更新当前物体实例的中心点相对screen的坐标
     Objects[objKey].currentCenterPosKey = centerPosKey
-    const clearIgnorePos = {}
-    const crashObjectsKey = new Set()
+    const clearIgnorePos = {} // 用于记录新的物体实例坐标Map，并作为clearObjectLightingPos中无需处理的坐标过滤Map
+    const crashObjectsKey = new Set() // 整个物体实例所占的所有像素块，仅有一个像素块能够触发碰撞反馈，即只触发一次碰撞检测
     // 点亮像素块，遍历每个像素块的碰撞情况
     lightPos.forEach(rpos => {
       const lightX = pos.x + rpos.x
       const lightY = pos.y + rpos.y
       const blockPos = `${lightX}_${lightY}`
+      // 当前screen坐标在screen可视范围（存在该像素块）
       if (Blocks[blockPos]) {
         const { blockDom } = Blocks[blockPos]
+        // 像素块占有者列表中，将该物体实例置为true
         Blocks[blockPos].objectsId[objKey] = true
-        blockDom.style.backgroundColor = getBlockColor(blockPos)
+        // 当前获取像素块应该展示的颜色
+        const newColor = getBlockColor(blockPos)
+        // 若新颜色与旧颜色一致，则无需渲染，减少渲染性能损耗
+        if (newColor !== blockDom.style.backgroundColor) {
+          blockDom.style.backgroundColor = newColor
+        }
+        // 将新占有的坐标Key记录进物体实例中
         Objects[objKey].lightingPos.push(blockPos)
         clearIgnorePos[blockPos] = true
-        crashCheck(objKey, blockPos).forEach(item => crashObjectsKey.add(item))
+        // *碰撞检测
+        crashCheck(objKey, blockPos).forEach(okey => {
+          // 已经触发过碰撞检测的，则返回（已碰撞的前提下再次发生碰撞，仅触发一次碰撞回调）
+          // 物体实例当次的新坐标已触发过碰撞回调
+          if (crashObjectsKey.has(okey)) return
+          // 物体实例当次的新坐标未触发过碰撞回调，且为新碰撞的物体实例，则应执行碰撞回调
+          if (!crashObjects[okey]) {
+            // 当前物体实例的碰撞回调
+            crashCallback(okey)
+            // 被碰撞物体实例的碰撞回调
+            Objects[okey].crashCallback(objKey)
+            // 两个物体实例中，互相将各自碰撞的物体实例置为true
+            Objects[objKey].crashObjects[okey] = true
+            Objects[okey].crashObjects[objKey] = true
+          }
+          // 将当前被碰撞物体实例ID放入crashObjectsKey，表示当次碰撞已触发过碰撞
+          crashObjectsKey.add(okey)
+        })
       }
     })
+    // 重新渲染该物体实例已不再占有的像素块
     clearObjectLightingPos(objKey, clearIgnorePos)
-    const { crashObjects, crashCallback } = Objects[objKey]
-    crashObjectsKey.forEach(okey => {
-      if (!crashObjects[okey]) {
-        const _crashCallback = Objects[okey].crashCallback
-        crashCallback(okey)
-        _crashCallback(objKey)
-      }
-      Objects[objKey].crashObjects[okey] = true
-    })
+    // 当次位移导致已脱离碰撞状态的被碰撞物体，两者相互把对方的物体实例置为false
     for (let okey in Objects[objKey].crashObjects) {
-      Objects[objKey].crashObjects[okey] = crashObjectsKey.has(okey)
+      if (!crashObjectsKey.has(okey)) {
+        Objects[objKey].crashObjects[okey] = false
+        Objects[okey].crashObjects[objKey] = false
+      }
     }
   }
   // 清空Screen
   const clearScreen = () => {
+    // 移除所有像素块Dom
     for (let key in Blocks) {
       Blocks[key].blockDom.remove()
     }
+    // 清空像素块实例对象
     Blocks = {}
   }
   // 创建screen
   const createScreen = () => {
+    // 清除原来的screen
     clearScreen()
-    WindowWidth = document.body.offsetWidth
-    WindowHeight = document.body.offsetHeight
+    // 重新获取基础数据
+    WindowWidth = window.innerWidth
+    WindowHeight = window.innerHeight
     WindowArea = WindowWidth * WindowHeight
-    WindowProportion = WindowWidth / WindowHeight
     PosProportion = Math.sqrt(BlockNum / WindowArea)
     ScreenRowBlockNum = Math.floor(PosProportion * WindowWidth)
     ScreenColumnBlockNum = Math.floor(PosProportion * WindowHeight)
-    RealPosProportion = Math.sqrt(ScreenRowBlockNum * ScreenColumnBlockNum / WindowArea)
     BlockWidth = (WindowWidth / ScreenRowBlockNum)
     BlockHeight = (WindowHeight / ScreenColumnBlockNum)
     // console.log(WindowWidth, WindowHeight)
     // console.log(ScreenColumnBlockNum, ScreenRowBlockNum)
     // console.log(BlockWidth, BlockHeight)
     // console.log(BlockWidth*ScreenRowBlockNum, BlockHeight*ScreenColumnBlockNum)
+    // 构建像素块实例对象
     for (let r = 0; r < ScreenRowBlockNum; r++) {
-      const colDom = BlockRowProto.cloneNode(true)
+      const colDom = BlockColProto.cloneNode(true)
       colDom.style.display = "flex"
       for (let c = 0; c < ScreenColumnBlockNum; c++) {
         const BlockItem = BlockProto.cloneNode(true)
@@ -269,6 +325,7 @@
         BlockItem.style.height = `${BlockHeight}px`
         BlockItem.style.display = `block`
         let originColor = ''
+        // 为方便观测，为像素块交错渲染黑白两色
         if (c % 2) {
           if (r % 2) originColor = BlackColor
           else originColor = WhiteColor
@@ -283,13 +340,9 @@
           id,
           blockDom: BlockItem,
           originColor,
-          objectsId: { ...ObjectsLightMap }
+          objectsId: {}
         }
         colDom.appendChild(BlockItem)
-
-        // BlockItem.style.top = `${c * BlockWidth}px`
-        // BlockItem.style.left = `${r * BlockHeight}px`
-        // document.body.appendChild(BlockItem)
       }
       document.body.appendChild(colDom)
     }
@@ -299,23 +352,28 @@
     WindowForScreenMaxY = ScreenRect.top + BlockHeight * ScreenColumnBlockNum
   }
 
-  // window坐标转换为screen坐标
+  // window坐标与screen坐标的相互转换
   const translatePos = (pos, reverse = false) => {
+    // screen => window (由于小数误差问题，暂时并未能准确计算)
     if (reverse) {
       return { x: (pos.x + 1) * (BlockWidth * ScreenScale) + ScreenRect.left, y: (pos.y + 1) * (BlockHeight * ScreenScale) + ScreenRect.top }
     }
+    // window => screen
     return { x: Math.ceil((pos.x - ScreenRect.left) / (BlockWidth * ScreenScale)) - 1, y: Math.ceil((pos.y - ScreenRect.top) / (BlockHeight * ScreenScale)) - 1 }
   }
   // 绘制物体
-  const drawObject = (objectKey, e) => {
-    const { x, y } = translatePos(e)
+  const drawObject = (objectKey, originPos) => {
+    // 将相对window的坐标，转换为相对screen的坐标
+    const { x, y } = translatePos(originPos)
     const pos = `${x}_${y}`
-    const block = Blocks[pos]
-    if (!block) return
-    const { id, centerRelativePos, coverRelativeRowPosStr, color } = Objects[MouseObjectId]
-    lightObjectBlock(objectKey, { x, y })
+    // 当前screen坐标在screen可视范围（存在该像素块）
+    if (Blocks[pos]) {
+      // 渲染物体实例
+      lightObjectBlock(objectKey, { x, y })
+    }
+
   }
-  // 获取一个Screen范围内的相对Screen的坐标
+  // 获取一个Screen范围内的相对Screen的随机坐标
   const getRandomPos = () => {
     return { x: WindowForScreenMinX + Math.random() * (WindowForScreenMaxX - WindowForScreenMinX), y: WindowForScreenMinY + Math.random() * (WindowForScreenMaxY - WindowForScreenMinY) }
   }
@@ -325,39 +383,46 @@
     const arr = posKey.split('_')
     return { x: parseInt(arr[0]), y: parseInt(arr[1]) }
   }
-  // 获取物体中心的相对Screen的坐标
+  // 获取物体实例中心的相对Screen的坐标
   const getObjectCenterPos = (objKey) => {
     return getPosFromPosKey(Objects[objKey].currentCenterPosKey)
   }
 
-  // 八个方向的相对移动单位坐标
+  // 八个方向的相对移动单位坐标 (由于小数误差问题，暂时并未能准确设置)
   // ↖ ↑ ↗ ← → ↙ ↓ ↘
   const moveSides = [{ x: -0.5, y: 0.5 }, { x: 0.5, y: 0.5 }, { x: 1.5, y: 0.5 }, { x: -0.5, y: 1.5 }, { x: 1.5, y: 1.5 }, { x: -0.5, y: 2.5 }, { x: 0.5, y: 2.5 }, { x: 2, y: 2.5 }]
   // 获取一个随机方向的相对Window的移动坐标
   const getOneRandomSidePos = (objKey) => {
+    // 获取随机移动方向
     const randomSide = moveSides[Math.floor(Math.random() * moveSides.length)]
-    // const randomSide = moveSides[3]
+    // // 计算该物体实例的中心点在该方向相对screen的新坐标
     let { x, y } = getObjectCenterPos(objKey)
+    // 计算该方向相对window的新坐标
     return translatePos({ x: x + randomSide.x, y: y + randomSide.y }, true)
   }
   // 物体随机移动一个方向的单位坐标
   const randomMoveObject = (objKey) => {
+    // 定时移动
     setInterval(() => {
       const e = getOneRandomSidePos(objKey)
-      console.log(getObjectCenterPos(objKey), e)
       drawObject(objKey, e)
-    }, 1000)
+    }, 500)
   }
 
+  // 创建screen
   createScreen()
+  // 创建鼠标物体实例并记录ID
   MouseObjectId = createObject(MouseObjectName)
-  // 普通物体创建与移动
+  // 创建Test1物体实例并记录ID
   const test1 = createObject('test1')
+  // 渲染Test1物体实例
   drawObject(test1, getRandomPos())
+  // 随机移动Test1物体实例
   randomMoveObject(test1)
-
-  window.addEventListener('resize', createScreen)
+  // 鼠标物体实例跟随鼠标移动并渲染
   window.addEventListener('mousemove', (e) => drawObject(MouseObjectId, e))
+  // 监听window尺寸变化，同步更新构建Screen
+  window.addEventListener('resize', createScreen)
 </script>
 
 </html>
