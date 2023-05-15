@@ -46,6 +46,7 @@
     pointer-events: none;
     will-change: transform, opactiy;
     opacity: 0;
+    background-color: #000;
   }
 
   .tips-text {
@@ -81,9 +82,25 @@
 <body>
   <div class="blockColumn" style="display: none;"></div>
   <div class="block" style="display: none"></div>
-  <p class="crashTips"></p>
+  <div class="tips" style="display: none">
+    <p class="tips-text"></p>
+  </div>
 </body>
 <script>
+  const TipsDom = document.getElementsByClassName('tips')[0] // 提示语Dom
+  const showTips = ({ text, duration = 2000, color = 'rgb(255, 0, 255)' }) => {
+    const Tips = TipsDom.cloneNode(true);
+    const TipsText = Tips.getElementsByClassName("tips-text")[0];
+    Tips.style.display = "block";
+    Tips.style.animation = `${duration / 1000}s showTips linear 1`;
+    TipsText.innerHTML = text;
+    TipsText.style.color = color;
+    document.body.appendChild(Tips);
+    setTimeout(() => {
+      Tips.remove();
+    }, duration);
+  };
+
   let WindowWidth = window.innerWidth // 屏幕宽度
   let WindowHeight = window.innerHeight // 屏幕高度
   let WindowArea = WindowWidth * WindowHeight // 屏幕面积
@@ -125,6 +142,7 @@
       // 物体碰撞回调
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
+        showTips({text: `${this.id}: ${crashObjKey}和我碰撞了`})
       },
     },
     test1: {
@@ -134,6 +152,7 @@
       color: 'rgb(0, 0, 255)',
       crashCallback: function (crashObjKey) {
         console.log(`${this.id}: ${crashObjKey}和我碰撞了`)
+        // showTips({text: `${this.id}: ${crashObjKey}和我碰撞了`})
       },
     }
   }

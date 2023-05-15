@@ -365,10 +365,9 @@ const TipsCodes = {
   },
 };
 
+  const TipsDom = document.getElementsByClassName("tips")[0];
 const showTips = ({ code, text, duration, curNum, color }) => {
   if (curNum > 0) return;
-  const TipsDom = document.getElementsByClassName("tips")[0];
-  const TipsTextDom = document.getElementById("TipsText");
   const Tips = TipsDom.cloneNode(true);
   const TipsText = Tips.getElementsByClassName("tips-text")[0];
   Tips.style.display = "block";
