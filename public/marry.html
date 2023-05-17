@@ -340,8 +340,8 @@
       music: 'https://webfs.ali.kugou.com/202305171113/529aa56acf0f6d783259a8eecfd978b8/KGTX/CLTX003/c9f22304f964449e32a6a1b4d416c00e.mp3',
       background: './marrybg7.jpg',
       camera: true,
-      title: '今天和未来(2023.05.19 ~ ∞)',
-      desc: '与子执手共患难，暴富平安与健康。一生相守终无悔，岁月回首共白头。'
+      titleArr: ['今天和未来', '(2023.05.19 ~ ∞)'],
+      descArr: ['与子执手共患难，', '暴富平安与健康。', '一生相守终无悔，', '岁月回首共白头。']
     }
   ]
   const musicBoxDom = document.getElementById("musicBox")
@@ -360,7 +360,7 @@
   const nextPage = () => {
     if (curPage >= pages.length) return
     clearInterval(typingTimer)
-    const { musicTitle, music, background, photo, title, desc, duration, camera } = pages[curPage]
+    const { musicTitle, music, background, photo, title, desc, titleArr, descArr, duration, camera } = pages[curPage]
     if (musicTitle) {
       bgmTitleDom.innerHTML = musicTitle
     }
@@ -371,15 +371,31 @@
     }
     if (background) document.body.style.backgroundImage = `url('${background}')`
     if (photo) photoDom.style.backgroundImage = `url('${photo}')`
-    const titleLetters = title.split('')
-    const descLetters = desc.split('')
+    const titleLetters = title ? title.split('') : []
+    const descLetters = desc ? desc.split('') : []
+    let titleLetterNum = titleLetters.length
+    let descLetterNum = descLetters.length
+    if (titleArr) {
+      titleArr.forEach(item => {
+        const letters = item.split('')
+        titleLetters.push(...letters, '<br>')
+        titleLetterNum += (letters.length + 4)
+      })
+    }
+    if (descArr) {
+      descArr.forEach(item => {
+        const letters = item.split('')
+        descLetters.push(...letters, '<br>')
+        descLetterNum += (letters.length + 4)
+      })
+    }
     let titleIndex = 0
     let descIndex = 0
     photoTitleDom.innerHTML = ""
     photoDescDom.innerHTML = ""
     typingTimer = setInterval(() => {
-      const titleFinished = photoTitleDom.innerHTML.length >= titleLetters.length
-      const descFinished = photoDescDom.innerHTML.length >= descLetters.length
+      const titleFinished = photoTitleDom.innerHTML.length >= titleLetterNum
+      const descFinished = photoDescDom.innerHTML.length >= descLetterNum
       if (titleFinished && descFinished) {
         clearInterval(typingTimer)
         return
