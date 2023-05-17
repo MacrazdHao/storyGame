@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Happy Marry Me</title>
+</head>
+<style>
+  /* transform-style: preserve-3d; 及 will-change能够提高动画性能 */
+  html {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: 2s all;
+    background-size: cover;
+    background-image: #fff;
+  }
+
+  .title {
+    color: rgb(255, 217, 0);
+    font-size: 4vw;
+    font-weight: bold;
+    width: 100%;
+    padding: 2vw;
+    text-align: center;
+  }
+
+  .title span {
+    animation: shiningText 4s ease-out infinite;
+  }
+
+  .title span:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .title span:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .title span:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .title span:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .title span:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+
+  .title span:nth-child(6) {
+    animation-delay: 0.5s;
+  }
+
+  .title span:nth-child(7) {
+    animation-delay: 0.6s;
+  }
+
+  .title span:nth-child(8) {
+    animation-delay: 0.5s;
+  }
+
+  .title span:nth-child(9) {
+    animation-delay: 0.4s;
+  }
+
+  .title span:nth-child(10) {
+    animation-delay: 0.3s;
+  }
+
+  .title span:nth-child(11) {
+    animation-delay: 0.2s;
+  }
+
+  .title span:nth-child(12) {
+    animation-delay: 0.1s;
+  }
+
+  .title span:nth-child(13) {
+    animation-delay: 0s;
+  }
+
+
+  @keyframes shiningText {
+
+    0%,
+    100% {
+      color: white;
+      filter: blur(2px);
+      text-shadow: 0 0 10px #ff9100,
+        0 0 20px #ff9100,
+        0 0 40px #ff9100,
+        0 0 80px #ff9100,
+        0 0 120px #ff9100,
+        0 0 160px #ff9100,
+        0 0 200px #ff9100;
+    }
+
+    25%,
+    75% {
+      color: rgb(255, 217, 0);
+      filter: blur(0px);
+      text-shadow: none;
+    }
+  }
+
+  .pageContent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 90vw;
+    height: fit-content;
+    padding: 2vw 0;
+    border-radius: 2vw;
+    overflow: hidden;
+    position: relative;
+    margin-top: 2vw;
+  }
+
+  .pageContent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(12px);
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .photoBox {
+    width: 60vw;
+    height: 45vw;
+    padding: 2vw;
+  }
+
+  .photo {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: 2s all;
+    background-size: auto 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 2vw;
+  }
+
+  .pageText {
+    /* width: 25%; */
+    height: 100%;
+    flex: 1;
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #fff;
+  }
+
+  .photoTitle {
+    width: 100%;
+    text-align: center;
+    font-size: 3vw;
+  }
+
+  .photoDesc {
+    width: 100%;
+    text-align: left;
+    font-size: 2.5vw;
+    margin-top: 2vw;
+  }
+
+  .musicBox {
+    position: absolute;
+    top: 1vw;
+    right: 1vw;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .musicIcon {
+    height: 1.8vw;
+    margin-right: 0.4vw;
+  }
+
+  .musicTitle {
+    width: 8vw;
+    /* overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; */
+    font-size: 1.4vw;
+  }
+
+  .footer {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    font-size: 2vw;
+    bottom: 0;
+    left: 0;
+    padding: 0.4vw;
+  }
+</style>
+
+<body>
+  <audio id="bgm">
+    <source src="" />
+  </audio>
+  <div id="musicBox" class="musicBox">
+    <img class="musicIcon" src="./icon_music.svg" />
+    <marquee id="musicTitle" class="musicTitle">unknown</marquee>
+  </div>
+  <p class="title">
+    <span>♥</span>
+    <span>❤</span>
+    <span>我</span>
+    <span>们</span>
+    <span>结</span>
+    <span>婚</span>
+    <span>满</span>
+    <span>壹</span>
+    <span>周</span>
+    <span>年</span>
+    <span>啦</span>
+    <span>❤</span>
+    <span>♥</span>
+  </p>
+  <div class="pageContent">
+    <div class="photoBox">
+      <div id="photo" class="photo"></div>
+      <video id="camera" class="photo" style="display: none" autoplay></video>
+    </div>
+    <div class="pageText">
+      <p id="photoTitle" class="photoTitle"></p>
+      <p id="photoDesc" class="photoDesc"></p>
+    </div>
+  </div>
+  <p class="footer">@刘冠豪 made for 姚颂茹</p>
+</body>
+<script>
+  // music "夕顔" 4.17 https://webfs.ali.kugou.com/202305171019/77dfa69eb91ab36c30bec31e2077321b/KGTX/CLTX003/cc917374cfac776a1ae2e4bea7d057ce.mp3
+  // 遇见(2012.9) - 稚嫩的年纪，在这个平凡的教室里，尚且幼稚又平凡的我遇见了可爱的你，体育课的那一眼，就想到了终生，不知道这是一见钟情，还是前缘未了。
+  // 邂逅 - 这是没有留下一张照片的仓促邂逅，我曾无数次想起，梦里寻她，难以释怀。幸好，六年后，我们还能再续前缘。
+  // 奔赴(2019.8.29) - 那天，你找到了我，我们再续前缘，给了彼此一次机会走到最后。
+  // 礼包 - 喜乐交加的三年过去，我们说经历了多也不多，少也不少，但彼此都相互成长了许多许多，也是时候走向新的阶段了。
+  // music "暮光之城" 4.00 https://webfs.ali.kugou.com/202305170951/d1dbf3b4e7b2aca1e771dfd11a9cca82/part/0/960363/KGTX/CLTX003/clip_6715f0de43825d3bc60f67c23d00a117.mp3
+  // 钻戒1 - 也不知道这个包罗万象的“女朋友收到都感动哭了”惊喜大礼包你满不满意
+  // 钻戒2 - 没有合适的场景，没有暮光之城的主题曲，但你还是戴上了我的求婚戒指，感谢有你
+  // music "圣母颂" 5.22 https://webfs.ali.kugou.com/202305171010/8205701f203a87c41646f17ae4cae80e/KGTX/CLTX001/ed7d0fa0be205ab3cd3e988656c1a26e.mp3
+  // 预约(2022.5.18) - 这天我们本想预约5.20拿证，结果就差一点点，但还是没抢过，那就5.19吧！先人一步嘛！
+  // 拿证(2022.5.19) - 时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。
+  // music 2.07 "无论你多怪异我还是会喜欢你" https://webfs.ali.kugou.com/202305171113/529aa56acf0f6d783259a8eecfd978b8/KGTX/CLTX003/c9f22304f964449e32a6a1b4d416c00e.mp3
+  // 今天 - 暴富平安与健康，岁月回首共白头，相守无悔。
+  const pages = [
+    {
+      musicTitle: '夕顔 - 能登麻美子',
+      music: 'https://webfs.ali.kugou.com/202305171019/77dfa69eb91ab36c30bec31e2077321b/KGTX/CLTX003/cc917374cfac776a1ae2e4bea7d057ce.mp3',
+      background: './marrybg1.png',
+      photo: './marry1.jpg',
+      title: '相遇(2012.09)',
+      desc: '在这个平凡的教室里，尚且幼稚又平凡的我第一次遇见了可爱的你，体育课的那一眼，就想到了终生，不知道这是一见钟情，还是前缘未了？',
+      duration: 85666
+    },
+    {
+      background: './marrybg2.jpg',
+      photo: './marry2.jpg',
+      title: '邂逅',
+      desc: '这是没有留下一张照片的仓促邂逅，我曾无数次想起，梦里寻她，魂牵梦萦，难以释怀。幸好，六年后，我们还能再续前缘。',
+      duration: 85666
+    },
+    {
+      background: 'marrybg3.png',
+      photo: './marry3.jpg',
+      title: '奔赴(2019.08.29)',
+      desc: '那天，你找到了我，我们再续前缘，给了彼此一次机会走到最后。',
+      duration: 85667
+    },
+    {
+      musicTitle: 'Flightless Bird, American Mouth - Iron & Wine',
+      music: 'https://webfs.ali.kugou.com/202305170951/d1dbf3b4e7b2aca1e771dfd11a9cca82/part/0/960363/KGTX/CLTX003/clip_6715f0de43825d3bc60f67c23d00a117.mp3',
+      background: 'marrybg4.jpg',
+      photo: './marry4.jpg',
+      title: '礼包',
+      desc: '吵吵闹闹的三年过去，我们说经历了多也不多，少也不少，但彼此都相互成长了许多许多，也是时候走向新的阶段了。',
+      duration: 80000
+    },
+    {
+      background: 'marrybg5.jpg',
+      photo: './marry5.jpg',
+      title: '感动哭了',
+      desc: '也不知道这个包罗万象的“女朋友收到都感动哭了”惊喜大礼包你满不满意？',
+      duration: 80000
+    },
+    {
+      photo: './marry6.jpg',
+      title: '求婚成功',
+      desc: '没有合适的场景，没有暮光之城的主题曲，但你还是戴上了我的求婚戒指，感谢有你。',
+      duration: 80000
+    },
+    {
+      musicTitle: '圣母颂(Ave Maria) - 纯音乐',
+      music: 'https://webfs.ali.kugou.com/202305171010/8205701f203a87c41646f17ae4cae80e/KGTX/CLTX001/ed7d0fa0be205ab3cd3e988656c1a26e.mp3',
+      background: 'marrybg6.jpg',
+      photo: './marry7.jpg',
+      title: '预约登记(2022.5.18)',
+      desc: '这天我们本想预约520拿证，结果就差一点点，但还是没抢过别人，那就5.19吧！先人一步嘛！',
+      duration: 61000
+    },
+    {
+      title: '拿证(2022.05.19)',
+      photo: './marry8.jpg',
+      desc: '时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。',
+      duration: 61000
+    },
+    {
+      musicTitle: '无论你多怪异我还是会喜欢你 - 昭酱',
+      // 开摄像头
+      music: 'https://webfs.ali.kugou.com/202305171113/529aa56acf0f6d783259a8eecfd978b8/KGTX/CLTX003/c9f22304f964449e32a6a1b4d416c00e.mp3',
+      background: './marrybg7.jpg',
+      camera: true,
+      title: '今天(2023.05.19)',
+      desc: '未来牵手共患难，暴富平安与健康。岁月回首共白头，一生相守终无悔。'
+    }
+  ]
+  const musicBoxDom = document.getElementById("musicBox")
+  const bgmTitleDom = document.getElementById("musicTitle")
+  const bgmDom = document.getElementById("bgm")
+  const bgmSourceDom = document.getElementsByTagName('source')[0]
+  const photoDom = document.getElementById("photo")
+  const cameraDom = document.getElementById("camera")
+  const photoTitleDom = document.getElementById("photoTitle")
+  const photoDescDom = document.getElementById("photoDesc")
+  let curPage = 0
+  let timer = null
+  let starting = false
+  let pausingMusic = false
+  let typingTimer = null
+  const nextPage = () => {
+    if (curPage >= pages.length) return
+    clearInterval(typingTimer)
+    const { musicTitle, music, background, photo, title, desc, duration, camera } = pages[curPage]
+    if (musicTitle) {
+      bgmTitleDom.innerHTML = musicTitle
+    }
+    if (music) {
+      bgmSourceDom.setAttribute('src', music)
+      bgmDom.load();
+      if (!pausingMusic) bgmDom.play();
+    }
+    if (background) document.body.style.backgroundImage = `url('${background}')`
+    if (photo) photoDom.style.backgroundImage = `url('${photo}')`
+    const titleLetters = title.split('')
+    const descLetters = desc.split('')
+    let titleIndex = 0
+    let descIndex = 0
+    photoTitleDom.innerHTML = ""
+    photoDescDom.innerHTML = ""
+    typingTimer = setInterval(() => {
+      const titleFinished = photoTitleDom.innerHTML.length >= titleLetters.length
+      const descFinished = photoDescDom.innerHTML.length >= descLetters.length
+      if (titleFinished && descFinished) {
+        clearInterval(typingTimer)
+        return
+      }
+      if (!titleFinished) {
+        photoTitleDom.innerHTML += titleLetters[titleIndex]
+        titleIndex++
+        return
+      }
+      if (!descFinished) {
+        photoDescDom.innerHTML += descLetters[descIndex]
+        descIndex++
+      }
+    }, 300)
+
+    if (camera) {
+      photoDom.style.display = 'none'
+      // 成功获取摄像头数据时的回调函数
+      function handleSuccess(stream) {
+        cameraDom.style.display = 'block';
+        // 将媒体流附加到 video 元素中进行播放
+        cameraDom.srcObject = stream;
+      }
+      // 获取摄像头失败时的回调函数
+      function handleError(error) {
+        console.error('Error accessing media devices.', error);
+      }
+      // 访问相机，并根据成功或失败情况调用相应的处理函数
+      navigator.mediaDevices.getUserMedia({ video: true, handleSuccess, handleError })
+    }
+
+    curPage++
+    timer = createTimer()
+  }
+  const createTimer = () => {
+    if (curPage >= pages.length) return
+    const { duration } = pages[curPage]
+    if (!duration) nextPage()
+    return setTimeout(() => {
+      nextPage()
+      // }, 3000)
+    }, duration)
+  }
+  musicBoxDom.addEventListener("click", () => {
+    if (!pausingMusic) {
+      pausingMusic = true
+      bgmDom.pause()
+    }
+    else {
+      pausingMusic = false
+      bgmDom.play()
+    }
+  })
+  document.body.addEventListener("click", () => {
+    if (!starting) {
+      nextPage()
+      // starting = true
+    }
+  })
+</script>
+
+</html>
