@@ -142,7 +142,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(4px);
     z-index: -1;
     width: 100%;
     height: 100%;
@@ -151,8 +151,8 @@
   }
 
   .photoBox {
-    width: 52vw;
-    height: 39vw;
+    width: 48vw;
+    height: 36vw;
     padding: 2vw;
   }
 
@@ -330,8 +330,9 @@
       duration: 61000
     },
     {
-      title: '拿证(2022.05.19)',
       photo: './marry8.jpg',
+      photoRotateZ: '-90deg',
+      title: '拿证(2022.05.19)',
       desc: '时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。',
       duration: 61000
     },
@@ -342,7 +343,8 @@
       background: './marrybg7.jpg',
       camera: true,
       titleArr: ['今天和未来', '(2023.05.19 ~ ∞)'],
-      descArr: ['与子执手共患难，', '暴富平安与健康。', '一生相守终无悔，', '岁月回首共白头。']
+      descArr: ['与子执手共患难，', '暴富平安与健康。', '一生相守终无悔，', '岁月回首共白头。'],
+      duration: 61000
     }
   ]
   const musicBoxDom = document.getElementById("musicBox")
@@ -361,7 +363,7 @@
   const nextPage = () => {
     if (curPage >= pages.length) return
     clearInterval(typingTimer)
-    const { musicTitle, music, background, photo, title, desc, titleArr, descArr, duration, camera } = pages[curPage]
+    const { musicTitle, music, background, photo, photoRotateZ, title, desc, titleArr, descArr, duration, camera } = pages[curPage]
     if (musicTitle) {
       bgmTitleDom.innerHTML = musicTitle
     }
@@ -372,6 +374,7 @@
     }
     if (background) document.body.style.backgroundImage = `url('${background}')`
     if (photo) photoDom.style.backgroundImage = `url('${photo}')`
+    if (photoRotateZ) photoDom.style.transform = `rotateZ(${photoRotateZ})`
     const titleLetters = title ? title.split('') : []
     const descLetters = desc ? desc.split('') : []
     let titleLetterNum = titleLetters.length
@@ -434,7 +437,6 @@
   const createTimer = () => {
     if (curPage >= pages.length) return
     const { duration } = pages[curPage]
-    if (!duration) nextPage()
     return setTimeout(() => {
       nextPage()
       // }, 3000)
