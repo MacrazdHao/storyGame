@@ -34,6 +34,27 @@
     background-image: #fff;
   }
 
+  .subtitle {
+    font-size: 6vw;
+    font-weight: bold;
+    width: 100%;
+    padding: 2vw;
+    text-align: center;
+  }
+
+  .subtitle p:nth-child(1){
+    margin-top: 2vw;
+    color: rgb(147, 50, 50);
+  }
+  .subtitle p:nth-child(2){
+    margin-top: 2vw;
+    color: rgb(50, 147, 50);
+  }
+  .subtitle p:nth-child(3){
+    margin-top: 2vw;
+    color: rgb(50, 97, 147);
+  }
+
   .title {
     color: rgb(255, 217, 0);
     font-size: 4vw;
@@ -132,7 +153,7 @@
     height: fit-content;
     padding: 2vw 0;
     border-radius: 2vw;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
     margin-top: 2vw;
   }
@@ -147,7 +168,11 @@
     width: 100%;
     height: 100%;
     display: block;
-    background-color: rgba(0, 0, 0, 0.33);
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.3);
+    /* border: 1px solid #fff; */
+    border-radius: 2vw;
+    box-shadow: 0 0 1vw 0 #000;
   }
 
   .photoBox {
@@ -157,7 +182,20 @@
   }
 
   .photo {
-    width: 100%;
+    /* width: 100%; */
+    height: 100%;
+    display: block;
+    transition: 2s all;
+    background-size: auto 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 2vw;
+    /* box-shadow: 0 0 100px 60px rgb(83 67 31) inset; */
+    filter: sepia(50%);
+  }
+
+  .camera {
+    /* width: 100%; */
     height: 100%;
     display: block;
     transition: 2s all;
@@ -177,6 +215,24 @@
     align-items: center;
     justify-content: flex-start;
     color: #fff;
+  }
+
+  .typingPointer {
+    animation: typing 2s linear infinite;
+    color: #fff;
+    font-size: 2.5vw;
+  }
+
+  @keyframes typing {
+
+    0%,
+    100% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 1;
+    }
   }
 
   .photoTitle {
@@ -226,8 +282,14 @@
 </style>
 
 <body>
+  <audio id="voice">
+    <source src="" />
+  </audio>
   <audio id="bgm">
     <source src="" />
+  </audio>
+  <audio id="typingVoice">
+    <source src="./typing.mp3" />
   </audio>
   <div id="musicBox" class="musicBox">
     <img class="musicIcon" src="./icon_music.svg" />
@@ -248,14 +310,25 @@
     <span>❤</span>
     <span>♥</span>
   </p>
-  <div class="pageContent">
+  <div class="subtitle">
+    <p>一&nbsp;&nbsp;&nbsp;夜&nbsp;&nbsp;&nbsp;暴&nbsp;&nbsp;&nbsp;富</p>
+    <p>一&nbsp;&nbsp;&nbsp;生&nbsp;&nbsp;&nbsp;健&nbsp;&nbsp;&nbsp;康</p>
+    <p>一&nbsp;&nbsp;&nbsp;世&nbsp;&nbsp;&nbsp;平&nbsp;&nbsp;&nbsp;安</p>
+  </div>
+  <div class="pageContent" style="display: none;">
     <div class="photoBox">
       <div id="photo" class="photo"></div>
-      <video id="camera" class="photo" style="display: none" autoplay></video>
+      <video id="camera" class="camera" style="display: none" autoplay></video>
     </div>
     <div class="pageText">
-      <p id="photoTitle" class="photoTitle"></p>
-      <p id="photoDesc" class="photoDesc"></p>
+      <p class="photoTitle">
+        <span id="photoTitle"></span>
+        <span id="typingTitlePointer" class="typingPointer" style="display: none;">_</span>
+      </p>
+      <p class="photoDesc">
+        <span id="photoDesc"></span>
+        <span id="typingDescPointer" class="typingPointer" style="display: none;">_</span>
+      </p>
     </div>
   </div>
   <p class="footer">@刘冠豪 made for 姚颂茹</p>
@@ -266,7 +339,7 @@
   // 邂逅 - 这是没有留下一张照片的仓促邂逅，我曾无数次想起，梦里寻她，难以释怀。幸好，六年后，我们还能再续前缘。
   // 奔赴(2019.8.29) - 那天，你找到了我，我们再续前缘，给了彼此一次机会走到最后。
   // 礼包 - 喜乐交加的三年过去，我们说经历了多也不多，少也不少，但彼此都相互成长了许多许多，也是时候走向新的阶段了。
-  // music "暮光之城" 4.00 https://webfs.ali.kugou.com/202305170951/d1dbf3b4e7b2aca1e771dfd11a9cca82/part/0/960363/KGTX/CLTX003/clip_6715f0de43825d3bc60f67c23d00a117.mp3
+  // music "Flightless Bird, American Mouth(暮光之城主题曲)" 4.00 https://webfs.ali.kugou.com/202305170951/d1dbf3b4e7b2aca1e771dfd11a9cca82/part/0/960363/KGTX/CLTX003/clip_6715f0de43825d3bc60f67c23d00a117.mp3
   // 钻戒1 - 也不知道这个包罗万象的“女朋友收到都感动哭了”惊喜大礼包你满不满意
   // 钻戒2 - 没有合适的场景，没有暮光之城的主题曲，但你还是戴上了我的求婚戒指，感谢有你
   // music "圣母颂" 5.22 https://webfs.ali.kugou.com/202305171010/8205701f203a87c41646f17ae4cae80e/KGTX/CLTX001/ed7d0fa0be205ab3cd3e988656c1a26e.mp3
@@ -276,22 +349,25 @@
   // 今天 - 暴富平安与健康，岁月回首共白头，相守无悔。
   const pages = [
     {
+      voice: './voice1.mp3',
       musicTitle: '夕顔 - 能登麻美子',
-      music: 'https://webfs.ali.kugou.com/202305171019/77dfa69eb91ab36c30bec31e2077321b/KGTX/CLTX003/cc917374cfac776a1ae2e4bea7d057ce.mp3',
+      music: './bgm1.mp3',
       background: './marrybg1.png',
       photo: './marry1.jpg',
       title: '相遇(2012.09)',
       desc: '在这个平凡的教室里，尚且幼稚又平凡的我第一次遇见了可爱的你，体育课的那一眼，就想到了终生，不知道这是一见钟情，还是前缘未了？',
-      duration: 85666
+      duration: 85667
     },
     {
+      voice: './voice2.mp3',
       background: './marrybg2.jpg',
       photo: './marry2.jpg',
       title: '邂逅',
       desc: '这是没有留下一张照片的仓促邂逅，我曾无数次想起，梦里寻她，魂牵梦萦，难以释怀。幸好，六年后，我们还能再续前缘。',
-      duration: 85666
+      duration: 85667
     },
     {
+      voice: './voice3.mp3',
       background: 'marrybg3.png',
       photo: './marry3.jpg',
       title: '奔赴(2019.08.29)',
@@ -299,62 +375,75 @@
       duration: 85667
     },
     {
+      voice: './voice4.mp3',
       musicTitle: 'Flightless Bird, American Mouth - Iron & Wine',
-      music: 'https://webfs.ali.kugou.com/202305170951/d1dbf3b4e7b2aca1e771dfd11a9cca82/part/0/960363/KGTX/CLTX003/clip_6715f0de43825d3bc60f67c23d00a117.mp3',
+      music: './bgm2.mp3',
       background: 'marrybg4.jpg',
       photo: './marry4.jpg',
       title: '礼包',
       desc: '吵吵闹闹的三年过去，我们说经历了多也不多，少也不少，但彼此都相互成长了许多许多，也是时候走向新的阶段了。',
-      duration: 80000
+      duration: 80667
     },
     {
+      voice: './voice5.mp3',
       background: 'marrybg5.jpg',
       photo: './marry5.jpg',
       title: '感动哭了',
-      desc: '也不知道这个包罗万象的“女朋友收到都感动哭了”惊喜大礼包你满不满意？',
-      duration: 80000
+      desc: '也不知道这个准备了几个月的包罗万象的“女朋友收到都感动哭了”惊喜套娃大礼包你满不满意？',
+      duration: 80667
     },
     {
+      voice: './voice6.mp3',
       photo: './marry6.jpg',
       title: '求婚成功',
       desc: '没有合适的场景，没有暮光之城的主题曲，但你还是戴上了我的求婚戒指，感谢有你。',
-      duration: 80000
+      duration: 80667
     },
     {
+      voice: './voice7.mp3',
       musicTitle: '圣母颂(Ave Maria) - 纯音乐',
-      music: 'https://webfs.ali.kugou.com/202305171010/8205701f203a87c41646f17ae4cae80e/KGTX/CLTX001/ed7d0fa0be205ab3cd3e988656c1a26e.mp3',
+      music: './bgm3.mp3',
       background: 'marrybg6.jpg',
       photo: './marry7.jpg',
       title: '预约登记(2022.5.18)',
-      desc: '这天我们本想预约520拿证，结果就差一点点，但还是没抢过别人，那就5.19吧！先人一步嘛！',
-      duration: 61000
+      desc: '这天我们本想预约520拿证，结果就差一点点，但还是没抢过别人，那就5.19吧！快人一步嘛！',
+      duration: 161000
     },
     {
+      voice: './voice8.mp3',
       photo: './marry8.jpg',
       photoRotateZ: '-90deg',
       title: '拿证(2022.05.19)',
-      desc: '时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。',
-      duration: 61000
+      desc: '这一天，我们成为了真正的夫妻，十年之痒，有情人终成眷属。时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。',
+      duration: 161000
     },
     {
+      voice: './voice9.mp3',
       musicTitle: '无论你多怪异我还是会喜欢你 - 昭酱',
       // 开摄像头
-      music: 'https://webfs.ali.kugou.com/202305171113/529aa56acf0f6d783259a8eecfd978b8/KGTX/CLTX003/c9f22304f964449e32a6a1b4d416c00e.mp3',
+      music: './bgm4.mp3',
       background: './marrybg7.jpg',
       camera: true,
       titleArr: ['今天和未来', '(2023.05.19 ~ ∞)'],
       descArr: ['与子执手共患难，', '暴富平安与健康。', '一生相守终无悔，', '岁月回首共白头。'],
-      duration: 61000
+      descTextAlign: 'center',
+      duration: 127000
     }
   ]
+  const voiceDom = document.getElementById("voice")
+  const voiceSourceDom = voiceDom.getElementsByTagName('source')[0]
   const musicBoxDom = document.getElementById("musicBox")
   const bgmTitleDom = document.getElementById("musicTitle")
+  const typingVoiceDom = document.getElementById("typingVoice")
   const bgmDom = document.getElementById("bgm")
-  const bgmSourceDom = document.getElementsByTagName('source')[0]
+  const bgmSourceDom = bgmDom.getElementsByTagName('source')[0]
   const photoDom = document.getElementById("photo")
   const cameraDom = document.getElementById("camera")
   const photoTitleDom = document.getElementById("photoTitle")
+  const photoDescBoxDom = document.getElementsByClassName("photoDesc")[0]
   const photoDescDom = document.getElementById("photoDesc")
+  const typingTitlePointerDom = document.getElementById("typingTitlePointer")
+  const typingDescPointerDom = document.getElementById("typingDescPointer")
   let curPage = 0
   let timer = null
   let starting = false
@@ -363,7 +452,7 @@
   const nextPage = () => {
     if (curPage >= pages.length) return
     clearInterval(typingTimer)
-    const { musicTitle, music, background, photo, photoRotateZ, title, desc, titleArr, descArr, duration, camera } = pages[curPage]
+    const { voice, musicTitle, music, background, photo, photoRotateZ, title, desc, titleArr, descArr, duration, camera, descTextAlign } = pages[curPage]
     if (musicTitle) {
       bgmTitleDom.innerHTML = musicTitle
     }
@@ -375,10 +464,16 @@
     if (background) document.body.style.backgroundImage = `url('${background}')`
     if (photo) photoDom.style.backgroundImage = `url('${photo}')`
     if (photoRotateZ) photoDom.style.transform = `rotateZ(${photoRotateZ})`
+    photoDescBoxDom.style.textAlign = descTextAlign || 'left'
+    voiceSourceDom.setAttribute('src', voice)
+    voiceDom.load();
+    voiceDom.play();
     const titleLetters = title ? title.split('') : []
     const descLetters = desc ? desc.split('') : []
     let titleLetterNum = titleLetters.length
     let descLetterNum = descLetters.length
+    typingDescPointerDom.style.display = 'none'
+    typingTitlePointerDom.style.display = 'inline'
     if (titleArr) {
       titleArr.forEach(item => {
         const letters = item.split('')
@@ -404,16 +499,19 @@
         clearInterval(typingTimer)
         return
       }
+      typingVoiceDom.play()
       if (!titleFinished) {
         photoTitleDom.innerHTML += titleLetters[titleIndex]
         titleIndex++
         return
       }
       if (!descFinished) {
+        typingTitlePointerDom.style.display = 'none'
+        typingDescPointerDom.style.display = 'inline'
         photoDescDom.innerHTML += descLetters[descIndex]
         descIndex++
       }
-    }, 300)
+    }, 200)
 
     if (camera) {
       photoDom.style.display = 'none'
@@ -430,13 +528,12 @@
       // 访问相机，并根据成功或失败情况调用相应的处理函数
       navigator.mediaDevices.getUserMedia({ video: true, handleSuccess, handleError })
     }
-
-    curPage++
     timer = createTimer()
   }
   const createTimer = () => {
     if (curPage >= pages.length) return
     const { duration } = pages[curPage]
+    curPage++
     return setTimeout(() => {
       nextPage()
       // }, 3000)
@@ -455,7 +552,7 @@
   document.body.addEventListener("click", () => {
     if (!starting) {
       nextPage()
-      starting = true
+      // starting = true
     }
   })
 </script>
