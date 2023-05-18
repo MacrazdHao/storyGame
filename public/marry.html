@@ -10,17 +10,17 @@
 <style>
   @font-face {
     font-family: 'font1';
-    src: url('./font1.ttf');
+    src: url('./static/font1.ttf');
   }
 
   @font-face {
     font-family: 'font2';
-    src: url('./font2.ttf');
+    src: url('./static/font2.ttf');
   }
 
   @font-face {
     font-family: 'font3';
-    src: url('./font3.ttf');
+    src: url('./static/font3.ttf');
   }
 
   /* transform-style: preserve-3d; 及 will-change能够提高动画性能 */
@@ -249,8 +249,8 @@
     100% {
       opacity: 0;
     }
-
-    50% {
+    33%,
+    66% {
       opacity: 1;
     }
   }
@@ -269,13 +269,35 @@
   }
 
   .musicBox {
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    border-radius: 1vw;
     position: absolute;
     top: 1vw;
     right: 1vw;
     width: fit-content;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    padding: 0.2vw 1vw;
   }
+
+  .musicBox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(2px);
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    display: block;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.1);
+    /* border: 1px solid #fff; */
+    border-radius: 2vw;
+    /* box-shadow: 0 0 1vw 0 #000; */
+  }
+
 
   .musicIcon {
     height: 1.8vw;
@@ -309,10 +331,10 @@
     <source src="" />
   </audio>
   <audio id="typingVoice">
-    <source src="./typing.mp3" />
+    <source src="./static/typing.mp3" />
   </audio>
   <div id="musicBox" class="musicBox">
-    <img class="musicIcon" src="./icon_music.svg" />
+    <img class="musicIcon" src="./static/icon_music.svg" />
     <marquee id="musicTitle" class="musicTitle">unknown</marquee>
   </div>
   <p class="title">
@@ -369,80 +391,80 @@
   // 今天 - 暴富平安与健康，岁月回首共白头，相守无悔。
   const pages = [
     {
-      voice: './voice1.mp3',
+      voice: './static/voice1.mp3',
       musicTitle: '夕顔 - 能登麻美子',
-      music: './bgm1.mp3',
-      background: './marrybg1.png',
-      photo: './marry1.jpg',
+      music: './static/bgm1.mp3',
+      background: './static/marrybg1.png',
+      photo: './static/marry1.jpg',
       title: '相遇(2012.09)',
       desc: '在这个平凡的教室里，尚且幼稚又平凡的我第一次遇见了可爱的你，体育课的那一眼，就想到了终生，不知道这是一见钟情，还是前缘未了？',
       duration: 85667
     },
     {
-      voice: './voice2.mp3',
-      background: './marrybg2.jpg',
-      photo: './marry2.jpg',
+      voice: './static/voice2.mp3',
+      background: './static/marrybg2.jpg',
+      photo: './static/marry2.jpg',
       title: '邂逅',
       desc: '这是没有留下一张照片的仓促邂逅，我曾无数次想起，梦里寻她，魂牵梦萦，难以释怀。幸好，六年后，我们还能再续前缘。',
       duration: 85667
     },
     {
-      voice: './voice3.mp3',
-      background: 'marrybg3.png',
-      photo: './marry3.jpg',
+      voice: './static/voice3.mp3',
+      background: './static/marrybg3.png',
+      photo: './static/marry3.jpg',
       title: '奔赴(2019.08.29)',
       desc: '那天，你找到了我，我们再续前缘，给了彼此一次机会走到最后。',
       duration: 85667
     },
     {
-      voice: './voice4.mp3',
+      voice: './static/voice4.mp3',
       musicTitle: 'Flightless Bird, American Mouth - Iron & Wine',
-      music: './bgm2.mp3',
-      background: 'marrybg4.jpg',
-      photo: './marry4.jpg',
+      music: './static/bgm2.mp3',
+      background: './static/marrybg4.jpg',
+      photo: './static/marry4.jpg',
       title: '礼包',
       desc: '吵吵闹闹的三年过去，我们说经历了多也不多，少也不少，但彼此都相互成长了许多许多，也是时候走向新的阶段了。',
       duration: 80667
     },
     {
-      voice: './voice5.mp3',
-      background: 'marrybg5.jpg',
-      photo: './marry5.jpg',
+      voice: './static/voice5.mp3',
+      background: './static/marrybg5.jpg',
+      photo: './static/marry5.jpg',
       title: '感动哭了',
       desc: '也不知道这个准备了几个月的包罗万象的“女朋友收到都感动哭了”惊喜套娃大礼包你满不满意？',
       duration: 80667
     },
     {
-      voice: './voice6.mp3',
-      photo: './marry6.jpg',
+      voice: './static/voice6.mp3',
+      photo: './static/marry6.jpg',
       title: '求婚成功',
       desc: '没有合适的场景，没有暮光之城的主题曲，但你还是戴上了我的求婚戒指，感谢有你。',
       duration: 80667
     },
     {
-      voice: './voice7.mp3',
+      voice: './static/voice7.mp3',
       musicTitle: '圣母颂(Ave Maria) - 纯音乐',
-      music: './bgm3.mp3',
-      background: 'marrybg6.jpg',
-      photo: './marry7.jpg',
+      music: './static/bgm3.mp3',
+      background: './static/marrybg6.jpg',
+      photo: './static/marry7.jpg',
       title: '预约登记(2022.5.18)',
       desc: '这天我们本想预约520拿证，结果就差一点点，但还是没抢过别人，那就5.19吧！快人一步嘛！',
       duration: 161000
     },
     {
-      voice: './voice8.mp3',
-      photo: './marry8.jpg',
+      voice: './static/voice8.mp3',
+      photo: './static/marry8.jpg',
       photoRotateZ: '-90deg',
       title: '拿证(2022.05.19)',
       desc: '这一天，我们成为了真正的夫妻，十年之痒，有情人终成眷属。时光匆匆，2022我们经历得比前两年都多了太多，直至今天，生活依然充满了忙碌和未知，我们的互相成长和包容也从未止步。',
       duration: 161000
     },
     {
-      voice: './voice9.mp3',
+      voice: './static/voice9.mp3',
       musicTitle: '无论你多怪异我还是会喜欢你 - 昭酱',
       // 开摄像头
-      music: './bgm4.mp3',
-      background: './marrybg7.jpg',
+      music: './static/bgm4.mp3',
+      background: './static/marrybg7.jpg',
       camera: true,
       titleArr: ['今天和未来', '(2023.05.19 ~ ∞)'],
       descArr: ['与子执手共患难，', '暴富平安与健康。', '一生相守终无悔，', '岁月回首共白头。'],
