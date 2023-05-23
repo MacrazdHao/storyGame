@@ -159,7 +159,8 @@ function execEvent(EventsData, eid, player) {
       _player[key] += effect[key]
     }
   }
+  let result = null
   if (resultEvents) {
-
+    result = transResultJurdgement(resultEvents, player)[0]
   }
 }
