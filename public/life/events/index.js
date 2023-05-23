@@ -2,22 +2,20 @@ const player = {
   DefaultEvent: 10000,
   NextEvent: null,
   // 自更属性
-  EVT: { 10002: [1], 10003: [2] }, // 历史事件
-  TLT: { 1001: true, 1002: true }, // 天赋
-  AGE: 10, // 年龄
+  EVT: {}, // 历史事件
+  TLT: {}, // 天赋
+  AGE: 0, // 年龄
   // 基础属性
-  CHR: 5, // 颜值
-  INT: 5, // 智力
-  MNY: 6, // 家境
-  STR: 6, // 体质
+  CHR: 0, // 颜值
+  INT: 0, // 智力
+  MNY: 0, // 家境
+  STR: 0, // 体质
   // 额外属性
   HAP: 0, // 心情
   LIF: 1 // 是否活着
 }
 
-let AgeEventsMap = {}
-
-const AgeEventsMap = [[10001, 10002], [10003, 10004]]
+const AgeEventsMap = []
 
 function transSingleJurdgement(command = '', player) {
   const { CHR, INT, MNY, STR, HAP } = player
