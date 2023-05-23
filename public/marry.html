@@ -249,6 +249,7 @@
     100% {
       opacity: 0;
     }
+
     33%,
     66% {
       opacity: 1;
@@ -472,6 +473,18 @@
       duration: 127000
     }
   ]
+  const cameraDom = document.getElementById("camera")
+      // 成功获取摄像头数据时的回调函数
+      function handleSuccess(stream) {
+        // 将媒体流附加到 video 元素中进行播放
+        cameraDom.srcObject = stream;
+      }
+      // 获取摄像头失败时的回调函数
+      function handleError(error) {
+        console.error('Error accessing media devices.', error);
+      }
+      // 访问相机，并根据成功或失败情况调用相应的处理函数
+      navigator.getUserMedia({ video: true }, handleSuccess, handleError)
   const subtitleDom = document.getElementById("subtitle")
   const pageContentDom = document.getElementById("pageContent")
   const voiceDom = document.getElementById("voice")
@@ -482,7 +495,7 @@
   const bgmDom = document.getElementById("bgm")
   const bgmSourceDom = bgmDom.getElementsByTagName('source')[0]
   const photoDom = document.getElementById("photo")
-  const cameraDom = document.getElementById("camera")
+  // const cameraDom = document.getElementById("camera")
   const photoTitleDom = document.getElementById("photoTitle")
   const photoDescBoxDom = document.getElementsByClassName("photoDesc")[0]
   const photoDescDom = document.getElementById("photoDesc")
@@ -557,20 +570,11 @@
       }
     }, 200)
 
+    console.log(camera)
     if (camera) {
-      photoDom.style.display = 'none'
-      // 成功获取摄像头数据时的回调函数
-      function handleSuccess(stream) {
+      photoDom.style.display = "none"
         cameraDom.style.display = 'block';
-        // 将媒体流附加到 video 元素中进行播放
-        cameraDom.srcObject = stream;
-      }
-      // 获取摄像头失败时的回调函数
-      function handleError(error) {
-        console.error('Error accessing media devices.', error);
-      }
-      // 访问相机，并根据成功或失败情况调用相应的处理函数
-      navigator.mediaDevices.getUserMedia({ video: true, handleSuccess, handleError })
+
     }
     timer = createTimer()
   }
