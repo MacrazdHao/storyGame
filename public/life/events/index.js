@@ -15,6 +15,8 @@ const player = {
   LIF: 1 // 是否活着
 }
 
+let AgeEventsMap = {}
+
 const AgeEventsMap = [[10001, 10002], [10003, 10004]]
 
 function transSingleJurdgement(command = '', player) {
@@ -65,41 +67,6 @@ function transResultJurdgement(commands = [], player) {
   return results
 }
 
-/**  用例
- * CHR>4
- * CHR>4&INT===5
- * CHR>4|INT===5
- * CHR>4&INT===5|STR<7
- * CHR>4&INT===5|STR<7&MNY>5
- * EVT?[10002]
- * EVT![10002]
- * TLT?[1001]
- * TLT![1002]
- * AGE?[10,20]
- * AGE![10,20]
- * EVT?[10002]&INT===5
- * TLT?[1002]&INT===5
- * AGE![10,20]&INT===5
- * EVT?[10002]&INT===5|STR<7&MNY>5
- * ['CHR>4:11005']
- * */
-// console.log(transJurdgement('CHR>4', player))
-// console.log(transJurdgement('CHR>4&INT===5', player))
-// console.log(transJurdgement('CHR>4|INT===5', player))
-// console.log(transJurdgement('CHR>4&INT===5|STR<7', player))
-// console.log(transJurdgement('CHR>4&INT===5|STR<7&MNY>5', player))
-// console.log(transJurdgement('EVT?[10002]', player))
-// console.log(transJurdgement('EVT![10002]', player))
-// console.log(transJurdgement('TLT?[1001]', player))
-// console.log(transJurdgement('TLT![1002]', player))
-// console.log(transJurdgement('AGE?[10,20]', player))
-// console.log(transJurdgement('AGE![10,20]', player))
-// console.log(transJurdgement('EVT?[10002]&INT===5', player))
-// console.log(transJurdgement('TLT?[1002]&INT===5', player))
-// console.log(transJurdgement('AGE![10,20]&INT===5', player))
-// console.log(transJurdgement('EVT?[10002]&INT===5|STR<7&MNY>5', player))
-// console.log(transResultJurdgement(['CHR>4:11005'], player))
-
 function updateEventsMap(player) {
   const { AGE, EVT } = player
   const _EVT = {}
@@ -149,10 +116,11 @@ function getCurrentEvent(EventsData, { RandomEvents = [], CertainEvents = [], Ra
   return DefaultEvent
 }
 
-function execEvent(EventsData, eid, player) {
+function execEvent(EventsData, eid, player, recur = false) {
   const _player = JSON.parse(JSON.stringify(player))
   const { AGE } = _player
-  const { resultEvents, effect } = EventsData[eid]
+  const { event, defaultResult, resultEvents, effect } = EventsData[eid]
+  const desc = [event]
   _player.EVT[eid].push(AGE)
   if (effect) {
     for (const key in effect) {
@@ -160,6 +128,51 @@ function execEvent(EventsData, eid, player) {
     }
   }
   if (resultEvents) {
+    const resultEventEids = transResultJurdgement(resultEvents)
+    if (resultEventEids.length > 0) {
+      if (defaultResult || recur) {
+        const resultExecRes = execEvent(EventsData, resultEventEids[0], _player, true)
+        desc.push(...resultExecRes.desc)
+        _player = resultExecRes.player
+      } else {
+        _player.NextEvent = resultEventEids[0]
+      }
+    } else if (resultEventEids.length === 0 && (defaultResult || recur)) {
+      desc.push(defaultResult)
+    }
+  } else if (!resultEvents && (defaultResult || recur)) {
+    desc.push(defaultResult)
+  }
+  return { player: _player, desc }
+}
 
+const EventDomProto = document.getElementById('EventDomProto')
+const EventSingleDescDomProto = EventDomProto.getElementById('EventBox_Desc')
+
+const nextAge = () => {
+  player.EVT = updateEventsMap(player)
+  const CurrentEventsMap = getCurrentEventsMap(EventsData, AgeEventsMap, player)
+  const CurrentEvent = getCurrentEvent(EventsData, CurrentEventsMap, player)
+  const ExecEventRes = execEvent(EventsData, CurrentEvent, player)
+  player = ExecEventRes.player
+  const EventDom = EventDomProto.cloneNode(true)
+  EventDom.style.display = 'display'
+  const EventDomRandomId = Math.random().toString(36).slice(2)
+  EventDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}`)
+  ExecEventRes.desc.forEach((desc, index) => {
+    const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
+    EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-${index}`)
+    EventSingleDescDom.innerHTML = desc
+    EventDom.appendChild(EventSingleDescDom)
+  })
+}
+
+const initAgeEventsMap = () => {
+  for (const eid in EventsData) {
+    EventsData[eid].forEach(age => {
+      AgeEventsMap[age] = Array.from(new Set((AgeEventsMap[age] || []).push(age)))
+    })
   }
 }
+
+initAgeEventsMap()
