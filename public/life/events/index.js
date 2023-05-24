@@ -5,13 +5,14 @@ const initPlayer = {
   EVT: {}, // 历史事件
   TLT: {}, // 天赋
   AGE: 0, // 年龄
+  preAGE: [], // 旧年龄
   // 基础属性
   CHR: 5, // 颜值
   INT: 5, // 智力
   MNY: 5, // 家境
   STR: 5, // 体质
   // 额外属性
-  SPR: 0, // 心情
+  SPR: 5, // 心情
   LIF: 1 // 是否活着
 }
 
@@ -29,6 +30,8 @@ const EventDomProto = document.getElementById('EventDomProto')
 const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
 
 const AgeEventsMap = []
+
+// 通用函数
 
 function transSingleJurdgement(command = '', player) {
   const { CHR, INT, MNY, STR, HAP, SPR } = player
@@ -79,15 +82,163 @@ function transResultJurdgement(commands = [], player) {
   return results
 }
 
+function execEffect(effect, player) {
+  const _player = JSON.parse(JSON.stringify(player))
+  const { AGE } = _player
+  for (const key in effect) {
+    if (key === 'AGE') _player.preAGE.push(AGE)
+    _player[key] += effect[key]
+  }
+  return _player
+}
+
+// 点数函数
+
+let points = 20
+
+// 天赋函数
+
+const RareMap = [100, 80, 60, 10]
+const RequireSelectTenantNum = 3
+const MaxTenantChoices = 8
+
+let TotalTenantWeight = 0
+const RealTenantsMap = JSON.parse(JSON.stringify(TenantsData))
+const RareTenantsMap = {} // 只记录tid
+const TenantChoices = [] // 只记录tid
+const SelectedExcludeTenants = {} // 只记录tid
+
+const initTenantsMap = () => {
+  for (const tid in RealTenantsMap) {
+    const { rare, weight, effect } = RealTenantsMap[tid]
+    const realWeight = RareMap[rare] + weight
+    if (!RareTenantsMap[rare]) RareTenantsMap[rare] = []
+    RareTenantsMap[rare].push(tid)
+    RealTenantsMap[tid].realWeight = realWeight > 0 ? realWeight : 1
+    RealTenantsMap[tid].effected = !effect
+    TotalTenantWeight += RealTenantsMap[tid].realWeight
+  }
+}
+
+const getTenantChoices = () => {
+  const IncludeTenants = JSON.parse(JSON.stringify(RealTenantsMap))
+  let TotalTenantWeightTmp = TotalTenantWeight
+  for (let i = 0; i < MaxTenantChoices; i++) {
+    let excludeTenants = []
+    let randNum = parseInt(Math.random() * TotalTenantWeightTmp)
+    for (const tid in IncludeTenants) {
+      const { realWeight, exclude } = IncludeTenants[tid]
+      randNum = randNum - realWeight
+      if (randNum <= 0) {
+        TenantChoices.push(tid)
+        excludeTenants = exclude
+        TotalTenantWeightTmp = TotalTenantWeightTmp - realWeight
+        break
+      }
+    }
+    excludeTenants.forEach(tid => {
+      if (IncludeTenants[tid]) delete IncludeTenants[tid]
+    })
+  }
+}
+
+function selectTenants(selectedTenants = [], player) {
+  // selectedTenants只包含tid
+  if (selectedTenants.length < RequireSelectTenantNum) return
+  let _player = JSON.parse(JSON.stringify(player))
+  selectedTenants.forEach(tid => {
+    const { exclude } = RealTenantsMap[tid]
+    _player.TLT[tid] = JSON.parse(JSON.stringify(RealTenantsMap[tid]))
+    if (exclude) {
+      exclude.forEach(tid => {
+        SelectedExcludeTenants[tid] = true
+      })
+    }
+  })
+  return _player
+}
+
+function replaceTenant(player) {
+  let _player = JSON.parse(JSON.stringify(player))
+  const { TLT } = _player
+  const ReplaceTenantsMap = {}
+  for (const tid in TLT) {
+    const { replacement } = TLT[tid]
+    if (!replacement) continue
+    const AltReplaceTenants = {} // 只记录tid-weight
+    for (const ReplaceType in replacement) {
+      if (ReplaceType === 'tenant') {
+        let replaceTenantTotalWeight = 0
+        const IncludeTenants = {}
+        replacement[ReplaceType].forEach(tinfo => {
+          const tenantInfo = tinfo.split('*')
+          const tid = parseInt(tenantInfo[0])
+          const weight = parseInt(tenantInfo[1] || 1)
+          if (!SelectedExcludeTenants[tid]) {
+            IncludeTenants[tid] = weight
+            replaceTenantTotalWeight += weight
+          }
+        })
+        let randNum = parseInt(Math.random() * replaceTenantTotalWeight)
+        for (const tid in IncludeTenants) {
+          randNum = randNum - IncludeTenants[tid]
+          if (randNum <= 0) {
+            AltReplaceTenants[tid] = RealTenantsMap[tid].realWeight
+            break
+          }
+        }
+      } else if (ReplaceType === 'rare') {
+        let TotalRareWeight = 0
+        replacement[ReplaceType].forEach(rinfo => {
+          const rareInfo = rinfo.split('*')
+          const rare = rareInfo[0]
+          TotalRareWeight = rareInfo[1] ? parseInt(rareInfo[1]) * RareMap[rare] : RareMap[rare]
+        })
+        let randNum = parseInt(Math.random() * TotalRareWeight)
+      }
+    }
+    // random => ReplaceTenantsMap
+  }
+  for (const tid in ReplaceTenantsMap) {
+    // delete _player[tid]  // 不用删也可以
+    _player.TLT[tid] = RealTenantsMap[tid]
+  }
+  return _player
+}
+
+const execTenantPoints = () => {
+  const { TLT } = player
+  for (const tid in TLT) {
+    points = points + (TLT[tid].points || 0)
+  }
+}
+
+function execTenantEffect(player) {
+  let _player = JSON.parse(JSON.stringify(player))
+  const { TLT } = _player
+  for (const tid in TLT) {
+    const { effect, effected, condition } = TLT[tid]
+    if (effected) continue
+    if (transJurdgement(condition, _player)) {
+      _player = execEffect(effect, _player)
+      _player.TLT[tid].effected = true
+    }
+  }
+  return _player
+}
+
+// 事件函数
+
 function updateEventsMap(player) {
   const { AGE, EVT } = player
   const _EVT = {}
   for (const eid in EVT) {
-    const records = EVT[eid].filter(age => age < AGE)
+    const records = EVT[eid].filter(age => (age < AGE || age === player.preAGE.at(-1)))
     if (records.length > 0) _EVT[eid] = records
   }
   return _EVT
 }
+
 function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
   const { AGE } = player
   const AgeEvents = JSON.parse(JSON.stringify(AgeEventsMap[AGE]))
@@ -135,11 +286,7 @@ function execEvent(EventsData, eid, player, recur = false) {
   const desc = [event]
   if (!_player.EVT[eid]) _player.EVT[eid] = []
   _player.EVT[eid].push(AGE)
-  if (effect) {
-    for (const key in effect) {
-      _player[key] += effect[key]
-    }
-  }
+  if (effect) _player = execEffect(effect, _player)
   if (resultEvents) {
     const resultEventEids = transResultJurdgement(resultEvents, player)
     if (resultEventEids.length > 0) {
@@ -158,6 +305,19 @@ function execEvent(EventsData, eid, player, recur = false) {
   }
   return { player: _player, desc }
 }
+
+const initAgeEventsMap = () => {
+  for (const eid in EventsData) {
+    if (!EventsData[eid].age) continue
+    EventsData[eid].age.forEach(age => {
+      const ageArr = AgeEventsMap[age] || []
+      ageArr.push(parseInt(eid))
+      AgeEventsMap[age] = Array.from(new Set(ageArr))
+    })
+  }
+}
+
+// 游戏函数
 
 const gameover = () => {
   document.body.removeEventListener('click', nextAge)
@@ -206,18 +366,7 @@ const nextAge = () => {
     EventDom.appendChild(EventSingleDescDom)
   })
   ContentBoxDom.appendChild(EventDom)
-  ContentBoxDom.scrollTop = ContentBoxDom.scrollHeight - ContentBoxDom.clientHeight;
-}
-
-const initAgeEventsMap = () => {
-  for (const eid in EventsData) {
-    if (!EventsData[eid].age) continue
-    EventsData[eid].age.forEach(age => {
-      const ageArr = AgeEventsMap[age] || []
-      ageArr.push(parseInt(eid))
-      AgeEventsMap[age] = Array.from(new Set(ageArr))
-    })
-  }
+  ContentBoxDom.scrollTop = ContentBoxDom.scrollHeight - ContentBoxDom.clientHeight
 }
 
 const startGame = () => {
@@ -236,37 +385,3 @@ const startGame = () => {
 StartButton.addEventListener('click', startGame)
 // document.getElementById('next').addEventListener('click', nextAge)
 
-// for (const age in ageData) {
-//   const { event } = ageData[age]
-//   event.forEach(eid => {
-//     const eventInfo = `${eid}`.split('*')
-//     const ageArr = eventsData[eventInfo[0]].age || []
-//     ageArr.push(parseInt(age))
-//     eventsData[eventInfo[0]].age = Array.from(new Set(ageArr))
-//     eventsData[eventInfo[0]].weight = eventInfo.length > 1 ? parseFloat(eventInfo[1]) * 10000 : 10
-//   })
-// }
-// for (const eid in eventsData) {
-//   const item = eventsData[eid]
-//   eventsData[eid] = {
-//     noRandom: item.NoRandom, // 是否随机事件(true表示用于拼接的事件)
-//     event: item.event,  // 事件文字
-//     defaultResult: item.postEvent,
-//     include: item.include,
-//     exclude: item.exclude,
-//     color: "#000", // 事件颜色
-//     resultEvents: item.branch,
-//     effect: item.effect, // 属性影响
-//     weight: item.weight, // 事件权重（随机抽取事件时使用，及决定在多个达成条件必然发生的事件中的优先级）
-//     age: item.age // 事件适龄
-//   }
-
-// }
-// const str = JSON.stringify(eventsData).replaceAll(/[\(\)]/g, '')
-// const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-// const downLink = document.createElement('a')
-// downLink.download = 'language.json'
-// downLink.href = URL.createObjectURL(blob)
-// document.body.appendChild(downLink)
-// downLink.click()
-// document.body.removeChild(downLink)
