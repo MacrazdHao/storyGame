@@ -1,24 +1,25 @@
-const player = {
+let player = {
   DefaultEvent: 10000,
   NextEvent: null,
   // 自更属性
-  EVT: { 10002: [1], 10003: [2] }, // 历史事件
-  TLT: { 1001: true, 1002: true }, // 天赋
-  AGE: 10, // 年龄
+  EVT: {}, // 历史事件
+  TLT: {}, // 天赋
+  AGE: 0, // 年龄
   // 基础属性
-  CHR: 5, // 颜值
-  INT: 5, // 智力
-  MNY: 6, // 家境
-  STR: 6, // 体质
+  CHR: 0, // 颜值
+  INT: 0, // 智力
+  MNY: 0, // 家境
+  STR: 0, // 体质
   // 额外属性
+  SPR: 0,
   HAP: 0, // 心情
   LIF: 1 // 是否活着
 }
 
-const AgeEventsMap = [[10001, 10002], [10003, 10004]]
+const AgeEventsMap = []
 
 function transSingleJurdgement(command = '', player) {
-  const { CHR, INT, MNY, STR, HAP } = player
+  const { CHR, INT, MNY, STR, HAP, SPR } = player
   const isFalseCommand = command.includes('!')
   const isTrueCommand = command.includes('?')
   if (isFalseCommand || isTrueCommand) {
@@ -28,11 +29,11 @@ function transSingleJurdgement(command = '', player) {
       case 'EVT':
       case 'TLT':
         for (let i = 0; i < cond.length; i++) {
-          if ((isFalseCommand && player[cmd[0]][cond[i]]) || (isTrueCommand && !player[cmd[0]][cond[i]])) {
-            return false
+          if ((isFalseCommand && !player[cmd[0]][cond[i]]) || (isTrueCommand && player[cmd[0]][cond[i]])) {
+            return true
           }
         }
-        return true
+        return false
       case 'AGE':
         return (isFalseCommand && !cond.includes(player[cmd[0]])) || (isTrueCommand && cond.includes(player[cmd[0]]))
     }
@@ -41,6 +42,7 @@ function transSingleJurdgement(command = '', player) {
 }
 
 function transJurdgement(command, player) {
+  if (!command) return false
   let result = null
   const AndCommands = command.split('&')
   AndCommands.forEach((andCmd, andIndex) => {
@@ -55,6 +57,7 @@ function transJurdgement(command, player) {
 }
 
 function transResultJurdgement(commands = [], player) {
+  console.log(commands)
   const results = []
   commands.forEach(command => {
     const cmdArr = command.split(':')
@@ -65,41 +68,6 @@ function transResultJurdgement(commands = [], player) {
   return results
 }
 
-/**  用例
- * CHR>4
- * CHR>4&INT===5
- * CHR>4|INT===5
- * CHR>4&INT===5|STR<7
- * CHR>4&INT===5|STR<7&MNY>5
- * EVT?[10002]
- * EVT![10002]
- * TLT?[1001]
- * TLT![1002]
- * AGE?[10,20]
- * AGE![10,20]
- * EVT?[10002]&INT===5
- * TLT?[1002]&INT===5
- * AGE![10,20]&INT===5
- * EVT?[10002]&INT===5|STR<7&MNY>5
- * ['CHR>4:11005']
- * */
-// console.log(transJurdgement('CHR>4', player))
-// console.log(transJurdgement('CHR>4&INT===5', player))
-// console.log(transJurdgement('CHR>4|INT===5', player))
-// console.log(transJurdgement('CHR>4&INT===5|STR<7', player))
-// console.log(transJurdgement('CHR>4&INT===5|STR<7&MNY>5', player))
-// console.log(transJurdgement('EVT?[10002]', player))
-// console.log(transJurdgement('EVT![10002]', player))
-// console.log(transJurdgement('TLT?[1001]', player))
-// console.log(transJurdgement('TLT![1002]', player))
-// console.log(transJurdgement('AGE?[10,20]', player))
-// console.log(transJurdgement('AGE![10,20]', player))
-// console.log(transJurdgement('EVT?[10002]&INT===5', player))
-// console.log(transJurdgement('TLT?[1002]&INT===5', player))
-// console.log(transJurdgement('AGE![10,20]&INT===5', player))
-// console.log(transJurdgement('EVT?[10002]&INT===5|STR<7&MNY>5', player))
-// console.log(transResultJurdgement(['CHR>4:11005'], player))
-
 function updateEventsMap(player) {
   const { AGE, EVT } = player
   const _EVT = {}
@@ -109,7 +77,7 @@ function updateEventsMap(player) {
   }
   return _EVT
 }
-
+// console.log((transJurdgement('EVT?[10140,10141]|TLT?[1030]', player)))
 function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
   const { AGE } = player
   const AgeEvents = JSON.parse(JSON.stringify(AgeEventsMap[AGE]))
@@ -124,6 +92,7 @@ function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
       // 没有执行条件 或 符合执行条件
       (!include || transJurdgement(include, player))
     ) {
+      console.log(AgeEvents[i], transJurdgement(exclude, player))
       if (certainly) {
         CertainEvents.push(AgeEvents[i])
         continue
@@ -141,7 +110,7 @@ function getCurrentEvent(EventsData, { RandomEvents = [], CertainEvents = [], Ra
   if (NextEvent) return NextEvent
   if (CertainEvents.length > 0) return CertainEvents[0]
   if (RandomEvents.length === 0) return DefaultEvent
-  let randNum = Math.random() * RandomTotalWeight
+  let randNum = parseInt(Math.random() * RandomTotalWeight)
   for (let i = 0; i < RandomEvents.length; i++) {
     randNum -= EventsData[RandomEvents[i]].weight
     if (randNum <= 0) return RandomEvents[i]
@@ -149,18 +118,127 @@ function getCurrentEvent(EventsData, { RandomEvents = [], CertainEvents = [], Ra
   return DefaultEvent
 }
 
-function execEvent(EventsData, eid, player) {
-  const _player = JSON.parse(JSON.stringify(player))
+function execEvent(EventsData, eid, player, recur = false) {
+  let _player = JSON.parse(JSON.stringify(player))
+  _player.NextEvent = null
   const { AGE } = _player
-  const { resultEvents, effect } = EventsData[eid]
+  const { event, defaultResult, resultEvents, effect } = EventsData[eid]
+  const desc = [event]
+  if (!_player.EVT[eid]) _player.EVT[eid] = []
   _player.EVT[eid].push(AGE)
   if (effect) {
     for (const key in effect) {
       _player[key] += effect[key]
     }
   }
-  let result = null
   if (resultEvents) {
-    result = transResultJurdgement(resultEvents, player)[0]
+    const resultEventEids = transResultJurdgement(resultEvents, player)
+    if (resultEventEids.length > 0) {
+      if (defaultResult || recur) {
+        const resultExecRes = execEvent(EventsData, resultEventEids[0], _player, true)
+        desc.push(...resultExecRes.desc)
+        _player = resultExecRes.player
+      } else {
+        _player.NextEvent = resultEventEids[0]
+      }
+    } else if (resultEventEids.length === 0 && (defaultResult || recur)) {
+      if (defaultResult) desc.push(defaultResult)
+    }
+  } else if (!resultEvents && (defaultResult || recur)) {
+    if (defaultResult) desc.push(defaultResult)
+  }
+  return { player: _player, desc }
+}
+
+const ContentBoxDom = document.getElementById('ContentBox')
+const EventDomProto = document.getElementById('EventDomProto')
+const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
+
+const gameover = () => {
+  document.body.removeEventListener('click', nextAge)
+  document.getElementById('next').removeEventListener('click', nextAge)
+}
+
+const nextAge = () => {
+  player.AGE++
+  player.EVT = updateEventsMap(player)
+  const CurrentEventsMap = getCurrentEventsMap(EventsData, AgeEventsMap, player)
+  // console.log(CurrentEventsMap)
+  const CurrentEvent = getCurrentEvent(EventsData, CurrentEventsMap, player)
+  console.log(CurrentEvent)
+  const ExecEventRes = execEvent(EventsData, CurrentEvent, player)
+  player = ExecEventRes.player
+  if (player.LIF <= 0) {
+    gameover()
+  }
+  // 更新页面
+  const EventDom = EventDomProto.cloneNode(true)
+  EventDom.style.display = 'flex'
+  const EventDomRandomId = Math.random().toString(36).slice(2)
+  EventDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}`)
+  // 年龄内容
+  const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
+  EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-age`)
+  EventSingleDescDom.innerHTML = `${player.AGE} 岁`
+  EventDom.appendChild(EventSingleDescDom)
+  // 内容内容
+  ExecEventRes.desc.forEach((desc, index) => {
+    const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
+    EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-${index}`)
+    EventSingleDescDom.innerHTML = desc
+    EventDom.appendChild(EventSingleDescDom)
+  })
+  ContentBoxDom.appendChild(EventDom)
+  ContentBoxDom.scrollTop = ContentBoxDom.scrollHeight - ContentBoxDom.clientHeight;
+}
+
+const initAgeEventsMap = () => {
+  for (const eid in EventsData) {
+    if (!EventsData[eid].age) continue
+    EventsData[eid].age.forEach(age => {
+      const ageArr = AgeEventsMap[age] || []
+      ageArr.push(parseInt(eid))
+      AgeEventsMap[age] = Array.from(new Set(ageArr))
+    })
   }
 }
+
+initAgeEventsMap()
+
+// document.body.addEventListener('click', nextAge)
+document.getElementById('next').addEventListener('click', nextAge)
+
+// for (const age in ageData) {
+//   const { event } = ageData[age]
+//   event.forEach(eid => {
+//     const eventInfo = `${eid}`.split('*')
+//     const ageArr = eventsData[eventInfo[0]].age || []
+//     ageArr.push(parseInt(age))
+//     eventsData[eventInfo[0]].age = Array.from(new Set(ageArr))
+//     eventsData[eventInfo[0]].weight = eventInfo.length > 1 ? parseFloat(eventInfo[1]) * 10000 : 10
+//   })
+// }
+// for (const eid in eventsData) {
+//   const item = eventsData[eid]
+//   eventsData[eid] = {
+//     noRandom: item.NoRandom, // 是否随机事件(true表示用于拼接的事件)
+//     event: item.event,  // 事件文字
+//     defaultResult: item.postEvent,
+//     include: item.include,
+//     exclude: item.exclude,
+//     color: "#000", // 事件颜色
+//     resultEvents: item.branch,
+//     effect: item.effect, // 属性影响
+//     weight: item.weight, // 事件权重（随机抽取事件时使用，及决定在多个达成条件必然发生的事件中的优先级）
+//     age: item.age // 事件适龄
+//   }
+
+// }
+// const str = JSON.stringify(eventsData).replaceAll(/[\(\)]/g, '')
+// const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
+// const downLink = document.createElement('a')
+// downLink.download = 'language.json'
+// downLink.href = URL.createObjectURL(blob)
+// document.body.appendChild(downLink)
+// downLink.click()
+// document.body.removeChild(downLink)

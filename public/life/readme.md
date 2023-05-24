@@ -21,7 +21,6 @@ Events: 五位数
   resultEvents: [Jurgement:Event],
   effect: {}, // 属性影响
 
-  certainly: Boolean, // 满足条件必然发生
   weight: Number, // 事件权重（随机抽取事件时使用，及决定在多个达成条件必然发生的事件中的优先级）
   age: [] // 事件适龄
 }
@@ -141,9 +140,51 @@ Events: 五位数
         * [是] 拼接[defaultResult];
     * [否] 判断是否存在[defaultResult];
       * [是] 拼接[defaultResult];
-      * [否] 跳过当前[resultEvents]步骤;
   * 事件内容DOM插入HTML
 
 #### 岁数反转
 
 * 变更[AGE]
+
+---
+
+# 附录
+
+## 测试用例
+
+```js
+/**  用例
+ * CHR>4
+ * CHR>4&INT===5
+ * CHR>4|INT===5
+ * CHR>4&INT===5|STR<7
+ * CHR>4&INT===5|STR<7&MNY>5
+ * EVT?[10002]
+ * EVT![10002]
+ * TLT?[1001]
+ * TLT![1002]
+ * AGE?[10,20]
+ * AGE![10,20]
+ * EVT?[10002]&INT===5
+ * TLT?[1002]&INT===5
+ * AGE![10,20]&INT===5
+ * EVT?[10002]&INT===5|STR<7&MNY>5
+ * ['CHR>4:11005']
+ * */
+// console.log(transJurdgement('CHR>4', player))
+// console.log(transJurdgement('CHR>4&INT===5', player))
+// console.log(transJurdgement('CHR>4|INT===5', player))
+// console.log(transJurdgement('CHR>4&INT===5|STR<7', player))
+// console.log(transJurdgement('CHR>4&INT===5|STR<7&MNY>5', player))
+// console.log(transJurdgement('EVT?[10002]', player))
+// console.log(transJurdgement('EVT![10002]', player))
+// console.log(transJurdgement('TLT?[1001]', player))
+// console.log(transJurdgement('TLT![1002]', player))
+// console.log(transJurdgement('AGE?[10,20]', player))
+// console.log(transJurdgement('AGE![10,20]', player))
+// console.log(transJurdgement('EVT?[10002]&INT===5', player))
+// console.log(transJurdgement('TLT?[1002]&INT===5', player))
+// console.log(transJurdgement('AGE![10,20]&INT===5', player))
+// console.log(transJurdgement('EVT?[10002]&INT===5|STR<7&MNY>5', player))
+// console.log(transResultJurdgement(['CHR>4:11005'], player))
+```
