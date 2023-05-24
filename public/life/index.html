@@ -5,8 +5,6 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <script type="text/javascript" src="./events/events.json"></script>
-  <script type="text/javascript" src="./events/index.js"></script>
   <title></title>
 </head>
 <style>
@@ -23,6 +21,10 @@
     padding: 0;
     box-sizing: border-box;
   }
+  
+  p {
+    user-select: none;
+  }
 
   body {
     display: flex;
@@ -36,12 +38,77 @@
     background-size: cover;
     background-image: #fff;
   }
+
+  .gameWindow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .EventBox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .EventBox-desc {
+    width: 100%;
+    text-align: left;
+  }
+
+  .playerBox {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
 </style>
 
 <body>
-  <div id="EventDomProto" class="EventBox" style="display: none;">
-  <p id="EventBox_Desc" class="EventBox-desc"></p></div>
+  <div id="GameWindow" class="gameWindow" style="display: none">
+    <div class="playerBox">
+      <div class="playerBox-property">
+        <p class="playerBox-property-key">CHR</p>
+        <p id="CHR" class="playerBox-property-value"></p>
+      </div>
+      <div class="playerBox-property">
+        <p class="playerBox-property-key">INT</p>
+        <p id="INT" class="playerBox-property-value"></p>
+      </div>
+      <div class="playerBox-property">
+        <p class="playerBox-property-key">MNY</p>
+        <p id="MNY" class="playerBox-property-value"></p>
+      </div>
+      <div class="playerBox-property">
+        <p class="playerBox-property-key">STR</p>
+        <p id="STR" class="playerBox-property-value"></p>
+      </div>
+      <div class="playerBox-property">
+        <p class="playerBox-property-key">SPR</p>
+        <p id="SPR" class="playerBox-property-value"></p>
+      </div>
+    </div>
+    <div id="ContentBox" class="content">
+      <div id="EventDomProto" class="EventBox" style="display: none;">
+        <p id="EventBox_Desc" class="EventBox-desc"></p>
+      </div>
+    </div>
+  </div>
+  <button id="start">start</button>
+  <!-- <button id="next">test</button> -->
 </body>
+<!-- <script type="text/javascript" src="./events/data.js"></script> -->
+<script type="text/javascript" src="./events/testevents.json"></script>
+<script type="text/javascript" src="./events/testtenants.json"></script>
+<script type="text/javascript" src="./events/index.js"></script>
 <script>
   // console.log(getEvents())
 </script>
