@@ -1,4 +1,4 @@
-let player = {
+const initPlayer = {
   DefaultEvent: 10000,
   NextEvent: null,
   // 自更属性
@@ -6,15 +6,27 @@ let player = {
   TLT: {}, // 天赋
   AGE: 0, // 年龄
   // 基础属性
-  CHR: 0, // 颜值
-  INT: 0, // 智力
-  MNY: 0, // 家境
-  STR: 0, // 体质
+  CHR: 5, // 颜值
+  INT: 5, // 智力
+  MNY: 5, // 家境
+  STR: 5, // 体质
   // 额外属性
-  SPR: 0,
-  HAP: 0, // 心情
+  SPR: 0, // 心情
   LIF: 1 // 是否活着
 }
+
+let player = {}
+
+const GameWindowDom = document.getElementById('GameWindow')
+const StartButton = document.getElementById('start')
+const CHRDom = document.getElementById('CHR')
+const INTDom = document.getElementById('INT')
+const MNYDom = document.getElementById('MNY')
+const STRDom = document.getElementById('STR')
+const SPRDom = document.getElementById('SPR')
+const ContentBoxDom = document.getElementById('ContentBox')
+const EventDomProto = document.getElementById('EventDomProto')
+const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
 
 const AgeEventsMap = []
 
@@ -57,7 +69,6 @@ function transJurdgement(command, player) {
 }
 
 function transResultJurdgement(commands = [], player) {
-  console.log(commands)
   const results = []
   commands.forEach(command => {
     const cmdArr = command.split(':')
@@ -77,7 +88,6 @@ function updateEventsMap(player) {
   }
   return _EVT
 }
-// console.log((transJurdgement('EVT?[10140,10141]|TLT?[1030]', player)))
 function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
   const { AGE } = player
   const AgeEvents = JSON.parse(JSON.stringify(AgeEventsMap[AGE]))
@@ -92,7 +102,6 @@ function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
       // 没有执行条件 或 符合执行条件
       (!include || transJurdgement(include, player))
     ) {
-      console.log(AgeEvents[i], transJurdgement(exclude, player))
       if (certainly) {
         CertainEvents.push(AgeEvents[i])
         continue
@@ -134,7 +143,7 @@ function execEvent(EventsData, eid, player, recur = false) {
   if (resultEvents) {
     const resultEventEids = transResultJurdgement(resultEvents, player)
     if (resultEventEids.length > 0) {
-      if (defaultResult || recur) {
+      if (defaultResult || resultEventEids[0] === 10000 || recur) {
         const resultExecRes = execEvent(EventsData, resultEventEids[0], _player, true)
         desc.push(...resultExecRes.desc)
         _player = resultExecRes.player
@@ -150,24 +159,32 @@ function execEvent(EventsData, eid, player, recur = false) {
   return { player: _player, desc }
 }
 
-const ContentBoxDom = document.getElementById('ContentBox')
-const EventDomProto = document.getElementById('EventDomProto')
-const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
-
 const gameover = () => {
   document.body.removeEventListener('click', nextAge)
-  document.getElementById('next').removeEventListener('click', nextAge)
+  // document.getElementById('next').removeEventListener('click', nextAge)
+}
+
+const setPlayer = (_player) => {
+  // for (const key in _player) {
+  //   player[key] = _player[key]
+  // }
+  player = _player
+  CHRDom.innerHTML = player.CHR
+  INTDom.innerHTML = player.INT
+  MNYDom.innerHTML = player.MNY
+  STRDom.innerHTML = player.STR
+  SPRDom.innerHTML = player.SPR
 }
 
 const nextAge = () => {
+  if (!player) return
   player.AGE++
   player.EVT = updateEventsMap(player)
   const CurrentEventsMap = getCurrentEventsMap(EventsData, AgeEventsMap, player)
-  // console.log(CurrentEventsMap)
   const CurrentEvent = getCurrentEvent(EventsData, CurrentEventsMap, player)
   console.log(CurrentEvent)
   const ExecEventRes = execEvent(EventsData, CurrentEvent, player)
-  player = ExecEventRes.player
+  setPlayer(ExecEventRes.player)
   if (player.LIF <= 0) {
     gameover()
   }
@@ -203,10 +220,21 @@ const initAgeEventsMap = () => {
   }
 }
 
-initAgeEventsMap()
+const startGame = () => {
+  StartButton.style.display = 'none'
+  GameWindowDom.style.display = 'flex'
+  initAgeEventsMap()
+  setPlayer(JSON.parse(JSON.stringify(initPlayer)))
+  CHRDom.innerHTML = player.CHR
+  INTDom.innerHTML = player.INT
+  MNYDom.innerHTML = player.MNY
+  STRDom.innerHTML = player.STR
+  SPRDom.innerHTML = player.SPR
+  document.body.addEventListener('click', nextAge)
+}
 
-// document.body.addEventListener('click', nextAge)
-document.getElementById('next').addEventListener('click', nextAge)
+StartButton.addEventListener('click', startGame)
+// document.getElementById('next').addEventListener('click', nextAge)
 
 // for (const age in ageData) {
 //   const { event } = ageData[age]
