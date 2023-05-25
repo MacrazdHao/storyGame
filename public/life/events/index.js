@@ -7,10 +7,10 @@ const initPlayer = {
   AGE: 0, // 年龄
   preAGE: [], // 旧年龄
   // 基础属性
-  CHR: 5, // 颜值
-  INT: 5, // 智力
-  MNY: 5, // 家境
-  STR: 5, // 体质
+  CHR: 0, // 颜值
+  INT: 0, // 智力
+  MNY: 0, // 家境
+  STR: 0, // 体质
   // 额外属性
   SPR: 5, // 心情
   LIF: 1 // 是否活着
@@ -18,21 +18,58 @@ const initPlayer = {
 
 let player = {}
 
+const RareMap = [100, 80, 60, 10] // 天赋稀有度对应权重
+const RequireSelectTalentNum = 3 // 天赋最大可选数量
+const MaxTalentChoices = 8 // 天赋选项数量
+
+let RealTalentsMap = JSON.parse(JSON.stringify(TalentsData)) // 真实天赋对象Map
+let TotalTalentWeight = 0 // 天赋总权重
+let RareTalentsMap = {} // 各自稀有度对应的天赋tid，只记录rare-tids
+let SelectedExcludeTalents = {} // 只记录tid
+
+let TalentChoices = {} // 天赋选项，只记录tid-isSelected
+let SelectedTalentChoicesNum = 0 // 天赋选项，只记录tid-isSelected
+let CurrentTalentChoicesDoms = [] // 天赋选项的Doms
+
+const AgeEventsMap = [] // 年龄对应的事件集只记录age-eids
+
+let points = 20 // 可用点数
+
+const ReincarnationButton = document.getElementById('Reincarnation')
+const TalentWindowDom = document.getElementById('TalentWindow')
+const TalentChoicesBoxDom = document.getElementById('TalentChoicesBox')
+const TalentItemProto = document.getElementById('TalentItemProto')
+const ConfirmTalentButton = document.getElementById('ConfirmTalent')
+
+const PointsWindowDom = document.getElementById('PointsWindow')
+const LastPointsDom = document.getElementById('LastPoints')
+const PointerValueDoms = {
+  CHR: document.getElementById('PointsItem-CHR'),
+  INT: document.getElementById('PointsItem-INT'),
+  MNY: document.getElementById('PointsItem-MNY'),
+  STR: document.getElementById('PointsItem-STR')
+}
+const PointsItemCHRDecreaseButton = document.getElementById('PointsItem-CHR-decrease')
+const PointsItemINTDecreaseButton = document.getElementById('PointsItem-INT-decrease')
+const PointsItemMNYDecreaseButton = document.getElementById('PointsItem-MNY-decrease')
+const PointsItemSTRDecreaseButton = document.getElementById('PointsItem-STR-decrease')
+const PointsItemCHRIncreaseButton = document.getElementById('PointsItem-CHR-increase')
+const PointsItemINTIncreaseButton = document.getElementById('PointsItem-INT-increase')
+const PointsItemMNYIncreaseButton = document.getElementById('PointsItem-MNY-increase')
+const PointsItemSTRIncreaseButton = document.getElementById('PointsItem-STR-increase')
+
+const ContentBoxDom = document.getElementById('ContentBox')
 const GameWindowDom = document.getElementById('GameWindow')
-const StartButton = document.getElementById('start')
+const StartGameButton = document.getElementById('StartGame')
 const CHRDom = document.getElementById('CHR')
 const INTDom = document.getElementById('INT')
 const MNYDom = document.getElementById('MNY')
 const STRDom = document.getElementById('STR')
 const SPRDom = document.getElementById('SPR')
-const ContentBoxDom = document.getElementById('ContentBox')
 const EventDomProto = document.getElementById('EventDomProto')
 const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
-const TalentWindowDom = document.getElementById('TalentWindow')
-const TalentChoicesBoxDom = document.getElementById('TalentChoicesBox')
-const TalentItemProto = document.getElementById('TalentItemProto')
 
-const AgeEventsMap = []
+const RestartGameButton = document.getElementById('RestartGame')
 
 // 通用函数
 
@@ -95,20 +132,7 @@ function execEffect(effect, player) {
   return _player
 }
 
-// 点数函数
-
-let points = 20
-
 // 天赋函数
-
-const RareMap = [100, 80, 60, 10] // 天赋稀有度对应权重
-const RequireSelectTalentNum = 3 // 天赋最大可选数量
-const MaxTalentChoices = 8 // 天赋选项数量
-
-let RealTalentsMap = JSON.parse(JSON.stringify(TalentsData)) // 真实天赋对象Map
-let TotalTalentWeight = 0 // 天赋总权重
-let RareTalentsMap = {} // 各自稀有度对应的天赋tid，只记录rare-tids
-let SelectedExcludeTalents = {} // 只记录tid
 
 const initTalentsMap = () => {
   // 初始化天赋相关参数
@@ -124,11 +148,8 @@ const initTalentsMap = () => {
     RealTalentsMap[tid].effected = !effect
     TotalTalentWeight += RealTalentsMap[tid].realWeight
   }
+  ReincarnationButton.style.display = 'flex'
 }
-
-let TalentChoices = {} // 天赋选项，只记录tid-isSelected
-let SelectedTalentChoicesNum = 0 // 天赋选项，只记录tid-isSelected
-let CurrentTalentChoicesDoms = [] // 天赋选项的Doms
 
 const clearTalentButtonListener = () => {
   CurrentTalentChoicesDoms.forEach(dom => {
@@ -150,6 +171,7 @@ const toggleTalentItem = (e) => {
 }
 
 const getTalentChoices = () => {
+  ReincarnationButton.style.display = 'none'
   clearTalentButtonListener()
   TalentChoices = {}
   const IncludeTalents = JSON.parse(JSON.stringify(RealTalentsMap))
@@ -189,6 +211,7 @@ const getTalentChoices = () => {
       }
     })
   }
+  ConfirmTalentButton.style.display = 'flex'
 }
 
 function replaceTalent(player) {
@@ -288,6 +311,7 @@ const confirmTalentSelections = () => {
     alert(`请选择3个天赋(${SelectedTalentChoicesNum})`)
     return
   }
+  ConfirmTalentButton.style.display = 'none'
   SelectedExcludeTalents = {}
   let _player = JSON.parse(JSON.stringify(initPlayer))
   for (const tid in TalentChoices) {
@@ -305,6 +329,7 @@ const confirmTalentSelections = () => {
   _player = replaceTalent(_player)
   setPlayer(JSON.parse(JSON.stringify(_player)))
   execTalentPoints()
+  initPointer()
 }
 
 function execTalentEffect(player) {
@@ -321,10 +346,38 @@ function execTalentEffect(player) {
   return _player
 }
 
-initTalentsMap()
+// 点数函数
 
-document.getElementById('talent').addEventListener('click', getTalentChoices)
-document.getElementById('talentConfirm').addEventListener('click', confirmTalentSelections)
+const initPointer = () => {
+  LastPointsDom.innerHTML = points
+  for (const type in PointerValueDoms) {
+    PointerValueDoms[type].innerHTML = player[type]
+  }
+  PointsWindowDom.style.display = 'flex'
+  StartGameButton.style.display = 'flex'
+}
+
+const increasePoint = (e) => {
+  const CurDom = e.currentTarget
+  const type = CurDom.getAttribute('data-type')
+  if (points > 0) {
+    player[type]++
+    points--
+    LastPointsDom.innerHTML = points
+    PointerValueDoms[type].innerHTML = player[type]
+  }
+}
+
+const decreasePoint = (e) => {
+  const CurDom = e.currentTarget
+  const type = CurDom.getAttribute('data-type')
+  if (player[type] > 0) {
+    player[type]--
+    points++
+    LastPointsDom.innerHTML = points
+    PointerValueDoms[type].innerHTML = player[type]
+  }
+}
 
 // 事件函数
 
@@ -420,7 +473,7 @@ const initAgeEventsMap = () => {
 
 const gameover = () => {
   document.body.removeEventListener('click', nextAge)
-  // document.getElementById('next').removeEventListener('click', nextAge)
+  RestartGameButton.style.display = 'flex'
 }
 
 const setPlayer = (_player) => {
@@ -466,7 +519,8 @@ const nextAge = () => {
 }
 
 const startGame = () => {
-  StartButton.style.display = 'none'
+  StartGameButton.style.display = 'none'
+  PointsWindowDom.style.display = 'none'
   GameWindowDom.style.display = 'flex'
   initAgeEventsMap()
   CHRDom.innerHTML = player.CHR
@@ -477,6 +531,24 @@ const startGame = () => {
   document.body.addEventListener('click', nextAge)
 }
 
-StartButton.addEventListener('click', startGame)
-// document.getElementById('next').addEventListener('click', nextAge)
+const restartGame = () => {
+  RestartGameButton.style.display = 'none'
+  ReincarnationButton.style.display = 'flex'
+}
 
+// 启动程序
+
+initTalentsMap()
+
+ReincarnationButton.addEventListener('click', getTalentChoices)
+ConfirmTalentButton.addEventListener('click', confirmTalentSelections)
+PointsItemCHRDecreaseButton.addEventListener('click', decreasePoint)
+PointsItemINTDecreaseButton.addEventListener('click', decreasePoint)
+PointsItemMNYDecreaseButton.addEventListener('click', decreasePoint)
+PointsItemSTRDecreaseButton.addEventListener('click', decreasePoint)
+PointsItemCHRIncreaseButton.addEventListener('click', increasePoint)
+PointsItemINTIncreaseButton.addEventListener('click', increasePoint)
+PointsItemMNYIncreaseButton.addEventListener('click', increasePoint)
+PointsItemSTRIncreaseButton.addEventListener('click', increasePoint)
+StartGameButton.addEventListener('click', startGame)
+RestartGameButton.addEventListener('click', restartGame)

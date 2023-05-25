@@ -105,6 +105,39 @@
     word-break: break-all;
     word-wrap: break-word;
   }
+
+  .PointsWindow {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pointsItem {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pointsItem+.pointsItem {
+    margin-top: 20px;
+  }
+
+  .pointsItem-label {
+    margin-right: 12px;
+  }
+
+  .pointsItem-decrease,
+  .pointsItem-increase {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+  }
 </style>
 
 <body>
@@ -114,6 +147,33 @@
         <p class="talentBox-item-name"></p>
         <p class="talentBox-item-desc"></p>
       </div>
+    </div>
+  </div>
+  <div id="PointsWindow" class="PointsWindow" style="display: none">
+    <p>可用点数: <span id="LastPoints"></span></p>
+    <div class="pointsItem">
+      <p class="pointsItem-label">颜值</p>
+      <p id="PointsItem-CHR-decrease" data-type="CHR" class="pointsItem-decrease">-</p>
+      <p id="PointsItem-CHR" data-type="CHR" class="pointsItem-value"></p>
+      <p id="PointsItem-CHR-increase" data-type="CHR" class="pointsItem-increase">+</p>
+    </div>
+    <div class="pointsItem">
+      <p class="pointsItem-label">智力</p>
+      <p id="PointsItem-INT-decrease" data-type="INT" class="pointsItem-decrease">-</p>
+      <p id="PointsItem-INT" data-type="INT" class="pointsItem-value"></p>
+      <p id="PointsItem-INT-increase" data-type="INT" class="pointsItem-increase">+</p>
+    </div>
+    <div class="pointsItem">
+      <p class="pointsItem-label">家境</p>
+      <p id="PointsItem-MNY-decrease" data-type="MNY" class="pointsItem-decrease">-</p>
+      <p id="PointsItem-MNY" data-type="MNY" class="pointsItem-value"></p>
+      <p id="PointsItem-MNY-increase" data-type="MNY" class="pointsItem-increase">+</p>
+    </div>
+    <div class="pointsItem">
+      <p class="pointsItem-label">体质</p>
+      <p id="PointsItem-STR-decrease" data-type="STR" class="pointsItem-decrease">-</p>
+      <p id="PointsItem-STR" data-type="STR" class="pointsItem-value"></p>
+      <p id="PointsItem-STR-increase" data-type="STR" class="pointsItem-increase">+</p>
     </div>
   </div>
   <div id="GameWindow" class="gameWindow" style="display: none">
@@ -145,10 +205,10 @@
       </div>
     </div>
   </div>
-  <button id="start">start</button>
-  <button id="talent">getTalents</button>
-  <button id="talentConfirm">confirmTalents</button>
-  <!-- <button id="next">test</button> -->
+  <button id="Reincarnation" style="display: none">马上转世</button>
+  <button id="ConfirmTalent" style="display: none">选好了</button>
+  <button id="StartGame" style="display: none">开启新人生</button>
+  <button id="RestartGame" style="display: none">马上重开</button>
 </body>
 <!-- <script type="text/javascript" src="./events/data.js"></script> -->
 <script type="text/javascript" src="./events/testevents.json"></script>
