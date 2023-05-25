@@ -28,6 +28,9 @@ const SPRDom = document.getElementById('SPR')
 const ContentBoxDom = document.getElementById('ContentBox')
 const EventDomProto = document.getElementById('EventDomProto')
 const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
+const TalentWindowDom = document.getElementById('TalentWindow')
+const TalentChoicesBoxDom = document.getElementById('TalentChoicesBox')
+const TalentItemProto = document.getElementById('TalentItemProto')
 
 const AgeEventsMap = []
 
@@ -98,169 +101,230 @@ let points = 20
 
 // 天赋函数
 
-const RareMap = [100, 80, 60, 10]
-const RequireSelectTenantNum = 3
-const MaxTenantChoices = 8
+const RareMap = [100, 80, 60, 10] // 天赋稀有度对应权重
+const RequireSelectTalentNum = 3 // 天赋最大可选数量
+const MaxTalentChoices = 8 // 天赋选项数量
 
-let TotalTenantWeight = 0
-const RealTenantsMap = JSON.parse(JSON.stringify(TenantsData))
-const RareTenantsMap = {} // 只记录tid
-const TenantChoices = [] // 只记录tid
-const SelectedExcludeTenants = {} // 只记录tid
+let RealTalentsMap = JSON.parse(JSON.stringify(TalentsData)) // 真实天赋对象Map
+let TotalTalentWeight = 0 // 天赋总权重
+let RareTalentsMap = {} // 各自稀有度对应的天赋tid，只记录rare-tids
+let SelectedExcludeTalents = {} // 只记录tid
 
-const initTenantsMap = () => {
-  for (const tid in RealTenantsMap) {
-    const { rare, weight, effect } = RealTenantsMap[tid]
+const initTalentsMap = () => {
+  // 初始化天赋相关参数
+  RealTalentsMap = JSON.parse(JSON.stringify(TalentsData))
+  TotalTalentWeight = 0
+  RareTalentsMap = {}
+  for (const tid in RealTalentsMap) {
+    const { rare, weight, effect } = RealTalentsMap[tid]
     const realWeight = RareMap[rare] + weight
-    if (!RareTenantsMap[rare]) RareTenantsMap[rare] = []
-    RareTenantsMap[rare].push(tid)
-    RealTenantsMap[tid].realWeight = realWeight > 0 ? realWeight : 1
-    RealTenantsMap[tid].effected = !effect
-    TotalTenantWeight += RealTenantsMap[tid].realWeight
+    if (!RareTalentsMap[rare]) RareTalentsMap[rare] = []
+    RareTalentsMap[rare].push(tid)
+    RealTalentsMap[tid].realWeight = realWeight > 0 ? realWeight : 1
+    RealTalentsMap[tid].effected = !effect
+    TotalTalentWeight += RealTalentsMap[tid].realWeight
   }
 }
 
-const getTenantChoices = () => {
-  const IncludeTenants = JSON.parse(JSON.stringify(RealTenantsMap))
-  let TotalTenantWeightTmp = TotalTenantWeight
-  for (let i = 0; i < MaxTenantChoices; i++) {
-    let excludeTenants = []
-    let randNum = parseInt(Math.random() * TotalTenantWeightTmp)
-    for (const tid in IncludeTenants) {
-      const { realWeight, exclude } = IncludeTenants[tid]
+let TalentChoices = {} // 天赋选项，只记录tid-isSelected
+let SelectedTalentChoicesNum = 0 // 天赋选项，只记录tid-isSelected
+let CurrentTalentChoicesDoms = [] // 天赋选项的Doms
+
+const clearTalentButtonListener = () => {
+  CurrentTalentChoicesDoms.forEach(dom => {
+    dom.removeEventListener('click', toggleTalentItem)
+    dom.remove()
+  })
+  CurrentTalentChoicesDoms = []
+}
+
+const toggleTalentItem = (e) => {
+  const tid = parseInt(e.currentTarget.getAttribute('data-id'))
+  let selectedTalentNum = 0
+  for (const tid in TalentChoices) selectedTalentNum += TalentChoices[tid]
+  SelectedTalentChoicesNum = selectedTalentNum
+  if (SelectedTalentChoicesNum >= RequireSelectTalentNum && !TalentChoices[tid]) return
+  TalentChoices[tid] = !TalentChoices[tid]
+  SelectedTalentChoicesNum = SelectedTalentChoicesNum + (TalentChoices[tid] ? 1 : -1)
+  e.currentTarget.setAttribute('class', `talentBox-item ${TalentChoices[tid] ? 'talentBox-item--selected' : ''}`)
+}
+
+const getTalentChoices = () => {
+  clearTalentButtonListener()
+  TalentChoices = {}
+  const IncludeTalents = JSON.parse(JSON.stringify(RealTalentsMap))
+  let TotalTalentWeightTmp = TotalTalentWeight
+  const excludeTalents = []
+  for (let i = 0; i < MaxTalentChoices; i++) {
+    let randNum = parseInt(Math.random() * TotalTalentWeightTmp)
+    console.log(TotalTalentWeight, randNum, TotalTalentWeightTmp)
+    for (const tid in IncludeTalents) {
+      const { name, description, realWeight, exclude } = IncludeTalents[tid]
       randNum = randNum - realWeight
       if (randNum <= 0) {
-        TenantChoices.push(tid)
-        excludeTenants = exclude
-        TotalTenantWeightTmp = TotalTenantWeightTmp - realWeight
+        excludeTalents.push(...(exclude || []), tid)
+        TotalTalentWeightTmp = TotalTalentWeightTmp - realWeight
+        TalentChoices[tid] = false
+        // 更新html
+        const TalentDomRandomId = Math.random().toString(36).slice(2)
+        const TalentItemDom = TalentItemProto.cloneNode(true)
+        TalentItemDom.setAttribute('id', `talentItem-${tid}-${TalentDomRandomId}`)
+        TalentItemDom.setAttribute('data-id', tid)
+        TalentItemDom.style.display = 'flex'
+        const TalentNameDom = TalentItemDom.getElementsByClassName('talentBox-item-name')[0]
+        const TalentDescDom = TalentItemDom.getElementsByClassName('talentBox-item-desc')[0]
+        TalentNameDom.innerHTML = name
+        TalentDescDom.innerHTML = description
+        TalentItemDom.addEventListener('click', toggleTalentItem)
+        TalentChoicesBoxDom.appendChild(TalentItemDom)
+        CurrentTalentChoicesDoms.push(TalentItemDom)
+        TalentWindowDom.style.display = 'flex'
         break
       }
     }
-    excludeTenants.forEach(tid => {
-      if (IncludeTenants[tid]) delete IncludeTenants[tid]
+    excludeTalents.forEach(tid => {
+      if (IncludeTalents[tid]) {
+        TotalTalentWeightTmp = TotalTalentWeightTmp - IncludeTalents[tid].realWeight
+        delete IncludeTalents[tid]
+      }
     })
   }
 }
 
-function selectTenants(selectedTenants = [], player) {
-  // selectedTenants只包含tid
-  if (selectedTenants.length < RequireSelectTenantNum) return
-  let _player = JSON.parse(JSON.stringify(player))
-  selectedTenants.forEach(tid => {
-    const { exclude } = RealTenantsMap[tid]
-    _player.TLT[tid] = JSON.parse(JSON.stringify(RealTenantsMap[tid]))
-    if (exclude) {
-      exclude.forEach(tid => {
-        SelectedExcludeTenants[tid] = true
-      })
-    }
-  })
-  return _player
-}
-
-function replaceTenant(player) {
-  let _player = JSON.parse(JSON.stringify(player))
+function replaceTalent(player) {
+  const _player = JSON.parse(JSON.stringify(player))
   const { TLT } = _player
-  const ReplaceTenantsMap = {} // 只记录oldTid-newTid
+  const ReplaceTalentsMap = {} // 只记录oldTid-newTid
   for (const tid in TLT) {
     const { replacement } = TLT[tid]
-    if (!replacement) continue
-    const AltReplaceTenants = {} // 只记录tid-weight
-    for (const ReplaceType in replacement) {
-      if (ReplaceType === 'tenant') {
-        let replaceTenantTotalWeight = 0
-        const IncludeTenants = {}
-        replacement[ReplaceType].forEach(tinfo => {
-          const tenantInfo = tinfo.split('*')
-          const rtid = parseInt(tenantInfo[0])
-          const weight = parseInt(tenantInfo[1] || 1)
-          if (!SelectedExcludeTenants[rtid]) {
-            IncludeTenants[rtid] = weight
-            replaceTenantTotalWeight += weight
+    if (replacement) {
+      const AltReplaceTalents = {} // 只记录tid-weight
+      for (const ReplaceType in replacement) {
+        if (ReplaceType === 'talent') {
+          let replaceTalentTotalWeight = 0
+          const IncludeTalents = {}
+          replacement[ReplaceType].forEach(tinfo => {
+            const talentInfo = `${tinfo}`.split('*')
+            const rtid = parseInt(talentInfo[0])
+            const weight = parseInt(talentInfo[1] || 1)
+            if (!SelectedExcludeTalents[rtid]) {
+              IncludeTalents[rtid] = weight
+              replaceTalentTotalWeight += weight
+            }
+          })
+          let randNum = parseInt(Math.random() * replaceTalentTotalWeight)
+          for (const itid in IncludeTalents) {
+            randNum = randNum - IncludeTalents[itid]
+            if (randNum <= 0) {
+              AltReplaceTalents[itid] = RealTalentsMap[itid].realWeight
+              break
+            }
           }
-        })
-        let randNum = parseInt(Math.random() * replaceTenantTotalWeight)
-        for (const itid in IncludeTenants) {
-          randNum = randNum - IncludeTenants[itid]
-          if (randNum <= 0) {
-            AltReplaceTenants[itid] = RealTenantsMap[itid].realWeight
-            break
+        } else if (ReplaceType === 'rare') {
+          let TotalRareWeight = 0
+          const RareWeightMap = {}
+          replacement[ReplaceType].forEach(rinfo => {
+            console.log(rinfo)
+            const rareInfo = `${rinfo}`.split('*')
+            const rare = rareInfo[0]
+            RareWeightMap[rare] = parseInt((rareInfo[1] || 1)) * RareMap[rare]
+            TotalRareWeight += RareWeightMap[rare]
+          })
+          let rareRandNum = parseInt(Math.random() * TotalRareWeight)
+          const RareTalents = []
+          for (const rare in RareWeightMap) {
+            rareRandNum -= RareWeightMap[rare]
+            if (rareRandNum <= 0) {
+              RareTalents.push(...RareTalentsMap[rare].filter(rtid => !!SelectedExcludeTalents[rtid]))
+              break
+            }
           }
-        }
-      } else if (ReplaceType === 'rare') {
-        let TotalRareWeight = 0
-        const RareWeightMap = {}
-        replacement[ReplaceType].forEach(rinfo => {
-          const rareInfo = rinfo.split('*')
-          const rare = rareInfo[0]
-          RareWeightMap[rare] = parseInt((rareInfo[1] || 1)) * RareMap[rare]
-          TotalRareWeight += RareWeightMap[rare]
-        })
-        let rareRandNum = parseInt(Math.random() * TotalRareWeight)
-        let RareTenants = []
-        for (const rare in RareWeightMap) {
-          rareRandNum -= RareWeightMap[rare]
-          if (rareRandNum <= 0) {
-            RareTenants.push(...RareTenantsMap[rare].filter(rtid => !!SelectedExcludeTenants[rtid]))
-            break
-          }
-        }
-        let RareTenantsTotalWeight = 0
-        RareTenants.forEach(rtid => {
-          RareTenantsTotalWeight += RealTenantsMap[rtid].realWeight
-        })
-        let randNum = parseInt(Math.random() * RareTenantsTotalWeight)
-        for (let i = 0; i < RareTenants.length; i++) {
-          const { realWeight } = RealTenantsMap[RareTenants[i]]
-          randNum -= realWeight
-          if (randNum <= 0) {
-            AltReplaceTenants[RareTenants[i]] = realWeight
-            break
+          let RareTalentsTotalWeight = 0
+          RareTalents.forEach(rtid => {
+            RareTalentsTotalWeight += RealTalentsMap[rtid].realWeight
+          })
+          let randNum = parseInt(Math.random() * RareTalentsTotalWeight)
+          for (let i = 0; i < RareTalents.length; i++) {
+            const { realWeight } = RealTalentsMap[RareTalents[i]]
+            randNum -= realWeight
+            if (randNum <= 0) {
+              AltReplaceTalents[RareTalents[i]] = realWeight
+              break
+            }
           }
         }
       }
-    }
-    // random => ReplaceTenantsMap
-    let TotalAltTenantWeight = 0
-    for (const atid in AltReplaceTenants) {
-      TotalAltTenantWeight+=AltReplaceTenants[atid]
-    }
-    let randNum = parseInt(Math.random() * TotalAltTenantWeight)
-    for (const atid in AltReplaceTenants) {
-      randNum-=AltReplaceTenants[atid]
-      if (randNum<=0) {
-        ReplaceTenantsMap[atid] = tid
-        break
+      // random => ReplaceTalentsMap
+      let TotalAltTalentWeight = 0
+      for (const atid in AltReplaceTalents) {
+        TotalAltTalentWeight += AltReplaceTalents[atid]
+      }
+      let randNum = parseInt(Math.random() * TotalAltTalentWeight)
+      for (const atid in AltReplaceTalents) {
+        randNum -= AltReplaceTalents[atid]
+        if (randNum <= 0) {
+          ReplaceTalentsMap[atid] = tid
+          break
+        }
       }
     }
   }
-  for (const tid in ReplaceTenantsMap) {
+  for (const tid in ReplaceTalentsMap) {
     // delete _player[tid]  // 不用删也可以
-    _player.TLT[tid] = RealTenantsMap[tid]
+    _player.TLT[tid] = RealTalentsMap[tid]
   }
   return _player
 }
 
-const execTenantPoints = () => {
+const execTalentPoints = () => {
   const { TLT } = player
   for (const tid in TLT) {
     points = points + (TLT[tid].points || 0)
   }
 }
 
-function execTenantEffect(player) {
+const confirmTalentSelections = () => {
+  if (SelectedTalentChoicesNum < RequireSelectTalentNum) {
+    alert(`请选择3个天赋(${SelectedTalentChoicesNum})`)
+    return
+  }
+  SelectedExcludeTalents = {}
+  let _player = JSON.parse(JSON.stringify(initPlayer))
+  for (const tid in TalentChoices) {
+    if (TalentChoices[tid]) {
+      const { exclude } = RealTalentsMap[tid]
+      _player.TLT[tid] = JSON.parse(JSON.stringify(RealTalentsMap[tid]))
+      if (exclude) {
+        exclude.forEach(tid => {
+          SelectedExcludeTalents[tid] = true
+        })
+      }
+    }
+  }
+  TalentWindowDom.style.display = 'none'
+  _player = replaceTalent(_player)
+  setPlayer(JSON.parse(JSON.stringify(_player)))
+  execTalentPoints()
+}
+
+function execTalentEffect(player) {
   let _player = JSON.parse(JSON.stringify(player))
   const { TLT } = _player
   for (const tid in TLT) {
     const { effect, effected, condition } = TLT[tid]
     if (effected) continue
-    if (transJurdgement(condition, _player)) {
+    if ((effect && !condition) || (condition && transJurdgement(condition, _player))) {
       _player = execEffect(effect, _player)
       _player.TLT[tid].effected = true
     }
   }
   return _player
 }
+
+initTalentsMap()
+
+document.getElementById('talent').addEventListener('click', getTalentChoices)
+document.getElementById('talentConfirm').addEventListener('click', confirmTalentSelections)
 
 // 事件函数
 
@@ -360,9 +424,6 @@ const gameover = () => {
 }
 
 const setPlayer = (_player) => {
-  // for (const key in _player) {
-  //   player[key] = _player[key]
-  // }
   player = _player
   CHRDom.innerHTML = player.CHR
   INTDom.innerHTML = player.INT
@@ -374,10 +435,10 @@ const setPlayer = (_player) => {
 const nextAge = () => {
   if (!player) return
   player.AGE++
+  player = execTalentEffect(player)
   player.EVT = updateEventsMap(player)
   const CurrentEventsMap = getCurrentEventsMap(EventsData, AgeEventsMap, player)
   const CurrentEvent = getCurrentEvent(EventsData, CurrentEventsMap, player)
-  console.log(CurrentEvent)
   const ExecEventRes = execEvent(EventsData, CurrentEvent, player)
   setPlayer(ExecEventRes.player)
   if (player.LIF <= 0) {
@@ -408,7 +469,6 @@ const startGame = () => {
   StartButton.style.display = 'none'
   GameWindowDom.style.display = 'flex'
   initAgeEventsMap()
-  setPlayer(JSON.parse(JSON.stringify(initPlayer)))
   CHRDom.innerHTML = player.CHR
   INTDom.innerHTML = player.INT
   MNYDom.innerHTML = player.MNY

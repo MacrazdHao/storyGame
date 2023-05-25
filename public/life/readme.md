@@ -29,25 +29,25 @@ Events: 五位数
 ## 天赋属性
 
 ```js
-[TenantId]:{
+[TalentId]:{
   name: String, // 天赋名称
   description: String, // 天赋描述
   rare: Number, // 天赋稀有度
   weight: Number, // 天赋额外权重
-  exclude: Array(TenantId), // 互斥天赋 (选取可选天赋过程中，存在这些天赋时，该天赋不纳入其中)
+  exclude: Array(TalentId), // 互斥天赋 (选取可选天赋过程中，存在这些天赋时，该天赋不纳入其中)
   points: Number, // 天赋额外追加的初始点数
   effect: {}, // 天赋影响
   condition: Jurgement, // 天赋影响触发条件 (每回合均需进行判定)
   replacement: { // 天赋替换
-    tenant: Array(TenantId*weight), // 按天赋限定列表进行权重随机
-    rare: Array(TenantRare*weight) // 按稀有度进行随机 (非exclude的天赋)
+    talent: Array(TalentId*weight), // 按天赋限定列表进行权重随机
+    rare: Array(TalentRare*weight) // 按稀有度进行随机 (非exclude的天赋)
   }
 }
 ```
 
-<!-- TenantRareMap -->
-<!-- Tenant Exclude for Replacement And Get Tenant Choices -->
-<!-- Tenant Effect for Player Before The Event -->
+<!-- TalentRareMap -->
+<!-- Talent Exclude for Replacement And Get Talent Choices -->
+<!-- Talent Effect for Player Before The Event -->
 
 ### rare 解析
 
@@ -202,59 +202,59 @@ Events: 五位数
 
 ```js
 {
-  [rare1]: [TenantId, ...],
+  [rare1]: [TalentId, ...],
   ...
 }
 ```
 逻辑:
 
-  * [RealTenantsMap] = [Tenants]
-  * for - [tid] - [Tenants]
-    * [RareTenantsMap][Rare].push(tid)
-    * [TotalTenantWeight] += [Rare]
-    * [RealTenantsMap][tid].realWeight = ([RareWeightMap][Rare] + [Tenant].weight) | 1 -> RealRare<=0时，替换为1
+  * [RealTalentsMap] = [Talents]
+  * for - [tid] - [Talents]
+    * [RareTalentsMap][Rare].push(tid)
+    * [TotalTalentWeight] += [Rare]
+    * [RealTalentsMap][tid].realWeight = ([RareWeightMap][Rare] + [Talent].weight) | 1 -> RealRare<=0时，替换为1
 
 ### 获取天赋选项
 
 默认获取8个天赋选项
 
-* [includeTenants] = [RealTenantsMap]
+* [includeTalents] = [RealTalentsMap]
 * [TotalWeightTmp] = [TotalWeight]
 * for - [8] - [index]
-  * [TenantChoices].push([includeTenants][random])
-  * [includeTenants] = [includeTenants] - [includeTenants][random].exclude
-  * [TotalWeightTmp] = [TotalWeightTmp] - [includeTenants][random].realWeight
+  * [TalentChoices].push([includeTalents][random])
+  * [includeTalents] = [includeTalents] - [includeTalents][random].exclude
+  * [TotalWeightTmp] = [TotalWeightTmp] - [includeTalents][random].realWeight
 
 ### 确认已选天赋
 
-生成已选天赋的ExcludeTenantsMap
+生成已选天赋的ExcludeTalentsMap
 
 新建天赋对象 - 含有effected标记，表示天赋影响effect已生效过
 
-  * for - [tid] - [SelectedTenants]
-    * [TLT][tid] = [Tenants][tid]
+  * for - [tid] - [SelectedTalents]
+    * [TLT][tid] = [Talents][tid]
     * [TLT][tid].effected = ![TLT][tid].effect
-    * [ExcludeTenantsMap] = [ExcludeTenantsMap] + [TLT].exclude
+    * [ExcludeTalentsMap] = [ExcludeTalentsMap] + [TLT].exclude
 
 ### 天赋变异
 
-  * [ReplaceTenantMap] = {}
+  * [ReplaceTalentMap] = {}
   * for - [tid] - [TLT]
     * 判断 [TLT][tid] 是否存在 [replacement]
-      * [是] [AltReplaceTenants] = []
+      * [是] [AltReplaceTalents] = []
       * for - [ReplaceType] - [replacement]
         * switch - [ReplaceType]
-          * case 'tenant'
-            * [includeTenants] = [tenant] - [ExcludeTenantsMap]
-            * [AltReplaceTenants].push([includeTenants][random]) -> 根据[replacement][tenant]内配的weight随机
+          * case 'talent'
+            * [includeTalents] = [talent] - [ExcludeTalentsMap]
+            * [AltReplaceTalents].push([includeTalents][random]) -> 根据[replacement][talent]内配的weight随机
           * case 'rare'
             * [Rare] = [rare][random] -> rare根据 [稀有度基础权重] 去随机稀有类型
-            * [includeRareTenantsMap] = [TenantRareMap][Rare] - [ExcludeTenantsMap]
-            * [AltReplaceTenants].push([includeRareTenantsMap][random]) -> 根据realWeight随机
-      * [ReplaceTenantMap][tid] = [AltReplaceTenants][random] -> 根据realWeight随机
+            * [includeRareTalentsMap] = [TalentRareMap][Rare] - [ExcludeTalentsMap]
+            * [AltReplaceTalents].push([includeRareTalentsMap][random]) -> 根据realWeight随机
+      * [ReplaceTalentMap][tid] = [AltReplaceTalents][random] -> 根据realWeight随机
       * [否] [continue]
-  * for - [tid] - [ReplaceTenantMap]
-    * [TLT] = [TLT] - [TLT][tid] + [ReplaceTenantMap][tid]
+  * for - [tid] - [ReplaceTalentMap]
+    * [TLT] = [TLT] - [TLT][tid] + [ReplaceTalentMap][tid]
 
 ### 天赋初始点数生效
 

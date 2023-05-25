@@ -21,7 +21,7 @@
     padding: 0;
     box-sizing: border-box;
   }
-  
+
   p {
     user-select: none;
   }
@@ -70,29 +70,72 @@
     flex-direction: row;
     width: 100%;
   }
+
+  .TalentWindow {
+    width: 100%;
+    height: 100%;
+  }
+
+  .talentBox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .talentBox-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #000;
+  }
+
+  .talentBox-item--selected {
+    color: #fff;
+    background-color: #000;
+  }
+
+  .talentBox-item-name {
+    width: 100%;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+
+  .talentBox-item-desc {
+    max-width: 100%;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
 </style>
 
 <body>
+  <div id="TalentWindow" class="TalentWindow" style="display: none">
+    <div id="TalentChoicesBox" class="talentBox">
+      <div id="TalentItemProto" class="talentBox-item" style="display: none">
+        <p class="talentBox-item-name"></p>
+        <p class="talentBox-item-desc"></p>
+      </div>
+    </div>
+  </div>
   <div id="GameWindow" class="gameWindow" style="display: none">
     <div class="playerBox">
       <div class="playerBox-property">
-        <p class="playerBox-property-key">CHR</p>
+        <p class="playerBox-property-key">颜值</p>
         <p id="CHR" class="playerBox-property-value"></p>
       </div>
       <div class="playerBox-property">
-        <p class="playerBox-property-key">INT</p>
+        <p class="playerBox-property-key">智力</p>
         <p id="INT" class="playerBox-property-value"></p>
       </div>
       <div class="playerBox-property">
-        <p class="playerBox-property-key">MNY</p>
+        <p class="playerBox-property-key">家境</p>
         <p id="MNY" class="playerBox-property-value"></p>
       </div>
       <div class="playerBox-property">
-        <p class="playerBox-property-key">STR</p>
+        <p class="playerBox-property-key">体质</p>
         <p id="STR" class="playerBox-property-value"></p>
       </div>
       <div class="playerBox-property">
-        <p class="playerBox-property-key">SPR</p>
+        <p class="playerBox-property-key">心情</p>
         <p id="SPR" class="playerBox-property-value"></p>
       </div>
     </div>
@@ -103,11 +146,13 @@
     </div>
   </div>
   <button id="start">start</button>
+  <button id="talent">getTalents</button>
+  <button id="talentConfirm">confirmTalents</button>
   <!-- <button id="next">test</button> -->
 </body>
 <!-- <script type="text/javascript" src="./events/data.js"></script> -->
 <script type="text/javascript" src="./events/testevents.json"></script>
-<script type="text/javascript" src="./events/testtenants.json"></script>
+<script type="text/javascript" src="./events/testtalents.json"></script>
 <script type="text/javascript" src="./events/index.js"></script>
 <script>
   // console.log(getEvents())
