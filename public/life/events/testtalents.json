@@ -60,7 +60,7 @@ const TalentsData = {
         "description": "初始可用属性点+2",
         "weight": 0,
         "rare": 1,
-        "status": 2
+        "points": 2
     },
     "1008": {
         "id": "1008",
@@ -184,7 +184,7 @@ const TalentsData = {
         "description": "初始可用属性点+4",
         "weight": 0,
         "rare": 2,
-        "status": 4
+        "points": 4
     },
     "1020": {
         "id": "1020",
@@ -609,7 +609,7 @@ const TalentsData = {
         "description": "初始可用属性点+1",
         "weight": 0,
         "rare": 0,
-        "status": 1
+        "points": 1
     },
     "1064": {
         "id": "1064",
@@ -617,7 +617,7 @@ const TalentsData = {
         "description": "初始可用属性点+8",
         "weight": 0,
         "rare": 3,
-        "status": 8
+        "points": 8
     },
     "1065": {
         "id": "1065",
@@ -827,7 +827,7 @@ const TalentsData = {
         "description": "初始可用属性点-2，快乐+2",
         "weight": 0,
         "rare": 0,
-        "status": -2,
+        "points": -2,
         "effect": {
             "SPR": 2
         },
@@ -841,7 +841,7 @@ const TalentsData = {
         "description": "初始可用属性点-3，快乐+5",
         "weight": 0,
         "rare": 1,
-        "status": -3,
+        "points": -3,
         "effect": {
             "SPR": 5
         },
@@ -855,7 +855,7 @@ const TalentsData = {
         "description": "初始可用点-10",
         "weight": 0,
         "rare": 0,
-        "status": -10,
+        "points": -10,
         "exclude": [
             "1122"
         ]
@@ -1029,7 +1029,7 @@ const TalentsData = {
         "description": "颜值-2，初始可用属性点+1",
         "weight": 0,
         "rare": 0,
-        "status": 1,
+        "points": 1,
         "effect": {
             "CHR": -2
         }
@@ -1215,7 +1215,7 @@ const TalentsData = {
         "description": "赶着投胎，不要初始属性了",
         "weight": 0,
         "rare": 1,
-        "status": -20,
+        "points": -20,
         "exclude": [
             "1084",
             "1085",
@@ -1730,7 +1730,7 @@ const TalentsData = {
         "weight": 0,
         "rare": 3,
         "exclusive": 1,
-        "status": 1,
+        "points": 1,
         "effect": {
             "SPR": 5,
             "MNY": 1,

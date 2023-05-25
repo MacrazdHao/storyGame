@@ -18,6 +18,8 @@ const initPlayer = {
 
 let player = {}
 
+const BaseAttribute = ['CHR', 'INT', 'MNY', 'STR']
+
 const RareMap = [100, 80, 60, 10] // 天赋稀有度对应权重
 const RequireSelectTalentNum = 3 // 天赋最大可选数量
 const MaxTalentChoices = 8 // 天赋选项数量
@@ -126,8 +128,13 @@ function execEffect(effect, player) {
   const _player = JSON.parse(JSON.stringify(player))
   const { AGE } = _player
   for (const key in effect) {
+    let ekey = key
     if (key === 'AGE') _player.preAGE.push(AGE)
-    _player[key] += effect[key]
+    if (key === 'RDM') {
+      const randNum = parseInt(Math.random() * BaseAttribute.length)
+      ekey = BaseAttribute[randNum]
+    }
+    _player[ekey] += effect[key]
   }
   return _player
 }
@@ -179,7 +186,6 @@ const getTalentChoices = () => {
   const excludeTalents = []
   for (let i = 0; i < MaxTalentChoices; i++) {
     let randNum = parseInt(Math.random() * TotalTalentWeightTmp)
-    console.log(TotalTalentWeight, randNum, TotalTalentWeightTmp)
     for (const tid in IncludeTalents) {
       const { name, description, realWeight, exclude } = IncludeTalents[tid]
       randNum = randNum - realWeight
@@ -247,7 +253,6 @@ function replaceTalent(player) {
           let TotalRareWeight = 0
           const RareWeightMap = {}
           replacement[ReplaceType].forEach(rinfo => {
-            console.log(rinfo)
             const rareInfo = `${rinfo}`.split('*')
             const rare = rareInfo[0]
             RareWeightMap[rare] = parseInt((rareInfo[1] || 1)) * RareMap[rare]
@@ -519,6 +524,10 @@ const nextAge = () => {
 }
 
 const startGame = () => {
+  if (points > 0) {
+    alert(`还有${points}点数没加完`)
+    return
+  }
   StartGameButton.style.display = 'none'
   PointsWindowDom.style.display = 'none'
   GameWindowDom.style.display = 'flex'
