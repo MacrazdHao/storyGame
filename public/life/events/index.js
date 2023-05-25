@@ -199,7 +199,6 @@ const getTalentChoices = () => {
         const TalentItemDom = TalentItemProto.cloneNode(true)
         TalentItemDom.setAttribute('id', `talentItem-${tid}-${TalentDomRandomId}`)
         TalentItemDom.setAttribute('data-id', tid)
-        console.log(rare)
         TalentItemDom.style.backgroundColor = RareColorMap[rare]
         TalentItemDom.style.display = 'flex'
         const TalentNameDom = TalentItemDom.getElementsByClassName('talentBox-item-name')[0]
