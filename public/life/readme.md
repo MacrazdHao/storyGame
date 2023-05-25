@@ -326,20 +326,20 @@ for (const age in ageData) {
   event.forEach(eid => {
     const eventInfo = `${eid}`.split('*')
     const ageArr = eventsData[eventInfo[0]].age || []
-    ageArr.push(parseInt(age))
-    eventsData[eventInfo[0]].age = Array.from(new Set(ageArr))
-    eventsData[eventInfo[0]].weight = eventInfo.length > 1 ? parseFloat(eventInfo[1]) * 10000 : 10
+    ageArr.push(`${age}${eventInfo[1] ? '*' + eventInfo[1] : ''}`)
+    eventsData[eventInfo[0]].age = ageArr
+    eventsData[eventInfo[0]].weight = RareMap[eventsData[eventInfo[0]].grade || 0]
   })
 }
 for (const eid in eventsData) {
   const item = eventsData[eid]
   eventsData[eid] = {
     noRandom: item.NoRandom, // 是否随机事件(true表示用于拼接的事件)
-    event: item.event,  // 事件文字
+    event: item.event, // 事件文字
     defaultResult: item.postEvent,
     include: item.include,
     exclude: item.exclude,
-    color: "#000", // 事件颜色
+    color: '#000', // 事件颜色
     resultEvents: item.branch,
     effect: item.effect, // 属性影响
     weight: item.weight, // 事件权重（随机抽取事件时使用，及决定在多个达成条件必然发生的事件中的优先级）
@@ -349,7 +349,7 @@ for (const eid in eventsData) {
 const str = JSON.stringify(eventsData).replaceAll(/[\(\)]/g, '')
 const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
 const downLink = document.createElement('a')
-downLink.download = 'language.json'
+downLink.download = 'testevents2.json'
 downLink.href = URL.createObjectURL(blob)
 document.body.appendChild(downLink)
 downLink.click()

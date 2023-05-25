@@ -155,7 +155,6 @@ const initTalentsMap = () => {
     RealTalentsMap[tid].effected = !effect
     TotalTalentWeight += RealTalentsMap[tid].realWeight
   }
-  ReincarnationButton.style.display = 'flex'
 }
 
 const clearTalentButtonListener = () => {
@@ -181,6 +180,7 @@ const getTalentChoices = () => {
   ReincarnationButton.style.display = 'none'
   clearTalentButtonListener()
   TalentChoices = {}
+  initTalentsMap()
   const IncludeTalents = JSON.parse(JSON.stringify(RealTalentsMap))
   let TotalTalentWeightTmp = TotalTalentWeight
   const excludeTalents = []
@@ -399,11 +399,14 @@ function updateEventsMap(player) {
 function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
   const { AGE } = player
   const AgeEvents = JSON.parse(JSON.stringify(AgeEventsMap[AGE]))
-  const RandomEvents = []
+  const RandomEvents = {}
   let RandomTotalWeight = 0
   const CertainEvents = []
   for (let i = 0; i < AgeEvents.length; i++) {
-    const { include, exclude, certainly } = EventsData[AgeEvents[i]]
+    const EventInfo = AgeEvents[i].split('*')
+    const eid = EventInfo[0]
+    const EventExtraWeight = parseInt(EventInfo[1] || 1)
+    const { include, exclude, certainly } = EventsData[eid]
     if (
       // 没有排除条件 或 不符合排除条件
       (!exclude || !transJurdgement(exclude, player)) &&
@@ -411,26 +414,27 @@ function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
       (!include || transJurdgement(include, player))
     ) {
       if (certainly) {
-        CertainEvents.push(AgeEvents[i])
+        CertainEvents.push(eid)
         continue
       }
-      RandomEvents.push(AgeEvents[i])
-      RandomTotalWeight += EventsData[AgeEvents[i]].weight
+      const EventRealWeight = EventsData[eid].weight * EventExtraWeight
+      RandomEvents[eid] = EventRealWeight
+      RandomTotalWeight += EventRealWeight
     }
   }
   CertainEvents.sort((a, b) => EventsData[b].weight - EventsData[a].weight)
   return { RandomEvents, CertainEvents, RandomTotalWeight }
 }
 
-function getCurrentEvent(EventsData, { RandomEvents = [], CertainEvents = [], RandomTotalWeight = 0 }, player) {
+function getCurrentEvent({ RandomEvents = {}, CertainEvents = [], RandomTotalWeight = 0 }, player) {
   const { DefaultEvent, NextEvent } = player
   if (NextEvent) return NextEvent
   if (CertainEvents.length > 0) return CertainEvents[0]
-  if (RandomEvents.length === 0) return DefaultEvent
+  if (JSON.stringify(RandomEvents) === '{}') return DefaultEvent
   let randNum = parseInt(Math.random() * RandomTotalWeight)
-  for (let i = 0; i < RandomEvents.length; i++) {
-    randNum -= EventsData[RandomEvents[i]].weight
-    if (randNum <= 0) return RandomEvents[i]
+  for (const eid in RandomEvents) {
+    randNum -= RandomEvents[eid]
+    if (randNum <= 0) return eid
   }
   return DefaultEvent
 }
@@ -465,12 +469,16 @@ function execEvent(EventsData, eid, player, recur = false) {
 
 const initAgeEventsMap = () => {
   for (const eid in EventsData) {
-    if (!EventsData[eid].age) continue
-    EventsData[eid].age.forEach(age => {
-      const ageArr = AgeEventsMap[age] || []
-      ageArr.push(parseInt(eid))
-      AgeEventsMap[age] = Array.from(new Set(ageArr))
-    })
+    if (EventsData[eid].age) {
+      EventsData[eid].age.forEach(ageInfo => {
+        const AgeInfoArr = ageInfo.split('*')
+        const age = AgeInfoArr[0]
+        const AgeWeight = AgeInfoArr[1] || 0
+        const ageEvents = AgeEventsMap[age] || []
+        ageEvents.push(`${eid}${AgeInfoArr[1] ? '*' + AgeInfoArr[1] : ''}`)
+        AgeEventsMap[age] = Array.from(new Set(ageEvents))
+      })
+    }
   }
 }
 
@@ -496,7 +504,7 @@ const nextAge = () => {
   player = execTalentEffect(player)
   player.EVT = updateEventsMap(player)
   const CurrentEventsMap = getCurrentEventsMap(EventsData, AgeEventsMap, player)
-  const CurrentEvent = getCurrentEvent(EventsData, CurrentEventsMap, player)
+  const CurrentEvent = getCurrentEvent(CurrentEventsMap, player)
   const ExecEventRes = execEvent(EventsData, CurrentEvent, player)
   setPlayer(ExecEventRes.player)
   if (player.LIF <= 0) {
@@ -546,9 +554,7 @@ const restartGame = () => {
 }
 
 // 启动程序
-
-initTalentsMap()
-
+ReincarnationButton.style.display = 'flex'
 ReincarnationButton.addEventListener('click', getTalentChoices)
 ConfirmTalentButton.addEventListener('click', confirmTalentSelections)
 PointsItemCHRDecreaseButton.addEventListener('click', decreasePoint)
