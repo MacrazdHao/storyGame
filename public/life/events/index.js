@@ -405,7 +405,7 @@ function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
   for (let i = 0; i < AgeEvents.length; i++) {
     const EventInfo = AgeEvents[i].split('*')
     const eid = EventInfo[0]
-    const EventExtraWeight = parseInt(EventInfo[1] || 1)
+    const EventExtraWeight = parseInt(EventInfo[1] || 0)
     const { include, exclude, certainly } = EventsData[eid]
     if (
       // 没有排除条件 或 不符合排除条件
@@ -417,7 +417,7 @@ function getCurrentEventsMap(EventsData, AgeEventsMap, player) {
         CertainEvents.push(eid)
         continue
       }
-      const EventRealWeight = EventsData[eid].weight * EventExtraWeight
+      const EventRealWeight = EventExtraWeight || EventsData[eid].weight
       RandomEvents[eid] = EventRealWeight
       RandomTotalWeight += EventRealWeight
     }
