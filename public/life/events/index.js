@@ -12,6 +12,7 @@ const initPlayer = {
   MNY: 0, // 家境
   STR: 0, // 体质
   // 额外属性
+  TMS: 0, // 次数
   SPR: 5, // 心情
   LIF: 1 // 是否活着
 }
@@ -19,8 +20,9 @@ const initPlayer = {
 let player = {}
 
 const BaseAttribute = ['CHR', 'INT', 'MNY', 'STR']
+const CanChangeAttribute = ['CHR', 'INT', 'MNY', 'STR', 'SPR']
 
-const RareMap = [100, 80, 30, 10] // 天赋稀有度对应权重
+const RareMap = [100, 80, 30, 20] // 天赋稀有度对应权重
 const RareColorMap = ['#ffffff', '#6495ed', '#e2a7ff', '#ffa07a'] // 天赋稀有度对应权重
 const RequireSelectTalentNum = 3 // 天赋最大可选数量
 const MaxTalentChoices = 8 // 天赋选项数量
@@ -37,6 +39,7 @@ let CurrentTalentChoicesDoms = [] // 天赋选项的Doms
 const AgeEventsMap = [] // 年龄对应的事件集只记录age-eids
 
 let points = 20 // 可用点数
+let pointsBak = points // 可用点数
 
 const ReincarnationButton = document.getElementById('Reincarnation')
 const TalentWindowDom = document.getElementById('TalentWindow')
@@ -60,6 +63,7 @@ const PointsItemCHRIncreaseButton = document.getElementById('PointsItem-CHR-incr
 const PointsItemINTIncreaseButton = document.getElementById('PointsItem-INT-increase')
 const PointsItemMNYIncreaseButton = document.getElementById('PointsItem-MNY-increase')
 const PointsItemSTRIncreaseButton = document.getElementById('PointsItem-STR-increase')
+const RandomPointsButton = document.getElementById('RandomPoints')
 
 const ContentBoxDom = document.getElementById('ContentBox')
 const GameWindowDom = document.getElementById('GameWindow')
@@ -77,7 +81,7 @@ const RestartGameButton = document.getElementById('RestartGame')
 // 通用函数
 
 function transSingleJurdgement(command = '', player) {
-  const { CHR, INT, MNY, STR, HAP, SPR } = player
+  const { CHR, INT, MNY, STR, HAP, SPR, TMS } = player
   const isFalseCommand = command.includes('!')
   const isTrueCommand = command.includes('?')
   if (isFalseCommand || isTrueCommand) {
@@ -132,8 +136,8 @@ function execEffect(effect, player) {
     let ekey = key
     if (key === 'AGE') _player.preAGE.push(AGE)
     if (key === 'RDM') {
-      const randNum = parseInt(Math.random() * BaseAttribute.length)
-      ekey = BaseAttribute[randNum]
+      const randNum = parseInt(Math.random() * CanChangeAttribute.length)
+      ekey = CanChangeAttribute[randNum]
     }
     _player[ekey] += effect[key]
   }
@@ -148,7 +152,8 @@ const initTalentsMap = () => {
   TotalTalentWeight = 0
   RareTalentsMap = {}
   for (const tid in RealTalentsMap) {
-    const { rare, weight, effect } = RealTalentsMap[tid]
+    const { rare, weight, effect, exclusive } = RealTalentsMap[tid]
+    if (exclusive) continue
     const realWeight = RareMap[rare] + weight
     if (!RareTalentsMap[rare]) RareTalentsMap[rare] = []
     RareTalentsMap[rare].push(tid)
@@ -310,6 +315,7 @@ const execTalentPoints = () => {
   const { TLT } = player
   for (const tid in TLT) {
     points = points + (TLT[tid].points || 0)
+    pointsBak = points
   }
 }
 
@@ -362,6 +368,7 @@ const initPointer = () => {
   }
   PointsWindowDom.style.display = 'flex'
   StartGameButton.style.display = 'flex'
+  RandomPointsButton.style.display = 'flex'
 }
 
 const increasePoint = (e) => {
@@ -384,6 +391,21 @@ const decreasePoint = (e) => {
     LastPointsDom.innerHTML = points
     PointerValueDoms[type].innerHTML = player[type]
   }
+}
+
+const setRandomPoints = () => {
+  let pointsTmp = pointsBak
+  BaseAttribute.forEach((attr, index) => {
+    if (index === BaseAttribute.length - 1) {
+      player[attr] = pointsTmp
+      return
+    }
+    const randNum = parseInt(Math.random() * pointsTmp)
+    pointsTmp -= randNum
+    player[attr] = randNum
+  })
+  points = 0
+  initPointer()
 }
 
 // 事件函数
@@ -500,8 +522,10 @@ const setPlayer = (_player) => {
   SPRDom.innerHTML = player.SPR
 }
 
+let RunningEvent = false
 const nextAge = () => {
-  if (!player) return
+  if (!player || RunningEvent) return
+  RunningEvent = true
   player.AGE++
   player = execTalentEffect(player)
   player.EVT = updateEventsMap(player)
@@ -517,6 +541,7 @@ const nextAge = () => {
   EventDom.style.display = 'flex'
   const EventDomRandomId = Math.random().toString(36).slice(2)
   EventDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}`)
+  EventDom.style.backgroundColor = RareColorMap[EventsData[CurrentEvent].rare]
   // 年龄内容
   const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
   EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-age`)
@@ -531,14 +556,17 @@ const nextAge = () => {
   })
   ContentBoxDom.appendChild(EventDom)
   ContentBoxDom.scrollTop = ContentBoxDom.scrollHeight - ContentBoxDom.clientHeight
+  RunningEvent = false
 }
 
 const startGame = () => {
+  initPlayer.TMS++
   if (points > 0) {
     alert(`还有${points}点数没加完`)
     return
   }
   StartGameButton.style.display = 'none'
+  RandomPointsButton.style.display = 'none'
   PointsWindowDom.style.display = 'none'
   GameWindowDom.style.display = 'flex'
   initAgeEventsMap()
@@ -561,6 +589,7 @@ const restartGame = () => {
 ReincarnationButton.style.display = 'flex'
 ReincarnationButton.addEventListener('click', getTalentChoices)
 ConfirmTalentButton.addEventListener('click', confirmTalentSelections)
+RandomPointsButton.addEventListener('click', setRandomPoints)
 PointsItemCHRDecreaseButton.addEventListener('click', decreasePoint)
 PointsItemINTDecreaseButton.addEventListener('click', decreasePoint)
 PointsItemMNYDecreaseButton.addEventListener('click', decreasePoint)
@@ -571,3 +600,6 @@ PointsItemMNYIncreaseButton.addEventListener('click', increasePoint)
 PointsItemSTRIncreaseButton.addEventListener('click', increasePoint)
 StartGameButton.addEventListener('click', startGame)
 RestartGameButton.addEventListener('click', restartGame)
+
+// TMS是什么？
+// 11323在监狱被打死为什么没死

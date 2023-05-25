@@ -50,7 +50,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
     overflow: auto;
   }
 
@@ -68,7 +68,20 @@
   .playerBox {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: 50px;
+    border-bottom: 1px solid #000;
+  }
+
+  .playerBox-property {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .TalentWindow {
@@ -207,11 +220,12 @@
   </div>
   <button id="Reincarnation" style="display: none">马上转世</button>
   <button id="ConfirmTalent" style="display: none">选好了</button>
+  <button id="RandomPoints" style="display: none">随机分配</button>
   <button id="StartGame" style="display: none">开启新人生</button>
   <button id="RestartGame" style="display: none">马上重开</button>
 </body>
 <script type="text/javascript" src="./events/data.js"></script>
-<script type="text/javascript" src="./events/testevents.json"></script>
+<script type="text/javascript" src="./events/testevents2.json"></script>
 <script type="text/javascript" src="./events/testtalents.json"></script>
 <script type="text/javascript" src="./events/index.js"></script>
 <script>
