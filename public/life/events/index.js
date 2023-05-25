@@ -20,7 +20,8 @@ let player = {}
 
 const BaseAttribute = ['CHR', 'INT', 'MNY', 'STR']
 
-const RareMap = [100, 80, 60, 10] // 天赋稀有度对应权重
+const RareMap = [100, 80, 30, 10] // 天赋稀有度对应权重
+const RareColorMap = ['#ffffff', '#6495ed', '#e2a7ff', '#ffa07a'] // 天赋稀有度对应权重
 const RequireSelectTalentNum = 3 // 天赋最大可选数量
 const MaxTalentChoices = 8 // 天赋选项数量
 
@@ -187,7 +188,7 @@ const getTalentChoices = () => {
   for (let i = 0; i < MaxTalentChoices; i++) {
     let randNum = parseInt(Math.random() * TotalTalentWeightTmp)
     for (const tid in IncludeTalents) {
-      const { name, description, realWeight, exclude } = IncludeTalents[tid]
+      const { name, description, realWeight, exclude, rare } = IncludeTalents[tid]
       randNum = randNum - realWeight
       if (randNum <= 0) {
         excludeTalents.push(...(exclude || []), tid)
@@ -198,6 +199,8 @@ const getTalentChoices = () => {
         const TalentItemDom = TalentItemProto.cloneNode(true)
         TalentItemDom.setAttribute('id', `talentItem-${tid}-${TalentDomRandomId}`)
         TalentItemDom.setAttribute('data-id', tid)
+        console.log(rare)
+        TalentItemDom.style.backgroundColor = RareColorMap[rare]
         TalentItemDom.style.display = 'flex'
         const TalentNameDom = TalentItemDom.getElementsByClassName('talentBox-item-name')[0]
         const TalentDescDom = TalentItemDom.getElementsByClassName('talentBox-item-desc')[0]
@@ -550,6 +553,8 @@ const startGame = () => {
 
 const restartGame = () => {
   RestartGameButton.style.display = 'none'
+  ContentBoxDom.style.display = 'none'
+  GameWindowDom.style.display = 'none'
   ReincarnationButton.style.display = 'flex'
 }
 
