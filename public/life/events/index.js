@@ -1,4 +1,4 @@
-const initPlayer = {
+const initPlayer = localStorage.getItem('initPlayer') || {
   DefaultEvent: 10000,
   NextEvent: null,
   // 自更属性
@@ -12,7 +12,7 @@ const initPlayer = {
   MNY: 0, // 家境
   STR: 0, // 体质
   // 额外属性
-  TMS: 0, // 次数
+  TMS: 0, // 次数（人生重开次数）
   SPR: 5, // 心情
   LIF: 1 // 是否活着
 }
@@ -34,13 +34,14 @@ let SelectedExcludeTalents = {} // 只记录tid
 
 let TalentChoices = {} // 天赋选项，只记录tid-isSelected
 let SelectedTalentChoicesNum = 0 // 天赋选项，只记录tid-isSelected
-let CurrentTalentChoicesDoms = [] // 天赋选项的Doms
+let CurrentTalentChoicesDoms = {} // 天赋选项的Doms
 
 const AgeEventsMap = [] // 年龄对应的事件集只记录age-eids
 
 let points = 20 // 可用点数
 let pointsBak = points // 可用点数
 
+// 元素Dom
 const ReincarnationButton = document.getElementById('Reincarnation')
 const TalentWindowDom = document.getElementById('TalentWindow')
 const TalentChoicesBoxDom = document.getElementById('TalentChoicesBox')
@@ -64,6 +65,7 @@ const PointsItemINTIncreaseButton = document.getElementById('PointsItem-INT-incr
 const PointsItemMNYIncreaseButton = document.getElementById('PointsItem-MNY-increase')
 const PointsItemSTRIncreaseButton = document.getElementById('PointsItem-STR-increase')
 const RandomPointsButton = document.getElementById('RandomPoints')
+const SelectedTalentBoxDom = document.getElementById('SelectedTalentBox')
 
 const ContentBoxDom = document.getElementById('ContentBox')
 const GameWindowDom = document.getElementById('GameWindow')
@@ -164,11 +166,12 @@ const initTalentsMap = () => {
 }
 
 const clearTalentButtonListener = () => {
-  CurrentTalentChoicesDoms.forEach(dom => {
+  for (const tid in CurrentTalentChoicesDoms) {
+    const dom = CurrentTalentChoicesDoms[tid]
     dom.removeEventListener('click', toggleTalentItem)
     dom.remove()
-  })
-  CurrentTalentChoicesDoms = []
+  }
+  CurrentTalentChoicesDoms = {}
 }
 
 const toggleTalentItem = (e) => {
@@ -212,7 +215,7 @@ const getTalentChoices = () => {
         TalentDescDom.innerHTML = description
         TalentItemDom.addEventListener('click', toggleTalentItem)
         TalentChoicesBoxDom.appendChild(TalentItemDom)
-        CurrentTalentChoicesDoms.push(TalentItemDom)
+        CurrentTalentChoicesDoms[tid] = TalentItemDom
         TalentWindowDom.style.display = 'flex'
         break
       }
@@ -324,18 +327,21 @@ const confirmTalentSelections = () => {
     alert(`请选择3个天赋(${SelectedTalentChoicesNum})`)
     return
   }
-  ConfirmTalentButton.style.display = 'none'
+  console.log(RealTalentsMap)
   SelectedExcludeTalents = {}
   let _player = JSON.parse(JSON.stringify(initPlayer))
   for (const tid in TalentChoices) {
     if (TalentChoices[tid]) {
-      const { exclude } = RealTalentsMap[tid]
+      const { exclude, rare } = RealTalentsMap[tid]
       _player.TLT[tid] = JSON.parse(JSON.stringify(RealTalentsMap[tid]))
       if (exclude) {
         exclude.forEach(tid => {
           SelectedExcludeTalents[tid] = true
         })
       }
+      const selectedTalentDom = CurrentTalentChoicesDoms[tid].cloneNode(true)
+      selectedTalentDom.setAttribute('class', 'talentBox-item')
+      SelectedTalentBoxDom.appendChild(selectedTalentDom)
     }
   }
   TalentWindowDom.style.display = 'none'
@@ -343,6 +349,7 @@ const confirmTalentSelections = () => {
   setPlayer(JSON.parse(JSON.stringify(_player)))
   execTalentPoints()
   initPointer()
+  ConfirmTalentButton.style.display = 'none'
 }
 
 function execTalentEffect(player) {
@@ -560,11 +567,12 @@ const nextAge = () => {
 }
 
 const startGame = () => {
-  initPlayer.TMS++
   if (points > 0) {
     alert(`还有${points}点数没加完`)
     return
   }
+  initPlayer.TMS++
+  localStorage.setItem('initPlayer', JSON.stringify(initPlayer))
   StartGameButton.style.display = 'none'
   RandomPointsButton.style.display = 'none'
   PointsWindowDom.style.display = 'none'
@@ -601,5 +609,4 @@ PointsItemSTRIncreaseButton.addEventListener('click', increasePoint)
 StartGameButton.addEventListener('click', startGame)
 RestartGameButton.addEventListener('click', restartGame)
 
-// TMS是什么？
-// 11323在监狱被打死为什么没死
+// 11323在监狱被打死为什么没死？是因为没有做防抖？
