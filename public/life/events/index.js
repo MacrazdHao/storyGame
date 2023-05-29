@@ -1,4 +1,5 @@
-const initPlayer = localStorage.getItem('initPlayer') || {
+const InitPlayerBuffer = localStorage.getItem('InitPlayer')
+const InitPlayer = InitPlayerBuffer ? JSON.parse(InitPlayerBuffer) : {
   DefaultEvent: 10000,
   NextEvent: null,
   // 自更属性
@@ -327,9 +328,8 @@ const confirmTalentSelections = () => {
     alert(`请选择3个天赋(${SelectedTalentChoicesNum})`)
     return
   }
-  console.log(RealTalentsMap)
   SelectedExcludeTalents = {}
-  let _player = JSON.parse(JSON.stringify(initPlayer))
+  let _player = JSON.parse(JSON.stringify(InitPlayer))
   for (const tid in TalentChoices) {
     if (TalentChoices[tid]) {
       const { exclude, rare } = RealTalentsMap[tid]
@@ -571,8 +571,8 @@ const startGame = () => {
     alert(`还有${points}点数没加完`)
     return
   }
-  initPlayer.TMS++
-  localStorage.setItem('initPlayer', JSON.stringify(initPlayer))
+  InitPlayer.TMS++
+  localStorage.setItem('InitPlayer', JSON.stringify(InitPlayer))
   StartGameButton.style.display = 'none'
   RandomPointsButton.style.display = 'none'
   PointsWindowDom.style.display = 'none'

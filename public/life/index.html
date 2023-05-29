@@ -14,6 +14,9 @@
     height: 100%;
     transform-style: preserve-3d;
     font-family: font3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   * {
@@ -32,6 +35,7 @@
     align-items: center;
     position: relative;
     width: 100%;
+    max-width: 60vh;
     height: 100%;
     overflow: hidden;
     transition: 2s all;
@@ -58,6 +62,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    border: 1px solid;
   }
 
   .EventBox-desc {
@@ -87,6 +92,10 @@
   .TalentWindow {
     width: 100%;
     height: 100%;
+  }
+
+  .talentLabel {
+    padding: 20px 0px;
   }
 
   .talentBox,
@@ -159,6 +168,7 @@
 <body>
   <div id="TalentWindow" class="TalentWindow" style="display: none">
     <div id="TalentChoicesBox" class="talentBox">
+      <p class="talentLabel">选择3个你的天赋</p>
       <div id="TalentItemProto" class="talentBox-item" style="display: none">
         <p class="talentBox-item-name"></p>
         <p class="talentBox-item-desc"></p>
