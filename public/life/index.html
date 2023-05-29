@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #000;
   }
 
   * {
@@ -27,6 +28,29 @@
 
   p {
     user-select: none;
+    text-shadow: 0 0 12px #f55603;
+    color: #fffc4e;
+  }
+
+  /**
+  修改webkit内核的浏览器滚动条样式
+  影响全局
+*/
+  ::-webkit-scrollbar {
+    /*高宽分别对应横竖滚动条的尺寸*/
+    width: 2px;
+    height: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {}
+
+  ::-webkit-scrollbar-track {
+    background: #F5F5F500;
   }
 
   body {
@@ -35,15 +59,149 @@
     align-items: center;
     position: relative;
     width: 100%;
-    max-width: 60vh;
+    max-width: 75vh;
+    padding: 0 12px;
     height: 100%;
     overflow: hidden;
-    transition: 2s all;
-    background-size: cover;
-    background-image: #fff;
+    background-color: rgb(85, 85, 85);
+    background-image: url('./assets/bg2.jpg');
+    background-size: contain;
   }
 
-  .gameWindow {
+  /* 首页窗口 */
+
+  .MainWindow {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .MainWindow-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .MainWindow-title>p:nth-child(1) {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 12px #f55603;
+    color: #000;
+  }
+
+  .MainWindow-title>p:nth-child(2) {
+    font-size: 16px;
+    margin-top: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 12px #f55603;
+    color: #800;
+  }
+
+  .MainWindow-title>p:nth-child(3) {
+    font-size: 14px;
+    margin-top: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 12px #f55603;
+    color: #800;
+  }
+
+  #Reincarnation {
+    width: 100%;
+    padding: 12px 0;
+    /* background-color: #fff; */
+    color: #7b0303;
+    margin-top: 60px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 20px 14px #000;
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
+  }
+
+  /* 天赋窗口 */
+
+  .TalentWindow {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0;
+  }
+
+  .talentLabel {
+    padding-bottom: 6px;
+    font-weight: bold;
+    line-height: 22px;
+    height: 34px;
+  }
+
+  .talentBox,
+  .selectedTalentBox {
+    width: 100%;
+    height: calc(100% - 80px);
+    padding: 0 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .talentBox-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid #000; */
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #000;
+    backdrop-filter: blur(10px);
+  }
+
+  .talentBox-item--selected {
+    color: #fff;
+    background-color: #000 !important;
+  }
+
+  .talentBox-item-name {
+    width: 100%;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 14px;
+    color: inherit;
+  }
+
+  .talentBox-item-desc {
+    max-width: 100%;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 12px;
+    color: rgb(191, 0, 255);
+  }
+
+  #ConfirmTalent {
+    width: 100%;
+    margin-top: 6px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #fff; */
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 20px 14px #000;
+    backdrop-filter: blur(10px);
+    font-weight: bold;
+  }
+
+  .GameWindow {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -62,13 +220,139 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    border: 1px solid;
+    /* border: 1px solid; */
+  }
+
+  .EventBox>p:nth-child(1) {
+    font-size: 12px;
+    color: #fff;
+  }
+
+  .EventBox>p {
+    font-size: 14px;
+    color: inherit;
   }
 
   .EventBox-desc {
     width: 100%;
     text-align: left;
   }
+
+  /* 点数窗口 */
+
+  .PointsWindow {
+    width: 100%;
+    height: 100%;
+    /* flex: 1; */
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center;
+    justify-content: space-between; */
+  }
+
+  .pointer {
+    width: 100%;
+    height: fit-content;
+  }
+
+  .pointer-label {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .pointer-points {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .pointsItem {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  .pointsItem+.pointsItem {
+    margin-top: 6px;
+  }
+
+  .pointsItem-label {
+    margin-right: 12px;
+  }
+
+  .pointsItem-value {
+    width: 40px;
+  }
+
+  .pointsItem-decrease,
+  .pointsItem-increase {
+    width: 30px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+  }
+
+  .selectedTalentBox {
+    margin-top: 12px;
+    height: fit-content;
+  }
+
+  .selectedTalentBox-label {
+    width: 100%;
+    padding: 4px 0px;
+    font-size: 12px;
+  }
+
+  .PointsWindow-buttonBox {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #RandomPoints {
+    width: 100%;
+    margin-bottom: 6px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #fff; */
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 20px 14px #000;
+    backdrop-filter: blur(10px);
+    font-weight: bold;
+  }
+
+  #StartGame {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #fff; */
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 20px 14px #000;
+    backdrop-filter: blur(10px);
+    font-weight: bold;
+  }
+
+  /* 游戏窗口 */
 
   .playerBox {
     display: flex;
@@ -88,96 +372,35 @@
     align-items: center;
     justify-content: center;
   }
-
-  .TalentWindow {
-    width: 100%;
-    height: 100%;
-  }
-
-  .talentLabel {
-    padding: 20px 0px;
-  }
-
-  .talentBox,
-  .selectedTalentBox {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .talentBox-item {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #000;
-  }
-
-  .talentBox-item--selected {
-    color: #fff;
-    background-color: #000 !important;
-  }
-
-  .talentBox-item-name {
-    width: 100%;
-    word-break: break-all;
-    word-wrap: break-word;
-  }
-
-  .talentBox-item-desc {
-    max-width: 100%;
-    word-break: break-all;
-    word-wrap: break-word;
-  }
-
-  .PointsWindow {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .pointsItem {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .pointsItem+.pointsItem {
-    margin-top: 20px;
-  }
-
-  .pointsItem-label {
-    margin-right: 12px;
-  }
-
-  .pointsItem-decrease,
-  .pointsItem-increase {
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    text-align: center;
-    line-height: 30px;
-    cursor: pointer;
-  }
 </style>
 
 <body>
+  <div id="MainWindow" class="MainWindow" style="display: none">
+    <div class="MainWindow-title">
+      <p>在这个混蛋世界活腻了？</p>
+      <p>异世界入口在此</p>
+      <p>来换个世界过不一样的人生</p>
+    </div>
+    <div id="Reincarnation">
+      <p>等不及了，马上进入</p>
+    </div>
+  </div>
   <div id="TalentWindow" class="TalentWindow" style="display: none">
+    <p class="talentLabel">请选择3个喜欢的天赋</p>
     <div id="TalentChoicesBox" class="talentBox">
-      <p class="talentLabel">选择3个你的天赋</p>
       <div id="TalentItemProto" class="talentBox-item" style="display: none">
         <p class="talentBox-item-name"></p>
         <p class="talentBox-item-desc"></p>
       </div>
     </div>
+    <div id="ConfirmTalent" style="display: none">
+      <p>选好了</p>
+    </div>
   </div>
   <div id="PointsWindow" class="PointsWindow" style="display: none">
     <div class="pointer">
-      <p>可用点数: <span id="LastPoints"></span></p>
+      <p class="pointer-label">分配初始点数</p>
+      <p class="pointer-points">可用点数: <span id="LastPoints"></span></p>
       <div class="pointsItem">
         <p class="pointsItem-label">颜值</p>
         <p id="PointsItem-CHR-decrease" data-type="CHR" class="pointsItem-decrease">-</p>
@@ -203,9 +426,19 @@
         <p id="PointsItem-STR-increase" data-type="STR" class="pointsItem-increase">+</p>
       </div>
     </div>
-    <div id="SelectedTalentBox" class="selectedTalentBox"></div>
+    <div id="SelectedTalentBox" class="selectedTalentBox">
+      <p class="selectedTalentBox-label">已选天赋:</p>
+    </div>
+    <div class="PointsWindow-buttonBox">
+      <div id="RandomPoints">
+        <p>随机分配</p>
+      </div>
+      <div id="StartGame">
+        <p>开启新人生</p>
+      </div>
+    </div>
   </div>
-  <div id="GameWindow" class="gameWindow" style="display: none">
+  <div id="GameWindow" class="GameWindow" style="display: none">
     <div class="playerBox">
       <div class="playerBox-property">
         <p class="playerBox-property-key">颜值</p>
@@ -229,15 +462,15 @@
       </div>
     </div>
     <div id="ContentBox" class="content">
+      <p id="EventBox_Desc" class="EventBox-desc" style="display: none"></p>
       <div id="EventDomProto" class="EventBox" style="display: none;">
-        <p id="EventBox_Desc" class="EventBox-desc"></p>
       </div>
     </div>
   </div>
-  <button id="Reincarnation" style="display: none">马上转世</button>
-  <button id="ConfirmTalent" style="display: none">选好了</button>
-  <button id="RandomPoints" style="display: none">随机分配</button>
-  <button id="StartGame" style="display: none">开启新人生</button>
+  <!-- <button id="Reincarnation" style="display: none">马上转世</button> -->
+  <!-- <button id="ConfirmTalent" style="display: none">选好了</button> -->
+  <!-- <button id="RandomPoints" style="display: none">随机分配</button> -->
+  <!-- <button id="StartGame" style="display: none">开启新人生</button> -->
   <button id="RestartGame" style="display: none">马上重开</button>
 </body>
 <script type="text/javascript" src="./events/data.js"></script>

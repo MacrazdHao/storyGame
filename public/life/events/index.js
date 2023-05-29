@@ -24,7 +24,7 @@ const BaseAttribute = ['CHR', 'INT', 'MNY', 'STR']
 const CanChangeAttribute = ['CHR', 'INT', 'MNY', 'STR', 'SPR']
 
 const RareMap = [100, 80, 30, 20] // 天赋稀有度对应权重
-const RareColorMap = ['#ffffff', '#6495ed', '#e2a7ff', '#ffa07a'] // 天赋稀有度对应权重
+const RareColorMap = ['#ffffff', '#1a4eab', '#951aab', '#ab541a'] // 天赋稀有度对应权重
 const RequireSelectTalentNum = 3 // 天赋最大可选数量
 const MaxTalentChoices = 8 // 天赋选项数量
 
@@ -43,6 +43,8 @@ let points = 20 // 可用点数
 let pointsBak = points // 可用点数
 
 // 元素Dom
+const MainWindow = document.getElementById('MainWindow')
+
 const ReincarnationButton = document.getElementById('Reincarnation')
 const TalentWindowDom = document.getElementById('TalentWindow')
 const TalentChoicesBoxDom = document.getElementById('TalentChoicesBox')
@@ -77,7 +79,7 @@ const MNYDom = document.getElementById('MNY')
 const STRDom = document.getElementById('STR')
 const SPRDom = document.getElementById('SPR')
 const EventDomProto = document.getElementById('EventDomProto')
-const EventSingleDescDomProto = EventDomProto.getElementsByClassName('EventBox-desc')[0]
+const EventSingleDescDomProto = document.getElementsByClassName('EventBox-desc')[0]
 
 const RestartGameButton = document.getElementById('RestartGame')
 
@@ -187,7 +189,7 @@ const toggleTalentItem = (e) => {
 }
 
 const getTalentChoices = () => {
-  ReincarnationButton.style.display = 'none'
+  MainWindow.style.display = 'none'
   clearTalentButtonListener()
   TalentChoices = {}
   initTalentsMap()
@@ -208,7 +210,7 @@ const getTalentChoices = () => {
         const TalentItemDom = TalentItemProto.cloneNode(true)
         TalentItemDom.setAttribute('id', `talentItem-${tid}-${TalentDomRandomId}`)
         TalentItemDom.setAttribute('data-id', tid)
-        TalentItemDom.style.backgroundColor = RareColorMap[rare]
+        TalentItemDom.style.color = RareColorMap[rare]
         TalentItemDom.style.display = 'flex'
         const TalentNameDom = TalentItemDom.getElementsByClassName('talentBox-item-name')[0]
         const TalentDescDom = TalentItemDom.getElementsByClassName('talentBox-item-desc')[0]
@@ -374,8 +376,8 @@ const initPointer = () => {
     PointerValueDoms[type].innerHTML = player[type]
   }
   PointsWindowDom.style.display = 'flex'
-  StartGameButton.style.display = 'flex'
-  RandomPointsButton.style.display = 'flex'
+  // StartGameButton.style.display = 'flex'
+  // RandomPointsButton.style.display = 'flex'
 }
 
 const increasePoint = (e) => {
@@ -548,17 +550,19 @@ const nextAge = () => {
   EventDom.style.display = 'flex'
   const EventDomRandomId = Math.random().toString(36).slice(2)
   EventDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}`)
-  EventDom.style.backgroundColor = RareColorMap[EventsData[CurrentEvent].rare]
+  EventDom.style.color = RareColorMap[EventsData[CurrentEvent].rare]
   // 年龄内容
   const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
   EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-age`)
   EventSingleDescDom.innerHTML = `${player.AGE} 岁`
+  EventSingleDescDom.style.display = 'block'
   EventDom.appendChild(EventSingleDescDom)
   // 内容内容
   ExecEventRes.desc.forEach((desc, index) => {
     const EventSingleDescDom = EventSingleDescDomProto.cloneNode(true)
     EventSingleDescDom.setAttribute('id', `${player.AGE}-${EventDomRandomId}-${index}`)
     EventSingleDescDom.innerHTML = desc
+    EventSingleDescDom.style.display = 'block'
     EventDom.appendChild(EventSingleDescDom)
   })
   ContentBoxDom.appendChild(EventDom)
@@ -573,8 +577,8 @@ const startGame = () => {
   }
   InitPlayer.TMS++
   localStorage.setItem('InitPlayer', JSON.stringify(InitPlayer))
-  StartGameButton.style.display = 'none'
-  RandomPointsButton.style.display = 'none'
+  // StartGameButton.style.display = 'none'
+  // RandomPointsButton.style.display = 'none'
   PointsWindowDom.style.display = 'none'
   GameWindowDom.style.display = 'flex'
   initAgeEventsMap()
@@ -590,11 +594,11 @@ const restartGame = () => {
   RestartGameButton.style.display = 'none'
   ContentBoxDom.style.display = 'none'
   GameWindowDom.style.display = 'none'
-  ReincarnationButton.style.display = 'flex'
+  MainWindow.style.display = 'flex'
 }
 
 // 启动程序
-ReincarnationButton.style.display = 'flex'
+MainWindow.style.display = 'flex'
 ReincarnationButton.addEventListener('click', getTalentChoices)
 ConfirmTalentButton.addEventListener('click', confirmTalentSelections)
 RandomPointsButton.addEventListener('click', setRandomPoints)
