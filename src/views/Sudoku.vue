@@ -2,7 +2,7 @@
   <div class="Sudoku">
     <div class="levelBox">
       <p>level:</p>
-      <input :value="levelTmp" @input="(e) => inputLevel(e.target.value)">
+      <input :value="levelTmp" @input="(e) => inputLevel(e.target.value)" />
     </div>
     <p class="button" @click="resetMatrix">重置矩阵</p>
     <p class="button" @click="crackMatrix(true)">破解矩阵(也能生成矩阵)</p>
@@ -29,7 +29,7 @@
             ]"
             :value="item || ''"
             @input="(e) => inputNum(e.target.value, rowIndex, index)"
-          >
+          />
         </div>
       </div>
       <div class="rowsBox">
@@ -58,15 +58,15 @@
 </template>
 
 <script>
-const DefaultLevel = 3
+const DefaultLevel = 3;
 const getDefaultMatrix = (level) =>
   new Array(level * level).fill(null).map((item) => {
-    return new Array(level * level).fill(0)
-  })
+    return new Array(level * level).fill(0);
+  });
 export default {
   data() {
     return {
-      difficulty: 17,
+      difficulty: 64,
       levelTmp: DefaultLevel,
       level: DefaultLevel,
       rows: getDefaultMatrix(DefaultLevel),
@@ -76,28 +76,28 @@ export default {
       step: 0,
       trows: getDefaultMatrix(DefaultLevel),
       results: [getDefaultMatrix(DefaultLevel)],
-      cracking: false
-    }
+      cracking: false,
+    };
   },
   computed: {
     MatrixWidth() {
-      return this.level * this.level
+      return this.level * this.level;
     },
     MatrixUnitNum() {
-      return this.MatrixWidth * this.MatrixWidth
+      return this.MatrixWidth * this.MatrixWidth;
     },
     tcols() {
       return new Array(this.MatrixWidth).fill(null).map((item, c) => {
-        const col = []
+        const col = [];
         for (let r = 0; r < this.trows.length; r++) {
-          col.push(this.trows[r][c])
+          col.push(this.trows[r][c]);
         }
-        return col
-      })
+        return col;
+      });
     },
     tboxs() {
       return new Array(this.MatrixWidth).fill(null).map((item, b) => {
-        const box = []
+        const box = [];
         for (
           let r = Math.floor(b / this.level) * this.level;
           r < Math.floor(b / this.level) * this.level + this.level;
@@ -108,125 +108,125 @@ export default {
             c < (b % this.level) * this.level + this.level;
             c++
           ) {
-            box.push(this.trows[r][c])
+            box.push(this.trows[r][c]);
           }
         }
-        return box
-      })
-    }
+        return box;
+      });
+    },
   },
   mounted() {
     // 基础数字
     this.nums = new Array(this.level * this.level)
       .fill(null)
-      .map((item, index) => index + 1)
+      .map((item, index) => index + 1);
   },
   methods: {
     inputLevel(val) {
-      const lev = parseInt(val)
-      const isNum = !isNaN(lev)
-      const levelTmp = val && isNum ? lev : ''
+      const lev = parseInt(val);
+      const isNum = !isNaN(lev);
+      const levelTmp = val && isNum ? lev : "";
       if (levelTmp) {
-        this.levelTmp = levelTmp
-        this.level = levelTmp
-        this.rows = getDefaultMatrix(this.level)
-        this.trows = getDefaultMatrix(this.level)
-        this.results = [getDefaultMatrix(this.level)]
+        this.levelTmp = levelTmp;
+        this.level = levelTmp;
+        this.rows = getDefaultMatrix(this.level);
+        this.trows = getDefaultMatrix(this.level);
+        this.results = [getDefaultMatrix(this.level)];
       }
     },
     resetMatrix() {
       // this.rows = getDefaultMatrix(this.level)
-      this.trows = getDefaultMatrix(this.level)
-      this.results = [getDefaultMatrix(this.level)]
+      this.trows = getDefaultMatrix(this.level);
+      this.results = [getDefaultMatrix(this.level)];
     },
     // 算法方式
     getMatrix() {
-      this.rows = []
-      const rows = new Array(this.level * this.level).fill(0).map(() => [])
-      const cols = new Array(this.level * this.level).fill(0).map(() => [])
-      const boxs = new Array(this.level * this.level).fill(0).map(() => [])
-      const CreateRecord = []
+      this.rows = [];
+      const rows = new Array(this.level * this.level).fill(0).map(() => []);
+      const cols = new Array(this.level * this.level).fill(0).map(() => []);
+      const boxs = new Array(this.level * this.level).fill(0).map(() => []);
+      const CreateRecord = [];
       const CreateIndexRecord = new Array(
         this.level * this.level * this.level * this.level
       )
         .fill(0)
-        .map(() => -1)
-      let numRowIndex = 0
-      let numColIndex = 0
+        .map(() => -1);
+      let numRowIndex = 0;
+      let numColIndex = 0;
       while (numRowIndex < rows.length) {
         while (numColIndex < cols.length) {
           // rows.forEach((item) => {
           //   console.log(JSON.stringify(item))
           // })
-          const step = numColIndex + numRowIndex * (this.level * this.level)
-          CreateIndexRecord[step]++
-          const recordIndex = CreateIndexRecord[step]
-          CreateRecord.length = step + 1
+          const step = numColIndex + numRowIndex * (this.level * this.level);
+          CreateIndexRecord[step]++;
+          const recordIndex = CreateIndexRecord[step];
+          CreateRecord.length = step + 1;
           // box的序号
           const numBoxIndex =
             Math.floor(numRowIndex / this.level) * this.level +
-            Math.floor(numColIndex / this.level)
+            Math.floor(numColIndex / this.level);
           const canUseNum =
             CreateRecord[step] ||
             this.getDiffNums(
               rows[numRowIndex],
               cols[numColIndex],
               boxs[numBoxIndex]
-            )
-          this.step = step
+            );
+          this.step = step;
           const rowIndex =
-            step + 1 - numRowIndex * (this.level * this.level) - 1
-          const colIndex = numRowIndex
+            step + 1 - numRowIndex * (this.level * this.level) - 1;
+          const colIndex = numRowIndex;
           const boxIndex =
             (numRowIndex % this.level) * this.level +
-            (numColIndex % this.level)
+            (numColIndex % this.level);
           if (canUseNum.length === 0 || recordIndex >= canUseNum.length) {
-            rows[numRowIndex].length = rowIndex
-            cols[numColIndex].length = colIndex
-            boxs[numBoxIndex].length = boxIndex
-            CreateIndexRecord[step] = -1
+            rows[numRowIndex].length = rowIndex;
+            cols[numColIndex].length = colIndex;
+            boxs[numBoxIndex].length = boxIndex;
+            CreateIndexRecord[step] = -1;
             // 可用数字用尽  则  返回上一步
             if (numColIndex === 0) {
               // 列序为0，则返回到上一行的最后一列
-              numRowIndex -= 2 // 这里-2是因为+1会在后面执行
-              numColIndex = this.level * this.level - 1
-              break
+              numRowIndex -= 2; // 这里-2是因为+1会在后面执行
+              numColIndex = this.level * this.level - 1;
+              break;
             }
             if (numColIndex > 0) {
-              numColIndex -= 1 // 这里-1是因为后面的+1不会执行
-              continue
+              numColIndex -= 1; // 这里-1是因为后面的+1不会执行
+              continue;
             }
           }
           if (step >= CreateRecord.length) {
-            CreateRecord.push(canUseNum)
+            CreateRecord.push(canUseNum);
           } else {
-            CreateRecord[step] = canUseNum
+            CreateRecord[step] = canUseNum;
           }
-          const num = canUseNum[recordIndex]
-          rows[numRowIndex][rowIndex] = num
-          cols[numColIndex][colIndex] = num
-          boxs[numBoxIndex][boxIndex] = num
-          numColIndex++
+          const num = canUseNum[recordIndex];
+          rows[numRowIndex][rowIndex] = num;
+          cols[numColIndex][colIndex] = num;
+          boxs[numBoxIndex][boxIndex] = num;
+          numColIndex++;
         }
-        if (numColIndex >= cols.length) numColIndex = 0
-        numRowIndex++
+        if (numColIndex >= cols.length) numColIndex = 0;
+        numRowIndex++;
       }
-      this.rows = rows
-      this.cols = cols
-      this.boxs = boxs
+      this.rows = rows;
+      this.cols = cols;
+      this.boxs = boxs;
     },
     // 随机数形式
     getMatrix2() {
-      this.rows = []
+      this.rows = [];
       const rows = new Array(this.level * this.level)
         .fill(null)
-        .map(() => new Set())
+        .map(() => new Set());
       const cols = new Array(this.level * this.level)
         .fill(null)
-        .map(() => new Set())
+        .map(() => new Set());
       const boxs = new Array(this.level * this.level)
         .fill(null)
-        .map(() => new Set())
+        .map(() => new Set());
       for (
         let numRowIndex = 0;
         numRowIndex < this.level * this.level;
@@ -240,29 +240,29 @@ export default {
           // box的序号
           const numBoxIndex =
             Math.floor(numRowIndex / this.level) * this.level +
-            Math.floor(numColIndex / this.level)
+            Math.floor(numColIndex / this.level);
           const canUseNum = this.getDiffNums(
             rows[numRowIndex],
             cols[numColIndex],
             boxs[numBoxIndex]
-          )
-          if (canUseNum.length === 0) break
-          const RanIndex = Math.floor(Math.random() * canUseNum.length)
-          const num = canUseNum[RanIndex]
-          rows[numRowIndex].add(num)
-          cols[numColIndex].add(num)
-          boxs[numBoxIndex].add(num)
+          );
+          if (canUseNum.length === 0) break;
+          const RanIndex = Math.floor(Math.random() * canUseNum.length);
+          const num = canUseNum[RanIndex];
+          rows[numRowIndex].add(num);
+          cols[numColIndex].add(num);
+          boxs[numBoxIndex].add(num);
         }
       }
       for (let i = 0; i < rows.length; i++) {
         if ([...rows[i]].length < 9) {
-          this.getMatrix2()
-          return
+          this.getMatrix2();
+          return;
         }
       }
-      this.rows = rows
-      this.cols = cols
-      this.boxs = boxs
+      this.rows = rows;
+      this.cols = cols;
+      this.boxs = boxs;
     },
     // 破解方法
     getAnswers(
@@ -274,42 +274,42 @@ export default {
       numColIndex = 0
     ) {
       if (numRowIndex === this.MatrixWidth) {
-        this.results.push(r)
+        this.results.push(r);
         // console.log(r)
-        return r
+        return r;
       }
-      const rows = JSON.parse(JSON.stringify(r))
-      const cols = JSON.parse(JSON.stringify(c))
-      const boxs = JSON.parse(JSON.stringify(b))
+      const rows = JSON.parse(JSON.stringify(r));
+      const cols = JSON.parse(JSON.stringify(c));
+      const boxs = JSON.parse(JSON.stringify(b));
       // box的序号
       const numBoxIndex =
         Math.floor(numRowIndex / this.level) * this.level +
-        Math.floor(numColIndex / this.level)
+        Math.floor(numColIndex / this.level);
 
-      const rowIndex = numColIndex
-      const colIndex = numRowIndex
+      const rowIndex = numColIndex;
+      const colIndex = numRowIndex;
       const boxIndex =
-        (numRowIndex % this.level) * this.level + (numColIndex % this.level)
-      rows[numRowIndex][rowIndex] = 0
-      cols[numColIndex][colIndex] = 0
-      boxs[numBoxIndex][boxIndex] = 0
+        (numRowIndex % this.level) * this.level + (numColIndex % this.level);
+      rows[numRowIndex][rowIndex] = 0;
+      cols[numColIndex][colIndex] = 0;
+      boxs[numBoxIndex][boxIndex] = 0;
       let canUseNum = this.getDiffNums(
         rows[numRowIndex],
         cols[numColIndex],
         boxs[numBoxIndex]
-      )
-      if (canUseNum.length === 0) return false
+      );
+      if (canUseNum.length === 0) return false;
       if (this.trows[numRowIndex][rowIndex]) {
         if (!canUseNum.includes(this.trows[numRowIndex][rowIndex])) {
-          return false
+          return false;
         }
-        canUseNum = [this.trows[numRowIndex][rowIndex]]
+        canUseNum = [this.trows[numRowIndex][rowIndex]];
       }
       for (let i = 0; i < canUseNum.length; i++) {
-        rows[numRowIndex][rowIndex] = canUseNum[i]
-        cols[numColIndex][colIndex] = canUseNum[i]
-        boxs[numBoxIndex][boxIndex] = canUseNum[i]
-        let result = null
+        rows[numRowIndex][rowIndex] = canUseNum[i];
+        cols[numColIndex][colIndex] = canUseNum[i];
+        boxs[numBoxIndex][boxIndex] = canUseNum[i];
+        let result = null;
         if (numColIndex + 1 < this.MatrixWidth) {
           result = this.getAnswers(
             single,
@@ -318,7 +318,7 @@ export default {
             boxs,
             numRowIndex,
             numColIndex + 1
-          )
+          );
         } else {
           result = this.getAnswers(
             single,
@@ -327,40 +327,40 @@ export default {
             boxs,
             numRowIndex + 1,
             0
-          )
+          );
         }
-        if (single && result) return result
+        if (single && result) return result;
       }
-      return false
+      return false;
     },
     // 执行矩阵破解(也能生成矩阵)
     crackMatrix(single = false) {
-      if (this.cracking) return
-      this.cracking = true
-      this.hasStaticNum = true
-      this.results = []
-      this.getAnswers(single)
-      console.log(this.results)
+      if (this.cracking) return;
+      this.cracking = true;
+      this.hasStaticNum = true;
+      this.results = [];
+      this.getAnswers(single);
+      console.log(this.results);
       if (this.results.length === 0) {
-        alert('无解')
-        this.resetMatrix()
+        alert("无解");
+        this.resetMatrix();
       }
-      this.cracking = false
+      this.cracking = false;
     },
 
     getAllCombinations(n, m, arr) {
-      var result = [] // 创建一个空数组存储结果
+      var result = []; // 创建一个空数组存储结果
       function loop(start, temp) {
         if (temp.length === m) {
-          result.push(temp) // 如果已经找到了一组长度为 m 的组合，则将其添加到结果数组中
+          result.push(temp); // 如果已经找到了一组长度为 m 的组合，则将其添加到结果数组中
         } else {
           for (var i = start; i < n; i++) {
-            loop(i + 1, temp.concat([arr[i]])) // 递归调用 loop 函数进行下一轮循环
+            loop(i + 1, temp.concat([arr[i]])); // 递归调用 loop 函数进行下一轮循环
           }
         }
       }
-      loop(0, []) // 开始第一轮循环
-      return result
+      loop(0, []); // 开始第一轮循环
+      return result;
     },
 
     getUniqueMatrix(
@@ -371,115 +371,141 @@ export default {
       // numColIndex = 0,
       lastDiff = []
     ) {
-      console.log(lastDiff)
+      // console.log(lastDiff);
       if (lastDiff.length === this.difficulty) {
-        return lastDiff
+        return lastDiff;
       }
-      const _lastDiff = JSON.parse(JSON.stringify(lastDiff))
-      const rows = JSON.parse(JSON.stringify(r))
-      const cols = JSON.parse(JSON.stringify(c))
-      const boxs = JSON.parse(JSON.stringify(b))
+      const _lastDiff = JSON.parse(JSON.stringify(lastDiff));
+      const rows = JSON.parse(JSON.stringify(r));
+      const cols = JSON.parse(JSON.stringify(c));
+      const boxs = JSON.parse(JSON.stringify(b));
 
-      const remainDiffNum = this.difficulty - lastDiff.length
-      const combLength =
-        this.MatrixWidth < remainDiffNum ? this.MatrixWidth : remainDiffNum
+      const remainDiffNum = this.difficulty - lastDiff.length;
+      const combLength = Math.min(this.MatrixWidth, remainDiffNum);
+      const remainNum = this.MatrixUnitNum - numRowIndex * this.MatrixWidth;
+      console.log(remainDiffNum, remainNum, combLength);
+      // 矩阵中剩余的数字已不满足填满缺少的diff
+      if (remainDiffNum > remainNum) return false;
+      // const min = Math.max(0, remainDiffNum - (this.MatrixUnitNum - (numRowIndex-1) * this.MatrixWidth))
+      // let combLengthArr = new Array(combLength)
+      //   .fill(0)
+      //   .map((item, index) => index + 1);
+      // const minCombLength = Math.min(
+      //   remainNum < 0 ? 0 : remainNum,
+      //   Math.min(...combLengthArr)
+      // );
+      // combLengthArr = combLengthArr
+      //   .filter((item) => item <= remainNum)
+      //   .sort(() => {
+      //     return 0.5 - Math.random();
+      //   });
+      // console.log(combLengthArr)
+      // for (let cn = 0; cn < combLengthArr.length; cn++) {
       for (let cn = combLength; cn > -1; cn--) {
         const comb = this.getAllCombinations(
           this.MatrixWidth,
           cn,
+          // combLengthArr[cn],
           this.nums.map((num) => num - 1)
-        )
+        );
         for (let i = 0; i < comb.length; i++) {
-          const rDiff = []
+          const rDiff = [];
           // 获取排列组合
           for (let j = 0; j < comb[i].length; j++) {
-            const numColIndex = comb[i][j]
+            const numColIndex = comb[i][j];
             const numBoxIndex =
               Math.floor(numRowIndex / this.level) * this.level +
-              Math.floor(numColIndex / this.level)
-            const rowIndex = numColIndex
-            const colIndex = numRowIndex
+              Math.floor(numColIndex / this.level);
+            const rowIndex = numColIndex;
+            const colIndex = numRowIndex;
             const boxIndex =
               (numRowIndex % this.level) * this.level +
-              (numColIndex % this.level)
-            rows[numRowIndex][rowIndex] = 0
-            cols[numColIndex][colIndex] = 0
-            boxs[numBoxIndex][boxIndex] = 0
-            rDiff.push([numRowIndex, rowIndex])
+              (numColIndex % this.level);
+            rows[numRowIndex][rowIndex] = 0;
+            cols[numColIndex][colIndex] = 0;
+            boxs[numBoxIndex][boxIndex] = 0;
+            rDiff.push([numRowIndex, rowIndex]);
           }
-          let isOk = true
+          let isOk = true;
           for (let j = 0; j < comb[i].length; j++) {
-            const numColIndex = comb[i][j]
+            const numColIndex = comb[i][j];
             const numBoxIndex =
               Math.floor(numRowIndex / this.level) * this.level +
-              Math.floor(numColIndex / this.level)
-            const rowIndex = numColIndex
-            const colIndex = numRowIndex
+              Math.floor(numColIndex / this.level);
+            const rowIndex = numColIndex;
+            const colIndex = numRowIndex;
             const boxIndex =
               (numRowIndex % this.level) * this.level +
-              (numColIndex % this.level)
+              (numColIndex % this.level);
             const canUseNum = this.getDiffNums(
               rows[numRowIndex],
               cols[numColIndex],
               boxs[numBoxIndex]
-            )
+            );
             // 当前组合不符合
             if (canUseNum.length > 1) {
-              rows[numRowIndex][rowIndex] = r[numRowIndex][rowIndex]
-              cols[numColIndex][colIndex] = c[numColIndex][colIndex]
-              boxs[numBoxIndex][boxIndex] = b[numBoxIndex][boxIndex]
-              isOk = false
-              break
+              rows[numRowIndex][rowIndex] = r[numRowIndex][rowIndex];
+              cols[numColIndex][colIndex] = c[numColIndex][colIndex];
+              boxs[numBoxIndex][boxIndex] = b[numBoxIndex][boxIndex];
+              isOk = false;
+              break;
             }
           }
-          // 该组合符合条件，下潜 / 返回
+          // // 该组合符合条件，下潜 / 返回
           if (isOk) {
-            if (numRowIndex < this.MatrixWidth - 1) {
-              return this.getUniqueMatrix(rows, cols, boxs, numRowIndex + 1, [
-                ..._lastDiff,
-                ...rDiff
-              ])
-            }
-            return [..._lastDiff, ...rDiff]
+            _lastDiff.push(...rDiff);
+            //   if (numRowIndex < this.MatrixWidth - 1) {
+            //     return this.getUniqueMatrix(
+            //       rows,
+            //       cols,
+            //       boxs,
+            //       numRowIndex + 1,
+            //       _lastDiff
+            //     );
+            //   }
+            //   // if (_lastDiff.length === this.difficulty) {
+            //   return _lastDiff;
+            //   // }
           }
         }
       }
-      return false
+      // return false;
+      return this.getUniqueMatrix(rows, cols, boxs, numRowIndex + 1, _lastDiff);
     },
     getUncrackMatrix() {
-      let matrix = false
-      while (!matrix) {
-        this.getMatrix()
-        matrix = this.getUniqueMatrix()
-        console.log('----------------------------')
-      }
-      console.log(matrix)
-      const rows = JSON.parse(JSON.stringify(this.rows))
+      let matrix = false;
+      // while (!matrix) {
+      this.getMatrix();
+      matrix = this.getUniqueMatrix();
+      console.log("----------------------------");
+      // }
+      console.log(matrix);
+      const rows = JSON.parse(JSON.stringify(this.rows));
       for (let i = 0; i < matrix.length; i++) {
-        rows[matrix[i][0]][matrix[i][1]] = 0
+        rows[matrix[i][0]][matrix[i][1]] = 0;
       }
-      console.log(rows)
-      this.rows = rows
-      this.trows = JSON.parse(JSON.stringify(this.rows))
-      this.results = []
-      this.$set(this.results, 0, JSON.parse(JSON.stringify(this.rows)))
+      // console.log(rows);
+      this.rows = rows;
+      this.trows = JSON.parse(JSON.stringify(this.rows));
+      this.results = [];
+      this.$set(this.results, 0, JSON.parse(JSON.stringify(this.rows)));
     },
     getDiffNums(a, b, c) {
       // a∪b∪c
-      const union = new Set([...a, ...b, ...c])
+      const union = new Set([...a, ...b, ...c]);
       // 差集
       return [...this.nums]
         .filter((x) => !union.has(x))
         .sort(() => {
-          return 0.5 - Math.random()
-        })
+          return 0.5 - Math.random();
+        });
     },
     inputNum(val, r, c) {
-      const num = val ? parseInt(val) : 0
-      const isNum = !isNaN(num)
-      let rnum = !isNum || num > 9 ? 0 : num
+      const num = val ? parseInt(val) : 0;
+      const isNum = !isNaN(num);
+      let rnum = !isNum || num > 9 ? 0 : num;
       if (!isNum) {
-        alert(`[${val}]不是数字`)
+        alert(`[${val}]不是数字`);
       }
       const canUseNum = this.getDiffNums(
         this.trows[r],
@@ -487,26 +513,26 @@ export default {
         this.tboxs[
           Math.floor(r / this.level) * this.level + Math.floor(c / this.level)
         ]
-      )
+      );
       if (isNum && !this.nums.includes(num) && num !== 0) {
-        alert(`[${val}]不合法${JSON.stringify(this.nums)}`)
-        rnum = this.trows[r][c]
+        alert(`[${val}]不合法${JSON.stringify(this.nums)}`);
+        rnum = this.trows[r][c];
       }
       if (rnum !== this.trows[r][c] && rnum && !canUseNum.includes(rnum)) {
-        alert(`数字[${rnum}]不符合数独规则${JSON.stringify(canUseNum)}`)
-        rnum = 0
+        alert(`数字[${rnum}]不符合数独规则${JSON.stringify(canUseNum)}`);
+        rnum = 0;
       }
       this.$set(
         this.trows,
         r,
         this.trows[r].map((oval, idx) => {
-          return idx === c ? rnum : oval
+          return idx === c ? rnum : oval;
         })
-      )
-      this.results = [JSON.parse(JSON.stringify(this.trows))]
-    }
-  }
-}
+      );
+      this.results = [JSON.parse(JSON.stringify(this.trows))];
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
