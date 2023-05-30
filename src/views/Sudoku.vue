@@ -1,29 +1,18 @@
 <template>
   <div class="Sudoku">
-    <p @click="resetMatrix">重置矩阵</p>
-    <p @click="crackMatrix">破解矩阵</p>
-    <p @click="getMatrix">生成完整矩阵</p>
+    <p class="button" @click="resetMatrix">重置矩阵</p>
+    <p class="button" @click="crackMatrix(true)">破解矩阵(也能生成矩阵)</p>
+    <!-- <p class="button" @click="crackMatrix">破解矩阵(所有解)</p> -->
+    <p class="button" @click="getMatrix">生成完整矩阵</p>
     <div class="matrixsBox">
-      <div class="rowsBox">
-        <div
-          v-for="(row, rowIndex) in rows"
-          :key="`row-${rowIndex}`"
-          class="rowsBox-item"
-        >
-          <p
-            v-for="(item, index) in row"
-            :key="`rowItem-${index}`"
-            class="rowsBox-item-num"
-          >
-            {{ item || "" }}
-          </p>
-        </div>
-      </div>
       <div class="rowsBox">
         <div
           v-for="(row, rowIndex) in results[0]"
           :key="`trow-${rowIndex}`"
-          class="rowsBox-item"
+          :class="[
+            'rowsBox-item',
+            (rowIndex + 1) % level ? '' : 'rowsBox-item--line',
+          ]"
         >
           <input
             v-for="(item, index) in row"
@@ -31,10 +20,32 @@
             :class="[
               'rowsBox-item-num',
               trows[rowIndex][index] ? 'rowsBox-item-num--static' : '',
+              index % level ? '' : 'rowsBox-item-num--line',
             ]"
             :value="item || ''"
             @input="(e) => inputNum(e.target.value, rowIndex, index)"
           >
+        </div>
+      </div>
+      <div class="rowsBox">
+        <div
+          v-for="(row, rowIndex) in rows"
+          :key="`row-${rowIndex}`"
+          :class="[
+            'rowsBox-item',
+            (rowIndex + 1) % 3 ? '' : 'rowsBox-item--line',
+          ]"
+        >
+          <p
+            v-for="(item, index) in row"
+            :key="`rowItem-${index}`"
+            :class="[
+              'rowsBox-item-num',
+              index % 3 ? '' : 'rowsBox-item-num--line',
+            ]"
+          >
+            {{ item || "" }}
+          </p>
         </div>
       </div>
     </div>
@@ -42,28 +53,23 @@
 </template>
 
 <script>
-const getDefaultMatrix = () => [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
+const DefaultLevel = 3
+const getDefaultMatrix = (level) =>
+  new Array(level * level).fill(null).map((item) => {
+    return new Array(level * level).fill(0)
+  })
 export default {
   data() {
     return {
-      level: 3,
-      rows: getDefaultMatrix(),
+      level: DefaultLevel,
+      rows: getDefaultMatrix(DefaultLevel),
       columns: [],
       boxs: [],
       nums: [],
       step: 0,
-      trows: getDefaultMatrix(),
-      results: [getDefaultMatrix()]
+      trows: getDefaultMatrix(DefaultLevel),
+      results: [getDefaultMatrix(DefaultLevel)],
+      cracking: false
     }
   },
   computed: {
@@ -107,7 +113,8 @@ export default {
   },
   methods: {
     resetMatrix() {
-      this.results = [getDefaultMatrix()]
+      this.trows = getDefaultMatrix(this.level)
+      this.results = [getDefaultMatrix(this.level)]
     },
     // 算法方式
     getMatrix() {
@@ -236,6 +243,7 @@ export default {
     },
     // 破解方法
     getAnswers(
+      single = false,
       r = this.trows,
       c = this.tcols,
       b = this.tboxs,
@@ -244,6 +252,7 @@ export default {
     ) {
       if (numRowIndex === this.MatrixWidth) {
         this.results.push(r)
+        // console.log(r)
         return r
       }
       const rows = JSON.parse(JSON.stringify(r))
@@ -258,31 +267,62 @@ export default {
       const colIndex = numRowIndex
       const boxIndex =
         (numRowIndex % this.level) * this.level + (numColIndex % this.level)
-      const canUseNum = this.trows[numRowIndex][numColIndex]
-        ? [this.trows[numRowIndex][numColIndex]]
-        : this.getDiffNums(
-          rows[numRowIndex],
-          cols[numColIndex],
-          boxs[numBoxIndex]
-        )
+      rows[numRowIndex][rowIndex] = 0
+      cols[numColIndex][colIndex] = 0
+      boxs[numBoxIndex][boxIndex] = 0
+      let canUseNum = this.getDiffNums(
+        rows[numRowIndex],
+        cols[numColIndex],
+        boxs[numBoxIndex]
+      )
       if (canUseNum.length === 0) return false
+      if (this.trows[numRowIndex][rowIndex]) {
+        if (!canUseNum.includes(this.trows[numRowIndex][rowIndex])) {
+          return false
+        }
+        canUseNum = [this.trows[numRowIndex][rowIndex]]
+      }
       for (let i = 0; i < canUseNum.length; i++) {
         rows[numRowIndex][rowIndex] = canUseNum[i]
         cols[numColIndex][colIndex] = canUseNum[i]
         boxs[numBoxIndex][boxIndex] = canUseNum[i]
+        let result = null
         if (numColIndex + 1 < this.MatrixWidth) {
-          this.getAnswers(rows, cols, boxs, numRowIndex, numColIndex + 1)
-        } else this.getAnswers(rows, cols, boxs, numRowIndex + 1, 0)
+          result = this.getAnswers(
+            single,
+            rows,
+            cols,
+            boxs,
+            numRowIndex,
+            numColIndex + 1
+          )
+        } else {
+          result = this.getAnswers(
+            single,
+            rows,
+            cols,
+            boxs,
+            numRowIndex + 1,
+            0
+          )
+        }
+        if (single && result) return result
       }
       return false
     },
-    // 执行矩阵破解
-    crackMatrix() {
-      // if ()
+    // 执行矩阵破解(也能生成矩阵)
+    crackMatrix(single = false) {
+      if (this.cracking) return
+      this.cracking = true
       this.hasStaticNum = true
       this.results = []
-      this.getAnswers()
+      this.getAnswers(single)
       console.log(this.results)
+      if (this.results.length === 0) {
+        alert('无解')
+        this.resetMatrix()
+      }
+      this.cracking = false
     },
     getDiffNums(a, b, c) {
       // a∪b∪c
@@ -295,11 +335,32 @@ export default {
         })
     },
     inputNum(val, r, c) {
+      const num = val ? parseInt(val) : 0
+      const isNum = !isNaN(num)
+      let rnum = !isNum || num > 9 ? 0 : num
+      if (!isNum) {
+        alert(`[${val}]不是数字`)
+      }
+      const canUseNum = this.getDiffNums(
+        this.trows[r],
+        this.tcols[c],
+        this.tboxs[
+          Math.floor(r / this.level) * this.level + Math.floor(c / this.level)
+        ]
+      )
+      if (isNum && !this.nums.includes(num) && num !== 0) {
+        alert(`[${val}]不合法${JSON.stringify(this.nums)}`)
+        rnum = this.trows[r][c]
+      }
+      if (rnum !== this.trows[r][c] && rnum && !canUseNum.includes(rnum)) {
+        alert(`数字[${rnum}]不符合数独规则${JSON.stringify(canUseNum)}`)
+        rnum = 0
+      }
       this.$set(
         this.trows,
         r,
         this.trows[r].map((oval, idx) => {
-          return idx === c ? val : oval
+          return idx === c ? rnum : oval
         })
       )
       this.results = [JSON.parse(JSON.stringify(this.trows))]
@@ -314,6 +375,12 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  .button {
+    width: fit-content;
+    background-color: rgb(179, 179, 179);
+    user-select: none;
+    cursor: pointer;
+  }
   input {
     background: none;
     outline: none;
@@ -333,8 +400,11 @@ export default {
     height: fit-content;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #000;
-    border-top: 1px solid #000;
+    border-right: 2px solid #000;
+    border-top: 2px solid #000;
+    &-item--line {
+      border-bottom: 1px solid #000;
+    }
     &-item {
       width: fit-content;
       display: flex;
@@ -347,6 +417,9 @@ export default {
         text-align: center;
         border-left: 1px solid #000;
         border-bottom: 1px solid #000;
+      }
+      &-num--line {
+        border-left: 2px solid #000;
       }
       &-num--static {
         font-weight: bold;
