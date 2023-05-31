@@ -6,7 +6,7 @@
     </div>
     <p class="button" @click="resetMatrix">重置矩阵</p>
     <p class="button" @click="crackMatrix(true)">破解矩阵(也能生成矩阵)</p>
-    <!-- <p class="button" @click="crackMatrix">破解矩阵(所有解)</p> -->
+    <p class="button" @click="crackMatrix">破解矩阵(所有解)</p>
     <p class="button" @click="getMatrix">生成完整矩阵</p>
     <p class="button" @click="getUncrackMatrix">生成未解矩阵</p>
     <div class="matrixsBox">
@@ -66,7 +66,7 @@ const getDefaultMatrix = (level) =>
 export default {
   data() {
     return {
-      difficulty: 20,
+      difficulty: 56,
       levelTmp: DefaultLevel,
       level: DefaultLevel,
       rows: getDefaultMatrix(DefaultLevel),
@@ -143,27 +143,21 @@ export default {
     // 算法方式
     getMatrix() {
       this.rows = []
-      const rows = new Array(this.level * this.level).fill(0).map(() => [])
-      const cols = new Array(this.level * this.level).fill(0).map(() => [])
-      const boxs = new Array(this.level * this.level).fill(0).map(() => [])
+      const rows = Array.from({ length: this.level * this.level }, () => [])
+      const cols = Array.from({ length: this.level * this.level }, () => [])
+      const boxs = Array.from({ length: this.level * this.level }, () => [])
       const CreateRecord = []
-      const CreateIndexRecord = new Array(
+      const createIndexRecord = new Array(
         this.level * this.level * this.level * this.level
-      )
-        .fill(0)
-        .map(() => -1)
+      ).fill(-1)
       let numRowIndex = 0
-      let numColIndex = 0
       while (numRowIndex < rows.length) {
+        let numColIndex = 0
         while (numColIndex < cols.length) {
-          // rows.forEach((item) => {
-          //   console.log(JSON.stringify(item))
-          // })
           const step = numColIndex + numRowIndex * (this.level * this.level)
-          CreateIndexRecord[step]++
-          const recordIndex = CreateIndexRecord[step]
+          createIndexRecord[step]++
+          const recordIndex = createIndexRecord[step]
           CreateRecord.length = step + 1
-          // box的序号
           const numBoxIndex =
             Math.floor(numRowIndex / this.level) * this.level +
             Math.floor(numColIndex / this.level)
@@ -174,7 +168,6 @@ export default {
               cols[numColIndex],
               boxs[numBoxIndex]
             )
-          this.step = step
           const rowIndex =
             step + 1 - numRowIndex * (this.level * this.level) - 1
           const colIndex = numRowIndex
@@ -185,16 +178,14 @@ export default {
             rows[numRowIndex].length = rowIndex
             cols[numColIndex].length = colIndex
             boxs[numBoxIndex].length = boxIndex
-            CreateIndexRecord[step] = -1
-            // 可用数字用尽  则  返回上一步
+            createIndexRecord[step] = -1
             if (numColIndex === 0) {
-              // 列序为0，则返回到上一行的最后一列
-              numRowIndex -= 2 // 这里-2是因为+1会在后面执行
+              numRowIndex -= 2
               numColIndex = this.level * this.level - 1
               break
             }
             if (numColIndex > 0) {
-              numColIndex -= 1 // 这里-1是因为后面的+1不会执行
+              numColIndex--
               continue
             }
           }
