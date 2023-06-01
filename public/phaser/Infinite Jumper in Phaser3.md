@@ -84,7 +84,7 @@ https://github.com/ourcade/infinite-jumper-template-phaser3
 
 ***Ourcade是一个为开发者和学者们提供的很有意思的能让你发散思维游戏开发者论坛。***
 
-# 开始
+# 好戏开始
 
 我们会让所有前置准备尽可能地简化。
 
@@ -97,3 +97,29 @@ https://github.com/ourcade/infinite-jumper-template-phaser3
 你只需要一个现代化的浏览器(如Google Chrome)，以及一个代码编辑器(如Visual Studio Code，简称VS Code)。
 
 你还没准备好的话就快去下载吧，在本书中就不再提供这些基本工具的下载地址了，相信对你来说这并不困难。
+
+## 创建一个新建文件夹
+
+我们的游戏代码将会放在一个文件夹内，不介意的话我们可以把它命名为"bunny-jump"，并放在你的电脑的任何地方。噢！桌面就不错。
+
+然后我们再在"bunny-jump"文件夹里面创建一个命名为"src"的文件夹。我们所有的JavaScript代码将会放到这来。
+
+现在，我们打开VS Code，打开"bunny-jump"文件夹。
+
+在创建实际的文件之前，我们还要多做一个步骤。
+
+## Development Server
+
+"Development Server"这词语听起来很高大上，实际上只是一个运行在我们电脑中的一个程序。
+
+在这里，我们将依靠它来运行我们的游戏。
+
+我们会简单地在VS Code中使用"Live Server"插件来完成这一步骤。
+
+在VS Code窗口中，我们点击最左侧菜单的图标为四个小方块的按钮，这个就是VS Code的插件商城，在里面你可以输入"Live Server"进行搜索，找到标注作者为"Ritwick Dey"的"Live Server"后点击安装，然后稍等片刻。
+
+安装完成后，你就能在VS Code窗口底部状态栏的右下角看到一个新增的"Go Live"按钮。
+
+当然，你也可以用VS Code的组合快捷键(Shift + Cmd / Ctrl + P)换起命令行窗口，输入"Live Server"查看它的所有Live Server命令行。
+
+在这里，我们只需要使用"Open with Live Server"命令，或点击"Go Live"按钮就能开启一个Development Server了。
