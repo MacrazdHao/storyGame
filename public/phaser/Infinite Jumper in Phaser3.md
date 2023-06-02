@@ -1003,3 +1003,32 @@ create() {
 
 # 左右摇摆
 
+目前为止，我们的游戏更像一个无休止的视频，而不是一个游戏。
+
+它只是自己在那动，我们没有任何参与感。
+
+我们现在就来改变这个状况，加点键盘的按键操作进来！
+
+我们需要能够左右摇摆移动，以能够让我们在非直线上的平台着落和穿梭。
+
+Phaser为我们提供了一个很方便的方式，让我们能够用键盘来进行操作：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 之前的代码省略...
+
+  /** @types {Phaser.Types.Input.Keyboard.CursorKeys} */
+  cursors
+
+  // constructor函数省略...
+
+  preload() {
+    // 之前的代码省略...
+
+    this.cursors = this.input.keyboard.createCursorKeys()
+  }
+
+  // 其他代码省略...
+}
+```
+
