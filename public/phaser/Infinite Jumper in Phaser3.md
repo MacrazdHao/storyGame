@@ -527,7 +527,7 @@ create() {
 }
 ```
 
-保存你的代码后，你的游戏大概会长这样：
+保存我们的更改，你的游戏大概会长这样：
 
 ![当前效果图](./static/book_game.png)
 
@@ -611,7 +611,7 @@ create() {
     const y = 150 * i
 
     /** @type {Phaser.Physics.Arcade.Sprite} */
-    const platform = platform.create(x, y, 'platform')
+    const platform = platforms.create(x, y, 'platform')
     platform.scale = 0.5
 
     /** @type {Phaser.Physics.Arcade.StaticBody} */
@@ -782,7 +782,7 @@ update() {
 }
 ```
 
-保存你的代码后，bunny一着陆到一个平台时就会再次跳起来。
+保存我们的更改，bunny一着陆到一个平台时就会再次跳起来。
 
 噢！天啊！可怜的bunny现在跳起来碰到上面的平台撞头了！这根本不是我们想要的效果啊！我们想要的效果明明是在跳跃时能够穿透上面的平台，只会和脚底下着落的发生碰撞才对！
 
@@ -869,4 +869,63 @@ create() {
 好叭，下一章节我们将会开始处理不断滚动出现的平台。
 
 # 滚动的平台
+
+无限跳跃游戏的关键玩法是随着玩家不断地跳跃得越来越高，也会不断地从上面出现新的平台。
+
+我们可以在玩家移动时创建新的平台，但换个思维，我们其实也可以重复利用已经滚动到屏幕底部的平台。
+
+很简单，我们只需要把在底部的平台随着玩家越调越高，然后把平台重新移动到屏幕的顶部就好了。
+
+这里还要加一条Game Over的规则条件，即当玩家错过底下的最后一块平台坠落视为Game Over。
+
+为了制造一个无限平台的视觉效果，我们需要和之前的章节创建游戏类的player属性一样，我们还要为游戏类创建多一个platforms属性。
+
+我们在update()函数中，要用它来检测每一个平台，一旦当他们消失在屏幕上，就将他们移动到顶部上面去。
+
+```js
+export default class Game extends Phaser.Scene {
+  /** @type {Phaser.Physics.Arcade.StaticBody} */
+  platforms
+
+  // 之前的代码省略...
+
+  create() {
+    // background的代码省略...
+
+    // 修改原来platforms变量为this.platforms
+    this.platforms = this.physics.add.staticGroup()
+
+    // 然后在组对象内创建五个平台
+    for(let i = 0; i < 5; i++) {
+      const x = Phaser.Math.Between(80, 400)
+      const y = 150 * i
+
+      /** @type {Phaser.Physics.Arcade.Sprite} */
+      const platform = this.platforms.create(x, y, 'platform')
+      platform.scale = 0.5
+
+      /** @type {Phaser.Physics.Arcade.StaticBody} */
+      const body = platform.body
+      body.updateFromGameObject()
+    }
+
+    // 其他代码省略...
+
+    // 记得还要改变这行代码
+    this.physics.add.collider(this.platforms, this.player)
+
+    // 其他代码省略...
+  }
+}
+```
+
+记得我们在类里面新加了一个变量属性，在上述代码片段的第3行代码。
+
+这行代码上面，我们依然使用了JSDoc注释来定义这个变量属性的类别(type)，以让VS Code在我们开发的过程中提供代码自动补全功能。
+
+然后create()函数内，我们把原先所有的platforms变量替换成了this.platforms。
+
+保存我们的更改后，请确保游戏能够按照我们所设想地去运作。如果没有，那么还请确保在该类中的其他所有地方引用到platforms的地方替换为this.platforms。
+
+## 重复利用和资源回收
 
