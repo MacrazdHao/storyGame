@@ -205,7 +205,7 @@ ES6+的JavaScript更易于理解，以及入门。它现在已经变得更加适
 
 Phaser已经包含于全局当中，你可以在你的代码里直接使用window.Phaser，这确实很方便，但这并不推荐在ES6+的JavaScript中使用。
 
-而且这也无法让VS Code提供智能的代码补全候选功能，那这花里胡哨的操作又能帮得上我们什么忙呢？
+而且这也无法让VS Code提供智能的代码自动补全功能，那这花里胡哨的操作又能帮得上我们什么忙呢？
 
 我们需要做两件事，来让我们的Phaser3合理地运行在ES6+的JavaScript代码中，并且同时使用上VS Code的IntelliSense特性。
 
@@ -272,7 +272,7 @@ Visual Studio Code是一个绝赞的代码编辑器，它拥有成千上万的�
 
 最重要的是！它完全免费！
 
-VS Code中有一个非常有用的功能，就是代码补全候选功能(IntelliSense)。
+VS Code中有一个非常有用的功能，就是代码自动补全功能(IntelliSense)。
 
 为了让这个功能也能够支持到像Phaser这样的第三方库，我们需要在这些库的类型定义上进行一些操作。
 
@@ -354,3 +354,294 @@ Jumper Pack
 复制这5个图片到你的项目主文件夹的assets文件夹中，assets文件夹未创建则自行创建即可，但注意assets文件夹所处的位置应该是和src文件夹处于同一个层级，即项目的主目录中。
 
 ## 创建一个Phaser游戏
+
+接下来，我们将会在我们的main.js文件里创建一个Phaser.Game实例对象。
+
+创建Phaser.Game对象，我们需要传入一组配置对象，用于定义如游戏界面的宽高等信息。
+
+[点击这里](https://newdocs.phaser.io/docs/3.55.2/Phaser.Types.Core.GameConfig)你还能看到更多关于它的其他配置项，而它们中大部分都会有默认值。
+
+请在我们的main.js文件，将以下代码放在导入Phaser的代码后面：
+
+```js
+export default new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 480,
+  height: 640
+})
+```
+
+你可以看到，我们在这段代码里定义了我们的游戏窗口尺寸为480x640；而类型(type)属性则设置为了Phaser.AUTO，意思是Phaser将会以Canvas和WebGL的形式运行于我们的设备和浏览器中。
+
+好！那么，接下来的下一小节我们将会创建一个场景(Scene)。
+
+## 创建一个场景(Scene)
+
+"场景(Scene)"的作用是将游戏对象和逻辑组合关联在一起。
+
+它是一个在你实际用到它之前不太好理解的概念。
+
+比如，我们将要创建一个包含了关于我们的游戏核心玩法——无限跳跃机制的所有逻辑的场景。
+
+再然后，我们还会再创建一个包含与Game Over相关的逻辑和对象的场景(Scene)。
+
+场景(Scene)为我们提供了一个将游戏中不同的组成部分分别逻辑化的方式。
+
+为了更好地创建场景(Scene)，我们需要在src文件夹中创建一个新的文件夹并命名为scenes，方便我们区分和存放场景的代码文件。然后我们在scenes文件夹里再新建一个名为Game.js的文件。
+
+我们的游戏场景将会是一个继承于Phaser.Scene的类(class)。
+
+### 打断一下，我们先来了解一下类(Class)
+
+类(Class)是一个面向对象编程的概念，用以封装或概括通用的数据和逻辑，并且你能够用来依靠它来创建一个实例对象。
+
+想象一下，你有一个兔子(Rabbit)类，其中包含了一项能量(energy)数据。用这个类，我们可以创建两个实例对象，分别为能量为100(energy=100)的年轻兔子，和能量为50(energy=50)的老兔子。
+
+毫无疑问，两只兔子虽然都拥有一样的组成一样的构造——除了他们的状态。
+
+好了，概念应该了解得差不多了，我们来实践一下，加深一下我们对类(Class)的理解吧！
+
+回到我们的游戏场景，我们需要在Game.js文件里写入以下代码：
+
+```js
+import Phaser from '../lib/phaser.js'
+
+export default class Game extends Phaser.Scene {
+  constructor() {
+    super('game')
+  }
+  preload() {}
+  create() {}
+}
+```
+
+每一个场景，我们都要定义一个唯一关键字(Key)，我们在上述代码的第3行，构造器函数(constructor)内调用了supuer('game')来定义。
+
+preload()和create()函数则是Phaser中会在合适的时机执行的钩子函数。
+
+preload()函数一般用于在场景生效前加载我们通用的图片、音频等资源。
+
+create()函数将会在我们所有资源加载完毕后调用，在create()函数中，我们已经能够使用所有已经加载完毕的资源了。不过，如果你非要试着在这里使用一个未曾加载的资源，那么你将会得到一条报错信息。
+
+## 启动游戏场景
+
+我们已经定义了一个基础的游戏场景类，但实际上Phaser根本一无所知！
+
+因此我们必须要在main.js中将刚才我们的场景导入，并且配置到我们的Phaser.Game里面去，像这样：
+
+```js
+import Phaser from './lib/phaser.js'
+import Game from './scenes/Game.js'
+
+export default new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 480,
+  height: 640,
+  scene: Game
+})
+```
+
+我们新创建的游戏场景在以上代码的第2行引入，并且在第8行代码中告诉Phaser应该运行于这一个场景当中。
+
+保存我们的更改，但我们会在浏览器页面里发现依然是黑色一片，看不到任何可见的变化。
+
+但是，我们保证，它会在下一小节让他发生变化的！
+
+## 预加载背景
+
+我们目前已经有一个名为bg_layer1.png的图片文件在我们的assets文件夹中。
+
+让我们在preload()函数中加载它，并在create()函数中使用它吧！
+
+```js
+preload() {
+  this.load.image('background', 'assets/bg_layer_1.png')
+}
+```
+
+记住我们这里使用的关键字是**this**，它指向的是这个类的实例，而不是类本身。在这个例子里面确切地说，this是指向现在的Game场景实例。
+
+继承自Phaser.scene，场景实例中会包含了一个称为load的属性对象，[点击这里](https://newdocs.phaser.io/docs/3.55.2/Phaser.Scene)可以访问文档查阅详情。
+
+除此之外，由于Game类继承自Phaser.Scene，因此它同时也会其他拥有所有Phaser.Scene的函数和属性。这在面向对象编程中称为"继承"。
+
+load属性实际上也是Phaser.Loader.LoaderPlugin类的实例，它包含了包括图片、音频、精灵图等资源的加载逻辑。
+
+使用VS Code IntelliSense能够在你输入"this.load."时快速检索有关于load对象的所有函数和属性。
+
+在上面的示例中，我们先简单地引入了一张图片资源，并为它定义了一个唯一关键字(key)——"background"，以及指定了图片文件的相对路径。
+
+这里定义的唯一关键字将会在后面创建由Phaser渲染图片或精灵资源等时用到。
+
+## 创建背景
+
+随着图片文件bg_layer1.png的导入，我们现在可以在create()函数里把它加入到我们的游戏场景中了：
+
+```js
+create() {
+  this.add.image(240, 320, 'background')
+}
+```
+
+你可以看到，这行代码除了传入的参数以外，和我们在preload()函数时引入图片资源的样子十分相似，只是取而代之的是this.add，而非this.load。
+
+以及，我们添加的是内容是一张图片，对应的我们调用的则是"image"函数，前面两个数值参数分别是x坐标和y坐标，最后面的参数则是我们在preload()函数中为bg_layer1.png定义的唯一关键字(key)。
+
+保存我们的更改，在浏览器页面重新加载后，你应该就能看到一张蓝色背景出现在了画面上了。
+
+既然游戏场景配置好了，接下来我们就给游戏加点游戏的逻辑吧~
+
+# 生成平台
+
+一个无限跳跃游戏的目标就是尽可能地在平台上弹跳并保持在空中。
+
+那么我们就来加一些平台吧！
+
+首先，我们必须在preload()函数中预加载平台的图片资源，就像你在上一个章节中所做的那样：
+
+```js
+preload() {
+  this.load.image('background', 'assets/bg_layer_1.png')
+
+  // 加载平台图片资源
+  this.load.image('platform', 'assets/ground_grass.png')
+}
+```
+
+这行代码你应该已经比较熟悉了，this.load.image()的第一个参数是图片资源的唯一关键字(key)，第二个参数则是来自开发服务(对应本项目中的Live Server)的对应图片资源的文件相对路径。
+
+这个路径实际上并不是本地文件的路径。
+
+你可以试试这个操作，当你的开发服务正在运行时，在浏览器里访问localhost:5500/assets/ground_grass.png。
+
+Live Server插件能够让你项目所有的文件夹作为一个整体服务。
+
+回到正题，在平台的图片资源加载完毕后，我们就能够在create()函数里创建平台了：
+
+```js
+create() {
+  this.add.image(240, 320, 'background')
+
+  // 添加一个平台到画面的中间
+  this.add.image(240, 320, 'platform')
+}
+```
+
+保存你的代码后，你的游戏大概会长这样：
+
+![当前效果图](./static/book_game.png)
+
+这里有两个问题，第一，平台太大了！其次，它仅仅是一张图片，并不具备任何物理特性！
+
+我们先来解决第一个问题，按照这样对图片进行缩放：
+
+```js
+this.add.image(240, 320, 'platform')
+  .setScale(0.5)
+```
+
+平台缩小了一半，看起来好多了！接下来是物理特性！
+
+## 加入Arcade物理引擎
+
+Phaser的物理引擎拥有很多种配置项，我们将会使用Arcade物理引擎，以至于不让事情变得很复杂。
+
+我们首先要做的第一件事是，在导出游戏对象的配置项里启用Arcade物理引擎。
+
+来像这样更新下我们的main.js的代码：
+
+```js
+export default new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 480,
+  height: 640,
+  scene: Game,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {
+        y: 200
+      },
+      debug: true
+    }
+  }
+})
+```
+
+注意我们在这里添加了physics属性。此外要提的是我们在这里将debug置为true，以至于我们能够直观地观察碰撞盒子。
+
+## 添加一个拥有物理特性的平台
+
+现在我们的Arcade物理引擎已经启用了，那接下来我们就开始创建一个拥有物理特性的平台吧。把刚才的平台创建代码替换为：
+
+```js
+// 把这个代码替换掉
+// this.add.image(240, 320, 'platform')
+//   .setScale(0.5)
+
+// 换成这个
+this.physics.add.image(240, 320, 'platform')
+  .setScale(0.5)
+```
+
+随着这个在游戏场景中的改动，你应该能看到这个平台从屏幕上坠落了。
+
+实际上，我们想要的效果是这个平台停留在它们一开始的位置，能达到这个效果的，就是静态物体(static physics body)。
+
+使用**this.physics.add.staticImage()**是一个方式，但我们实际的需求不仅仅是单个平台，而是一系列的平台。
+
+所以我们还可以用**this.physics.add.staticGroup**一次性地解决以上两个问题。
+
+## 添加多个平台
+
+以下就是使用StaticGroup来创建拥有物理特性的平台的代码：
+
+```js
+create() {
+  // 提出这个代码
+  this.physics.add.image(240, 320, 'platform')
+    .setScale(0.5)
+  
+  // 创建一个组对象
+  const platforms = this.physics.add.staticGroup()
+
+  // 然后在组对象内创建五个平台
+  for(let i = 0; i < 5; i++) {
+    const x = Phaser.Math.Between(80, 400)
+    const y = 150 * i
+
+    /** @type {Phaser.Physics.Arcade.Sprite} */
+    const platform = platform.create(x, y, 'platform')
+    platform.scale = 0.5
+
+    /** @type {Phaser.Physics.Arcade.StaticBody} */
+    const body = platform.body
+    body.updateFromGameObject()
+  }
+}
+```
+
+这段代码里，我们首先是创建了一个StaticGroup对象，并命名为platforms。
+
+然后我们使用了一个for循环来创建了5个平台，并使它们各自的x坐标在80-400的范围内随机，y轴则逐个递增150像素。
+
+注意，我们依然需要像刚才那样将每个平台缩小为原来的0.5倍。
+
+关于"/** */"之间的内容，它被称为JSDoc注释，我们目前还不必在意它。只需要知道它能够帮助VS Code给到我们正确的代码自动补全就行了。
+
+而最后我们还需要调用updateFromGameObject()函数，这会基于我们在GameObject中所作的任何更改(如位置、缩放等)来刷新我们的物体。
+
+现在，我们的游戏界面看起来应该是这样的了：
+
+!(当前效果图)[./static/book_game2.png]
+
+每个平台的实际位置都是不同的，因为我们为它们的x轴使用了随机值，你可以刷新你的浏览器页面，你会发现它们每一次刷新位置都会发生变化。
+
+---
+
+我们在游戏里已经有了合适尺寸的平台。
+
+我们还需要一个能够有什么东西或者谁来跳在这些平台之上。
+
+# 创建我们的主角
+
