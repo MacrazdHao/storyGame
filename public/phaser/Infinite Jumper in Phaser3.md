@@ -1233,3 +1233,330 @@ emmm...但不管怎么说...
 
 ## 在游戏中加点红萝卜
 
+现在我们已经有了一个Carrot类了，接下来来加载红萝卜的图片资源carrot.png，然后创建一些萝卜吧！
+
+首先，在preload()函数中：
+
+```js
+preload() {
+  // 其他代码省略...
+
+  this.load.image('carrot', 'assets/carrot.png')
+
+  // 方向键值...
+}
+```
+
+你现在应该已经完全能理解这里到底是在干什么了。
+
+下一步，我们要导入Carrot类
+
+```js
+import Phaser from '../lib/phaser.js'
+
+// 在这里导入Carrot类
+import Carrot from '../game/Carrot.js'
+
+export default class Game extends Phaser.Scene {
+  // 类的内容
+}
+```
+
+添加以上代码片段的第4行代码，我们就能够开始创建Carrot类的实例对象了。
+
+因此，我们在create()做这个事情吧：
+
+```js
+create() {
+  // 其他代码省略...
+  
+  // 创建一个Carrot类实例对象
+  const carrot = new Carrot(this, 240, 320, 'carrot')
+  this.add.existing(carrot)
+}
+```
+
+这会在游戏界面的中间出现一个红萝卜，新增它只是一个单纯的Sprite对象，不会对任何东西产生影响。
+
+我们想要的是能够收集很多很多红萝卜，但现在这依然是个问题。
+
+emmm...怎么办呢？
+
+有什么我们已经用过的东西或体系能让我们实现这个模块呢？
+
+你猜？
+
+你能猜出来吗？
+
+那就是Arcade物理引擎和组！
+
+## 添加一组拥有物理特性的红萝卜
+
+来，我们先删掉刚才在create()函数中添加的carrot相关代码，我们用更好更简短的代码来替代它。
+
+首先，我们需要一个组对象来创建红萝卜实例对象。
+
+```js
+export default class Game extends Phaser.Scene {
+  // 之前的类属性变量省略...
+
+  /** @type {Phaser.Physics.Arcade.Group} */
+  carrots
+
+  create() {
+    // 其他代码省略...
+
+    this.carrots = this.physics.add.group({
+      classType: Carrot
+    })
+
+    this.carrots.get(240, 320, 'carrot')
+  }
+}
+```
+
+在第5行代码里，我们就像创建平台组的类属性变量platforms一样创建一个红萝卜的类属性变量carrots。
+
+然后再create()函数下紧接着我们就创建了一个物理组，并传入了一个配置对象，其中classType设置为了Carrot类。
+
+按照原本的逻辑，物理组会默认创建Phaser.Physics.Arcade.Sprite的实例对象，我们可以指定classType来改变它。
+
+最后，我们创建了一个测试用的红萝卜实例在屏幕的正中间。
+
+保存我们的更改，然后你应该就能看到一个红萝卜，然后掉落在它的厄运中。
+
+## 整理代码
+
+在继续之前，我们需要进行一个小小的清理环节。
+
+我们的Carrot类继承自Phaser.GameObjects.Sprite，但自从我们使用了物理组，它实际上就只是一个单纯的Phaser.Physics.Arcade.Sprite类。
+
+在这一小节，即便你不作任何变更，你的代码也不会报错。这一小节所讲的内容纯粹是代码的整洁和精度的问题。
+
+Carrot类的定义应该长这样：
+
+```js
+export default class Carrot extends Phaser.Physics.Arcade.Sprite {
+  // 类的内容
+}
+```
+
+## 把红萝卜放在平台上
+
+虽然我们可以让红萝卜漂浮起来，但在猪也长出翅膀飞起来之前也不可能实现。
+
+相比漂浮起来，还不如让我们把我们的红萝卜放在平台上更实际。
+
+在此之前，我们要像这样在平台和红萝卜间添加一个碰撞器：
+
+```js
+create() {
+  // 其他代码省略...
+
+  // 移除这行代码
+  // this.carrots.get(240, 320, 'carrot')
+
+  // 添加碰撞器
+  this.physics.add.collider(this.platforms, this.carrots)
+}
+```
+
+下一步，我们添加一个addCarrotAbove(sprite)函数，这会在sprite上方放置一个红萝卜。
+
+我们使用了一个常规的sprite参数让这个函数作为复用代码，也正如我们上一章节提到的horizontalWrap(sprite)函数时所说的一样。
+
+让我们把这个函数写进游戏场景代码的底下：
+
+```js
+export default class Game extends Phaser.Scene {
+  /**
+   *  @param {Phaser.GameObjects.Sprite} sprite
+   */
+  addCarrotAbove(sprite) {
+    const y = sprite.y - sprite.displayHeight
+
+    /** @type {Phaser.Physics.Arcade.Sprite} */
+    const carrot = this.carrots.get(sprite.x, y, 'carrot')
+
+    this.add.existing(carrot)
+
+    // 更改物理容器的尺寸
+    carrot.body.setSize(carrot.width, carrot.height)
+
+    return carrot
+  }
+}
+```
+
+你应该很熟悉这些代码了吧，这些都是我们之前所讲过的代码的组合使用。
+
+红萝卜的实例对象会以给定的sprite实例对象的displayHeight属性为依据，放在该sprite之上。
+
+一个更精准的公式是，sprite.y减去sprite.displayHeight的一半，以及红萝卜的displayHeight的一半。
+
+在这个游戏里，我们使用比较简单的公式足矣，如果你打算尝试不同的资源，就可能要切换到更加精准的公式了。
+
+第14行这唯一一行新增的代码，其作用是根据红萝卜的长宽来重置物理容器尺寸。
+
+测试一下，如果没有这一行代码会发生什么？
+
+最后，我们可以在循环利用同一个平台时调用这个函数：
+
+```js
+update(t, dt) {
+  this.platforms.children.iterate(child => {
+    /** @type {Phaser.Physics.Arcade.Sprite} */
+    const platform = child
+
+    const scrollY = this.cameras.main.scrollY
+    if (platform.y >= scrollY + 700) {
+      platform.y = scrollY - Phaser.Math.Between(50, 100)
+      platform.body.updateFromGameObject()
+
+      // 在循环利用一个平台时，在其上面创建一个红萝卜实例对象
+      this.addCarrotAbove(platform)
+    }
+  })
+
+  // 其他代码省略...
+}
+```
+
+this.addCarrotAbove()函数被调用于我们把平台移动到屏幕顶部的时候。
+
+赶紧去试试吧！在你跳过一些平台后，你应该能看到一些红萝卜会出现在一些平台的上面了！
+
+emmm...是的，你还是没能收集得了它...
+
+## 来收集一些红萝卜吧！
+
+现在我们已经有很多红萝卜在平台上了，我们最后再加上收集它们的逻辑。
+
+我们将使用重叠区域(overlap)来取代碰撞检测来收集红萝卜。
+
+我们把这个加到create()函数的最后面：
+
+```js
+create() {
+  // 其他代码省略...
+
+  this.physics.add.collider(this.platforms, this.carrots)
+
+  // 格式化一下，让代码更加直观
+  this.physics.add.overlap(
+    this.player,
+    this.carrots,
+    this.handleCollectCarrot, // 这将会在重叠时被调用
+    undefined,
+    this
+  )
+}
+```
+
+你能看到，我们通过this.physics.add.overlap()函数添加了一个重叠区域(overlap)。
+
+我们只是为了更加直观和方便地阅读，才把这个函数的参数分别换行来展示而已，你也可以在自己电脑的代码里把它缩并成一行。
+
+我们正在用重叠区域来红萝卜组和玩家角色之间的接触。
+
+然后当出现一个重叠区域时，this.handleCollectCarrot()函数就会马上被调用。
+
+这个值为undefined的参数，是我们不需要的回调函数。然后在最后面把this作为上下文传入，是必要且重要的。
+
+在这里提供一个正确的上下文是非常重要的，当this.handleCollectCarrot()函数被Phaser调用时，这能确保this指向的是当前的游戏场景(Scene)实例对象。
+
+如果你无法理解这里的意思，你也不必太过担忧。因为在使用ES6+的JavaScript的过程中，总是会遇到将this作为上下文传入到函数里的情况。
+
+所以你只需要照猫画虎就行了。在后续，你会学习到更多关于JavaScript的作用于和上下文的知识。
+
+那么现在我们就把this.handleCollectCarrot()函数加进游戏场景类的最后面吧：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 其他代码省略...
+
+  /**
+   * @param {Phaser.Physics.Arcade.Sprite} player
+   * @param {Carrot} carrot
+   */
+  handleCollectCarrot(player, carrot) {
+    // 隐藏实例对象
+    this.carrots.killAndHide(carrot)
+
+    // 在物理区域中禁用该物理容器
+    this.physics.world.disableBody(carrot.body)
+  }
+}
+```
+
+在这个函数里给出的红萝卜实例对象，即是已经和玩家角色重叠了的红萝卜。
+
+该代码通过调用组对象的killAndHide()函数传入红萝卜实例，对其实施停用和隐藏操作。
+
+下一步在物理区域中禁用该物理容器，是非常重要的一步。
+
+保存我们的更改并试试它的效果。红萝卜应该就会在你触碰到它们的时候消失了。
+
+你应该会注意到，当一个红萝卜实例被重复使用时，它并不会再出现。
+
+游戏开发就是难题大挑战，不是吗？
+
+## 循环利用我们的红萝卜
+
+实际上，在创建一个红萝卜组以及调用killAndHide()函数，我们基本上就已经完成了一半循环利用红萝卜实例对象的工作了。
+
+像addCarrotAbove()函数中那样，当get()函数被调用时，Phaser组就会自动循环利用并重新激活组成员。
+
+它们并不会自动重新激活或可视化，所以我们必须在addCarrotAbove()函数中做以下更改：
+
+```js
+/**
+ * @param {Phaser.GameObjects.Sprite} sprite
+ */
+addCarrotAbove(sprite) {
+  const y = sprite.y - sprite.displayHeight
+
+  /** @type {Phaser.Physics.Arcade.Sprite} */
+  const carrot = this.carrots.get(sprite.x, y, 'carrot')
+
+  // 激活并可视化
+  carrot.setActive(true)
+  carrot.setVisible(true)
+
+  this.add.existing(carrot)
+
+  carrot.body.setSize(carrot.width, carrot.height)
+
+  // 确保物理容器在物理区域已经被启用
+  this.physics.world.enable(carrot)
+
+  return carrot
+}
+```
+
+第11和12行就是用于确保我们的红萝卜被激活和可视化的代码。
+
+第19行则是确保物理容器在物理区域被启用的代码。
+
+马上尝试一下，你会发现所有期望的效果已经达到了：
+
+!(当前效果图)[./static/book_game4.png]
+
+虽然还有一个问题...我们还没有任何一个东西来记录我们到底收集了多少红萝卜呢！
+
+下面我们就来搞搞这个问题。
+
+---
+
+实际上，我们还有另一个问题！但我们会留给你去独立解决。
+
+任何一个没有玩家角色被收集到的红萝卜，都会平台在滚动出屏幕并会回收利用时，无尽地地往下掉落。
+
+这将导致非常多被孤立的红萝卜！你大概率会永远注意不到这个问题。
+
+但它是个意外行为，很可能会在后面给我们带来不必要的麻烦。
+
+好消息是，实际上你是知道怎么解决这个问题的！
+
+使用我们循环利用平台时的方法就可以解决了。
+
