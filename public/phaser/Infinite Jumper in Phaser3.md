@@ -6,9 +6,9 @@
 
 这个游戏的玩法将会设定为类似于涂鸦跳跃(Doodle Jump)的无限跳跃玩法。
 
-具体规则是你的游戏角色需要尽可能地通过从上往下不断出现的平台向上跳跃，而这些平台则会在他们到达屏幕最底部时消失。
+具体规则是你的游戏角色需要尽可能地通过从上往下不断出现的平台向上跳跃，而这些平台则会在他们到界面最底部时消失。
 
-当你掉落到屏幕底部时，则会视为死亡。噢，我的老天爷，当然不是在说你，是你的角色。你当然可以不断重新开始游戏。
+当你掉落到界面底部时，则会视为死亡。噢，我的老天爷，当然不是在说你，是你的角色。你当然可以不断重新开始游戏。
 
 ## 为什么选择Web端而不是Unity？
 
@@ -584,7 +584,7 @@ this.physics.add.image(240, 320, 'platform')
   .setScale(0.5)
 ```
 
-随着这个在游戏场景中的改动，你应该能看到这个平台从屏幕上坠落了。
+随着这个在游戏场景中的改动，你应该能看到这个平台从界面上坠落了。
 
 实际上，我们想要的效果是这个平台停留在它们一开始的位置，能达到这个效果的，就是静态物理容器(static physics body)。
 
@@ -678,7 +678,7 @@ create() {
 }
 ```
 
-保存我们的更改，一只bunny应该就会出现在我们的游戏里了，但它会穿过所有平台，直接从屏幕上坠落下去，就好像它根本不在意一样。
+保存我们的更改，一只bunny应该就会出现在我们的游戏里了，但它会穿过所有平台，直接从界面上坠落下去，就好像它根本不在意一样。
 
 ## 添加碰撞检测
 
@@ -808,7 +808,7 @@ update() {
 
 这意味着每一帧，bunny都会沿着y轴移动-300像素，如果你从y轴为0开始移动，那你将在第一帧就到达-300，第二帧就到了-600...以此类推。
 
-这很难想象bunny不会飞出屏幕之外，游戏界面的高度才仅仅设定了640像素而已。
+这很难想象bunny不会飞出界面之外，游戏界面的高度才仅仅设定了640像素而已。
 
 显然它会在3帧内直接飞出三界之外！这可不是90年代的游戏《爵士兔子(Jazz Jackrabbit)》。
 
@@ -872,15 +872,15 @@ create() {
 
 无限跳跃游戏的关键玩法是随着玩家不断地跳跃得越来越高，也会不断地从上面出现新的平台。
 
-我们可以在玩家移动时创建新的平台，但换个思维，我们其实也可以重复利用已经滚动到屏幕底部的平台。
+我们可以在玩家移动时创建新的平台，但换个思维，我们其实也可以重复利用已经滚动到界面底部的平台。
 
-很简单，我们只需要把在底部的平台随着玩家越调越高，然后把平台重新移动到屏幕的顶部就好了。
+很简单，我们只需要把在底部的平台随着玩家越调越高，然后把平台重新移动到界面的顶部就好了。
 
 这里还要加一条Game Over的规则条件，即当玩家错过底下的最后一块平台坠落视为Game Over。
 
 为了制造一个无限平台的视觉效果，我们需要和之前的章节创建游戏类的player属性一样，我们还要为游戏类创建多一个platforms属性。
 
-我们在update()函数中，要用它来检测每一个平台，一旦当他们消失在屏幕上，就将他们移动到顶部上面去。
+我们在update()函数中，要用它来检测每一个平台，一旦当他们消失在界面上，就将他们移动到顶部上面去。
 
 ```js
 export default class Game extends Phaser.Scene {
@@ -958,7 +958,7 @@ update() {
 
 这里我们的代码逻辑操作是，检测每一个平台的y轴坐标是否大于或等于镜头(camera)滚动的垂直距离加上700像素。
 
-如果是，那么我们就将当前迭代的这个平台移动到屏幕顶上去，离顶部的距离我们以镜头(camera)的顶部为准，并加上一个在50-100范围见随机值。
+如果是，那么我们就将当前迭代的这个平台移动到界面顶上去，离顶部的距离我们以镜头(camera)的顶部为准，并加上一个在50-100范围见随机值。
 
 然后我们就完成了平台的物理容器的更改，即其y轴坐标更改。
 
@@ -1082,7 +1082,7 @@ update(t, dt) {
 
 但现在你会注意到，镜头会跟着你左右移动，这其实也并不是我们想要的。
 
-镜头跟随镜头并不合理，且玩家在穿出屏幕左右两侧时，应该在相反的方向回来才对。
+镜头跟随镜头并不合理，且玩家在穿出界面左右两侧时，应该在相反的方向回来才对。
 
 ## 镜头死区的使用
 
@@ -1109,19 +1109,19 @@ create() {
 
 这是通过命令行替代固定数值来动态获取游戏界面宽高的一个方式。
 
-我们设置了1.5倍界面宽度的值，是为了预留足够的空间来实现玩家绕着屏幕边缘移动的功能。
+我们设置了1.5倍界面宽度的值，是为了预留足够的空间来实现玩家绕着界面边缘移动的功能。
 
 我们可以通过this.cameras.main.setDeadzone()函数来设置指定的死区。
 
 简直轻而易举！
 
-保存我们的更改，然后游戏内镜头应该就不会再在你左右移动的时候滚动了，除非你超出屏幕范围之外。
+保存我们的更改，然后游戏内镜头应该就不会再在你左右移动的时候滚动了，除非你超出界面范围之外。
 
-接下来我们来解决一下屏幕边缘环绕的小问题。
+接下来我们来解决一下界面边缘环绕的小问题。
 
 ## 横向边缘环绕
 
-一个无限跳跃的游戏，当玩家移动到两侧屏幕边缘时，理应拥有横向的边缘环绕效果。
+一个无限跳跃的游戏，当玩家移动到两侧界面边缘时，理应拥有横向的边缘环绕效果。
 
 Arcade物理引擎在World对象中有个wrap()函数，但它同时也会作用于纵向方向。
 
@@ -1154,7 +1154,7 @@ export default class Game extends Phaser.Scene {
 }
 ```
 
-horizontalWrap(sprite)函数正是屏幕边缘环绕的逻辑所在。
+horizontalWrap(sprite)函数正是界面边缘环绕的逻辑所在。
 
 这个函数上面的注释也是JSDoc的另一种形式。这次是定义了horizontalWrap(sprite)函数中sprite参数的数据类型为Phaser.GameObjects.Sprite。
 
@@ -1164,11 +1164,11 @@ horizontalWrap(sprite)函数正是屏幕边缘环绕的逻辑所在。
 
 只需要记住，通用的代码是更利于重复使用，重复使用的代码能大大提高游戏的代码质量和开发速度。
 
-horizontalWrap函数的逻辑非常直接，如果传入的sprite在屏幕边缘处超出自身宽度的一半，则将其移动到另一侧一半宽度的位置上。
+horizontalWrap函数的逻辑非常直接，如果传入的sprite在界面边缘处超出自身宽度的一半，则将其移动到另一侧一半宽度的位置上。
 
 我们最后只需在update()中调用this.horizontalWrap函数，并将this.player作为sprite参数传入就完成了。
 
-保存我们的更改，然后试一下，你就会发现镜头不会再横向滚动了，同时玩家角色也可以在屏幕的横向边缘环绕了，看起来就像是一直欢快的bunny！
+保存我们的更改，然后试一下，你就会发现镜头不会再横向滚动了，同时玩家角色也可以在界面的横向边缘环绕了，看起来就像是一直欢快的bunny！
 
 # 收集红萝卜
 
@@ -1321,7 +1321,7 @@ export default class Game extends Phaser.Scene {
 
 按照原本的逻辑，物理组会默认创建Phaser.Physics.Arcade.Sprite的实例对象，我们可以指定classType来改变它。
 
-最后，我们创建了一个测试用的红萝卜实例在屏幕的正中间。
+最后，我们创建了一个测试用的红萝卜实例在界面的正中间。
 
 保存我们的更改，然后你应该就能看到一个红萝卜，然后掉落在它的厄运中。
 
@@ -1422,7 +1422,7 @@ update(t, dt) {
 }
 ```
 
-this.addCarrotAbove()函数被调用于我们把平台移动到屏幕顶部的时候。
+this.addCarrotAbove()函数被调用于我们把平台移动到界面顶部的时候。
 
 赶紧去试试吧！在你跳过一些平台后，你应该能看到一些红萝卜会出现在一些平台的上面了！
 
@@ -1550,7 +1550,7 @@ addCarrotAbove(sprite) {
 
 实际上，我们还有另一个问题！但我们会留给你去独立解决。
 
-任何一个没有玩家角色被收集到的红萝卜，都会平台在滚动出屏幕并会回收利用时，无尽地地往下掉落。
+任何一个没有玩家角色被收集到的红萝卜，都会平台在滚动出界面并会回收利用时，无尽地地往下掉落。
 
 这将导致非常多被孤立的红萝卜！你大概率会永远注意不到这个问题。
 
@@ -1560,3 +1560,200 @@ addCarrotAbove(sprite) {
 
 使用我们循环利用平台时的方法就可以解决了。
 
+# 记录分数
+
+我们已经拥有一个能够收集红萝卜的bunny，但我们还需要知道到底已经收集了多少红萝卜。
+
+你跳得越高，你就会收集到更多的红萝卜。
+
+红萝卜的数量将会决定我们的游戏分数！
+
+首先，我们需要创建一个类的变量属性，来记录收集到的红萝卜数：
+
+```js
+export default class Game extends Phaser.Scene {
+  carrotsCollected = 0
+
+  // 其他代码省略...
+}
+```
+
+这是在我们创建过最简单的类变量属性了！它仅仅是一个数字，所以我们也不必用JSDoc注释了。
+
+下一步是在handleCollectCarrot()函数中增加carrotsCollected的数值：
+
+```js
+/**
+* @param {Phaser.Physics.Arcade.Sprite} player
+* @param {Carrot} carrot
+*/
+handleCollectCarrot(player, carrot) {
+  this.carrots.killAndHide(carrot)
+
+  this.physics.world.disableBody(carrot.body)
+
+  // carrotsCollected数值加 1
+  this.carrotsCollected++
+}
+```
+
+我们使用 ++ 缩写来替代一下的累加操作，但你也可以换成一下这样：
+
+```js
+this.carrotsCollected = this.carrotsCollected + 1
+```
+
+下一步，我们需要显示这个数字，Phaser能够让我们在create()函数中很方便地创建漂亮的文字：
+
+```js
+create() {
+  // 其他代码省略...
+
+  const style = { color: '#000', fontSize: 24 }
+  this.add.text(240, 10, 'Carrot: 0', style)
+    .setScrollFactor(0)
+    .setOrigin(0.5, 0)
+}
+```
+
+我们使用this.add.text()函数新增了一个文本(Text)对象，并把它放置在了x轴的240和y轴的10的位置中心。
+
+初始的文字设置了为了"Carrots: 0"，然后传入了一个设置了文字颜色为黑色、字号为24像素的TextStyle对象。
+
+我们之前使用了setScrollFactor()函数来让背景在镜头滚动时固定，在这里我们也用了同样的方式固定分数文本。
+
+然后我们还使用了setOrigin(0.5, 0)函数来对文本进行顶部居中，这也称为描点或支点。
+
+保存我们的更改，你应该会看到这些文本已经出现在游戏界面的顶部了。
+
+## 在收集红萝卜时更新文本
+
+本文是在那了，但我们注意到它在我们手机红萝卜的时候并没有发生任何变动。
+
+这能通过创建一个类变量属性存储文本(Text)实例对象，然后在handleCollectCarrot函数中，当我们的carrotsCollected变化时变更它(存储文本实例对象的类变量属性)来解决这个问题。
+
+现在创建一个类变量属性应该已经是自然而然的事情了吧：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 其他代码省略...
+
+  /** @type {Phaser.GameObjects.Text} */
+  carrotsCollectedText
+
+  create() {
+    // 其他代码省略...
+
+    const style = { color: '#000', fontSize: 24 }
+    this.carrotsCollectedText = this.add.text(240, 10, 'Carrot: 0', style)
+      .setScrollFactor(0)
+      .setOrigin(0.5, 0)
+  }
+
+  // 其他代码省略...
+
+  /**
+  * @param {Phaser.Physics.Arcade.Sprite} player
+  * @param {Carrot} carrot
+  */
+  handleCollectCarrot(player, carrot) {
+    this.carrots.killAndHide(carrot)
+
+    this.physics.world.disableBody(carrot.body)
+
+    // carrotsCollected数值加 1
+    this.carrotsCollected++
+
+    // 构建新的文本值，并赋值到this.carrotsCollectedText中
+    const value = `Carrot: ${this.carrotsCollected}`
+    this.carrotsCollectedText.text = value
+  }
+}
+```
+
+在最上面定义一个carrotsCollectedText类变量属性，然后再create()函数中创建一个文本(Text)实例对象并赋值给它。
+
+利用现有的文本(Text)实例对象，我们就可以在handleCollectCarrot()函数中改变它的显示文本了。
+
+第31行代码中，我们使用了JavaScript的模板字符串的语句结构来构建新的文本，我们把this.carrotsCollected的值放在"Carrots:"后面。
+
+然后我们再把新的文本字符串赋值给this.carrotsCollectedText.text以更新显示的文本，就大功告成了！
+
+保存我们的更改，然后试试它吧！你现在应该能确切地知道在你跳得越来越高时，收集到了多少红萝卜了！
+
+!(当前效果图)[./static/book_game5.png]
+
+我们的游戏已经接近完成了！
+
+下一章，我们将需要处理当玩家坠落到最底部的平台以下时，判定玩家Game Over的逻辑。
+
+## 处理Game Over
+
+这个游戏Game Over的条件就是当玩家坠落到最底部的平台以下，并继续坠落至无尽深渊。
+
+我们的工作就是判断这种情况是否已经发生了。
+
+关键是找出哪个平台是最底下的平台，然后再判断玩家是否已经错过了它。
+
+你会怎么做呢？
+
+你会通过哪些步骤来找出平台组中可见范围内的最后一个平台呢？
+
+你所采用的步骤和过程，称之为算法。
+
+多年来，计算机科学家和工程师已经开发或发现了非常非常多的包含解决这个确切问题在内的算法！
+
+我们将会使用**选择算法(Selection Algorithm)**查找具有最高y值的平台，以确定最底部的平台。
+
+来在游戏场景(Scene)中添加一个findBottomMostPlatform()函数把：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 其他代码省略...
+
+  findBottomMostPlatform() {
+    const platforms = this.platforms.getChildren()
+    let bottomPlatform = platforms[0]
+
+    for (let i = 0; i < platforms.length; i++) {
+      const platform = platforms[i]
+
+      // 丢弃任何在当前平台之上的平台
+      if (platform.y < bottomPlatform.y) {
+        continue
+      }
+
+      bottomPlatform = platform
+    }
+
+    return bottomPlatform
+  }
+}
+```
+
+我们从使用this.platforms.getChildren()来获取包含所有平台的数组开始。
+
+然后把数组中的第一个平台作为现在认为的位于最底部的平台。
+
+下一步，我们迭代数组，并把bottomPlatform与每一个平台比较。如果出现一个平台的y轴坐标比现在的bottomPlatform的y轴坐标更大，则把它作为新的bottomPlatform。
+
+当我们的数组迭代结束，最后存储在bottomPlatform的平台就是我们所需的最底下的平台了，然后我们把它返回(return)。
+
+现在，为了使用这个返回值，我们把它添加到update()函数底下：
+
+```js
+update() {
+  // 其他代码省略...
+
+  const bottomPlatform = this.findBottomMostPlatform()
+  if (this.player.y > bottomPlatform.y + 200) {
+    console.log('game over')
+  }
+}
+```
+
+# 警告
+
+本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任。
+
+如有需要，敬请支持并购买正版书籍。
