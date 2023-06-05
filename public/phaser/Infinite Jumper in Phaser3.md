@@ -1032,3 +1032,204 @@ export default class Game extends Phaser.Scene {
 }
 ```
 
+我们新增了一个名为cursors的变量属性，并用JSDoc备注了它。这个基本操作估计你现在已经很熟练了吧？
+
+然后在preload()函数里，我们把this.input.keyboard.createCursorKeys()的值赋给了this.cursors。
+
+值得留意的是，我们的this.cursors还能在create()函数内进行赋值。在哪里赋值，可以按你的实际需要或代码风格来决定。
+
+而在这个案例里，纯粹是个人的代码风格问题。
+
+## 移动控制逻辑
+
+现在我们有了方向键和鼠标的键值了，接下来我们就可以随时据此来控制玩家角色的速度了。
+
+我们来看看怎么修改updata()函数吧：
+
+```js
+update(t, dt) {
+  // 其他代码省略...
+
+  const touchingDown = this.player.body.touching.down
+
+  if (touchingDown) {
+    this.player.setVelocityY(-300)
+  }
+
+  // 左右方向键输入逻辑 
+  if (this.cursors.left.isDown && !touchingDown) {
+    this.player.setVelocityX(-200)
+  } else if (this.cursors.right.isDown && !touchingDown) {
+    this.player.setVelocityY(200)
+  } else {
+    // 如果没有按下左右方向键，则停止移动
+    this.player.setVelocityX(0)
+  }
+}
+```
+
+我们可以通过this.cursors.left.isDown来判断左方向键是否被按下，右方向键则同理，使用的是this.cursors.right.isDown。
+
+如果方向键被按下，name我们就把x轴方向的速度设置为左-200，右则200。
+
+如果没有按键被按下，name我们就把x轴方向的速度设置为0，来停止角色的横向移动。
+
+我们在这里还通过touchingDown变量设置了，只允许在bunny脚下没有触碰到平台时才能进行横向移动的限制。
+
+现在在游戏里你应该就可以让bunny在空中左右移动了。
+
+去试试吧！
+
+但现在你会注意到，镜头会跟着你左右移动，这其实也并不是我们想要的。
+
+镜头跟随镜头并不合理，且玩家在穿出屏幕左右两侧时，应该在相反的方向回来才对。
+
+## 镜头死区的使用
+
+我们可以设置一个横向的宽死区来限制镜头的横向滚动。
+
+死区是玩家角色周围的一定区域，该区域内镜头将不会跟随和滚动。
+
+你大概能发现在很多游戏里，基本都不会在你跑来跑去的时候让镜头会一直跟着你移动，以至于让你感到晕眩和不适。
+
+以下就是给我们设置一个横向死区的方式：
+
+```js
+create() {
+  // 其他代码省略...
+
+  this.cameras.main.startFollow(this.player)
+
+  // 设置横向死区为游戏窗口宽度的1.5倍
+  this.cameras.main.setDeadzone(this.scale.width * 1.5)
+}
+```
+
+值得注意的是，我们的第一件事是使用Phaser中ScaleManager对象的this.scale.width来获取游戏的宽度。
+
+这是通过命令行替代固定数值来动态获取游戏界面宽高的一个方式。
+
+我们设置了1.5倍界面宽度的值，是为了预留足够的空间来实现玩家绕着屏幕边缘移动的功能。
+
+我们可以通过this.cameras.main.setDeadzone()函数来设置指定的死区。
+
+简直轻而易举！
+
+保存我们的更改，然后游戏内镜头应该就不会再在你左右移动的时候滚动了，除非你超出屏幕范围之外。
+
+接下来我们来解决一下屏幕边缘环绕的小问题。
+
+## 横向边缘环绕
+
+一个无限跳跃的游戏，当玩家移动到两侧屏幕边缘时，理应拥有横向的边缘环绕效果。
+
+Arcade物理引擎在World对象中有个wrap()函数，但它同时也会作用于纵向方向。
+
+这在类似《银河战士(Asteroids)》的游戏中非常适用，但对我们这个游戏来说并不然。
+
+好消息是自己实现横向的边缘环绕非常简单：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 其他代码省略...
+
+  update() {
+    // 其他代码省略...
+
+    this.horizontalWrap(this.player)
+  }
+
+  /**
+   * @param {Phaser.GameObjects.Sprite} sprite
+   */
+  horizontalWrap(sprite) {
+    const halfWidth = sprite.displayWidth * 0.5
+    const gameWidth = this.scale.width
+    if (sprite.x < -halfWidth) {
+      sprite.x = gameWidth + halfWidth
+    } else if (sprite.x > gameWidth + halfWidth) {
+      sprite.x = -halfWidth
+    }
+  }
+}
+```
+
+horizontalWrap(sprite)函数正是屏幕边缘环绕的逻辑所在。
+
+这个函数上面的注释也是JSDoc的另一种形式。这次是定义了horizontalWrap(sprite)函数中sprite参数的数据类型为Phaser.GameObjects.Sprite。
+
+我们现在只是让玩家角色进行环绕，但实际上这个函数可以让任意的Sprite做同样的事。
+
+一般来说，你应该尽可能地像这样去写函数，并将尽可能减少内部依赖的隐藏。如果你对此感到疑惑，那你也不必过于担忧。
+
+只需要记住，通用的代码是更利于重复使用，重复使用的代码能大大提高游戏的代码质量和开发速度。
+
+horizontalWrap函数的逻辑非常直接，如果传入的sprite在屏幕边缘处超出自身宽度的一半，则将其移动到另一侧一半宽度的位置上。
+
+我们最后只需在update()中调用this.horizontalWrap函数，并将this.player作为sprite参数传入就完成了。
+
+保存我们的更改，然后试一下，你就会发现镜头不会再横向滚动了，同时玩家角色也可以在屏幕的横向边缘环绕了，看起来就像是一直欢快的bunny！
+
+# 收集红萝卜
+
+几乎每个优秀的游戏，都会有什么东西是能够收集的。恰巧，我们的bunny也喜欢红萝卜！
+
+那么我们就给我们的bunny上点红萝卜吧！
+
+这次我们要为红萝卜创建一个独立的类，并将它导入到我们的游戏场景(Scene)当中。
+
+在这之前，我们要在src目录下创建一个名为game的目录，它的层级要和scenes、lib文件夹同级。
+
+然后我们再在这个game目录里创建一个名为Carrot.js的文件。
+
+并把以下红萝卜类的代码写进Carrot.js文件里：
+
+```js
+import Phaser from '../lib/phaser.js'
+
+export default class Carrot extends Phaser.GameObjects.Sprite {
+  /**
+   * @param {Phaser.Scene} scale
+   * @param {number} x
+   * @param {number} y
+   * @param {string} texture
+   */
+  constructor(scene, x, y, texture) {
+    super(scene, x, y, texture)
+
+    this.setScale(0.5)
+  }
+}
+```
+
+首先，我们从../lib/phaser.js引入了Phaser对象，因为我们的类需要继承(extends)于它其中的Phaser.GameObjects.Sprite类。
+
+红萝卜类在第三行开始定义，并作为默认的导出。
+
+这是我们等会要用到的ES6+的JavaScript导入Carrot类的方式：
+
+```js
+import Carrot from './Carrot.js'
+```
+
+这个类仅有一个构造函数，用于传入场景(scene)和x、y轴坐标。
+
+然后还有最后一个参数texture，是用于使用加载好的图片资源的。
+
+执行super函数的这行代码，是用于调用父类Phaser.GameObjects.Sprite的构造函数的。我们必须要这样做，以便于Sprite类能够初始化代码。
+
+我们没有用x、y、texture参数做任何事，但必须要有某个人使用这些参数值做点什么以创建一个Sprite对象。在代码的世界里，任何事情都不是什么自动完成的魔法。
+
+这某个人的工作就是继承Sprite类，以及调用super()函数并传入参数来换起的。
+
+最后，我们设置了0.5倍缩放，因为我们知道我们的资源都是我们所需的两倍大小。
+
+在游戏场景中，我们先创建平台和玩家角色，然后再调用setScale进行缩放。
+
+使用类的一个好处是我们可以隐藏这些内部配置的细节，有人认为这是负面的，也有更具禅意的人认为它是两者兼具。
+
+emmm...但不管怎么说...
+
+
+## 在游戏中加点红萝卜
+
