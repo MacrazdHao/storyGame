@@ -1747,13 +1747,220 @@ update() {
 
   const bottomPlatform = this.findBottomMostPlatform()
   if (this.player.y > bottomPlatform.y + 200) {
-    console.log('game over')
+    console.log('Game Over')
   }
 }
 ```
 
-# 警告
+首先，我们通过this.findBottomMostPlatform()函数获得了最底下部的平台，并把它存储在了this.bottomPlatform中。
 
-本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任。
+然后我们检测了玩家角色和最底下平台的纵向距离是否超过了200像素，如果超过了，则在浏览器控制台打印"Game Over"。
+
+去试试看看，确认下这条信息是否已经出现在了控制台吧！
+
+接下来我们将会创建一个Game Over的场景。
+
+## Game Over场景
+
+光是打印"Game Over"在浏览器控制台可不够。
+
+玩家是不会看见的！想想你自己又有多经常看一次浏览器控制台呢？
+
+首先我们在scenes文件夹内创建一个GameOver.js文件，并输入以下代码：
+
+```js
+import Phaser from '../lib/phaser.js'
+
+export default class GameOver extends Phaser.Scene {
+  constructor() {
+    super('game-over')
+  }
+
+  create() {}
+}
+```
+
+这里的所有操作看其实正如创建游戏场景(Game Scene)一样熟悉。
+
+记住，每个场景都需要一个独立的关键字(key)，我们在第5行代码中通过super()函数传入这一个关键字(key)。
+
+下一步，在cerate()函数中添加一个简单"Game Over"信息：
+
+```js
+create() {
+  const width = this.scale.width
+  const height = this.scale.height
+
+  this.add.text(width * 0.5, height * 0.5, 'Game Over', {
+    fontSize: 48
+  })
+    .setOrigin(0.5)
+}
+```
+
+我们使用了ScaleManager来获取游戏的宽高替代直接输入具体的数字。
+
+然后我们创建了一个简单的文本对象，就像我们之前所做的一样，然后设置他的origin为0.5，以至于它能在垂直和纵向两个方向居中。
+
+在我们可以正式使用这个场景(Scene)之前，我们还需要添加一个游戏配置。
+
+现在我们去main.js文件，然后像这样更新他的配置属性：
+
+```js
+// 其他代码省略...
+
+// 引入Game Over场景
+import GameOver from './scenes/GameOver.js'
+
+export default new Phaser.Game({
+  type: Phaser.AUTO,
+  width: 480,
+  height: 640,
+
+  // 之前的代码移除
+  // scene: Game,
+
+  // 现在的代码应该是这样的：
+  scene: [Game, GameOver],
+
+  // 其他代码省略...
+})
+```
+
+我们在这里的第一件事是引入新的GameOver场景，就像我们之前引入游戏场景(Game Scene)一样。
+
+然后我们更改了scene属性，从原来的单独一个Game类，变成了一个包含Game类和GameOver类的数组。
+
+现在我们可以在满足Game Over的条件时使用GameOver场景了。
+
+在游戏场景代码中的console.log('Game Over')代码改成这样：
+
+```js
+update() {
+  // 其他代码省略...
+
+  const bottomPlatform = this.findBottomMostPlatform()
+  if (this.player.y > bottomPlatform.y + 200) {
+    // 移除这行代码
+    // console.log('Game Over')
+
+    // 增加这行代码
+    this.scene.start('game-over')
+  }
+}
+```
+
+保存我们的更改，然后试试，你应该会在你的角色跌落超过最底部的平台时，跳到GameOver场景了。
+
+## 再玩一次
+
+我们现在已经有了一个GameOver场景，但我们会卡在这进退两难。
+
+根本没法再玩一次，实在蹩脚。
+
+所以我们再稍作修改，让我们在点击空格键的时候能够从GameOver场景调回游戏场景。
+
+我们在GameOver.js文件中的create()函数添加这些代码：
+
+```js
+create() {
+  // 其他代码省略...
+
+  this.input.keyboard.once('keydown-SPACE', () => {
+    this.scene.start('game')
+  })
+}
+```
+
+我们使用InputManager来监听空格键什么时候被按下，然后再跳到游戏场景。
+
+注意我们使用.once替代.on，这是为了让我们维持一个整洁的事件环境，因为它会在执行一次后自动清理掉，这就是为什么它叫这个名字。
+
+快来试试吧！我们有一个可以一次又一次地重复玩的游戏了！
+
+等等...
+
+你不觉得我们跑题了吗？
+
+游戏开发就是难题大挑战，记得吗？
+
+玩了一会游戏，你可能会发现，萝卜收集计数器在GameOver场景重新开始后就没法正确地工作了！
+
+它会一直显示Carrots: 0，但有时候它会再收集到第一根红萝卜时又显示一堆出来。
+
+这是发生了什么？
+
+看啊，朋友，这正如我所告诉你的，这可不简单...你摊上bug了！
+
+这个问题是这样的，我们没有在离开和重新进入游戏场景时重置carrotsCollected的值。
+
+## 初始化场景属性
+
+绝大部分的游戏场景类属性，都应该在create()函数中初始化或重置。
+
+除了carrotsCollected，我们只是在create()函数中执行了this.carrotsCollected = 0，但还有一个场景(Scene)钩子函数是我们可以使用的：
+
+```js
+export default class Game extends Phaser.Scene {
+  // 其他代码省略...
+  
+  // 构建函数
+
+  init() {
+    this.carrotsCollected = 0
+  }
+
+  // 其他代码省略...
+}
+```
+init()函数会再preload()函数执行前调用。正如其名，这是一个初始化的好地方。
+
+尝试一下像我们上面给出的代码一样，添加一个init()函数吧。
+
+现在所有事情都应该正常工作起来了！
+
+---
+
+我们几乎完成了这个游戏的所有事情了！
+
+还有仅剩一件我们想告诉你的事情。
+
+你说什么？只有9个章节的是什么书？去他的，我们来第10个回合！
+
+我们还有一个美术资源还没使用过呢！
+
+下一章我们将利用名为bunny1_jump.png的图片资源添加一点动画效果。
+
+# 带有跳跃纹理的简易动画
+
+这不是一个传统意义上带有精灵表(spritesheet)的真正动画。
+
+我们只是简单地在bunny跳跃时切换活动的纹理(texture)，并在bunny下落时又切换回来而已。
+
+首先，我们在在游戏场景中像其他图片资源一样预加载名为bunny1_jump.png的图片资源：
+
+```js
+preload() {
+  // 其他代码省略...
+
+  this.load.image('bunny-jump', 'assets/bunny1_jump.png')
+
+  // 其他代码省略...
+}
+```
+
+
+
+# 译者的话
+
+这本书是我入门Phaser，也是我个人尝试翻译的第一本书，本人英文比较蹩脚，结合Google翻译和ChatGPT能达到这个成果，就我个人而言已经十分满足了，各位看官千万别嫌弃，毕竟无论学习还是翻译，千里之行始于足下，迈出第一步至关重要。
+
+## 温馨提示
+
+本文非官方译文或精翻版本，未经任何校对，仅用于对原文的辅助参考理解和阅读，如有任何翻译错漏或版本差异，请自行查鉴！
+
+## 警告
+
+本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任！
 
 如有需要，敬请支持并购买正版书籍。
