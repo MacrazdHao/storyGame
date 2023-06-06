@@ -2223,21 +2223,21 @@ Tommy同时也是Captivate Games的创始人之一，同时也是一个举重爱
 
 再次感谢您，敬爱的作者。
 
-Thank you for your free pdf e-book, which has benefited me a lot. As the first introductory book, the content you wrote is easy to understand, and it also allowed me to complete a truly complete game in my life. Although the final work is not a perfect work, it will also be the cornerstone of my future development of more games.
+Thank you very much for providing the PDF e-book for free. I learned a lot from it, and as the first introductory book on game development, your content was easy to understand and helped me complete my first meaningful game project. Although the final product was not perfect, this will be the cornerstone for me to develop more games in the future.
 
-Please rest assured, the purpose of my translation of this article is purely to learn and understand all the content in your book. The main reason is that when I was looking for Phaser's related tutorial content, I found that there were too few reference content in Chinese. So I wanted to translate your precious introductory teaching book for myself. So that I can review the knowledge in the book more conveniently at any time later.
+Please rest assured that the purpose of my translating this article is purely for learning and understanding all the contents in your book. The main reason is that I found there are very few Chinese resources related to Phaser tutorials, which inspired me to translate your precious introductory book so that I can review the knowledge conveniently in the future.
 
-Thank you again, dear author.
+Once again, thank you, dear author.
 
 ---
 
-如有侵权，请马上发送邮件或发送私信，本人将第一时间响应并对文章做出处理！感谢您的配合！
+如有侵权，请马上发送邮件或发送私信，本人将第一时间响应并对文章做出处理！感谢您的支持！
 
-If there is any infringement, please send an email or send a private message at first.
+If there is any infringement, please send an email or private message immediately.
 
-I will respond as soon as possible and deal with the article!
+I will respond promptly and take necessary actions to handle the article.
 
-Thank you for your cooperation!
+Thank you for your support!
 
 ## 温馨提示
 
