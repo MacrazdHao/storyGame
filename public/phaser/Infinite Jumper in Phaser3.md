@@ -55,9 +55,11 @@ This translation is for personal study and reference only. Please do not distrib
 
 If necessary, please support and purchase the original books.
 
-## 附录
+## 附录(Appendix)
 
 正版获取途径：[https://blog.ourcade.co](https://blog.ourcade.co/)
+
+The way to get the original books: [https://blog.ourcade.co](https://blog.ourcade.co/)
 
 # 介绍
 
