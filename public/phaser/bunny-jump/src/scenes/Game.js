@@ -132,7 +132,7 @@ export default class Game extends Phaser.Scene {
 
     this.horizontalWrap(this.player)
 
-    console.log(this.carrots.getLength())
+    // console.log(this.carrots.getLength())
     this.carrots.children.iterate(child => {
       /** @type {Phaser.Physics.Arcade.Sprite} */
       const carrot = child
