@@ -2058,10 +2058,60 @@ preload() {
 现在我们可以在bunny的每次跳跃中用this.sound.play()播放这段音频了：
 
 ```js
+update() {
+  // 其他代码省略...
 
+  const touchingDown = this.player.body.touching.down
+
+  if (touchingDown) {
+    this.player.setVelocityY(-300)
+
+    // 切换跳跃纹理
+    this.player.setTexture('bunny-jump')
+
+    // 播放跳跃音效
+    this.sound.play('jump')
+  }
+
+  // 其他代码省略...
+}
 ```
 
+第13行是一段非常简短的代码，也正是你所需要的代码。
 
+保存我们的更改，然后试试吧！在此之前也请确保你的系统音量不是为0。
+
+现在，随着bunny的每次跳跃，你都能听到一声声愉悦的声音了。
+
+---
+
+好了，我们现在已经真真意义上地完成了！
+
+恭喜！你已经学会一大堆利用Phaser和ES6+的JavaScript制作游戏的技巧了！
+
+在最后，我们还会留最后一个问题给你独立解决。
+
+Bunny Jump是一个无限跳跃游戏，并且对于99.9%的人来说确实是无限的。
+
+但它还有0.1%的玩家并非如此，问题在于JavaScript及任何编程语言中，都存在一个数值的上线，任何一个变量都无法保证数值是无限递增的。
+
+玩家角色每跳跃一次，y轴的值就会增加一次，直到触达编程语言中的上限值时，将会发生意外的事情。
+
+对于这个问题，你有什么想法呢？
+
+我们可以用什么方式来让有限的东西看起来是无限的呢？
+
+游戏开发就是难题大挑战。
+
+祝你好运！
+
+学无止境，请继续关注Ourcade！
+
+你可以(翻阅我们的博客)[http://blog.ourcade.co/]， (关注我们的推特)[http://twitter.com/ourcadehq]，(查看我们在Github上的代码)[http://github.com/ourcade]，以及(订阅我们的YouTube)[https://www.youtube.com/ourcadehq]！
+
+我们建议您接下来观看我们的(如何从头开始制作一个Phaser游戏-UNCUT系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0]，这里将讲述如何从创建一个空文件夹开始，使用标准JavaScript开发工具进行游戏开发。
+
+然后我们还建议看一下我们的(Memory Match系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh]，其中还包括了一些(更高级的付费课程)[https://gum.co/moEDH]可以供您购买学习。
 
 # 译者的话
 
