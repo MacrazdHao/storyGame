@@ -51,7 +51,9 @@ If there are any errors or differences in translation, please verify them yourse
 
 如有需要，敬请支持并购买正版书籍。
 
-This translation is for personal study and reference only. Please do not distribute or use it for commercial purposes without permission, otherwise you will bear the corresponding legal responsibility, and I do not assume any legal liability.
+This translation is for personal study and reference only.
+
+Please do not distribute or use it for commercial purposes without permission, otherwise you will bear the corresponding legal responsibility, and I do not assume any legal liability.
 
 If necessary, please support and purchase the original books.
 
