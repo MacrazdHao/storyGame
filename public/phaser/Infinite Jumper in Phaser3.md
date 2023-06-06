@@ -57,7 +57,7 @@ If necessary, please support and purchase the original books.
 
 ## 附录
 
-正版获取：[https://blog.ourcade.co](https://blog.ourcade.co/)
+正版获取途径：[https://blog.ourcade.co](https://blog.ourcade.co/)
 
 # 介绍
 
