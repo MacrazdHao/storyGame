@@ -132,15 +132,16 @@ export default class Game extends Phaser.Scene {
 
     this.horizontalWrap(this.player)
 
-    // console.log(this.carrots.getLength())
-    // this.carrots.children.iterate(child => {
-    //   /** @type {Phaser.Physics.Arcade.Sprite} */
-    //   const carrot = child
+    console.log(this.carrots.getLength())
+    this.carrots.children.iterate(child => {
+      /** @type {Phaser.Physics.Arcade.Sprite} */
+      const carrot = child
 
-    //   if (carrot.y >= scrollY + 700) {
-    //     carrot.
-    //   }
-    // })
+      if (carrot.y >= scrollY + 100) {
+        this.carrots.killAndHide(carrot)
+        this.physics.world.disableBody(carrot.body)
+      }
+    })
   }
   /**
    * @param {Phaser.GameObjects.Sprite}
