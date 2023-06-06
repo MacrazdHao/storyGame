@@ -1949,6 +1949,118 @@ preload() {
 }
 ```
 
+现在的话，你应该对这部分代码没有任何问题了吧？
+
+下一步，在update()函数里设置y轴速度为-300时，我们把角色纹理切换为跳跃纹理：
+
+```js
+update() {
+  // 之前的代码省略...
+
+  const touchingDown = this.player.body.touching.down
+
+  if (touchingDown) {
+    this.player.setVelocityY(-300)
+
+    // 切换跳跃纹理
+    this.player.setTexture('bunny-jump')
+  }
+}
+```
+
+我们使用了this.player.setTexture('bunny-jump')函数来切换我们预加载好的跳跃纹理。
+
+保存我们的更改，在游戏里面检查一下。bunny此时应该就能够从站立的姿势开始起跳了。
+
+看起来好了那么一丢丢了，不是吗？
+
+虽然还有个问题...它没法变回来！
+
+## 切回站立姿势
+
+我们想要在bunny开始落下的时候切换为站立姿势的图片资源。
+
+我们要怎么判断它在跳跃后什么时候不再继续上升，而是被重力拉下来了呢？
+
+元芳，你怎么看？
+
+获取我们可以利用速度来做点什么操作？
+
+没错！就是它了！
+
+我们只需要检测y轴方向的速度是否大于0的，就能知道bunny是在坠落还是上升了！
+
+那么我们用之前示例代码中的update()函数下添加相关的代码吧：
+
+```js
+update() {
+  // 之前的代码省略...
+
+  const touchingDown = this.player.body.touching.down
+
+  if (touchingDown) {
+    this.player.setVelocityY(-300)
+
+    // 切换跳跃纹理
+    this.player.setTexture('bunny-jump')
+  }
+
+  const vy = this.player.body.velocity.y
+  if (vy > 0 && this.player.texture.key !== 'bunny-stand') {
+    // 坠落时切换回站立纹理
+    this.player.setTexture('bunny-stand')
+  }
+
+  // 其他代码省略...
+}
+```
+
+我们通过玩家角色物理容器中的velocity属性获得了y轴方向的速度。
+
+然后我们就可以用来判断它是否大于0，从而得出现在bunny是否能够切换回'bunny-stand'纹理的结论了。
+
+如果为true，那么纹理就切回站立的图片。
+
+测试一下，看看它的效果怎么样吧。
+
+看起来感觉更加生动了，不是吗？
+
+## 还有最后一件事
+
+我们还有最后一件事要告诉你，那就是添加一个跳跃的音效！
+
+我们即将要使用的跳跃音效来自(Kenney’s Digital Audio pack)[https://kenney.nl/assets/digital-audio]。
+
+你可以跳转到(http://kenney.nl)[http://kenney.nl/]，点击Assets，然后选择Audio，然后找到Digital Audio。
+
+他拥有一大堆你可以用在这个或其他游戏上的非常棒的音乐素材。
+
+我们将使用ogg格式的音频文件，如果你用的是Windows系统，那很好，没有任何问题。
+
+如果你使用的是Mac电脑，那么你就很可能需要将它转换成一个mp3或wav文件了。
+
+在Digital Audio中找到名为phaseJump1.ogg的音频文件，然后像我们处理图片资源一样，将它复制到assets文件夹下名为sfx的文件夹之中。
+
+我们可以用和加载图片相同的方式加载音频，把它加在游戏场景的preload()函数中：
+
+```js
+preload() {
+  // 图片资源相关代码...
+
+  this.load.audio('jump', 'assets/sfx/phaseJump1.ogg')
+
+  // 方向键相关代码...
+}
+```
+
+就像加载图片一样，我们在this.load.audio()函数中，传入的第一个参数是唯一关键字(key)，第二个则是音频文件的路径。
+
+现在我们可以在bunny的每次跳跃中用this.sound.play()播放这段音频了：
+
+```js
+
+```
+
 
 
 # 译者的话
@@ -1964,3 +2076,27 @@ preload() {
 本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任！
 
 如有需要，敬请支持并购买正版书籍。
+
+## 敬作者(for the Author)
+
+感谢您免费提供的pdf电子书，让我受益良多，作为第一本入门的书，您写的内容通俗易懂，也让我完成了我人生中真正意义上完整的游戏作品。虽然最终的作品并不是满分作品，但这也将是我未来开发更多游戏的基石。
+
+请放心，我翻译此文的目的纯粹是为了学习和参透您书本中的全部内容，主要原因是我在寻找Phaser相关教程内容时，发现中文相关的参考内容实在太少，才突发奇想想要为自己翻译您这本珍贵的入门教学书，以便于后续能够随时更加方便地回顾书本中的知识。
+
+再次感谢您，敬爱的作者。
+
+Thank you for your free pdf e-book, which has benefited me a lot. As the first introductory book, the content you wrote is easy to understand, and it also allowed me to complete a truly complete game in my life. Although the final work is not a perfect work, it will also be the cornerstone of my future development of more games.
+
+Please rest assured, the purpose of my translation of this article is purely to learn and understand all the content in your book. The main reason is that when I was looking for Phaser's related tutorial content, I found that there were too few reference content in Chinese. So I wanted to translate your precious introductory teaching book for myself. So that I can review the knowledge in the book more conveniently at any time later.
+
+Thank you again, dear author.
+
+---
+
+如有侵权，请马上发送邮件或发送私信，本人将第一时间响应并对文章做出处理！感谢您的配合！
+
+If there is any infringement, please send an email or send a private message at first.
+
+I will respond as soon as possible and deal with the article!
+
+Thank you for your cooperation!
