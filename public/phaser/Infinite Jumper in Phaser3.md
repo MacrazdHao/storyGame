@@ -6,6 +6,59 @@
 
 [TOC]
 
+
+# 译者的话
+
+这本书是我入门Phaser，也是我个人尝试翻译的第一本书，本人英文比较蹩脚，结合Google翻译和ChatGPT能达到这个成果，就我个人而言已经十分满足了，各位看官千万别嫌弃，毕竟无论学习还是翻译，千里之行始于足下，迈出第一步至关重要。
+
+## 敬作者(for the Author)
+
+感谢您免费提供的pdf电子书，让我受益良多，作为第一本入门的书，您写的内容通俗易懂，也让我完成了我人生中真正意义上完整的游戏作品。虽然最终的作品并不是满分作品，但这也将是我未来开发更多游戏的基石。
+
+请放心，我翻译此文的目的纯粹是为了学习和参透您书本中的全部内容，主要原因是我在寻找Phaser相关教程内容时，发现中文相关的参考内容实在太少，才突发奇想想要为自己翻译您这本珍贵的入门教学书，以便于后续能够随时更加方便地回顾书本中的知识。
+
+再次感谢您，敬爱的作者。
+
+Thank you very much for providing the PDF e-book for free. I learned a lot from it, and as the first introductory book on game development, your content was easy to understand and helped me complete my first meaningful game project. Although the final product was not perfect, this will be the cornerstone for me to develop more games in the future.
+
+Please rest assured that the purpose of my translating this article is purely for learning and understanding all the contents in your book. The main reason is that I found there are very few Chinese resources related to Phaser tutorials, which inspired me to translate your precious introductory book so that I can review the knowledge conveniently in the future.
+
+Once again, thank you, dear author.
+
+---
+
+如有侵权，请马上发送邮件或发送私信，本人将第一时间响应并对文章做出处理！感谢您的支持！
+
+If there is any infringement, please send an email or private message immediately.
+
+I will respond promptly and take necessary actions to handle the article.
+
+Thank you for your support!
+
+## 温馨提示(Reminder)
+
+本文非官方译文或精翻版本，未经任何校对，仅用于对原文的辅助参考理解和阅读，如有任何翻译错漏或版本差异，请自行查鉴！
+
+This article is an unofficial translation or paraphrasing, and has not been proofread.
+
+It is only intended as an aid for understanding and reading the original text.
+
+If there are any errors or differences in translation, please verify them yourself.
+
+## 警告(Warning)
+
+本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任！
+
+如有需要，敬请支持并购买正版书籍。
+
+This translation is for personal study and reference only. Please do not distribute or use it for commercial purposes without permission, otherwise you will bear the corresponding legal responsibility, and I do not assume any legal liability.
+
+If necessary, please support and purchase the original books.
+
+## 附录
+
+正版获取：[https://blog.ourcade.co](https://blog.ourcade.co/)
+
 # 介绍
 
 首先，我们感谢你下载了这本书。
@@ -2210,51 +2263,3 @@ Tommy同时也是Captivate Games的创始人之一，同时也是一个举重爱
 他目前定居于美国佛罗里达州，并有两只灰狗作为宠物。
 
 ![作者的宠物](./static/author2.png)
-
-# 译者的话
-
-这本书是我入门Phaser，也是我个人尝试翻译的第一本书，本人英文比较蹩脚，结合Google翻译和ChatGPT能达到这个成果，就我个人而言已经十分满足了，各位看官千万别嫌弃，毕竟无论学习还是翻译，千里之行始于足下，迈出第一步至关重要。
-
-## 敬作者(for the Author)
-
-感谢您免费提供的pdf电子书，让我受益良多，作为第一本入门的书，您写的内容通俗易懂，也让我完成了我人生中真正意义上完整的游戏作品。虽然最终的作品并不是满分作品，但这也将是我未来开发更多游戏的基石。
-
-请放心，我翻译此文的目的纯粹是为了学习和参透您书本中的全部内容，主要原因是我在寻找Phaser相关教程内容时，发现中文相关的参考内容实在太少，才突发奇想想要为自己翻译您这本珍贵的入门教学书，以便于后续能够随时更加方便地回顾书本中的知识。
-
-再次感谢您，敬爱的作者。
-
-Thank you very much for providing the PDF e-book for free. I learned a lot from it, and as the first introductory book on game development, your content was easy to understand and helped me complete my first meaningful game project. Although the final product was not perfect, this will be the cornerstone for me to develop more games in the future.
-
-Please rest assured that the purpose of my translating this article is purely for learning and understanding all the contents in your book. The main reason is that I found there are very few Chinese resources related to Phaser tutorials, which inspired me to translate your precious introductory book so that I can review the knowledge conveniently in the future.
-
-Once again, thank you, dear author.
-
----
-
-如有侵权，请马上发送邮件或发送私信，本人将第一时间响应并对文章做出处理！感谢您的支持！
-
-If there is any infringement, please send an email or private message immediately.
-
-I will respond promptly and take necessary actions to handle the article.
-
-Thank you for your support!
-
-## 温馨提示(Reminder)
-
-本文非官方译文或精翻版本，未经任何校对，仅用于对原文的辅助参考理解和阅读，如有任何翻译错漏或版本差异，请自行查鉴！
-
-This article is an unofficial translation or paraphrasing, and has not been proofread.
-
-It is only intended as an aid for understanding and reading the original text.
-
-If there are any errors or differences in translation, please verify them yourself.
-
-## 警告(Warning)
-
-本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任！
-
-如有需要，敬请支持并购买正版书籍。
-
-This translation is for personal study and reference only. Please do not distribute or use it for commercial purposes without permission, otherwise you will bear the corresponding legal responsibility, and I do not assume any legal liability.
-
-If necessary, please support and purchase the original books.
