@@ -1,6 +1,6 @@
 # 封面
 
-!(封面)[./static/cover.png]
+![封面](./static/cover.png)
 
 # 目录
 
@@ -76,15 +76,15 @@ https://github.com/ourcade/infinite-jumper-template-phaser3
 
 ## 更多资源
 
-一旦你能熟练掌握这本书的基础内容，那么你就可以进入到下一步，去试着学习用标准的JavaScript开发工具(如Node.js、NPM等)新建一个项目了。恰巧，我们关于(如何从0开发一个Phaser游戏)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0]的视频，正是为你的下一步而准备的。
+一旦你能熟练掌握这本书的基础内容，那么你就可以进入到下一步，去试着学习用标准的JavaScript开发工具(如Node.js、NPM等)新建一个项目了。恰巧，我们关于[如何从0开发一个Phaser游戏](https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0)的视频，正是为你的下一步而准备的。
 
 在视频中，我们将会从创建一个空文件夹开始，然后用VS Code、NPM和一些命令行构建Phaser3项目。
 
-随后，我们建议看一看我们的(知识回顾)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh]，其中包含了更多你能买到的(进阶文章和课程)[https://gum.co/moEDH]。
+随后，我们建议看一看我们的 [知识回顾](https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh) ，其中包含了更多你能买到的[进阶文章和课程](https://gum.co/moEDH)。
 
 ---
 
-我们有强烈的意愿来更新和完善这本书。如果有什么错误、不清晰的描述，或者其他任何问题，请通过我们的邮箱tommy@ourcade.co或推特(@ourcadehq)[http://twitter.com/ourcadehq]留言告诉我们。
+我们有强烈的意愿来更新和完善这本书。如果有什么错误、不清晰的描述，或者其他任何问题，请通过我们的邮箱tommy@ourcade.co或推特[@ourcadehq](http://twitter.com/ourcadehq)留言告诉我们。
 
 好了，废话不再多说，我们现在就开始开发我们的游戏吧！
 
@@ -319,7 +319,7 @@ bunny-jump
 
 回到main.js文件中，输入"Phaser."，你应该就能看到一个行内的菜单，里面包含了属于Phaser的不同属性，比如"AUTO"。
 
-如果你遇到解决不了的问题，可以在我们的推特(@ourcadehq)[http://twitter.com/ourcadehq]留言，你可以附上你在VS Code的截图，又或者是一个包含你遇到的问题的短视频。
+如果你遇到解决不了的问题，可以在我们的推特[@ourcadehq](http://twitter.com/ourcadehq)留言，你可以附上你在VS Code的截图，又或者是一个包含你遇到的问题的短视频。
 
 ## 准备好了吗，头号玩家？
 
@@ -641,7 +641,7 @@ create() {
 
 现在，我们的游戏界面看起来应该是这样的了：
 
-!(当前效果图)[./static/book_game2.png]
+![当前效果图](./static/book_game2.png)
 
 每个平台的实际位置都是不同的，因为我们为它们的x轴使用了随机值，你可以刷新你的浏览器页面，你会发现它们每一次刷新位置都会发生变化。
 
@@ -714,7 +714,7 @@ create() {
 
 噢！我的老天！真是难以置信，你的bunny没有站在上面吗？太不巧了，那一定是老天没有眷顾你，让所有平台都完美多开了你的bunny，真可怜！当然了，你只需要多刷新一次或几次，bunny总有机会像这样站在上边的！
 
-!(当前效果图)[./static/book_game3.png]
+![当前效果图](./static/book_game3.png)
 
 ## 使用类属性
 
@@ -1548,7 +1548,7 @@ addCarrotAbove(sprite) {
 
 马上尝试一下，你会发现所有期望的效果已经达到了：
 
-!(当前效果图)[./static/book_game4.png]
+![当前效果图](./static/book_game4.png)
 
 虽然还有一个问题...我们还没有任何一个东西来记录我们到底收集了多少红萝卜呢！
 
@@ -1689,7 +1689,7 @@ export default class Game extends Phaser.Scene {
 
 保存我们的更改，然后试试它吧！你现在应该能确切地知道在你跳得越来越高时，收集到了多少红萝卜了！
 
-!(当前效果图)[./static/book_game5.png]
+![当前效果图](./static/book_game5.png)
 
 我们的游戏已经接近完成了！
 
@@ -2037,9 +2037,9 @@ update() {
 
 我们还有最后一件事要告诉你，那就是添加一个跳跃的音效！
 
-我们即将要使用的跳跃音效来自(Kenney’s Digital Audio pack)[https://kenney.nl/assets/digital-audio]。
+我们即将要使用的跳跃音效来自[Kenney’s Digital Audio pack](https://kenney.nl/assets/digital-audio)。
 
-你可以跳转到(http://kenney.nl)[http://kenney.nl/]，点击Assets，然后选择Audio，然后找到Digital Audio。
+你可以跳转到[http://kenney.nl](http://kenney.nl/)，点击Assets，然后选择Audio，然后找到Digital Audio。
 
 他拥有一大堆你可以用在这个或其他游戏上的非常棒的音乐素材。
 
@@ -2115,11 +2115,11 @@ Bunny Jump是一个无限跳跃游戏，并且对于99.9%的人来说确实是�
 
 学无止境，请继续关注Ourcade！
 
-你可以(翻阅我们的博客)[http://blog.ourcade.co/]， (关注我们的推特)[http://twitter.com/ourcadehq]，(查看我们在Github上的代码)[http://github.com/ourcade]，以及(订阅我们的YouTube)[https://www.youtube.com/ourcadehq]！
+你可以[翻阅我们的博客](http://blog.ourcade.co/)， [关注我们的推特](http://twitter.com/ourcadehq)，[查看我们在Github上的代码](http://github.com/ourcade)，以及[订阅我们的YouTube](https://www.youtube.com/ourcadehq)！
 
-我们建议您接下来观看我们的(如何从头开始制作一个Phaser游戏-UNCUT系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0]，这里将讲述如何从创建一个空文件夹开始，使用标准JavaScript开发工具进行游戏开发。
+我们建议您接下来观看我们的[如何从头开始制作一个Phaser游戏-UNCUT系列视频](https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0)，这里将讲述如何从创建一个空文件夹开始，使用标准JavaScript开发工具进行游戏开发。
 
-然后我们还建议看一下我们的(Memory Match系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh]，其中还包括了一些(更高级的付费课程)[https://gum.co/moEDH]可以供您购买学习。
+然后我们还建议看一下我们的[Memory Match系列视频](https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh)，其中还包括了一些[更高级的付费课程](https://gum.co/moEDH)可以供您购买学习。
 
 # 结语
 
@@ -2171,13 +2171,13 @@ Bunny Jump是一个无限跳跃游戏，并且对于99.9%的人来说确实是�
 
 如果你喜欢这本书的内容，那就来加入我们吧！
 
-可以到我们的(推特@ourcadehq)[http://twitter.com/ourcadehq]找到我们。
+可以到我们的[推特@ourcadehq](http://twitter.com/ourcadehq)找到我们。
 
-我们的(YouTube频道)[https://www.youtube.com/ourcadehq]力求展示和解析游戏的开发，而不会忽略掉问题的解决过程。世上不存在任何一个超级开发者能一次性写出完美的代码。
+我们的[YouTube频道](https://www.youtube.com/ourcadehq)力求展示和解析游戏的开发，而不会忽略掉问题的解决过程。世上不存在任何一个超级开发者能一次性写出完美的代码。
 
-(Github)[http://github.com/ourcade]是我们分享源代码给所有人阅读、学习和借鉴的地方，我们不认为程序代码需要像保护核弹密码一样严格保密。
+[Github](http://github.com/ourcade)是我们分享源代码给所有人阅读、学习和借鉴的地方，我们不认为程序代码需要像保护核弹密码一样严格保密。
 
-最后，Ourcade的(博客)[http://blog.ourcade.co/]和(网站)[http://ourcade.co/]是我们的枢纽，你能够在里面发现我们教授、分享和建造的任何东西。
+最后，Ourcade的[博客](http://blog.ourcade.co/)和[网站](http://ourcade.co/)是我们的枢纽，你能够在里面发现我们教授、分享和建造的任何东西。
 
 祝你游戏开发顺利，
 
@@ -2187,11 +2187,11 @@ Tommy Leung(又名supertommy)
 
 2020年4月，修订于2021年12月、2021年1月
 
-!(其他)[./static/other.png]
+![插图](./static/other.png)
 
 # 关于作者
 
-!(作者的照片)[./static/author.png]
+![作者的照片](./static/author.png)
 
 Tommy Leung，又名supertommy，于2007年起一直从事专业游戏开发工作。他是一个拥有Pace大学商业学位的自学成才的程序员。
 
@@ -2209,7 +2209,7 @@ Tommy同时也是Captivate Games的创始人之一，同时也是一个举重爱
 
 他目前定居于美国佛罗里达州，并有两只灰狗作为宠物。
 
-!(作者的宠物)[./static/author2.png]
+![作者的宠物](./static/author2.png)
 
 # 译者的话
 
