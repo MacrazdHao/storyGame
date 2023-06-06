@@ -60,11 +60,11 @@ https://github.com/ourcade/infinite-jumper-template-phaser3
 
 ## 在线学习视频
 
-如果你遇到了阻碍，我们也在Youtube提供了对应[10个章节的视频](https://github.com/ourcade/infinite-jumper-template-phaser3)，你也能在此留言和其他人一起相互讨论。
+如果你遇到了阻碍，我们也在YouTube提供了对应[10个章节的视频](https://github.com/ourcade/infinite-jumper-template-phaser3)，你也能在此留言和其他人一起相互讨论。
 
 同时我们也会像你一样尽可能逐章阅读这本书，遇到任何错误或者问题的话也会及时纠正。
 
-你也能在我们的[Youtube频道](http://youtube.com/ourcadehq)或[点击这里](https://www.youtube.com/playlist?list=PLumYWZ2t7CRtojYrBNKu-TSXY5VbTGzIY)找到我们的视频播放列表。
+你也能在我们的[YouTube频道](http://youtube.com/ourcadehq)或[点击这里](https://www.youtube.com/playlist?list=PLumYWZ2t7CRtojYrBNKu-TSXY5VbTGzIY)找到我们的视频播放列表。
 
 ## 更多资源
 
@@ -2112,6 +2112,96 @@ Bunny Jump是一个无限跳跃游戏，并且对于99.9%的人来说确实是�
 我们建议您接下来观看我们的(如何从头开始制作一个Phaser游戏-UNCUT系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRvdJJ206QarbisxYPAyYwj0]，这里将讲述如何从创建一个空文件夹开始，使用标准JavaScript开发工具进行游戏开发。
 
 然后我们还建议看一下我们的(Memory Match系列视频)[https://www.youtube.com/playlist?list=PLumYWZ2t7CRuhzvpSeCvRLUZv2xKgO_wh]，其中还包括了一些(更高级的付费课程)[https://gum.co/moEDH]可以供您购买学习。
+
+# 结语
+
+感谢您能耐心阅读完本书。
+
+我希望它能够确实地教会您一些关于游戏开发的知识。
+
+这本书中作为案例的游戏也许并不是那么有趣，它在您的游戏过程中，难度也没有变得困难。
+
+这也是您所需要继续完善的地方。
+
+游戏是一个创造性的努力和挑战。思考一下在你能够完成你的创意之前所需要的所有知识和技能，这也正如赫拉克勒斯完成12项任务一样艰巨。
+
+这听起来或许是望而生畏的，但这也是事实，你需要接受它的困难并迎难而上。
+
+同时，也没有人能准确地告诉你，你需要的是什么。这也是一场探索之旅。
+
+我们在这本书中所创作的无限跳跃游戏只是一个小小的起征点罢了。
+
+您还需要注入自己的个人特点，创造力和毅力，才能把它真正地完成。
+
+还有什么开发空间能让跳跃更有意思呢？需要加加点敌人吗？它们又应该能做点什么？如果让一些平台能够在着陆后破裂呢？加点传送带元素会不会更有意思？又或者是传送门？能不能把它做成多人游戏？做成在线游戏呢？
+
+这里面充满了无限可能。
+
+对于你所想要做的事情，你只需要不断地学习。相信我，在我一开始的时候，那些复杂的游戏开发对我来说看起来也是不可能完成的。当时像Ourcade这样堆积如山的资源的网站也不能做，游戏引擎也更难以获取。
+
+对于游戏开发来说，黑魔法正存在于开发者的头脑思维当中。有关于游戏开发的书籍不多，针对初学者的书籍更是少之又少。
+
+现在我们在网络上到处都能找到大量的信息和咨询！还有非常多开源的代码，可以让每一个人去阅读、学习或者借鉴。
+
+你还可以向我们在Kenny或其他地方那样，通过Google搜索来找到更多有意思的游戏素材。
+
+此时此时，不正是游戏制作的绝佳时机吗？
+
+我们在Ourcade的宗旨正是提供一个最接地气的游戏开发社区，不管你是初学者、专家，亦或是任何人。
+
+不管我们的技术水平如何，根本没有任何原因不乐在其中或享受这一过程。
+
+不要为了一点小事而乱大谋，我们开发游戏，它理应是有趣的。
+
+这也是为什么Ourcade有五大精神支柱的原因：
+
+* 愉快的
+* 友好的
+* 互助的
+* 开放的
+* 乐观的
+
+如果你喜欢这本书的内容，那就来加入我们吧！
+
+可以到我们的(推特@ourcadehq)[http://twitter.com/ourcadehq]找到我们。
+
+我们的(YouTube频道)[https://www.youtube.com/ourcadehq]力求展示和解析游戏的开发，而不会忽略掉问题的解决过程。世上不存在任何一个超级开发者能一次性写出完美的代码。
+
+(Github)[http://github.com/ourcade]是我们分享源代码给所有人阅读、学习和借鉴的地方，我们不认为程序代码需要像保护核弹密码一样严格保密。
+
+最后，Ourcade的(博客)[http://blog.ourcade.co/]和(网站)[http://ourcade.co/]是我们的枢纽，你能够在里面发现我们教授、分享和建造的任何东西。
+
+祝你游戏开发顺利，
+
+Tommy Leung(又名supertommy)
+
+美国佛罗里达州
+
+2020年4月，修订于2021年12月、2021年1月
+
+!(其他)[./static/other.png]
+
+# 关于作者
+
+!(作者的照片)[./static/author.png]
+
+Tommy Leung，又名supertommy，于2007年起一直从事专业游戏开发工作。他是一个拥有Pace大学商业学位的自学成才的程序员。
+
+他曾为卡通网络、尼克尔奥德、乐高等品牌开发游戏。
+
+在建立Ourcade前，他曾是在Zynga的高级工程经理。Zynga是Words with Friends和FarmVille等备受欢迎的移动游戏制作商，他曾主导过数百万人玩家使用的一款畅销移动游戏的开发。
+
+Tommy曾使用Flash、C/C++、Objective-C、Java,、Unity/C#、HTML5/JavaScript等等编程语言开发过游戏。
+
+除此之外，他还热衷于网页全栈开发和原生iOS开发。
+
+他始终坚定于不断学习，自我提升以及通过帮助其他人回馈社会，因为他认为自己没有前人的慷慨帮助，就不会拥有自己今天的成就。
+
+Tommy同时也是Captivate Games的创始人之一，同时也是一个举重爱好者。
+
+他目前定居于美国佛罗里达州，并有两只灰狗作为宠物。
+
+!(作者的宠物)[./static/author2.png]
 
 # 译者的话
 
