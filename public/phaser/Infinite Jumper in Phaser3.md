@@ -2239,12 +2239,22 @@ I will respond promptly and take necessary actions to handle the article.
 
 Thank you for your support!
 
-## 温馨提示
+## 温馨提示(Reminder)
 
 本文非官方译文或精翻版本，未经任何校对，仅用于对原文的辅助参考理解和阅读，如有任何翻译错漏或版本差异，请自行查鉴！
 
-## 警告
+This article is an unofficial translation or paraphrasing, and has not been proofread.
+
+It is only intended as an aid for understanding and reading the original text.
+
+If there are any errors or differences in translation, please verify them yourself.
+
+## 警告(Warning)
 
 本译文仅供个人学习参考用途，请勿私自传播或进行商业用途，否则请自行承担相应的法律责任，本人概不承担任何法律责任！
 
 如有需要，敬请支持并购买正版书籍。
+
+This translation is for personal study and reference only. Please do not distribute or use it for commercial purposes without permission, otherwise you will bear the corresponding legal responsibility, and I do not assume any legal liability.
+
+If necessary, please support and purchase the original books.
