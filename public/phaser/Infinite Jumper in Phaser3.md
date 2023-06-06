@@ -117,7 +117,7 @@ ES6+的JavaScript在作者看来，是实实在在拥有自己的价值的语言
 
 你可以在Bunny Jump的Github中获取本书涉及的完整实例代码：
 
-https://github.com/ourcade/infinite-jumper-template-phaser3
+[https://github.com/ourcade/infinite-jumper-template-phaser3](https://github.com/ourcade/infinite-jumper-template-phaser3)
 
 注意，这个项目仓库使用了git-lfs，如果你使用git clone命令来拷贝该项目，为保证你能将里面的图片、音频等资源下载下来，请确保你的电脑是否也已经安装了git-lfs。
 
