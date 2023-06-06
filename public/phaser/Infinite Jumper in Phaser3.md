@@ -663,9 +663,9 @@ this.physics.add.image(240, 320, 'platform')
 
 ```js
 create() {
-  // 提出这个代码
-  this.physics.add.image(240, 320, 'platform')
-    .setScale(0.5)
+  // 移除这个代码
+  // this.physics.add.image(240, 320, 'platform')
+  //   .setScale(0.5)
   
   // 创建一个组对象
   const platforms = this.physics.add.staticGroup()
@@ -949,7 +949,7 @@ create() {
 
 ```js
 export default class Game extends Phaser.Scene {
-  /** @type {Phaser.Physics.Arcade.StaticBody} */
+  /** @type {Phaser.Physics.Arcade.StaticGroup} */
   platforms
 
   // 之前的代码省略...
