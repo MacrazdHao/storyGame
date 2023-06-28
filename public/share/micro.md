@@ -46,7 +46,7 @@
 qiankun在事件机制处理方式上，封装了一套私有的通信机制，各个应用间可通过封装好的API进行双向数据交互
 
 
-* 会和ng重定向冲突
+* single-spa（单页应用）的路由会和ng重定向冲突
 
 
 https://zhuanlan.zhihu.com/p/546228614
