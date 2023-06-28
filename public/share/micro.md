@@ -47,3 +47,10 @@ qiankun在事件机制处理方式上，封装了一套私有的通信机制，�
 
 
 * 会和ng重定向冲突
+
+
+https://zhuanlan.zhihu.com/p/546228614
+
+https://juejin.cn/post/7242623208841592869#heading-15
+
+https://www.jianshu.com/p/e8135c887bec
