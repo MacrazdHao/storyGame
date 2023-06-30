@@ -48,7 +48,7 @@
 
 ## qiankun的优势
 
-| \          | qiankun                     | iframe                                     |
+| 比较要点   | qiankun                     | iframe                                     |
 | ---------- | --------------------------- | ------------------------------------------ |
 | 数据共享   | window                      | hash/query/LocalStorage(同源)/Cookie(同源) |
 | 事件机制   | 私有通信机制                | PostMessage                                |
