@@ -285,7 +285,7 @@ export const importHTML = url => {
 }
 ```
 
-Script脚本分为内联脚本和外链脚本，这里需要分开处理，拿到内联脚本后，获取内容可以通过 eval 直接处理。如果是含有scr的script脚本，还需要拿到src的值，通过fetch去加载获取脚本内容。我们在 getExternalScripts 方法中来处理：
+Script脚本分为内联脚本和外链脚本，这里需要分开处理，拿到内联脚本后，获取内容可以通过 eval 直接处理。如果是含有src的script脚本，还需要拿到src的值，通过fetch去加载获取脚本内容。我们在 getExternalScripts 方法中来处理：
 
 ```js
 const getExternalScripts = async () => {
