@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<title></title>
+</head>
+<style>
+	/* transform-style: preserve-3d; 及 will-change能够提高动画性能 */
+	html {
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		font-family: font3;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		transition: 2s all;
+		background-size: cover;
+		background-image: #fff;
+	}
+
+	.hole {
+		position: fixed;
+		/* padding-top: 4px; */
+		top: 0;
+		left: 50%;
+		transform: translate(-50%, 0%);
+	}
+
+	.hole-center {
+		background-color: #000;
+		/* width: 80px;
+		height: 20px; */
+		border-radius: 100% 100% 100% 100%;
+		/* border-top: 10px solid #fff; */
+		/* box-shadow: inset 0px 4px 0 0 rgb(72, 72, 72); */
+	}
+
+	.floorBox {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.floor {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.floor-columnLine {
+		position: absolute;
+		top: -200px;
+		left: calc(50% - 0.5px);
+		border-left: 1px solid #000;
+		height: 3000px;
+		transform-origin: 0 0;
+		/* transform: rotate(11deg); */
+	}
+
+	.floor-rowLine {
+		position: absolute;
+		top: 0;
+		/* left: calc(50% - 1500px); */
+		border-top: 1px solid #000;
+		/* width: 3000px; */
+		/* transform-origin: 0 0; */
+		/* transform: rotate(11deg); */
+	}
+</style>
+
+<body>
+	<div class="floorBox">
+		<div id="floor" class="floor">
+
+		</div>
+	</div>
+	<div id="hole" class="hole">
+		<div id="hole-center" class="hole-center"></div>
+	</div>
+
+</body>
+<script>
+	const HoleDom = document.getElementById("hole")
+	const HoleCenterDom = document.getElementById("hole-center")
+	const FloorDom = document.getElementById("floor")
+	const WidthRate = 1 / 5
+	const InitHoleRadius = 80
+	const InitHoleHeight = InitHoleRadius * WidthRate
+	HoleCenterDom.style.width = `${InitHoleRadius}px`
+	HoleCenterDom.style.height = `${InitHoleHeight}px`
+	const WatchPoint = 200
+	const FloorColumnLineNum = 60
+	const FloorRowLineNum = 60
+
+	for (let i = 0; i < FloorColumnLineNum; i++) {
+		const FloorColumnLineDom = document.createElement('div')
+		FloorColumnLineDom.setAttribute('class', 'floor-columnLine')
+		FloorColumnLineDom.style.transform = `rotate(${-90 + (180 / (FloorColumnLineNum - 1) * i)}deg)`
+		// FloorDom.appendChild(FloorColumnLineDom)
+	}
+
+	// const HoleDomY = 300
+	const HeightRate = 0.97235284332699715829
+	const ZRate = 170 / 728
+	const movingHole = (e) => {
+		// const HoleHeight = InitHoleRadius * (((e.y + WatchPoint) / HeightRate) / 748.6994098861059437)
+		const HoleHeight = (InitHoleRadius + e.y + WatchPoint) * WidthRate
+		const HoleDomY = e.y - HoleHeight / 2
+		HoleDom.style.top = `${HoleDomY}px`
+		const HoleWidth = (WatchPoint + HoleDomY) * WidthRate
+		const HoleDomX = e.x
+		HoleDom.style.left = `${HoleDomX}px`
+		console.log(HoleWidth, HoleHeight)
+		HoleCenterDom.style.width = `${HoleWidth}px`
+		HoleCenterDom.style.height = `${HoleHeight}px`
+		HoleCenterDom.style.boxShadow = `inset 0px ${Math.min(16, 140000 / (WatchPoint + HoleDomY) * ZRate)}px 0 0 rgb(72, 72, 72)`
+	}
+
+
+	document.body.addEventListener("mousemove", movingHole);
+
+</script>
+
+</html>
